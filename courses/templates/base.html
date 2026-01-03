@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Kurz{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sage: #4f6f64;
+            --sage-soft: #e6f0ec;
+            --slate: #2f3e3a;
+            --slate-soft: #f4f6f5;
+        }
+
+        body {
+            font-family: "Inter", system-ui, sans-serif;
+            background-color: var(--slate-soft);
+            color: #1f2933;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--slate);
+        }
+
+        .nav-link {
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--sage);
+        }
+
+        /* Buttons */
+        .btn-sage {
+            background-color: var(--sage);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-sage:hover {
+            background-color: #3f5f55;
+            color: #fff;
+        }
+
+        .btn-outline-sage {
+            border: 1px solid var(--sage);
+            color: var(--sage);
+        }
+
+        .btn-outline-sage:hover {
+            background-color: var(--sage);
+            color: #fff;
+        }
+
+        /* Cards */
+        .card-soft {
+            background: white;
+            border-radius: 14px;
+        }
+
+        /* Content */
+        main {
+            min-height: calc(100vh - 80px);
+        }
+
+        footer {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            🎓 Kurz
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Úvod</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">O kurzu</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'course_dashboard' %}">Kurz</a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <div class="d-flex align-items-center gap-2">
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-sage btn-sm">
+                        Odhlásit
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-sage btn-sm">
+                    Přihlásit se
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="py-5">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="py-4 text-center">
+    <div class="container">
+        <p class="mb-0">
+            © {{ now|date:"Y" }} · Online kurz · Všechna práva vyhrazena
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

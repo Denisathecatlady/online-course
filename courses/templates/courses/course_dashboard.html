@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Kurz{% endblock %}
+
+{% block content %}
+<section>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="h3 mb-1">Kurz</h1>
+        <p class="text-muted mb-0">Vyber si modul a pokračuj.</p>
+      </div>
+
+      <a href="{% url 'about' %}" class="btn btn-outline-sage btn-sm">
+        Pravidla & informace
+      </a>
+    </div>
+
+    <!-- Private intro -->
+    {% if course and course.private_intro %}
+      <div class="card card-soft border-0 shadow-sm mb-4">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-muted" style="line-height: 1.7;">
+            {{ course.private_intro|linebreaks }}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Modules -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="h5 mb-0">Moduly</h2>
+      <span class="text-muted small">{{ modules|length }} / 4</span>
+    </div>
+
+    <div class="row g-3 g-md-4">
+      {% for m in modules %}
+        <div class="col-12 col-md-6">
+          <div class="card card-soft border-0 shadow-sm h-100 module-card">
+            <div class="card-body p-4 d-flex flex-column">
+
+              <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                <span class="badge rounded-pill bg-light border text-dark px-3 py-2">
+                  Modul {{ m.order }}
+                </span>
+
+                <span class="badge rounded-pill" style="background: var(--sage-soft); color: var(--sage);">
+                  Video + PDF
+                </span>
+              </div>
+
+              <h3 class="h5 mb-2">{{ m.title }}</h3>
+
+              {% if m.intro_text %}
+                <p class="text-muted mb-4" style="line-height: 1.6;">
+                  {{ m.intro_text|truncatechars:120 }}
+                </p>
+              {% else %}
+                <p class="text-muted mb-4" style="line-height: 1.6;">
+                  Krátký úvod k modulu můžeš doplnit v administraci.
+                </p>
+              {% endif %}
+
+              <div class="mt-auto d-flex align-items-center justify-content-between gap-2">
+                <a href="{% url 'module_detail' m.slug %}" class="btn btn-sage">
+                  Otevřít modul →
+                </a>
+
+                {% if m.pdf_file %}
+                  <span class="small text-muted">PDF připraveno</span>
+                {% else %}
+                  <span class="small text-muted">PDF chybí</span>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="alert alert-light border shadow-sm">
+            <div class="fw-semibold mb-1">Žádné moduly zatím nejsou vytvořené</div>
+            <div class="text-muted">
+              V administraci vytvoř kurz a přidej 4 moduly.
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* jemný hover efekt (působí draze a čistě) */
+  .module-card {
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.6rem 1.4rem rgba(16, 24, 40, 0.08) !important;
+  }
+</style>
+{% endblock %}
+

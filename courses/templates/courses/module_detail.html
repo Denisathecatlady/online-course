@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}{{ module.title }}{% endblock %}
+
+{% block content %}
+<section>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+      <div>
+        <div class="text-muted small mb-2">
+          <a class="text-decoration-none" href="{% url 'course_dashboard' %}">← Zpět na moduly</a>
+        </div>
+        <h1 class="h3 mb-1">{{ module.order }}. {{ module.title }}</h1>
+        <div class="text-muted">
+          Modulový obsah – video + PDF.
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        {% if module.pdf_file %}
+          <a class="btn btn-sage btn-sm" href="{% url 'download_module_pdf' module.slug %}">
+            Stáhnout PDF
+          </a>
+        {% else %}
+          <span class="badge text-bg-light border">PDF není nahrané</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Left: Intro / Notes -->
+      <div class="col-lg-4">
+        <div class="card card-soft border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h2 class="h6 mb-3">Úvod & poznámky</h2>
+
+            {% if module.intro_text %}
+              <div class="text-muted" style="line-height: 1.65;">
+                {{ module.intro_text|linebreaks }}
+              </div>
+            {% else %}
+              <p class="text-muted mb-0">
+                Zatím tu není žádný text k tomuto modulu.
+              </p>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-circle border d-flex align-items-center justify-content-center"
+                   style="width:36px;height:36px;background:#fff;">
+                <span class="fw-semibold" style="color: var(--sage);">i</span>
+              </div>
+              <div class="small text-muted">
+                Video je dostupné jen pro přihlášené uživatele a je vložené přes zabezpečený přehrávač.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!-- Right: Videos -->
+<div class="col-lg-8">
+  <div class="card card-soft border-0 shadow-sm overflow-hidden">
+    <div class="card-body p-3 p-md-4">
+
+      {% if module.vimeo_embed_url1 %}
+        <!-- Hlavní video -->
+        <div class="ratio ratio-16x9 mb-4">
+          <iframe
+            src="{{ module.vimeo_embed_url1 }}"
+            title="{{ module.title }} – video 1"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
+
+      <div class="row g-3">
+
+        {% if module.vimeo_embed_url2 %}
+          <div class="col-md-6">
+            <div class="ratio ratio-16x9">
+              <iframe
+                src="{{ module.vimeo_embed_url2 }}"
+                title="{{ module.title }} – video 2"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if module.vimeo_embed_url3 %}
+          <div class="col-md-6">
+            <div class="ratio ratio-16x9">
+              <iframe
+                src="{{ module.vimeo_embed_url3 }}"
+                title="{{ module.title }} – video 3"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+
+      {% if not module.vimeo_embed_url1 and not module.vimeo_embed_url2 and not module.vimeo_embed_url3 %}
+        <div class="p-4 text-center">
+          <h3 class="h6 mb-2">Videa nejsou vyplněna</h3>
+          <p class="text-muted mb-0">
+            Doplň Vimeo embed odkazy v administraci
+            (<code>player.vimeo.com/...</code>)
+          </p>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+
+        <!-- Bottom actions -->
+        <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2 mt-3">
+          <div class="text-muted small">
+            Tip: pokud se video nenačte, zkontroluj nastavení embedu na Vimeo (povolená doména).
+          </div>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-outline-sage btn-sm" href="{% url 'course_dashboard' %}">
+              Zpět na moduly
+            </a>
+            {% if module.pdf_file %}
+              <a class="btn btn-sage btn-sm" href="{% url 'download_module_pdf' module.slug %}">
+                PDF ke stažení
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

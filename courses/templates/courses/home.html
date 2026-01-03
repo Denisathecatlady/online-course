@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Úvod{% endblock %}
+
+{% block content %}
+<section class="py-2">
+  <div class="container">
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+
+        <!-- HERO -->
+        <div class="card card-soft border-0 shadow-sm overflow-hidden">
+          <div class="card-body p-4 p-md-5">
+
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-4">
+              <div>
+                <span class="badge rounded-pill text-bg-light border mb-3">Online kurz</span>
+
+                <h1 class="display-6 fw-semibold mb-3">
+                  {{ course.title|default:"Kurz" }}
+                </h1>
+
+                {% if course and course.public_intro %}
+                  <div class="text-muted" style="line-height: 1.7;">
+                    {{ course.public_intro|linebreaks }}
+                  </div>
+                {% else %}
+                  <p class="text-muted mb-0" style="line-height: 1.7;">
+                    Zatím nemáš vytvořený kurz v administraci. Jakmile ho vytvoříš, zobrazí se tu úvodní text.
+                  </p>
+                {% endif %}
+              </div>
+
+              <div class="w-100 w-md-auto">
+                {% if user.is_authenticated %}
+                  <a href="{% url 'course_dashboard' %}" class="btn btn-sage w-100">
+                    Pokračovat do kurzu →
+                  </a>
+                  <div class="small text-muted mt-2 text-center">
+                    Jsi přihlášená
+                  </div>
+                {% else %}
+                  <a href="{% url 'login' %}" class="btn btn-sage w-100">
+                    Přihlásit se →
+                  </a>
+                  <div class="small text-muted mt-2 text-center">
+                    Přístup jen pro registrované uživatele
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- INFO BLOCKS -->
+        <div class="row g-3 g-md-4 mt-4">
+          <div class="col-md-4">
+            <div class="card card-soft border-0 shadow-sm h-100">
+              <div class="card-body p-4">
+                <div class="fw-semibold mb-2">4 moduly</div>
+                <p class="text-muted mb-0">
+                  Přehledná struktura, postupně od základů po praxi.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card card-soft border-0 shadow-sm h-100">
+              <div class="card-body p-4">
+                <div class="fw-semibold mb-2">Video + PDF</div>
+                <p class="text-muted mb-0">
+                  Každý modul obsahuje video a PDF ke stažení.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card card-soft border-0 shadow-sm h-100">
+              <div class="card-body p-4">
+                <div class="fw-semibold mb-2">Soukromý přístup</div>
+                <p class="text-muted mb-0">
+                  Obsah je dostupný pouze po přihlášení.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary CTA -->
+        <div class="text-center mt-4">
+          <a class="btn btn-outline-sage" href="{% url 'about' %}">
+            Zjistit více o kurzu
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

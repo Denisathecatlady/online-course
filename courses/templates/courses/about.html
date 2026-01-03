@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}O kurzu{% endblock %}
+
+{% block content %}
+<section>
+  <div class="container">
+
+    <div class="row justify-content-center">
+      <div class="col-lg-9 col-xl-8">
+
+        <!-- Header -->
+        <div class="mb-4">
+          <h1 class="h3 mb-1">O kurzu</h1>
+          <p class="text-muted mb-0">
+            Informace, pravidla a podmínky užívání obsahu.
+          </p>
+        </div>
+
+        {% if course %}
+          <div class="card card-soft border-0 shadow-sm">
+            <div class="card-body p-4 p-md-5">
+
+              <div class="content-prose text-muted" style="line-height:1.75;">
+                {{ course.about_text|linebreaks }}
+              </div>
+
+              <hr class="my-4">
+
+              <div class="d-flex align-items-start gap-3">
+                <div class="rounded-circle border d-flex align-items-center justify-content-center"
+                     style="width:36px;height:36px;background:#fff;">
+                  <span class="fw-semibold" style="color: var(--sage);">i</span>
+                </div>
+                <div class="small text-muted">
+                  Obsah tohoto kurzu je chráněn autorským právem a je určen výhradně
+                  pro přihlášené uživatele.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        {% else %}
+          <div class="alert alert-light border shadow-sm">
+            <div class="fw-semibold mb-1">Kurz zatím není vytvořen</div>
+            <div class="text-muted">
+              V administraci zatím neexistuje žádný kurz. Jakmile ho vytvoříš,
+              zobrazí se zde informace.
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Back -->
+        <div class="mt-4">
+          <a href="{% url 'home' %}" class="btn btn-outline-sage btn-sm">
+            ← Zpět na úvod
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
