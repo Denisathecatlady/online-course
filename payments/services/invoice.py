@@ -1,9 +1,30 @@
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from django.core.files.base import ContentFile
 from io import BytesIO
 from datetime import date
 
+from django.core.files.base import ContentFile
+from django.db.models import Max
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
+from payments.models import Order
+
+
+def assign_invoice_number(order):
+    """
+    Přiřadí další číslo faktury (od 260001).
+    Volá se pouze po zaplacení.
+    """
+    if order.invoice_number:
+        return
+
+    last_number = (
+        Order.objects
+        .exclude(invoice_number__isnull=True)
+        .aggregate(Max("invoice_number"))["invoice_number__max"]
+    )
+
+    order.invoice_number = (last_number or 260000) + 1
+    order.save(update_fields=["invoice_number"])
 
 def generate_invoice_pdf(order):
     buffer = BytesIO()
