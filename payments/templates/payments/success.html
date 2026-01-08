@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h1>Děkujeme 💙</h1>
+  <p>Platba proběhla. Přístup ke kurzu se aktivuje během chvilky.</p>
+  <a class="btn btn-primary" href="{% url 'course_dashboard' %}">Jít do kurzu</a>
+</div>
+{% endblock %}

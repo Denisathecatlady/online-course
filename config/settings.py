@@ -1,19 +1,31 @@
 import os
 from pathlib import Path
+import dj_database_url
+
+# ======================================================
+# BASE
+# ======================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# .env – jen lokálně
+ENV_FILE = BASE_DIR / ".env"
+if ENV_FILE.exists():
+    from dotenv import load_dotenv
+    load_dotenv(ENV_FILE)
 
-# =========================
-# CORE / ENV
-# =========================
+# ======================================================
+# CORE
+# ======================================================
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = [
     h.strip()
-    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    for h in os.environ.get(
+        "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1"
+    ).split(",")
     if h.strip()
 ]
 
@@ -25,14 +37,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "tajny-admin/")
 
-
-# Render / proxy HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-
-# =========================
+# ======================================================
 # APPS
-# =========================
+# ======================================================
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -43,21 +52,21 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "courses",
+    "payments",
 ]
 
-# Storage app jen pokud používáš S3/R2
 USE_S3_STORAGE = os.environ.get("USE_S3_STORAGE", "0") == "1"
+
 if USE_S3_STORAGE:
-    INSTALLED_APPS += ["storages"]
+    INSTALLED_APPS.append("storages")
 
-
-# =========================
+# ======================================================
 # MIDDLEWARE
-# =========================
+# ======================================================
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # musí být brzy
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -66,10 +75,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
-# =========================
+# ======================================================
 # URLS / TEMPLATES
-# =========================
+# ======================================================
 
 ROOT_URLCONF = "config.urls"
 
@@ -90,22 +98,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# =========================
+# ======================================================
 # DATABASE
-# =========================
+# ======================================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
-
-# =========================
-# AUTH / PASSWORDS
-# =========================
+# ======================================================
+# AUTH
+# ======================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -118,74 +135,109 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "course_dashboard"
 LOGOUT_REDIRECT_URL = "home"
 
-
-# =========================
-# I18N / TZ
-# =========================
+# ======================================================
+# I18N
+# ======================================================
 
 LANGUAGE_CODE = "cs"
 TIME_ZONE = "Europe/Prague"
 USE_I18N = True
 USE_TZ = True
 
+# ======================================================
+# STATIC / MEDIA / STORAGES
+# ======================================================
 
-# =========================
-# STATIC / MEDIA
-# =========================
-
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+if USE_S3_STORAGE:
+    # Cloudflare R2 (S3 compatible)
+    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+    AWS_S3_ENDPOINT_URL = os.environ["AWS_S3_ENDPOINT_URL"]
+    AWS_S3_REGION_NAME = "auto"
+
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = True
+    AWS_S3_FILE_OVERWRITE = False
+
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage"
+    }
+
+else:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+
+    STORAGES["default"] = {
+        "BACKEND": "django.core.files.storage.FileSystemStorage"
+    }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# WhiteNoise storage for static files
-STORAGES = {
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-}
-
-
-# =========================
-# SECURITY HARDENING
-# =========================
+# ======================================================
+# SECURITY
+# ======================================================
 
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 
-SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
+SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 
-if not DEBUG:
+ENABLE_HTTPS = os.environ.get("ENABLE_HTTPS", "0") == "1"
+
+if ENABLE_HTTPS:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_SECONDS = int(
+        os.environ.get("DJANGO_HSTS_SECONDS", "31536000")
+    )
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+else:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_HSTS_SECONDS = 0
 
 
-# =========================
-# S3 / R2 STORAGE (UPLOADY Z ADMINU)
-# =========================
+# ======================================================
+# STRIPE
+# ======================================================
 
-if USE_S3_STORAGE:
-    AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-    AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 
-    # pro R2 nastav endpoint, pro S3 může být prázdné
-    AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "")
-    AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "")
+if not DEBUG and not STRIPE_SECRET_KEY:
+    raise RuntimeError("Missing STRIPE_SECRET_KEY in production.")
 
-    AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = True  # podepsané URL
-    AWS_S3_FILE_OVERWRITE = False
+# ======================================================
+# EMAIL (DEV)
+# ======================================================
 
-    # default storage = S3/R2, staticfiles = WhiteNoise
-    STORAGES["default"] = {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"}
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.wedos.net"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL", "CalmDog <info@calmdog.cz>"
+)

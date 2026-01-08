@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Objednávka kurzu{% endblock %}
+
+{% block content %}
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <h1 class="h4 mb-4">
+          Objednávka kurzu – {{ plan.name }}
+        </h1>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- KONTAKT -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Kontaktní údaje</h2>
+
+              <div class="mb-3">
+                <label class="form-label">E-mail *</label>
+                <input type="email" name="email" class="form-control" required>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Jméno *</label>
+                  <input type="text" name="first_name" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Příjmení *</label>
+                  <input type="text" name="last_name" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Telefon</label>
+                <input type="text" name="phone" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <!-- ADRESA -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Adresa</h2>
+
+              <div class="mb-3">
+                <label class="form-label">Ulice</label>
+                <input type="text" name="street" class="form-control">
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Město</label>
+                  <input type="text" name="city" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">PSČ</label>
+                  <input type="text" name="zip_code" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAKTURA -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Fakturační údaje</h2>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="invoice_same"
+                       value="1"
+                       id="invoiceSame"
+                       checked>
+                <label class="form-check-label" for="invoiceSame">
+                  Fakturační adresa je stejná jako kontaktní
+                </label>
+              </div>
+
+              <div id="invoiceFields" style="display:none;">
+                <div class="mb-3">
+                  <label class="form-label">Jméno / Firma</label>
+                  <input type="text" name="invoice_name" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Ulice</label>
+                  <input type="text" name="invoice_street" class="form-control">
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Město</label>
+                    <input type="text" name="invoice_city" class="form-control">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">PSČ</label>
+                    <input type="text" name="invoice_zip" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SOUHRN -->
+          <div class="card mb-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ plan.name }}</strong><br>
+                <span class="text-muted">{{ plan.price_czk }} Kč</span>
+              </div>
+              <button type="submit" class="btn btn-sage">
+                Pokračovat k platbě →
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const checkbox = document.getElementById("invoiceSame");
+  const fields = document.getElementById("invoiceFields");
+
+  checkbox.addEventListener("change", function () {
+    fields.style.display = this.checked ? "none" : "block";
+  });
+</script>
+{% endblock %}

@@ -5,13 +5,21 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from .models import Course, Module
+from payments.models import CoursePlan
+from .models import Course
 
 
 @require_GET
 def home(request):
     course = Course.objects.first()
-    return render(request, "courses/home.html", {"course": course})
 
+    plans = (
+        CoursePlan.objects
+        .filter(is_active=True)
+        .order_by("-id")  # nebo "price_czk" – viz níže
+    )
+
+    return render(request, "courses/home.html", {"course": course, "plans": plans})
 
 @require_GET
 def about(request):
@@ -57,3 +65,15 @@ def download_module_pdf(request, slug):
 
     # Signed URL (krátkodobě platná), soubor je v bucketu private
     return redirect(module.pdf_file.url)
+
+
+
+
+def gdpr(request):
+    return render(request, "courses/gdpr.html")
+
+def privacy_policy(request):
+    return render(request, "courses/privacy_policy.html")
+
+def terms(request):
+    return render(request, "courses/terms.html")

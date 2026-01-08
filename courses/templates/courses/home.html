@@ -4,7 +4,6 @@
 {% block content %}
 <section class="py-2">
   <div class="container">
-
     <div class="row justify-content-center">
       <div class="col-lg-10 col-xl-9">
 
@@ -17,7 +16,7 @@
                 <span class="badge rounded-pill text-bg-light border mb-3">Online kurz</span>
 
                 <h1 class="display-6 fw-semibold mb-3">
-                  {{ course.title|default:"Kurz" }}
+                  {{ course.title|default:"Online kurz" }}
                 </h1>
 
                 {% if course and course.public_intro %}
@@ -26,7 +25,7 @@
                   </div>
                 {% else %}
                   <p class="text-muted mb-0" style="line-height: 1.7;">
-                    Zatím nemáš vytvořený kurz v administraci. Jakmile ho vytvoříš, zobrazí se tu úvodní text.
+                    Informace o kurzu se zobrazí po jeho vytvoření v administraci.
                   </p>
                 {% endif %}
               </div>
@@ -34,17 +33,17 @@
               <div class="w-100 w-md-auto">
                 {% if user.is_authenticated %}
                   <a href="{% url 'course_dashboard' %}" class="btn btn-sage w-100">
-                    Pokračovat do kurzu →
+                    Vstoupit do kurzu →
                   </a>
                   <div class="small text-muted mt-2 text-center">
                     Jsi přihlášená
                   </div>
                 {% else %}
-                  <a href="{% url 'login' %}" class="btn btn-sage w-100">
-                    Přihlásit se →
+                  <a href="{% url 'login' %}" class="btn btn-outline-sage w-100">
+                    Přihlásit se
                   </a>
                   <div class="small text-muted mt-2 text-center">
-                    Přístup jen pro registrované uživatele
+                    Pokud už máš účet
                   </div>
                 {% endif %}
               </div>
@@ -53,14 +52,86 @@
           </div>
         </div>
 
-        <!-- INFO BLOCKS -->
+        <!-- PLANS -->
+        <div class="mt-4">
+          <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
+            <h2 class="h5 fw-semibold mb-0">Vyber si variantu kurzu</h2>
+            <div class="small text-muted">
+              Bezpečná platba • Doklad e-mailem • Okamžitý přístup
+            </div>
+          </div>
+
+          <div class="row g-3 g-md-4">
+
+            {% if plans %}
+              {% for plan in plans %}
+                <div class="col-md-6">
+                  <div class="card card-soft border-0 shadow-sm h-100">
+                    <div class="card-body p-4 d-flex flex-column">
+
+                      <div class="mb-3">
+                        <div class="fw-semibold fs-5">{{ plan.name }}</div>
+                        {% if plan.subtitle %}
+                          <div class="text-muted small">{{ plan.subtitle }}</div>
+                        {% endif %}
+                      </div>
+
+                      <div class="mb-3">
+                        <div class="h4 fw-semibold mb-0">
+                          {{ plan.price_czk }} Kč
+                        </div>
+                        <div class="text-muted small">jednorázová platba</div>
+                      </div>
+
+                      {% if plan.bullets %}
+                        <ul class="text-muted mb-4" style="line-height: 1.7;">
+                          {% for line in plan.bullets.splitlines %}
+                            {% if line %}
+                              <li>{{ line }}</li>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+
+                      <a href="{% url 'payments:checkout' plan.code %}"
+                         class="btn btn-sage mt-auto w-100">
+                        Vybrat variantu →
+                      </a>
+
+                      <div class="small text-muted mt-2 text-center">
+                        Přístup ti po zaplacení přijde e-mailem
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-12">
+                <div class="card card-soft border-0 shadow-sm">
+                  <div class="card-body p-4">
+                    <div class="fw-semibold mb-1">
+                      Zatím nejsou dostupné žádné varianty kurzu
+                    </div>
+                    <div class="text-muted">
+                      Varianty vytvoříš v administraci jako <b>CoursePlan</b>.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+
+        <!-- INFO -->
         <div class="row g-3 g-md-4 mt-4">
           <div class="col-md-4">
             <div class="card card-soft border-0 shadow-sm h-100">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">4 moduly</div>
+                <div class="fw-semibold mb-2">Strukturovaný obsah</div>
                 <p class="text-muted mb-0">
-                  Přehledná struktura, postupně od základů po praxi.
+                  Přehledné moduly, které dávají smysl.
                 </p>
               </div>
             </div>
@@ -69,9 +140,9 @@
           <div class="col-md-4">
             <div class="card card-soft border-0 shadow-sm h-100">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">Video + PDF</div>
+                <div class="fw-semibold mb-2">Video & PDF</div>
                 <p class="text-muted mb-0">
-                  Každý modul obsahuje video a PDF ke stažení.
+                  Kombinace výkladu a studijních materiálů.
                 </p>
               </div>
             </div>
@@ -82,14 +153,13 @@
               <div class="card-body p-4">
                 <div class="fw-semibold mb-2">Soukromý přístup</div>
                 <p class="text-muted mb-0">
-                  Obsah je dostupný pouze po přihlášení.
+                  Obsah je dostupný pouze registrovaným účastníkům.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Secondary CTA -->
         <div class="text-center mt-4">
           <a class="btn btn-outline-sage" href="{% url 'about' %}">
             Zjistit více o kurzu
@@ -98,7 +168,6 @@
 
       </div>
     </div>
-
   </div>
 </section>
 {% endblock %}
