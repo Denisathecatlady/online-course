@@ -99,27 +99,38 @@ def checkout(request, plan_code):
     # ----------------------------
     # STRIPE SESSION
     # ----------------------------
-    session = stripe.checkout.Session.create(
-        mode="payment",
-        customer_email=buyer_email,
-        line_items=[
-            {
-                "quantity": 1,
-                "price_data": {
-                    "currency": "czk",
-                    "unit_amount": plan.price_czk * 100,
-                    "product_data": {
-                        "name": plan.name,
-                        "description": "Přístup k online kurzu",
+    try:
+        session = stripe.checkout.Session.create(
+            mode="payment",
+            customer_email=buyer_email,
+            line_items=[
+                {
+                    "quantity": 1,
+                    "price_data": {
+                        "currency": "czk",
+                        "unit_amount": int(plan.price_czk * 100),
+                        "product_data": {
+                            "name": plan.name,
+                            "description": "Přístup k online kurzu",
+                        },
                     },
-                },
-            }
-        ],
-        success_url=request.build_absolute_uri("/payments/success/"),
-        cancel_url=request.build_absolute_uri("/payments/cancel/"),
-        metadata={"order_id": str(order.id)},
-    )
+                }
+            ],
+            success_url=request.build_absolute_uri("/payments/success/"),
+            cancel_url=request.build_absolute_uri("/payments/cancel/"),
+            metadata={"order_id": str(order.id)},
+        )
 
+    except stripe.error.StripeError as e:
+        order.delete()
+        print("Stripe error:", str(e))
+        return HttpResponseBadRequest(
+            "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
+        )
+
+    # ----------------------------
+    # ULOŽENÍ STRIPE SESSION ID
+    # ----------------------------
     order.stripe_checkout_session_id = session.id
     order.save(update_fields=["stripe_checkout_session_id"])
 
@@ -172,31 +183,21 @@ def stripe_webhook(request):
         except Order.DoesNotExist:
             return HttpResponse(status=200)
 
-        # ochrana proti duplicitnímu webhooku
         if order.status == Order.Status.PAID:
             return HttpResponse(status=200)
 
-        # ----------------------------
-        # ATOMICKÁ ČÁST
-        # ----------------------------
         with transaction.atomic():
 
-            # 1️⃣ OBJEDNÁVKA = PAID
             order.status = Order.Status.PAID
             order.stripe_payment_intent_id = session.get("payment_intent", "")
             order.save(update_fields=["status", "stripe_payment_intent_id"])
 
-            # 2️⃣ ČÍSLO FAKTURY
             assign_invoice_number(order)
 
-            # 3️⃣ PDF FAKTURA
             invoice_file = generate_invoice_pdf(order)
             order.invoice_pdf.save(invoice_file.name, invoice_file)
             order.save(update_fields=["invoice_pdf"])
 
-        # ----------------------------
-        # 4️⃣ UŽIVATEL
-        # ----------------------------
         User = get_user_model()
         user, created = User.objects.get_or_create(
             email=order.buyer_email,
@@ -214,9 +215,6 @@ def stripe_webhook(request):
         order.user = user
         order.save(update_fields=["user"])
 
-        # ----------------------------
-        # 5️⃣ PŘÍSTUP KE KURZU
-        # ----------------------------
         CourseAccess.objects.update_or_create(
             user=user,
             course=order.course,
@@ -226,9 +224,6 @@ def stripe_webhook(request):
             },
         )
 
-        # ----------------------------
-        # 6️⃣ E-MAIL + FAKTURA
-        # ----------------------------
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
 
@@ -238,7 +233,7 @@ def stripe_webhook(request):
 
         email = EmailMessage(
             subject="Přístup ke kurzu a faktura",
-            body=f"""Dobrý den {order.first_name},
+            body=f"""Dobrý den pan/paní {order.last_name},
 
 děkujeme za objednávku online kurzu.
 
