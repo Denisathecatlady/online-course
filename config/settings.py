@@ -231,13 +231,11 @@ if not DEBUG and not STRIPE_SECRET_KEY:
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = "smtp.wedos.net"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.seznam.cz"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
 
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
-DEFAULT_FROM_EMAIL = os.environ.get(
-    "DEFAULT_FROM_EMAIL", "CalmDog <info@calmdog.cz>"
-)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
