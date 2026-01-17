@@ -22,22 +22,26 @@
     <style>
         :root {
             --sage: #4f6f64;
-            --sage-soft: #e6f0ec;
+            ---sage-soft: #e6f0ec;
             --slate: #2f3e3a;
-            --slate-soft: #f4f6f5;
+            --slate-soft: #f6f7f5;
         }
 
         body {
             font-family: "Inter", system-ui, sans-serif;
             background-color: var(--slate-soft);
-            color: #1f2933;
+            color: #2f3e3a;
         }
+
+
 
         /* Navbar */
         .navbar {
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(6px);
         }
+
 
         .navbar-brand {
             font-weight: 600;
@@ -80,6 +84,7 @@
         .card-soft {
             background: white;
             border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
         /* Content */
@@ -90,7 +95,44 @@
         footer {
             font-size: 0.9rem;
             color: #6b7280;
+            background-color: #fafafa;
         }
+        /* =========================
+        HERO – mlžné pozadí
+        ========================= */
+
+        .hero-card {
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.90),
+                    rgba(255, 255, 255, 0.75)
+                ),
+                url("/static/img/pozadi-les-cesta.jpg");
+
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+
+            border-radius: 1.4rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-card h1 {
+            color: #3f4f44;
+            letter-spacing: 0.04em;
+        }
+
+        .hero-card .text-muted {
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+
+        .hero-card .badge {
+            background-color: rgba(79, 111, 100, 0.08);
+            color: var(--sage);
+            border: 1px solid rgba(79, 111, 100, 0.25);
+        }
+
     </style>
 </head>
 
@@ -146,7 +188,7 @@
     </div>
 </nav>
 
-<main class="py-5">
+<main class="pt-3 pb-5">
     {% block content %}{% endblock %}
 </main>
 
