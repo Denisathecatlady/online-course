@@ -12,42 +12,59 @@
         <div class="card card-soft border-0 shadow-sm overflow-hidden hero-card">
           <div class="card-body p-4 p-md-5">
 
-            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-4">
-              <div>
-                <span class="badge rounded-pill text-bg-light border mb-3">Online kurz</span>
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-4">
+
+              <!-- TEXT + CTA -->
+              <div class="hero-text flex-fill">
+                <span class="badge rounded-pill text-bg-light border mb-3">
+                  Online kurz
+                </span>
 
                 <h1 class="display-6 fw-semibold mb-3">
                   {{ course.title|default:"Online kurz" }}
                 </h1>
 
                 {% if course and course.public_intro %}
-                  <div class="text-muted" style="line-height: 1.7;">
+                  <div class="text-muted mb-4" style="line-height: 1.7;">
                     {{ course.public_intro|linebreaks }}
                   </div>
                 {% else %}
-                  <p class="text-muted mb-0" style="line-height: 1.7;">
+                  <p class="text-muted mb-4" style="line-height: 1.7;">
                     Informace o kurzu se zobrazí po jeho vytvoření v administraci.
                   </p>
                 {% endif %}
-              </div>
 
-              <div class="w-100 w-md-auto">
                 {% if user.is_authenticated %}
-                  <a href="{% url 'course_dashboard' %}" class="btn btn-sage w-100">
+                  <a href="{% url 'course_dashboard' %}" class="btn btn-sage">
                     Vstoupit do kurzu →
                   </a>
-                  <div class="small text-muted mt-2 text-center">
+                  <div class="small text-muted mt-2">
                     Jsi přihlášená
                   </div>
                 {% else %}
-                  <a href="{% url 'login' %}" class="btn btn-outline-sage w-100">
+                  <a href="{% url 'login' %}" class="btn btn-outline-sage">
                     Přihlásit se
                   </a>
-                  <div class="small text-muted mt-2 text-center">
+                  <div class="small text-muted mt-2">
                     Pokud už máš účet
                   </div>
                 {% endif %}
               </div>
+
+              <!-- PSI -->
+              <div class="hero-dogs d-none d-md-flex">
+                <img
+                  src="{% static 'img/dog-stand.png' %}"
+                  alt="Pes v klidném postoji"
+                  class="dog dog-left"
+                >
+                <img
+                  src="{% static 'img/dog-sniff.png' %}"
+                  alt="Pes s konejšivým signálem"
+                  class="dog dog-right"
+                >
+              </div>
+
             </div>
 
           </div>
@@ -56,7 +73,9 @@
         <!-- PLANS -->
         <div class="mt-4">
           <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
-            <h2 class="h5 fw-semibold mb-0">Vyber si variantu kurzu</h2>
+            <h2 class="h5 fw-semibold mb-0">
+              Vyber si variantu kurzu
+            </h2>
             <div class="small text-muted">
               Bezpečná platba • Doklad e-mailem • Okamžitý přístup
             </div>
@@ -67,13 +86,17 @@
             {% if plans %}
               {% for plan in plans %}
                 <div class="col-md-6">
-                  <div class="card card-soft border-0 shadow-sm h-100">
+                  <div class="card plan-card border-0 h-100">
                     <div class="card-body p-4 d-flex flex-column">
 
                       <div class="mb-3">
-                        <div class="fw-semibold fs-5">{{ plan.name }}</div>
+                        <div class="fw-semibold fs-5">
+                          {{ plan.name }}
+                        </div>
                         {% if plan.subtitle %}
-                          <div class="text-muted small">{{ plan.subtitle }}</div>
+                          <div class="text-muted small">
+                            {{ plan.subtitle }}
+                          </div>
                         {% endif %}
                       </div>
 
@@ -81,7 +104,9 @@
                         <div class="h4 fw-semibold mb-0">
                           {{ plan.price_czk }} Kč
                         </div>
-                        <div class="text-muted small">jednorázová platba</div>
+                        <div class="text-muted small">
+                          jednorázová platba
+                        </div>
                       </div>
 
                       {% if plan.bullets %}
@@ -94,8 +119,10 @@
                         </ul>
                       {% endif %}
 
-                      <a href="{% url 'payments:checkout' plan.code %}"
-                         class="btn btn-sage mt-auto w-100">
+                      <a
+                        href="{% url 'payments:checkout' plan.code %}"
+                        class="btn btn-sage mt-auto w-100"
+                      >
                         Vybrat variantu →
                       </a>
 
@@ -130,7 +157,9 @@
           <div class="col-md-4">
             <div class="card card-soft border-0 shadow-sm h-100">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">Strukturovaný obsah</div>
+                <div class="fw-semibold mb-2">
+                  Strukturovaný obsah
+                </div>
                 <p class="text-muted mb-0">
                   Přehledné moduly, které dávají smysl.
                 </p>
@@ -141,7 +170,9 @@
           <div class="col-md-4">
             <div class="card card-soft border-0 shadow-sm h-100">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">Video & PDF</div>
+                <div class="fw-semibold mb-2">
+                  Video & PDF
+                </div>
                 <p class="text-muted mb-0">
                   Kombinace výkladu a studijních materiálů.
                 </p>
@@ -152,7 +183,9 @@
           <div class="col-md-4">
             <div class="card card-soft border-0 shadow-sm h-100">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">Soukromý přístup</div>
+                <div class="fw-semibold mb-2">
+                  Soukromý přístup
+                </div>
                 <p class="text-muted mb-0">
                   Obsah je dostupný pouze registrovaným účastníkům.
                 </p>

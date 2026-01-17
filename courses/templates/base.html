@@ -157,6 +157,51 @@
             background-repeat: no-repeat;
         }
 
+        /* =========================
+        Karty variant kurzu
+        ========================= */
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        /* =========================
+        HERO – psi
+        ========================= */
+
+        .hero-dogs {
+            position: relative;
+            width: 360px;
+            height: 260px;
+        }
+
+        .hero-dogs .dog {
+            position: absolute;
+            max-width: 180px;
+            height: auto;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+        }
+
+        .hero-dogs .dog-left {
+            left: 0;
+            bottom: 0;
+            transform: rotate(-2deg);
+        }
+
+        .hero-dogs .dog-right {
+            right: 0;
+            bottom: -10px;
+            transform: rotate(2deg);
+        }
+
 
     </style>
 </head>
