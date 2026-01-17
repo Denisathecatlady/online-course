@@ -18,6 +18,11 @@ from courses.models import Course
 from .models import CoursePlan, Order, CourseAccess
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
 
+# testy
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # ---------------------------------------------------------------------
 # STRIPE
@@ -32,74 +37,78 @@ stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "").strip()
 
 @require_http_methods(["GET", "POST"])
 def checkout(request, plan_code):
-    if not stripe.api_key:
-        return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
 
-    plan = get_object_or_404(CoursePlan, code=plan_code, is_active=True)
-    course = Course.objects.first()
-    if not course:
-        return HttpResponseBadRequest("Kurz neexistuje.")
+    try:
+        # ----------------------------
+        # ZÁKLADNÍ KONTROLY
+        # ----------------------------
+        if not stripe.api_key:
+            return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
 
-    # ----------------------------
-    # GET – formulář
-    # ----------------------------
-    if request.method == "GET":
-        return render(
-            request,
-            "payments/checkout_form.html",
-            {
-                "plan": plan,
-                "course": course,
-            },
+        plan = get_object_or_404(CoursePlan, code=plan_code, is_active=True)
+        course = Course.objects.first()
+        if not course:
+            return HttpResponseBadRequest("Kurz neexistuje.")
+
+        # ----------------------------
+        # GET – formulář
+        # ----------------------------
+        if request.method == "GET":
+            return render(
+                request,
+                "payments/checkout_form.html",
+                {
+                    "plan": plan,
+                    "course": course,
+                },
+            )
+
+        # ----------------------------
+        # POST – data z formuláře
+        # ----------------------------
+        buyer_email = request.POST.get("email", "").strip()
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+
+        street = request.POST.get("street", "").strip()
+        city = request.POST.get("city", "").strip()
+        zip_code = request.POST.get("zip_code", "").strip()
+        country = request.POST.get("country", "CZ").strip()
+
+        invoice_name = request.POST.get("invoice_name", "").strip()
+        invoice_street = request.POST.get("invoice_street", "").strip()
+        invoice_city = request.POST.get("invoice_city", "").strip()
+        invoice_zip = request.POST.get("invoice_zip", "").strip()
+        invoice_country = request.POST.get("invoice_country", country).strip()
+
+        if not buyer_email or not first_name or not last_name:
+            return HttpResponseBadRequest("Vyplň e-mail, jméno a příjmení.")
+
+        # ----------------------------
+        # OBJEDNÁVKA (PENDING)
+        # ----------------------------
+        order = Order.objects.create(
+            user=None,
+            course=course,
+            plan=plan,
+            buyer_email=buyer_email,
+            first_name=first_name,
+            last_name=last_name,
+            street=street,
+            city=city,
+            zip_code=zip_code,
+            country=country,
+            invoice_name=invoice_name or f"{first_name} {last_name}",
+            invoice_street=invoice_street or street,
+            invoice_city=invoice_city or city,
+            invoice_zip=invoice_zip or zip_code,
+            invoice_country=invoice_country,
+            status=Order.Status.PENDING,
         )
 
-    # ----------------------------
-    # POST – data z formuláře
-    # ----------------------------
-    buyer_email = request.POST.get("email", "").strip()
-    first_name = request.POST.get("first_name", "").strip()
-    last_name = request.POST.get("last_name", "").strip()
-
-    street = request.POST.get("street", "").strip()
-    city = request.POST.get("city", "").strip()
-    zip_code = request.POST.get("zip_code", "").strip()
-    country = request.POST.get("country", "CZ").strip()
-
-    invoice_name = request.POST.get("invoice_name", "").strip()
-    invoice_street = request.POST.get("invoice_street", "").strip()
-    invoice_city = request.POST.get("invoice_city", "").strip()
-    invoice_zip = request.POST.get("invoice_zip", "").strip()
-    invoice_country = request.POST.get("invoice_country", country).strip()
-
-    if not buyer_email or not first_name or not last_name:
-        return HttpResponseBadRequest("Vyplň e-mail, jméno a příjmení.")
-
-    # ----------------------------
-    # OBJEDNÁVKA (PENDING)
-    # ----------------------------
-    order = Order.objects.create(
-        user=None,
-        course=course,
-        plan=plan,
-        buyer_email=buyer_email,
-        first_name=first_name,
-        last_name=last_name,
-        street=street,
-        city=city,
-        zip_code=zip_code,
-        country=country,
-        invoice_name=invoice_name or f"{first_name} {last_name}",
-        invoice_street=invoice_street or street,
-        invoice_city=invoice_city or city,
-        invoice_zip=invoice_zip or zip_code,
-        invoice_country=invoice_country,
-        status=Order.Status.PENDING,
-    )
-
-    # ----------------------------
-    # STRIPE SESSION
-    # ----------------------------
-    try:
+        # ----------------------------
+        # STRIPE SESSION
+        # ----------------------------
         session = stripe.checkout.Session.create(
             mode="payment",
             customer_email=buyer_email,
@@ -121,20 +130,18 @@ def checkout(request, plan_code):
             metadata={"order_id": str(order.id)},
         )
 
-    except stripe.error.StripeError as e:
-        order.delete()
-        print("Stripe error:", str(e))
-        return HttpResponseBadRequest(
-            "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
+        order.stripe_checkout_session_id = session.id
+        order.save(update_fields=["stripe_checkout_session_id"])
+
+        return redirect(session.url)
+
+    except Exception:
+        # 🔥 TADY SE KONEČNĚ VYPÍŠE CHYBA 🔥
+        logger.exception("🔥 CHECKOUT ERROR 🔥")
+        return HttpResponse(
+            "Interní chyba serveru – chyba byla zalogována.",
+            status=500
         )
-
-    # ----------------------------
-    # ULOŽENÍ STRIPE SESSION ID
-    # ----------------------------
-    order.stripe_checkout_session_id = session.id
-    order.save(update_fields=["stripe_checkout_session_id"])
-
-    return redirect(session.url)
 
 
 # ---------------------------------------------------------------------
