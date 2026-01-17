@@ -22,7 +22,7 @@
     <style>
         :root {
             --sage: #4f6f64;
-            ---sage-soft: #e6f0ec;
+            --sage-soft: #e6f0ec;
             --slate: #2f3e3a;
             --slate-soft: #f6f7f5;
         }
@@ -57,7 +57,22 @@
         .nav-link:hover {
             color: var(--sage);
         }
+        /* =========================
+        Globální pozadí stránky
+        ========================= */
 
+        .page-wrapper {
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.92),
+                    rgba(255, 255, 255, 0.85)
+                ),
+                url("/static/img/pozadi-les-cesta.jpg");
+
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
         /* Buttons */
         .btn-sage {
             background-color: var(--sage);
@@ -98,21 +113,12 @@
             background-color: #fafafa;
         }
         /* =========================
-        HERO – mlžné pozadí
+        HERO – mlžný efekt karty
         ========================= */
 
         .hero-card {
-            background-image:
-                linear-gradient(
-                    rgba(255, 255, 255, 0.90),
-                    rgba(255, 255, 255, 0.75)
-                ),
-                url("/static/img/pozadi-les-cesta.jpg");
-
-            background-size: cover;
-            background-position: center bottom;
-            background-repeat: no-repeat;
-
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
             border-radius: 1.4rem;
             margin-bottom: 3rem;
         }
@@ -133,10 +139,29 @@
             border: 1px solid rgba(79, 111, 100, 0.25);
         }
 
+
+        /* =========================
+        HERO pozadí – jen pro home
+        ========================= */
+
+        .bg-hero .page-wrapper {
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.92),
+                    rgba(255, 255, 255, 0.85)
+                ),
+                url("/static/img/pozadi-les-cesta.jpg");
+
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+
     </style>
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 <nav class="navbar navbar-expand-lg">
     <div class="container">
@@ -188,7 +213,7 @@
     </div>
 </nav>
 
-<main class="pt-3 pb-5">
+<main class="pt-4 pb-5 page-wrapper">
     {% block content %}{% endblock %}
 </main>
 
