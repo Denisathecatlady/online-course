@@ -4,117 +4,99 @@
 {% block body_class %}bg-hero{% endblock %}
 
 {% block content %}
-<section class="py-2">
+
+<!-- HERO -->
+<section class="mb-6">
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-10 col-xl-9">
+    <div class="hero-card card-soft">
+      <div class="hero-inner">
 
-        <!-- HERO -->
-        <div class="card card-soft border-0 shadow-sm overflow-hidden hero-card">
-          <div class="card-body p-4 p-md-5">
+        <span class="badge-soft mb-4">
+          Online kurz
+        </span>
 
-            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-4">
+        <h1 class="hero-title mb-4">
+          <span class="hero-title-dark">Konejšivé signály</span>
+          <span class="hero-title-sage">v praxi</span>
+        </h1>
 
-              <!-- TEXT + CTA -->
-              <div class="hero-text flex-fill">
-                <span class="badge rounded-pill text-bg-light border mb-3">
-                  Online kurz
-                </span>
+        <p class="hero-warning mb-3">
+          ⚠️ Agrese nezačíná kousnutím. Začíná 🧠 nepochopením.
+        </p>
 
-                <h1 class="display-6 fw-semibold mb-3">
-                  {{ course.title|default:"Online kurz" }}
-                </h1>
+        <p class="hero-lead mb-4">
+          Konejšivé signály jsou klíčem 🍃 k prevenci konfliktů,
+          klidnému soužití a ochraně wellbeing psa.
+        </p>
 
-                {% if course and course.public_intro %}
-                  <div class="text-muted mb-4" style="line-height: 1.7;">
-                    {{ course.public_intro|linebreaks }}
-                  </div>
-                {% else %}
-                  <p class="text-muted mb-4" style="line-height: 1.7;">
-                    Informace o kurzu se zobrazí po jeho vytvoření v administraci.
-                  </p>
-                {% endif %}
+        <div class="hero-questions mb-5">
+          <div>🙋‍♀️ Jaké funkce mají konejšivé signály a proč nejde o stres?</div>
+          <div>🙋‍♀️ Jak souvisí konejšivé signály a projevy agrese?</div>
+          <div>🙋‍♀️ Jak je využít v tréninku reaktivních a bázlivých psů?</div>
+        </div>
 
-                {% if user.is_authenticated %}
-                  <a href="{% url 'course_dashboard' %}" class="btn btn-sage">
-                    Vstoupit do kurzu →
-                  </a>
-                  <div class="small text-muted mt-2">
-                    Jsi přihlášená
-                  </div>
-                {% else %}
-                  <a href="{% url 'login' %}" class="btn btn-outline-sage">
-                    Přihlásit se
-                  </a>
-                  <div class="small text-muted mt-2">
-                    Pokud už máš účet
-                  </div>
-                {% endif %}
-              </div>
+        <div class="hero-actions">
+          <a href="{% url 'about' %}" class="btn btn-sage">
+            Více o kurzu →
+          </a>
+          <a href="{% url 'login' %}" class="btn btn-outline-sage">
+            Přihlásit se
+          </a>
+        </div>
 
-              <!-- HERO DOGS – FADE SCENES -->
-              <div class="hero-dogs d-none d-md-flex">
-                <img src="{% static 'img/dog-stand.png' %}" class="dog active" alt="">
-                <img src="{% static 'img/dog-sleep.png' %}" class="dog" alt="">
-                <img src="{% static 'img/dog-german.png' %}" class="dog" alt="">
-                <img src="{% static 'img/dog-chihuahua.png' %}" class="dog" alt="">
-              </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            </div>
+</section>
 
+<!-- O KURZU -->
+<section class="py-6 bg-light">
+  <div class="container text-center">
+
+    <span class="badge badge-soft mb-4">
+      O kurzu
+    </span>
+
+    <h2 class="section-title mb-3">
+      Na tyto otázky vám odpovíme
+    </h2>
+
+    <p class="section-lead mx-auto">
+      V našem online kurzu 🍃 <strong>Konejšivé signály v praxi</strong> 🍃
+      se dozvíte, kdy jsou konejšivé signály běžnou klidnou komunikací
+      a kdy se uplatňují v souvislosti s projevy agrese.
+    </p>
+
+  </div>
+</section>
+
+<!-- PILÍŘE -->
+<section class="pb-6">
+  <div class="container">
+    <div class="card card-soft card-large">
+      <div class="card-body">
+
+        <div class="pillar">
+          <div class="pillar-icon">💻</div>
+          <div>
+            <h5>Kurz je postavený na praxi</h5>
+            <p>
+              Množství komentovaných videí 🎥 z praxe – běžného života
+              i potenciálně problematických situací. Vše je vysvětleno tak,
+              aby bylo čitelné, kdy je zásah člověka přínosný a kdy ne.
+            </p>
           </div>
         </div>
 
-        <!-- PLANS -->
-        <div class="mt-4">
-          <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-3">
-            <h2 class="h5 fw-semibold mb-0">
-              Vyber si variantu kurzu
-            </h2>
-            <div class="small text-muted">
-              Bezpečná platba • Doklad e-mailem • Okamžitý přístup
-            </div>
-          </div>
-
-          <div class="row g-3 g-md-4">
-            {% for plan in plans %}
-              <div class="col-md-6">
-                <div class="card plan-card border-0 h-100">
-                  <div class="card-body p-4 d-flex flex-column">
-
-                    <div class="mb-3">
-                      <div class="fw-semibold fs-5">{{ plan.name }}</div>
-                      {% if plan.subtitle %}
-                        <div class="text-muted small">{{ plan.subtitle }}</div>
-                      {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                      <div class="h4 fw-semibold mb-0">{{ plan.price_czk }} Kč</div>
-                      <div class="text-muted small">jednorázová platba</div>
-                    </div>
-
-                    {% if plan.bullets %}
-                      <ul class="text-muted mb-4" style="line-height: 1.7;">
-                        {% for line in plan.bullets.splitlines %}
-                          {% if line %}<li>{{ line }}</li>{% endif %}
-                        {% endfor %}
-                      </ul>
-                    {% endif %}
-
-                    <a href="{% url 'payments:checkout' plan.code %}"
-                       class="btn btn-sage mt-auto w-100">
-                      Vybrat variantu →
-                    </a>
-
-                    <div class="small text-muted mt-2 text-center">
-                      Přístup ti po zaplacení přijde e-mailem
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
+        <div class="pillar">
+          <div class="pillar-icon">⚖️</div>
+          <div>
+            <h5>Důraz na správné vyhodnocení</h5>
+            <p>
+              Rozlišení eustresu a distresu pro správné vyhodnocení situací.
+            </p>
           </div>
         </div>
 
@@ -123,15 +105,137 @@
   </div>
 </section>
 
-<!-- HERO DOGS SCRIPT -->
-<script>
-  const dogs = document.querySelectorAll('.hero-dogs .dog');
-  let index = 0;
 
-  setInterval(() => {
-    dogs[index].classList.remove('active');
-    index = (index + 1) % dogs.length;
-    dogs[index].classList.add('active');
-  }, 4500);
-</script>
+<!-- CÍLE KURZU -->
+<section class="py-6">
+  <div class="container">
+
+    <h2 class="section-title text-center mb-5">
+      Cílem kurzu je předat znalosti tak,  
+      aby vyústily v praktické schopnosti:
+    </h2>
+
+    <div class="row g-4 mb-6">
+      <div class="col-md-4">
+        <div class="goal-card">
+          <div class="goal-icon">🎯</div>
+          <p>
+            Správně interpretovat konejšivé signály  
+            v celkovém kontextu
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="goal-card">
+          <div class="goal-icon">🎯</div>
+          <p>
+            Umět vyhodnotit závažnost situace  
+            a správně ji řešit
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="goal-card">
+          <div class="goal-icon">🎯</div>
+          <p>
+            Umět správně reagovat na konejšivé signály  
+            v běžném soužití i tréninku
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTOR -->
+    <div class="author-box text-center">
+      <p class="author-quote">
+        Dovednost 🧩 správně vnímat a pracovat s konejšivými signály  
+        přináší porozumění do lidsko-psího soužití,  
+        předchází nedorozuměním, buduje pevné pouto mezi psem a člověkem 💛  
+        a vede k wellbeing psa.
+      </p>
+
+      <div class="author-name mt-4">
+        <strong>Ing. Andrea Zoulová</strong>
+      </div>
+
+      <div class="author-meta">
+        👩‍🎓 Calming Signals Specialist (certifikovala Turid Rugaas)<br>
+        👩‍🏫 Ethical Dog Trainer – Calming Signals Approach
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VARIANTY KURZU -->
+<section class="py-6">
+  <div class="container">
+
+    <h2 class="section-title text-center mb-2">
+      Vyber si variantu kurzu
+    </h2>
+
+    <p class="text-muted text-center mb-5">
+      Bezpečná platba • Doklad e-mailem • Okamžitý přístup
+    </p>
+
+    <div class="row g-4 justify-content-center">
+
+      {% for plan in plans %}
+      <div class="col-md-6 col-lg-5">
+
+        <div class="pricing-card {% if plan.recommended %}pricing-card-featured{% endif %}">
+
+          {% if plan.recommended %}
+          <div class="pricing-badge">Doporučujeme</div>
+          {% endif %}
+
+          <h3 class="pricing-title">
+            {{ plan.name }}
+          </h3>
+
+          <p class="pricing-subtitle">
+            {{ plan.subtitle }}
+          </p>
+
+          <div class="pricing-price">
+            {{ plan.price_czk }} Kč
+            <span>jednorázová platba</span>
+          </div>
+
+          <ul class="pricing-features">
+            {% for line in plan.bullets.splitlines %}
+              {% if line %}<li>{{ line }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+
+          {% if plan.target_group %}
+          <div class="pricing-note">
+            <strong>Pro koho je kurz vhodný:</strong><br>
+            {{ plan.target_group }}
+          </div>
+          {% endif %}
+
+          <a href="{% url 'payments:checkout' plan.code %}"
+             class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
+            Vybrat variantu →
+          </a>
+
+          <div class="small text-muted text-center mt-2">
+            Přístup ti po zaplacení přijde e-mailem
+          </div>
+
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+
 {% endblock %}

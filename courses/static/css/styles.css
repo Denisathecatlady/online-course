@@ -1,0 +1,90 @@
+:root {
+  --sage: #4f6f64;
+  --sage-soft: #e6f0ec;
+  --slate: #2f3e3a;
+  --slate-soft: #f6f7f5;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: #f7f6f2;
+  color: var(--slate);
+}
+
+/* PAGE BACKGROUND */
+.page-wrapper {
+  background:
+    linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.92)),
+    url("/static/img/pozadi-les-cesta.jpg");
+  background-size: cover;
+  background-position: center top;
+}
+
+/* NAVBAR */
+.navbar {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.nav-link:hover {
+  color: var(--sage);
+}
+
+/* BUTTONS */
+.btn-sage {
+  background-color: var(--sage);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+}
+
+.btn-sage:hover {
+  background-color: #3f5f55;
+}
+
+.btn-outline-sage {
+  border: 2px solid var(--sage);
+  color: var(--sage);
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+}
+
+.btn-outline-sage:hover {
+  background-color: var(--sage);
+  color: #fff;
+}
+
+/* CARDS */
+.card-soft {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+}
+
+/* HERO */
+.hero-card {
+  border-radius: 32px;
+}
+
+/* PLAN CARDS */
+.plan-card {
+  border-radius: 32px;
+  border: 2px solid transparent;
+}
+
+.plan-card:hover {
+  border-color: var(--sage);
+  transform: translateY(-4px);
+}
+
+/* FOOTER */
+footer {
+  background: #fff;
+  color: #6b7280;
+}
