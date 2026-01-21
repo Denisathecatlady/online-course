@@ -1,8 +1,39 @@
 {% extends "base.html" %}
+{% block title %}Platba zrušena{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-  <h1>Platba zrušena</h1>
-  <p>Nevadí – můžeš to zkusit znovu.</p>
-  <a class="btn btn-outline-primary" href="{% url 'home' %}">Zpět</a>
-</div>
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+
+        <div class="card card-soft text-center">
+          <div class="card-body p-4 p-md-5">
+
+            <span class="badge mb-3">Platba zrušena</span>
+
+            <h1 class="hero-title hero-title-dark mb-3">
+              Platba nebyla dokončena
+            </h1>
+
+            <p class="hero-lead mb-4">
+              Nevadí. K platbě se můžeš vrátit kdykoliv.
+            </p>
+
+            <div class="d-flex justify-content-center gap-3">
+              <a href="{% url 'home' %}" class="btn btn-outline-sage">
+                Zpět na úvod
+              </a>
+              <a href="{% url 'about' %}" class="btn btn-sage">
+                O kurzu
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

@@ -2,22 +2,28 @@
 {% block title %}Objednávka kurzu{% endblock %}
 
 {% block content %}
-<section class="py-4">
+<section class="py-6">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">
 
-        <h1 class="h4 mb-4">
-          Objednávka kurzu – {{ plan.name }}
-        </h1>
+        <div class="mb-4 text-center">
+          <span class="badge mb-2">Objednávka</span>
+          <h1 class="section-title-sm mb-1">
+            {{ plan.name }}
+          </h1>
+          <p class="text-muted">
+            Dokončení objednávky a platba
+          </p>
+        </div>
 
         <form method="post">
           {% csrf_token %}
 
           <!-- KONTAKT -->
-          <div class="card mb-4">
-            <div class="card-body">
-              <h2 class="h6 mb-3">Kontaktní údaje</h2>
+          <div class="card card-soft mb-4">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="h6 fw-semibold mb-4">Kontaktní údaje</h2>
 
               <div class="mb-3">
                 <label class="form-label">E-mail *</label>
@@ -35,7 +41,7 @@
                 </div>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-0">
                 <label class="form-label">Telefon</label>
                 <input type="text" name="phone" class="form-control">
               </div>
@@ -43,9 +49,9 @@
           </div>
 
           <!-- ADRESA -->
-          <div class="card mb-4">
-            <div class="card-body">
-              <h2 class="h6 mb-3">Adresa</h2>
+          <div class="card card-soft mb-4">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="h6 fw-semibold mb-4">Adresa</h2>
 
               <div class="mb-3">
                 <label class="form-label">Ulice</label>
@@ -57,7 +63,7 @@
                   <label class="form-label">Město</label>
                   <input type="text" name="city" class="form-control">
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-0">
                   <label class="form-label">PSČ</label>
                   <input type="text" name="zip_code" class="form-control">
                 </div>
@@ -65,16 +71,14 @@
             </div>
           </div>
 
-          <!-- FAKTURA -->
-          <div class="card mb-4">
-            <div class="card-body">
-              <h2 class="h6 mb-3">Fakturační údaje</h2>
+          <!-- FAKTURACE -->
+          <div class="card card-soft mb-4">
+            <div class="card-body p-4 p-md-5">
+              <h2 class="h6 fw-semibold mb-3">Fakturační údaje</h2>
 
               <div class="form-check mb-3">
                 <input class="form-check-input"
                        type="checkbox"
-                       name="invoice_same"
-                       value="1"
                        id="invoiceSame"
                        checked>
                 <label class="form-check-label" for="invoiceSame">
@@ -84,36 +88,53 @@
 
               <div id="invoiceFields" style="display:none;">
                 <div class="mb-3">
-                  <label class="form-label">Jméno / Firma</label>
+                  <label class="form-label">Jméno / firma</label>
                   <input type="text" name="invoice_name" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Ulice</label>
-                  <input type="text" name="invoice_street" class="form-control">
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Město</label>
-                    <input type="text" name="invoice_city" class="form-control">
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">PSČ</label>
-                    <input type="text" name="invoice_zip" class="form-control">
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- SOUHLASY -->
+          <div class="card card-soft mb-4">
+            <div class="card-body p-4 p-md-5">
+
+              <div class="form-check mb-3">
+                <input class="form-check-input"
+                      type="checkbox"
+                      name="terms"
+                      value="1"
+                      id="terms"
+                      required>
+                <label class="form-check-label" for="terms">
+                  Souhlasím s
+                  <a href="{% url 'terms' %}" target="_blank">obchodními podmínkami</a> *
+                </label>
+              </div>
+
+              <div class="form-check mb-0">
+                <input class="form-check-input"
+                      type="checkbox"
+                      name="newsletter"
+                      value="1"
+                      id="newsletter">
+                <label class="form-check-label" for="newsletter">
+                  Chci dostávat e-mailový newsletter (tipy, novinky)
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+
           <!-- SOUHRN -->
-          <div class="card mb-4">
-            <div class="card-body d-flex justify-content-between align-items-center">
+          <div class="card card-soft">
+            <div class="card-body p-4 p-md-5 d-flex justify-content-between align-items-center">
               <div>
                 <strong>{{ plan.name }}</strong><br>
                 <span class="text-muted">{{ plan.price_czk }} Kč</span>
               </div>
+
               <button type="submit" class="btn btn-sage">
                 Pokračovat k platbě →
               </button>

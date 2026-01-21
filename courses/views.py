@@ -77,3 +77,5 @@ def privacy_policy(request):
 
 def terms(request):
     return render(request, "courses/terms.html")
+
+

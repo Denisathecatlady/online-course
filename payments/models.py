@@ -67,6 +67,10 @@ class Order(models.Model):
     last_name = models.CharField(max_length=120)
     phone = models.CharField(max_length=40, blank=True)
 
+    newsletter_opt_in = models.BooleanField(
+            default=False,
+            help_text="Souhlas se zasíláním newsletteru"
+        )
     # adresa (dodací / kontaktní)
     street = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=120, blank=True)

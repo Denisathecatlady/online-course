@@ -29,8 +29,9 @@ class OrderAdmin(admin.ModelAdmin):
         "plan",
         "status",
         "created_at",
+        "newsletter_opt_in",
     )
-    list_filter = ("status", "plan")
+    list_filter = ("status", "plan", "newsletter_opt_in")
     search_fields = (
         "user__email",
         "user__username",

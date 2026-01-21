@@ -2,63 +2,217 @@
 {% block title %}O kurzu{% endblock %}
 
 {% block content %}
-<section>
+
+<!-- PAGE HEADER -->
+<section class="py-6">
+  <div class="container text-center">
+
+    <h1 class="about-title mb-2">O kurzu</h1>
+
+    <p class="about-subtitle">
+      Informace, pravidla a podmínky užívání obsahu.
+    </p>
+
+  </div>
+</section>
+
+<!-- CONTENT BOX -->
+<section class="pb-6">
   <div class="container">
-
     <div class="row justify-content-center">
-      <div class="col-lg-9 col-xl-8">
+      <div class="col-lg-9">
 
-        <!-- Header -->
-        <div class="mb-4">
-          <h1 class="h3 mb-1">O kurzu</h1>
-          <p class="text-muted mb-0">
-            Informace, pravidla a podmínky užívání obsahu.
-          </p>
-        </div>
+        <div class="about-box">
 
-        {% if course %}
-          <div class="card card-soft border-0 shadow-sm">
-            <div class="card-body p-4 p-md-5">
-
-              <div class="content-prose text-muted" style="line-height:1.75;">
-                {{ course.about_text|linebreaks }}
-              </div>
-
-              <hr class="my-4">
-
-              <div class="d-flex align-items-start gap-3">
-                <div class="rounded-circle border d-flex align-items-center justify-content-center"
-                     style="width:36px;height:36px;background:#fff;">
-                  <span class="fw-semibold" style="color: var(--sage);">i</span>
-                </div>
-                <div class="small text-muted">
-                  Obsah tohoto kurzu je chráněn autorským právem a je určen výhradně
-                  pro přihlášené uživatele.
-                </div>
-              </div>
-
+          {% if course %}
+            <div class="about-prose">
+              {{ course.about_text|linebreaks }}
             </div>
-          </div>
-        {% else %}
-          <div class="alert alert-light border shadow-sm">
-            <div class="fw-semibold mb-1">Kurz zatím není vytvořen</div>
-            <div class="text-muted">
-              V administraci zatím neexistuje žádný kurz. Jakmile ho vytvoříš,
-              zobrazí se zde informace.
-            </div>
-          </div>
-        {% endif %}
+          {% else %}
+            <p class="text-muted">
+              Informace o kurzu zatím nejsou vyplněny.
+            </p>
+          {% endif %}
 
-        <!-- Back -->
-        <div class="mt-4">
-          <a href="{% url 'home' %}" class="btn btn-outline-sage btn-sm">
-            ← Zpět na úvod
-          </a>
         </div>
 
       </div>
     </div>
+  </div>
+</section>
+
+<!-- KAŽDÝ MODUL -->
+<section class="pb-6">
+  <div class="container">
+    <div class="module-box">
+
+      <h3 class="module-title mb-4">
+        Každý modul 💻 obsahuje:
+      </h3>
+
+      <ul class="module-list mb-4">
+        <li>🧠 výklad</li>
+        <li>🎥 komentované videoukázky</li>
+        <li>✏️ úkoly k procvičení</li>
+      </ul>
+
+      <p class="module-text">
+        Jednotlivé moduly je možné studovat vlastním tempem 🎓 a kdykoliv se k nim vracet.
+        Komentovaná videa 🎥 je možné shlédnout opakovaně.
+        Ke každému z modulů jsou vypracovány úkoly k procvičení,
+        které směřují ke 🌿 skutečné dovednosti konejšivé signály zachytit,
+        vyhodnotit a 🌿 správně na ně reagovat ze strany člověka.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- VARIANTY KURZU -->
+<section class="py-6">
+  <div class="container">
+
+    <h2 class="section-title text-center mb-6">
+      Online kurz je nabízen ve dvou variantách:
+    </h2>
+
+    <div class="row g-4">
+
+      <!-- STANDARD -->
+      <div class="col-md-6">
+        <div class="variant-card">
+
+          <h3 class="variant-title">
+            💻 1. STANDARD
+          </h3>
+
+          <p class="variant-text">
+            Jedná se o samostudium bez opory lektora. Učební materiály jsou
+            zpracovány tak, aby při samostudiu došlo k získání znalostí
+            a dovedností vedoucích k:
+          </p>
+
+          <ul class="variant-list">
+            <li>🎯 správné interpretaci konejšivých signálů v celkovém kontextu</li>
+            <li>🎯 schopnosti vyhodnotit závažnost situace a umět ji správně řešit</li>
+            <li>🎯 schopnosti správně reagovat na konejšivé signály
+              a používat je v běžném soužití i v tréninku reaktivních a bázlivých psů
+            </li>
+          </ul>
+
+          <p class="variant-note">
+            Přístup ke všem materiálům kurzu je po dobu 6 měsíců.<br>
+            Nevede k získání certifikátu.
+          </p>
+
+        </div>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="col-md-6">
+        <div class="variant-card variant-card-premium">
+
+          <h3 class="variant-title">
+            💻 2. PREMIUM
+          </h3>
+
+          <p class="variant-subtitle">
+            STUDIUM S MENTORINGEM VEDOUCÍ K ZÍSKÁNÍ CERTIFIKÁTU
+          </p>
+
+          <p class="variant-text">
+            Kompletní vzdělávání pro ty, kteří chtějí jít do hloubky
+            a získat nejen znalosti, ale i podporu lektora.
+            Plná varianta STANDARD je rozšířena o:
+          </p>
+
+          <ul class="variant-list">
+            <li>🎯 5× online setkání v Zoom nebo Google Meet – rozbor videí a konzultace úkolů</li>
+            <li>🎯 podpůrná FB skupina</li>
+            <li>🎯 malé pracovní skupiny</li>
+            <li>🎯 získání certifikátu po úspěšném vypracování všech úkolů</li>
+          </ul>
+
+          <p class="variant-note">
+            Ideální volba pro ty, kteří chtějí získat jistotu,
+            že konejšivým signálům opravdu rozumí
+            a dokáží je správně aplikovat v praxi.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AUTOR -->
+<section class="pb-6">
+  <div class="container">
+    <div class="author-box author-box-large">
+
+      <div class="author-header">
+        <span class="author-emoji">👩‍🏫</span>
+        <h3 class="author-name">Ing. Andrea Zoulová</h3>
+      </div>
+
+      <p class="author-text">
+        Kurz vede specialistka na konejšivé signály 🎓
+        <strong>Calming Signals Specialist</strong>, certifikace byla získána u
+        Turid Rugaas (autorka knihy Konejšivé signály).
+        Současně lektor nabyl vzdělání jako 🎓
+        <strong>
+          ETHICAL DOG TRAINER – CALMING SIGNALS APPROACH
+          and DOG BEHAVIOR SPECIALIST
+        </strong>.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- PRO KOHO JE KURZ URČEN -->
+<section class="pb-6">
+  <div class="container">
+
+    <div class="card card-soft p-4 p-md-5">
+
+      <h3 class="section-title text-center mb-5">
+        Pro koho je kurz určen
+      </h3>
+
+      <div class="row g-4">
+
+        <div class="col-md-6">
+          <div class="audience-item">
+            🐕 pro majitele štěňat i dospělých psů
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="audience-item">
+            🐕 pro lidi, kteří chtějí svému psovi opravdu porozumět
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="audience-item">
+            🐕 pro ty, kteří nechtějí psa „lámat“, ale chápat
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="audience-item">
+            🐕 pro citlivé psy, reaktivní psy i úplně „běžné“ psy
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 </section>
+
 {% endblock %}

@@ -2,24 +2,25 @@
 {% block title %}Kurz{% endblock %}
 
 {% block content %}
-<section>
+<section class="py-3 py-md-4">
   <div class="container">
 
-    <!-- Header -->
-    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+    <!-- HEADER -->
+    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-5">
       <div>
-        <h1 class="h3 mb-1">Kurz</h1>
-        <p class="text-muted mb-0">Vyber si modul a pokračuj.</p>
+        <h1 class="section-title-sm mb-1">Kurz</h1>
+        <p class="page-subtitle mb-0">Vyber si modul a pokračuj.</p>
+
       </div>
 
-      <a href="{% url 'about' %}" class="btn btn-outline-sage btn-sm">
+      <a href="{% url 'about' %}" class="btn btn-outline-sage">
         Pravidla & informace
       </a>
     </div>
 
-    <!-- Private intro -->
+    <!-- INTRO KURZU -->
     {% if course and course.private_intro %}
-      <div class="card card-soft border-0 shadow-sm mb-4">
+      <div class="card card-soft course-intro mb-5">
         <div class="card-body p-4 p-md-5">
           <div class="text-muted" style="line-height: 1.7;">
             {{ course.private_intro|linebreaks }}
@@ -28,62 +29,63 @@
       </div>
     {% endif %}
 
-    <!-- Modules -->
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h2 class="h5 mb-0">Moduly</h2>
+    <!-- MODULY HEADER -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h2 class="h5 fw-semibold mb-0">Moduly</h2>
       <span class="text-muted small">{{ modules|length }} / 4</span>
     </div>
 
-    <div class="row g-3 g-md-4">
+    <!-- MODULY -->
+    <div class="row g-4">
       {% for m in modules %}
         <div class="col-12 col-md-6">
-          <div class="card card-soft border-0 shadow-sm h-100 module-card">
-            <div class="card-body p-4 d-flex flex-column">
+          <div class="module-card h-100">
 
-              <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-                <span class="badge rounded-pill bg-light border text-dark px-3 py-2">
+            <div class="module-card-body">
+
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="pill pill-outline">
                   Modul {{ m.order }}
                 </span>
 
-                <span class="badge rounded-pill" style="background: var(--sage-soft); color: var(--sage);">
+                <span class="pill pill-soft">
                   Video + PDF
                 </span>
               </div>
 
-              <h3 class="h5 mb-2">{{ m.title }}</h3>
+              <h3 class="module-title">{{ m.title }}</h3>
 
               {% if m.intro_text %}
-                <p class="text-muted mb-4" style="line-height: 1.6;">
+                <p class="text-muted mb-4">
                   {{ m.intro_text|truncatechars:120 }}
                 </p>
               {% else %}
-                <p class="text-muted mb-4" style="line-height: 1.6;">
+                <p class="text-muted mb-4">
                   Krátký úvod k modulu můžeš doplnit v administraci.
                 </p>
               {% endif %}
 
-              <div class="mt-auto d-flex align-items-center justify-content-between gap-2">
+              <div class="mt-auto d-flex align-items-center justify-content-between gap-3">
                 <a href="{% url 'module_detail' m.slug %}" class="btn btn-sage">
                   Otevřít modul →
                 </a>
 
-                {% if m.pdf_file %}
-                  <span class="small text-muted">PDF připraveno</span>
-                {% else %}
-                  <span class="small text-muted">PDF chybí</span>
-                {% endif %}
+                <span class="small text-muted">
+                  {% if m.pdf_file %}PDF připraveno{% else %}PDF chybí{% endif %}
+                </span>
               </div>
 
             </div>
+
           </div>
         </div>
       {% empty %}
         <div class="col-12">
-          <div class="alert alert-light border shadow-sm">
-            <div class="fw-semibold mb-1">Žádné moduly zatím nejsou vytvořené</div>
-            <div class="text-muted">
+          <div class="card card-soft p-4 text-center">
+            <strong>Žádné moduly zatím nejsou vytvořené</strong>
+            <p class="text-muted mb-0 mt-1">
               V administraci vytvoř kurz a přidej 4 moduly.
-            </div>
+            </p>
           </div>
         </div>
       {% endfor %}
@@ -91,16 +93,4 @@
 
   </div>
 </section>
-
-<style>
-  /* jemný hover efekt (působí draze a čistě) */
-  .module-card {
-    transition: transform .15s ease, box-shadow .15s ease;
-  }
-  .module-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.6rem 1.4rem rgba(16, 24, 40, 0.08) !important;
-  }
-</style>
 {% endblock %}
-

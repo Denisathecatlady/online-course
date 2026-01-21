@@ -81,6 +81,18 @@ def checkout(request, plan_code):
         invoice_zip = request.POST.get("invoice_zip", "").strip()
         invoice_country = request.POST.get("invoice_country", country).strip()
 
+        # ----------------------------
+        # POVINNÝ SOUHLAS S PODMÍNKAMI
+        # ----------------------------
+        
+        if not request.POST.get("terms"):
+            return HttpResponseBadRequest(
+                "Musíš souhlasit s obchodními podmínkami."
+            )
+
+        wants_newsletter = bool(request.POST.get("newsletter"))
+
+
         if not buyer_email or not first_name or not last_name:
             return HttpResponseBadRequest("Vyplň e-mail, jméno a příjmení.")
 
@@ -267,3 +279,5 @@ CalmDog
         email.send()
 
     return HttpResponse(status=200)
+
+
