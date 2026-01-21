@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}O kurzu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -17,7 +22,7 @@
 </section>
 
 <!-- CONTENT BOX -->
-<section class="pb-6">
+<section class="pb-6 reveal">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-9">
@@ -42,177 +47,170 @@
 </section>
 
 <!-- KAŽDÝ MODUL -->
-<section class="pb-6">
-  <div class="container">
-    <div class="module-box">
+<section class="py-6 reveal">
+    <div class="container">
 
-      <h3 class="module-title mb-4">
-        Každý modul 💻 obsahuje:
-      </h3>
+        <div class="info-box">
 
-      <ul class="module-list mb-4">
-        <li>🧠 výklad</li>
-        <li>🎥 komentované videoukázky</li>
-        <li>✏️ úkoly k procvičení</li>
-      </ul>
+            <h3>Každý modul 💻 obsahuje:</h3>
 
-      <p class="module-text">
-        Jednotlivé moduly je možné studovat vlastním tempem 🎓 a kdykoliv se k nim vracet.
-        Komentovaná videa 🎥 je možné shlédnout opakovaně.
-        Ke každému z modulů jsou vypracovány úkoly k procvičení,
-        které směřují ke 🌿 skutečné dovednosti konejšivé signály zachytit,
-        vyhodnotit a 🌿 správně na ně reagovat ze strany člověka.
-      </p>
+            <ul>
+                <li>🧠 výklad</li>
+                <li>🎥 komentované videoukázky</li>
+                <li>✏️ úkoly k procvičení</li>
+            </ul>
+
+            <p>
+                Jednotlivé moduly je možné studovat vlastním tempem 🎓
+                a kdykoliv se k nim vracet. Komentovaná videa 🎥 je možné
+                shlédnout opakovaně. Ke každému z modulů jsou vypracovány
+                úkoly k procvičení, které směřují ke 🌿 skutečné dovednosti
+                konejšivé signály zachytit, vyhodnotit a 🌿 správně
+                na ně reagovat ze strany člověka.
+            </p>
+
+        </div>
 
     </div>
-  </div>
 </section>
 
+
 <!-- VARIANTY KURZU -->
-<section class="py-6">
-  <div class="container">
+<section class="course-variants py-6 reveal">
+    <div class="container">
 
-    <h2 class="section-title text-center mb-6">
-      Online kurz je nabízen ve dvou variantách:
-    </h2>
+        <h2 class="section-title text-center mb-5">
+            Online kurz je nabízen ve dvou variantách:
+        </h2>
 
-    <div class="row g-4">
+        <div class="row g-4 justify-content-center">
 
-      <!-- STANDARD -->
-      <div class="col-md-6">
-        <div class="variant-card">
+            <!-- STANDARD -->
+            <div class="col-md-6">
+                <div class="variant-box">
 
-          <h3 class="variant-title">
-            💻 1. STANDARD
-          </h3>
+                    <h3>💻 1. STANDARD</h3>
 
-          <p class="variant-text">
-            Jedná se o samostudium bez opory lektora. Učební materiály jsou
-            zpracovány tak, aby při samostudiu došlo k získání znalostí
-            a dovedností vedoucích k:
-          </p>
+                    <p>
+                        Jedná se o samostudium bez opory lektora.
+                        Učební materiály jsou zpracovány tak, aby při
+                        samostudiu došlo k získání znalostí a dovedností
+                        vedoucích k:
+                    </p>
 
-          <ul class="variant-list">
-            <li>🎯 správné interpretaci konejšivých signálů v celkovém kontextu</li>
-            <li>🎯 schopnosti vyhodnotit závažnost situace a umět ji správně řešit</li>
-            <li>🎯 schopnosti správně reagovat na konejšivé signály
-              a používat je v běžném soužití i v tréninku reaktivních a bázlivých psů
-            </li>
-          </ul>
+                    <ul class="variant-list">
+                        <li>🎯 správné interpretaci konejšivých signálů v celkovém kontextu</li>
+                        <li>🎯 schopnosti vyhodnotit závažnost situace a umět ji správně řešit</li>
+                        <li>🎯 schopnosti správně reagovat na konejšivé signály v běžném soužití
+                            i v tréninku reaktivních a bázlivých psů</li>
+                    </ul>
 
-          <p class="variant-note">
-            Přístup ke všem materiálům kurzu je po dobu 6 měsíců.<br>
-            Nevede k získání certifikátu.
-          </p>
+                    <p class="variant-note">
+                        Přístup ke všem materiálům kurzu je po dobu 6 měsíců.<br>
+                        Nevede k získání certifikátu.
+                    </p>
+
+                </div>
+            </div>
+
+            <!-- PREMIUM -->
+            <div class="col-md-6">
+                <div class="variant-box variant-box-premium">
+
+                    <h3>💻 2. PREMIUM</h3>
+
+                    <div class="variant-subtitle">
+                        Studium s mentoringem vedoucí k získání certifikátu
+                    </div>
+
+                    <p>
+                        Kompletní vzdělávání pro ty, kteří chtějí jít do hloubky
+                        a získat nejen znalosti, ale i podporu lektora.
+                        Plná varianta STANDARD je rozšířena o:
+                    </p>
+
+                    <ul class="variant-list">
+                        <li>🎯 5× online setkání (Zoom / Google Meet) – rozbor videí a konzultace úkolů</li>
+                        <li>🎯 podpůrná FB skupina</li>
+                        <li>🎯 malé pracovní skupiny</li>
+                        <li>🎯 získání certifikátu po úspěšném vypracování všech úkolů</li>
+                    </ul>
+
+                    <p class="variant-note">
+                        Ideální volba pro ty, kteří chtějí získat jistotu,
+                        že konejšivým signálům opravdu rozumí a dokáží je
+                        správně aplikovat v praxi.
+                    </p>
+
+                </div>
+            </div>
 
         </div>
-      </div>
-
-      <!-- PREMIUM -->
-      <div class="col-md-6">
-        <div class="variant-card variant-card-premium">
-
-          <h3 class="variant-title">
-            💻 2. PREMIUM
-          </h3>
-
-          <p class="variant-subtitle">
-            STUDIUM S MENTORINGEM VEDOUCÍ K ZÍSKÁNÍ CERTIFIKÁTU
-          </p>
-
-          <p class="variant-text">
-            Kompletní vzdělávání pro ty, kteří chtějí jít do hloubky
-            a získat nejen znalosti, ale i podporu lektora.
-            Plná varianta STANDARD je rozšířena o:
-          </p>
-
-          <ul class="variant-list">
-            <li>🎯 5× online setkání v Zoom nebo Google Meet – rozbor videí a konzultace úkolů</li>
-            <li>🎯 podpůrná FB skupina</li>
-            <li>🎯 malé pracovní skupiny</li>
-            <li>🎯 získání certifikátu po úspěšném vypracování všech úkolů</li>
-          </ul>
-
-          <p class="variant-note">
-            Ideální volba pro ty, kteří chtějí získat jistotu,
-            že konejšivým signálům opravdu rozumí
-            a dokáží je správně aplikovat v praxi.
-          </p>
-
-        </div>
-      </div>
 
     </div>
-  </div>
 </section>
 
 <!-- AUTOR -->
-<section class="pb-6">
-  <div class="container">
-    <div class="author-box author-box-large">
+<section class="py-6 reveal">
+    <div class="container">
 
-      <div class="author-header">
-        <span class="author-emoji">👩‍🏫</span>
-        <h3 class="author-name">Ing. Andrea Zoulová</h3>
-      </div>
+        <div class="author-info-box">
 
-      <p class="author-text">
-        Kurz vede specialistka na konejšivé signály 🎓
-        <strong>Calming Signals Specialist</strong>, certifikace byla získána u
-        Turid Rugaas (autorka knihy Konejšivé signály).
-        Současně lektor nabyl vzdělání jako 🎓
-        <strong>
-          ETHICAL DOG TRAINER – CALMING SIGNALS APPROACH
-          and DOG BEHAVIOR SPECIALIST
-        </strong>.
-      </p>
+            <div class="author-info-header">
+                <div class="emoji">👩‍🏫</div>
+                <h3 class="author-info-name">Ing. Andrea Zoulová</h3>
+            </div>
+
+            <div class="author-info-text">
+                Kurz vede specialistka na konejšivé signály 🎓
+                <strong>Calming Signals Specialist</strong>, certifikace byla
+                získána u Turid Rugaas (autorka knihy <em>Konejšivé signály</em>).
+                <br><br>
+                Současně lektor nabyl vzdělání jako 🎓
+                <strong>ETHICAL DOG TRAINER – CALMING SIGNALS APPROACH</strong>
+                and <strong>DOG BEHAVIOR SPECIALIST</strong>.
+            </div>
+
+        </div>
 
     </div>
-  </div>
 </section>
 
 
 <!-- PRO KOHO JE KURZ URČEN -->
-<section class="pb-6">
-  <div class="container">
+<section class="py-6 reveal">
+    <div class="container">
 
-    <div class="card card-soft p-4 p-md-5">
+        <div class="audience-section">
 
-      <h3 class="section-title text-center mb-5">
-        Pro koho je kurz určen
-      </h3>
+            <h2 class="audience-title">
+                Pro koho je kurz určen
+            </h2>
 
-      <div class="row g-4">
+            <div class="audience-grid">
 
-        <div class="col-md-6">
-          <div class="audience-item">
-            🐕 pro majitele štěňat i dospělých psů
-          </div>
+                <div class="audience-item">
+                    🐕 pro majitele štěňat i dospělých psů
+                </div>
+
+                <div class="audience-item">
+                    🐕 pro lidi, kteří chtějí svému psovi opravdu porozumět
+                </div>
+
+                <div class="audience-item">
+                    🐕 pro ty, kteří nechtějí psa „lámat“, ale chápat
+                </div>
+
+                <div class="audience-item">
+                    🐕 pro citlivé psy, reaktivní psy i úplně „běžné“ psy
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="col-md-6">
-          <div class="audience-item">
-            🐕 pro lidi, kteří chtějí svému psovi opravdu porozumět
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="audience-item">
-            🐕 pro ty, kteří nechtějí psa „lámat“, ale chápat
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="audience-item">
-            🐕 pro citlivé psy, reaktivní psy i úplně „běžné“ psy
-          </div>
-        </div>
-
-      </div>
 
     </div>
-
-  </div>
 </section>
+
 
 {% endblock %}

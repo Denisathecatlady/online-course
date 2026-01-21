@@ -11,5 +11,6 @@ urlpatterns = [
     path("gdpr/", views.gdpr, name="gdpr"),
     path("ochrana-osobnich-udaju/", views.privacy_policy, name="privacy_policy"),
     path("obchodni-podminky/", views.terms, name="terms"),
+    path("cookies/", views.cookies_view, name="cookies"),
 
 ]

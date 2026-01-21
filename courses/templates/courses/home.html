@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Úvod{% endblock %}
+
+
 {% block body_class %}bg-hero{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
 
 {% block content %}
 
 <!-- HERO -->
-<section class="mb-6">
+<section class="mb-6 reveal>
   <div class="container">
     <div class="hero-card card-soft">
       <div class="hero-inner">
@@ -52,7 +58,7 @@
 </section>
 
 <!-- O KURZU -->
-<section class="py-6 bg-light">
+<section class="py-6 bg-light reveal">
   <div class="container text-center">
 
     <span class="badge badge-soft mb-4">
@@ -73,7 +79,7 @@
 </section>
 
 <!-- PILÍŘE -->
-<section class="pb-6">
+<section class="pb-6 reveal">
   <div class="container">
     <div class="card card-soft card-large">
       <div class="card-body">
@@ -107,7 +113,7 @@
 
 
 <!-- CÍLE KURZU -->
-<section class="py-6">
+<section class="py-6 reveal">
   <div class="container">
 
     <h2 class="section-title text-center mb-5">
@@ -148,29 +154,32 @@
     </div>
 
     <!-- AUTOR -->
-    <div class="author-box text-center">
-      <p class="author-quote">
-        Dovednost 🧩 správně vnímat a pracovat s konejšivými signály  
-        přináší porozumění do lidsko-psího soužití,  
-        předchází nedorozuměním, buduje pevné pouto mezi psem a člověkem 💛  
-        a vede k wellbeing psa.
-      </p>
+<section class="author-section py-6 reveal">
+    <div class="container">
+        <div class="author-highlight">
 
-      <div class="author-name mt-4">
-        <strong>Ing. Andrea Zoulová</strong>
-      </div>
+            <p class="author-quote">
+                Dovednost 🧩 správně vnímat a pracovat s konejšivými signály
+                přináší porozumění do lidsko-psího soužití, předchází
+                nedorozuměním, buduje pevné pouto mezi psem a člověkem 💛
+                a vede k wellbeing psa.
+            </p>
 
-      <div class="author-meta">
-        👩‍🎓 Calming Signals Specialist (certifikovala Turid Rugaas)<br>
-        👩‍🏫 Ethical Dog Trainer – Calming Signals Approach
-      </div>
+            <div class="author-info">
+                <strong class="author-name">Ing. Andrea Zoulová</strong>
+
+                <div class="author-meta">
+                    👩‍🏫 Calming Signals Specialist (certifikovala Turid Rugaas)<br>
+                    🎓 Ethical Dog Trainer – Calming Signals Approach
+                </div>
+            </div>
+
+        </div>
     </div>
-
-  </div>
 </section>
 
 <!-- VARIANTY KURZU -->
-<section class="py-6">
+<section class="py-6 reveal">
   <div class="container">
 
     <h2 class="section-title text-center mb-2">
@@ -186,48 +195,58 @@
       {% for plan in plans %}
       <div class="col-md-6 col-lg-5">
 
-        <div class="pricing-card {% if plan.recommended %}pricing-card-featured{% endif %}">
+        {% if plan.recommended %}
+        <div class="pricing-frame">
+        {% endif %}
 
-          {% if plan.recommended %}
-          <div class="pricing-badge">Doporučujeme</div>
-          {% endif %}
+          <div class="pricing-card {% if plan.recommended %}pricing-card-featured{% endif %}">
 
-          <h3 class="pricing-title">
-            {{ plan.name }}
-          </h3>
+            {% if plan.recommended %}
+            <div class="pricing-badge">Doporučujeme</div>
+            {% endif %}
 
-          <p class="pricing-subtitle">
-            {{ plan.subtitle }}
-          </p>
+            <h3 class="pricing-title">
+              {{ plan.name }}
+            </h3>
 
-          <div class="pricing-price">
-            {{ plan.price_czk }} Kč
-            <span>jednorázová platba</span>
+            <p class="pricing-subtitle">
+              {{ plan.subtitle }}
+            </p>
+
+            <div class="pricing-price">
+              {{ plan.price_czk }} Kč
+              <span>jednorázová platba</span>
+            </div>
+
+            <ul class="pricing-features">
+              {% for line in plan.bullets.splitlines %}
+                {% if line %}
+                  <li>{{ line }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+
+            {% if plan.target_group %}
+            <div class="pricing-note">
+              <strong>Pro koho je kurz vhodný:</strong><br>
+              {{ plan.target_group }}
+            </div>
+            {% endif %}
+
+            <a href="{% url 'payments:checkout' plan.code %}"
+               class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
+              Vybrat variantu →
+            </a>
+
+            <div class="small text-muted text-center mt-2">
+              Přístup ti po zaplacení přijde e-mailem
+            </div>
+
           </div>
 
-          <ul class="pricing-features">
-            {% for line in plan.bullets.splitlines %}
-              {% if line %}<li>{{ line }}</li>{% endif %}
-            {% endfor %}
-          </ul>
-
-          {% if plan.target_group %}
-          <div class="pricing-note">
-            <strong>Pro koho je kurz vhodný:</strong><br>
-            {{ plan.target_group }}
-          </div>
-          {% endif %}
-
-          <a href="{% url 'payments:checkout' plan.code %}"
-             class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
-            Vybrat variantu →
-          </a>
-
-          <div class="small text-muted text-center mt-2">
-            Přístup ti po zaplacení přijde e-mailem
-          </div>
-
+        {% if plan.recommended %}
         </div>
+        {% endif %}
 
       </div>
       {% endfor %}
@@ -236,6 +255,7 @@
 
   </div>
 </section>
+
 
 
 {% endblock %}

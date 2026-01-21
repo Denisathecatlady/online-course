@@ -1,0 +1,14 @@
+ /* =========================
+        CONTENT PROSE (text z adminu)
+        ========================= */
+        .content-prose p {
+            margin-bottom: 1.2rem;
+        }
+
+        .content-prose ul {
+            padding-left: 1.2rem;
+        }
+
+        .content-prose li {
+            margin-bottom: .5rem;
+        }

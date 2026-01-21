@@ -7,6 +7,8 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from .models import Course, Module
 from payments.models import CoursePlan
 from .models import Course
+from django.shortcuts import render
+
 
 
 @require_GET
@@ -79,3 +81,6 @@ def terms(request):
     return render(request, "courses/terms.html")
 
 
+
+def cookies_view(request):
+    return render(request, "pages/cookies.html")

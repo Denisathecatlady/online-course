@@ -1,67 +1,118 @@
 {% extends "base.html" %}
-{% block title %}GDPR – Ochrana osobních údajů{% endblock %}
+{% block title %}Ochrana osobních údajů{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">Ochrana osobních údajů (GDPR)</h1>
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
 
-    <p class="text-muted">
-        Tento dokument popisuje, jakým způsobem jsou zpracovávány osobní údaje
-        uživatelů online kurzu.
-    </p>
+        <div class="card card-soft">
+          <div class="card-body p-4 p-md-5 content-prose">
 
-    <h2>1. Správce osobních údajů</h2>
-    <p>
-        Správcem osobních údajů je provozovatel tohoto online kurzu.
-        Kontaktní e-mail je uveden na webových stránkách.
-    </p>
+            <h1 class="section-title-sm mb-4">
+              Ochrana osobních údajů (GDPR)
+            </h1>
 
-    <h2>2. Jaké osobní údaje zpracováváme</h2>
-    <ul>
-        <li>e-mailová adresa</li>
-        <li>jméno a příjmení (pokud je uvedeno)</li>
-        <li>přihlašovací údaje k uživatelskému účtu</li>
-        <li>informace o zakoupených kurzech</li>
-    </ul>
+            <p>
+              Provozovatel online kurzu (dále jen <strong>„Správce“</strong>)
+              zpracovává osobní údaje v souladu s nařízením Evropského parlamentu
+              a Rady (EU) 2016/679 (GDPR).
+            </p>
 
-    <h2>3. Účel zpracování osobních údajů</h2>
-    <ul>
-        <li>zajištění přístupu k online kurzu</li>
-        <li>správa uživatelského účtu</li>
-        <li>plnění smluvních povinností</li>
-        <li>plnění zákonných povinností (zejména účetních)</li>
-    </ul>
+            <hr>
 
-    <h2>4. Právní základ zpracování</h2>
-    <p>
-        Zpracování osobních údajů je nezbytné pro splnění smlouvy
-        a pro splnění právních povinností správce podle platných právních předpisů.
-    </p>
+            <h2>1. Kdo je správcem osobních údajů</h2>
+            <p>
+              Správcem osobních údajů je provozovatel tohoto online kurzu.
+              Kontaktní e-mail je uveden na webových stránkách kurzu.
+            </p>
 
-    <h2>5. Doba uchování údajů</h2>
-    <p>
-        Osobní údaje jsou uchovávány po dobu trvání uživatelského účtu
-        a dále po dobu vyžadovanou právními předpisy.
-    </p>
+            <h2>2. Jaké osobní údaje zpracováváme</h2>
+            <ul>
+              <li>e-mailová adresa</li>
+              <li>jméno a příjmení</li>
+              <li>přihlašovací údaje k uživatelskému účtu</li>
+              <li>informace o zakoupeném kurzu a variantě</li>
+              <li>fakturační a kontaktní údaje</li>
+              <li>informace o přístupu ke kurzu</li>
+            </ul>
 
-    <h2>6. Příjemci osobních údajů</h2>
-    <p>
-        Osobní údaje mohou být zpracovávány třetími stranami,
-        zejména poskytovateli technických a platebních služeb
-        (např. platební brána).
-    </p>
+            <h2>3. Účel zpracování osobních údajů</h2>
+            <ul>
+              <li>zajištění přístupu k online kurzu</li>
+              <li>správa uživatelského účtu</li>
+              <li>zpracování objednávek a plateb</li>
+              <li>vystavení a archivace daňových dokladů</li>
+              <li>komunikace se zákazníkem</li>
+              <li>
+                zasílání newsletteru (pouze v případě udělení souhlasu)
+              </li>
+            </ul>
 
-    <h2>7. Práva subjektu údajů</h2>
-    <p>
-        Máte právo požadovat přístup ke svým osobním údajům,
-        jejich opravu, výmaz, omezení zpracování,
-        vznést námitku proti zpracování
-        a podat stížnost u Úřadu pro ochranu osobních údajů.
-    </p>
+            <h2>4. Právní základ zpracování</h2>
+            <p>
+              Osobní údaje jsou zpracovávány na základě:
+            </p>
+            <ul>
+              <li>plnění smlouvy (poskytnutí online kurzu)</li>
+              <li>splnění zákonných povinností (zejména účetních)</li>
+              <li>
+                oprávněného zájmu správce (správa a ochrana systému)
+              </li>
+              <li>
+                souhlasu subjektu údajů (newsletter)
+              </li>
+            </ul>
 
-    <h2>8. Závěrečná ustanovení</h2>
-    <p>
-        Tyto zásady jsou platné ode dne jejich zveřejnění.
-    </p>
-</div>
+            <h2>5. Doba uchování osobních údajů</h2>
+            <p>
+              Osobní údaje jsou uchovávány po dobu trvání uživatelského účtu
+              a dále po dobu vyžadovanou platnými právními předpisy,
+              zejména v oblasti účetnictví.
+            </p>
+
+            <h2>6. Příjemci osobních údajů</h2>
+            <p>
+              Osobní údaje mohou být předávány třetím stranám,
+              které se podílejí na provozu služby, zejména:
+            </p>
+            <ul>
+              <li>poskytovatel platební brány (Stripe)</li>
+              <li>poskytovatelé e-mailových služeb</li>
+              <li>technický provozovatel serveru</li>
+            </ul>
+
+            <h2>7. Práva subjektu údajů</h2>
+            <p>
+              Máte právo:
+            </p>
+            <ul>
+              <li>na přístup ke svým osobním údajům</li>
+              <li>na opravu nebo výmaz osobních údajů</li>
+              <li>na omezení zpracování</li>
+              <li>vznést námitku proti zpracování</li>
+              <li>odvolat souhlas se zasíláním newsletteru</li>
+              <li>
+                podat stížnost u Úřadu pro ochranu osobních údajů
+              </li>
+            </ul>
+
+            <h2>8. Závěrečná ustanovení</h2>
+            <p>
+              Tyto zásady ochrany osobních údajů jsou platné
+              ode dne jejich zveřejnění a mohou být průběžně aktualizovány.
+            </p>
+            <hr class="my-4">
+
+            <p class="text-muted small text-center mb-0">
+            Platné od: 1. 1. 2026
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
