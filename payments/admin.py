@@ -4,6 +4,8 @@ from django.urls import path
 from django.utils.html import format_html
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+
 
 
 
@@ -53,14 +55,12 @@ class OrderAdmin(admin.ModelAdmin):
 
     # 🔽 ODKAZ VE SLOUPCI
     def invoice_download(self, obj):
-        if obj.invoice_pdf:
-            return format_html(
-                '<a href="invoice/{}/">Stáhnout PDF</a>',
-                obj.pk
-            )
-        return "—"
+        if not obj.invoice_pdf:
+            return "—"
 
-    invoice_download.short_description = "Faktura"
+        url = reverse("admin:order-invoice-download", args=[obj.pk])
+        return format_html('<a href="{}">Stáhnout PDF</a>', url)
+
 
     # 🔽 ADMIN URL
     def get_urls(self):
