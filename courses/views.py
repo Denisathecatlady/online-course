@@ -8,6 +8,8 @@ from .models import Course, Module
 from payments.models import CoursePlan
 from .models import Course
 from django.shortcuts import render
+from django.http import FileResponse
+import os
 
 
 
@@ -52,9 +54,10 @@ def module_detail(request, slug):
     return render(request, "courses/module_detail.html", {"course": course, "module": module})
 
 
+
 @require_GET
-@never_cache
 @login_required
+@never_cache
 def download_module_pdf(request, slug):
     course = Course.objects.first()
     if not course:
@@ -65,10 +68,17 @@ def download_module_pdf(request, slug):
     if not module.pdf_file:
         raise Http404("PDF není k dispozici.")
 
-    # Signed URL (krátkodobě platná), soubor je v bucketu private
-    return redirect(module.pdf_file.url)
+    pdf_path = module.pdf_file.path
 
+    if not os.path.exists(pdf_path):
+        raise Http404("Soubor nebyl nalezen.")
 
+    return FileResponse(
+        open(pdf_path, "rb"),
+        as_attachment=True,
+        filename=os.path.basename(pdf_path),
+        content_type="application/pdf",
+    )
 
 
 def gdpr(request):
