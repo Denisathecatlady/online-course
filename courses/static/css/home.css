@@ -209,37 +209,6 @@
   gap: 5.5rem;
   align-items: flex-start;
 }
-/* ===== MOBILE ===== */
-
-@media (max-width: 900px) {
-  .hero-card {
-    padding: 3.8rem 2.2rem;
-  }
-
-  .hero-with-image .hero-inner {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .hero-media {
-    order: -1;
-    transform: none;
-    
-  }
-
-  .hero-media img {
-    width: 100%;
-    transform: none;
-  }
-
-  .hero-quality {
-    right: auto;
-    left: 1rem;
-    bottom: 1rem;
-    transform: none;
-  }
-}
-
 
 /* =====================================================
    PROČ POROZUMĚT SIGNÁLŮM
@@ -417,19 +386,6 @@
 }
 
 
-/* ===============================
-   MOBILE DOLAĎENÍ
-================================ */
-
-@media (max-width: 768px) {
-  .course-why .row {
-    padding: 2.5rem 1.8rem;
-  }
-
-  .course-goals {
-    padding: 2.2rem 2rem;
-  }
-}
 
 /* ================================
    STRUKTURA KURZU
@@ -535,24 +491,6 @@
   opacity: 0.9;
 }
 
-/* MOBILE */
-
-@media (max-width: 900px) {
-  .structure-grid {
-    grid-template-columns: 1fr;
-    gap: 3.5rem;
-  }
-
-  .structure-circle {
-    width: 320px;
-    height: 320px;
-    margin: 0 auto;
-  }
-
-  .structure-title {
-    font-size: 2.6rem;
-  }
-}
 
 /* =====================================================
    PRICING / VARIANTY
@@ -943,53 +881,305 @@
 
 /* MOBILE */
 
+/* =====================================================
+   MOBILE – GLOBAL LAYOUT RESET
+===================================================== */
 @media (max-width: 900px) {
-  .lecturer-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
-  .lecturer-visual {
-    height: 260px;
+
+  /* HERO kontejner hlídá přetečení */
+  .hero-card {
+    overflow: hidden;
   }
 
-  .lecturer-name {
-    font-size: 2.6rem;
+  /* obrázek zůstává velký, ale kontrolovaný */
+  .hero-media {
+    transform: translateY(90px);
   }
 
-  .lecturer-stats {
-    gap: 2rem;
+  .hero-media img {
+    width: 125%;
+    max-width: none;
+    transform: rotate(-1.8deg);
+  }
+
+  /* certifikační karta – PŘESNĚ jak chceš */
+  .hero-quality {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    transform: none;
+  }
+
+
+  .container {
+    max-width: 100% !important;
+    padding-left: 1.4rem !important;
+    padding-right: 1.4rem !important;
+  }
+
+  /* =====================================================
+     HERO
+  ===================================================== */
+
+  .hero-card {
+    padding: 2.4rem 1.4rem;
+    border-radius: 0;
+  }
+
+  .hero-card::after {
+    display: none;
+  }
+
+  .hero-with-image .hero-inner {
+    display: block;
+    max-width: 100%;
+  }
+
+  .hero-media,
+  .hero-quality {
+    display: none !important;
+  }
+
+  .hero-title {
+    font-size: 2.1rem;
+    line-height: 1.15;
+    max-width: 100%;
   }
 
   .hero-actions {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    gap: 0.9rem;
   }
 
-  .hero-actions a,
-  .hero-actions .btn-sage,
-  .hero-actions .btn-outline-sage {
+  .hero-actions a {
     width: 100%;
     text-align: center;
-    padding: 0.9rem 1.6rem;
-    font-size: 0.95rem;
   }
 
+  /* =====================================================
+     PROČ POROZUMĚT SIGNÁLŮM
+  ===================================================== */
 
-  .hero-quality {
-    position: static;
-    margin-top: 1.4rem;
+  .course-why .row {
+    padding: 2rem 1.6rem;
+    border-radius: 24px;
+  }
+
+  .why-card {
+    text-align: center;
+  }
+
+  .why-icon {
     margin-left: auto;
     margin-right: auto;
-    max-width: 100%;
-    width: fit-content;
+  }
 
-    transform: none;
-    box-shadow: 0 14px 30px rgba(0,0,0,0.10);
-    border-radius: 20px;
+  /* =====================================================
+     CÍLE KURZU
+  ===================================================== */
+
+  .course-goals {
+    padding: 2.2rem 1.6rem;
+    border-radius: 24px;
+    margin-top: 3rem;
+  }
+
+  .course-goals-list li {
+    font-size: 1rem;
+  }
+
+  /* =====================================================
+     STRUKTURA KURZU
+  ===================================================== */
+
+  .structure-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .structure-title {
+    font-size: 2.2rem;
+  }
+
+  .structure-circle {
+    width: 280px;
+    height: 280px;
+    margin: 0 auto;
+  }
+
+  /* =====================================================
+     PRICING
+  ===================================================== */
+
+  .pricing-card {
+    padding: 2rem 1.6rem;
+    border-radius: 24px;
+  }
+
+  .pricing-price {
+    font-size: 2rem;
+  }
+
+  /* =====================================================
+     LEKTORKA
+  ===================================================== */
+
+  .lecturer-section {
+    padding: 4rem 0;
+  }
+
+  .lecturer-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .lecturer-name {
+    font-size: 2.4rem;
+  }
+
+  .lecturer-stats {
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .lecturer-photo-wrap {
+    margin: 0 auto;
+  }
+
+}
+/* ===============================
+   HERO – MOBILE (FINAL, CLEAN)
+================================ */
+
+.hero-mobile {
+  display: none;
+}
+
+@media (max-width: 900px) {
+
+  .hero-desktop {
+    display: none;
+  }
+
+  .hero-mobile {
+    display: block;
+    background: var(--cream);
+    padding: 3.2rem 1.6rem 3.6rem;
+  }
+
+  .hero-mobile-inner {
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .hero-mobile .hero-badge {
+    display: inline-block;
+    margin-bottom: 1.4rem;
+    padding: 0.45rem 1.2rem;
+    border-radius: 999px;
+    background: rgba(79,111,100,0.12);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-mobile .hero-title {
+    font-size: 2.2rem;
+    line-height: 1.15;
+    margin-bottom: 1.4rem;
+    max-width: none;
+  }
+
+  .hero-mobile .hero-alert {
+    margin-bottom: 1.6rem;
+    font-size: 0.95rem;
+    background: rgba(79,111,100,0.08);
+    padding: 0.9rem 1.1rem;
+    border-radius: 18px;
+  }
+
+  .hero-mobile .hero-actions {
+    margin-top: 1.8rem;
+  }
+
+  .hero-mobile .btn-sage {
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+/* =====================================================
+   DESKTOP HERO – LOCK (NO MOBILE INTERFERENCE)
+===================================================== */
+
+@media (min-width: 901px) {
+
+  /* desktop nesmí dědit mobile omezení */
+  html, body {
+    overflow-x: visible;
+  }
+
+  section {
+    overflow: visible;
+  }
+
+  /* hero má být stabilní a ne „tekutý“ */
+  .hero-card {
+    overflow: visible;
   }
 
   .hero-media {
-    transform: none;
+    transform: translateY(90px);
   }
+
+  .hero-media img {
+    width: 125%;
+    max-width: none;
+  }
+
+}
+
+
+/* =================================
+   HERO QUALITY – TYPO FIX (FINAL)
+================================= */
+
+.hero-quality {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-quality small {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  color: #8a9a9f !important;
+  font-weight: 500 !important;
+  margin-bottom: 0.3rem !important;
+}
+
+.hero-quality strong {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2f3e3a !important;
+  line-height: 1.25 !important;
+}
+
+/* =================================
+   GLOBAL FIX – NO HORIZONTAL SCROLL
+================================= */
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}

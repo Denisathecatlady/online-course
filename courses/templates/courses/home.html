@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Úvod{% endblock %}
-
 
 {% block body_class %}bg-hero{% endblock %}
 
@@ -9,71 +7,108 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
-{% block content %}
-
-
-<!-- HERO -->
-
+{# =========================
+   HERO – MIMO <main>
+========================= #}
+{% block hero %}
 <section class="hero">
-  <div class="hero-card hero-with-image">
-    <div class="hero-inner">
 
-      <!-- TEXT -->
-      <div class="hero-content">
+  <!-- DESKTOP HERO -->
+  <div class="hero-desktop">
+    <div class="hero-card hero-with-image">
+      <div class="hero-inner">
 
-        <span class="hero-badge">
-          ONLINE KURZ KONEJŠIVÉ SIGNÁLY V PRAXI
-        </span>
+        <div class="hero-content">
+          <span class="hero-badge">
+            ONLINE KURZ KONEJŠIVÉ SIGNÁLY V PRAXI
+          </span>
 
-        <h1 class="hero-title">
-          Naučte se rozumět<br>
-          <em>tiché řeči</em> psů.
-        </h1>
+          <h1 class="hero-title">
+            Naučte se rozumět<br>
+            <em>tiché řeči</em> psů.
+          </h1>
 
-        <div class="hero-alert">
-          Agrese nezačíná kousnutím. Začíná nepochopením.
-        </div>
+          <div class="hero-alert">
+            Agrese nezačíná kousnutím. Začíná nepochopením.
+          </div>
 
-        <p class="hero-lead">
-          Konejšivé signály jsou klíčem k prevenci konfliktů,
-          klidnému soužití a ochraně wellbeing psa.
-        </p>
+          <p class="hero-lead">
+            Konejšivé signály jsou klíčem k prevenci konfliktů,
+            klidnému soužití a ochraně wellbeing psa.
+          </p>
 
-        <ul class="hero-questions">
-          <li>Jaké funkce mají konejšivé signály a proč nejde o signály stresu?</li>
-          <li>Jak souvisí konejšivé signály a projevy agrese?</li>
-          <li>Jak je využít v tréninku reaktivních a bázlivých psů?</li>
-        </ul>
+          <ul class="hero-questions">
+            <li>Jaké funkce mají konejšivé signály a proč nejde o signály stresu?</li>
+            <li>Jak souvisí konejšivé signály a projevy agrese?</li>
+            <li>Jak je využít v tréninku reaktivních a bázlivých psů?</li>
+          </ul>
 
-        <div class="hero-actions">
-          <a href="#variants" class="btn-sage">
-            Koupit kurz ↓
-          </a>
-          <a href="{% url 'about' %}" class="btn-outline-sage">
-            Více o kurzu →
-          </a>
-        </div>
-      </div>
-
-
-      <!-- IMAGE -->
-      <div class="hero-media">
-        <img src="{% static 'img/hero-dog.jpg' %}" alt="Klidný pes">
-
-        <div class="hero-quality">
-          <span class="hero-quality-icon">📜</span>
-          <div class="hero-quality-text">
-            <small>GARANCE KVALITY</small>
-            <strong>Certifikovaný lektor</strong>
+          <div class="hero-actions">
+            <a href="#variants" class="btn-sage">Koupit kurz ↓</a>
+            <a href="{% url 'about' %}" class="btn-outline-sage">Více o kurzu →</a>
           </div>
         </div>
+
+        <div class="hero-media">
+          <img src="{% static 'img/hero-dog.jpg' %}" alt="Klidný pes">
+
+          <div class="hero-quality">
+            <small>GARANCE KVALITY</small>
+            <strong>📜 Certifikovaný lektor</strong>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
+  <!-- MOBILE HERO -->
+  <div class="hero-mobile">
+    <div class="hero-mobile-inner">
+
+      <span class="hero-badge">
+        ONLINE KURZ
+      </span>
+
+      <h1 class="hero-title">
+        Naučte se rozumět<br>
+        <em>tiché řeči</em> psů.
+      </h1>
+
+      <div class="hero-alert">
+        Agrese nezačíná kousnutím.<br>
+        Začíná nepochopením.
+      </div>
+
+      <p class="hero-lead">
+        Konejšivé signály jsou klíčem k prevenci konfliktů,
+        klidnému soužití a ochraně wellbeing psa.
+      </p>
+
+      <ul class="hero-questions">
+        <li>Jaké funkce mají konejšivé signály a proč nejde o signály stresu?</li>
+        <li>Jak souvisí konejšivé signály a projevy agrese?</li>
+        <li>Jak je využít v tréninku reaktivních a bázlivých psů?</li>
+      </ul>
+
+      <div class="hero-actions">
+        <a href="#variants" class="btn-sage">
+          Koupit kurz
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
+{% endblock %}
 
 
+{# =========================
+   ZBYTEK STRÁNKY – <main>
+========================= #}
+{% block content %}
 
 <section class="course-why py-6">
   <div class="container text-center">

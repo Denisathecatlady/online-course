@@ -406,6 +406,7 @@
 
 <body class="{% block body_class %}{% endblock %}">
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
     <div class="container">
 
@@ -454,23 +455,26 @@
     </div>
 </nav>
 
+<!-- HERO (POUZE STRÁNKY, KTERÉ HO DEFINUJÍ) -->
+{% block hero %}{% endblock %}
+
+<!-- HLAVNÍ OBSAH -->
 <main class="pt-4 pb-5 page-wrapper">
     {% block content %}{% endblock %}
 </main>
 
+<!-- FOOTER -->
 <footer class="py-5 border-top">
   <div class="container">
 
     <div class="row text-center text-md-start align-items-center">
 
-      <!-- COPYRIGHT -->
       <div class="col-md-4 mb-3 mb-md-0">
         <p class="mb-0 text-muted small">
           © {% now "Y" %} · CalmDog · Všechna práva vyhrazena
         </p>
       </div>
 
-      <!-- KONTAKT / PROVOZOVATEL -->
       <div class="col-md-4 mb-3 mb-md-0">
         <p class="mb-1 fw-semibold small">
           Provozovatel
@@ -478,15 +482,13 @@
         <p class="mb-0 text-muted small">
           Ing. Andrea Zoulová<br>
           IČO: 19603118<br>
-          <a href="mailto:info@calmdog.cz"
-             class="text-muted text-decoration-none">
+          <a href="mailto:info@calmdog.cz" class="text-muted text-decoration-none">
             info@calmdog.cz
           </a><br>
           <span>Tel.: +420 608 163 824</span>
         </p>
       </div>
 
-      <!-- ODKAZY -->
       <div class="col-md-4">
         <div class="d-flex justify-content-center justify-content-md-end gap-2 flex-wrap">
           <a href="{% url 'gdpr' %}" class="btn btn-outline-sage btn-sm">
@@ -503,8 +505,8 @@
   </div>
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const reveals = document.querySelectorAll(".reveal");
@@ -523,8 +525,9 @@ document.addEventListener("DOMContentLoaded", () => {
     reveals.forEach(el => observer.observe(el));
 });
 </script>
-<script src="{% static 'js/cookies.js' %}"></script>
 
+<script src="{% static 'js/cookies.js' %}"></script>
 {% include "partials/cookie_banner.html" %}
+
 </body>
 </html>
