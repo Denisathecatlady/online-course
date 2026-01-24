@@ -1,11 +1,12 @@
-from django.contrib import admin
 from .models import CoursePlan, Order, CourseAccess
 from django.urls import path
 from django.utils.html import format_html
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-
+from django.contrib import admin
+from django.urls import path, reverse
+from django.utils.html import format_html
+from .models import Order
 
 
 
@@ -31,29 +32,15 @@ class CoursePlanAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "user",
-        "course",
-        "plan",
+        "buyer_email",
         "status",
-        "invoice_download",   # ⬅️ PŘIDÁNO
-        "created_at",
-        "newsletter_opt_in",
-    )
-
-    list_filter = ("status", "plan", "newsletter_opt_in")
-
-    search_fields = (
-        "user__email",
-        "user__username",
-        "stripe_checkout_session_id",
-    )
-
-    readonly_fields = (
-        "stripe_checkout_session_id",
+        "invoice_number",
+        "invoice_download",
         "created_at",
     )
 
-    # 🔽 ODKAZ VE SLOUPCI
+    readonly_fields = ("created_at",)
+
     def invoice_download(self, obj):
         if not obj.invoice_pdf:
             return "—"
@@ -61,8 +48,8 @@ class OrderAdmin(admin.ModelAdmin):
         url = reverse("admin:order-invoice-download", args=[obj.pk])
         return format_html('<a href="{}">Stáhnout PDF</a>', url)
 
+    invoice_download.short_description = "Faktura"
 
-    # 🔽 ADMIN URL
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -74,17 +61,16 @@ class OrderAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    # 🔽 VLASTNÍ ADMIN VIEW
     def download_invoice(self, request, pk):
-        order = get_object_or_404(Order, pk=pk)
+        order = self.get_object(request, pk)
 
-        if not order.invoice_pdf:
-            raise Http404("Faktura neexistuje")
+        if not order or not order.invoice_pdf:
+            raise Http404("Faktura nenalezena")
 
         return FileResponse(
             order.invoice_pdf.open("rb"),
             as_attachment=True,
-            filename=f"faktura_{order.invoice_number or order.pk}.pdf",
+            filename=f"faktura_{order.invoice_number}.pdf",
         )
 
 
