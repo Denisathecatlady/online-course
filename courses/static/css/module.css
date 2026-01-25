@@ -1,0 +1,95 @@
+/* === LAYOUT === */
+
+.module-notes {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 2.2rem;
+  height: 100%;
+}
+
+.notes-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.notes-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #3a3a3a;
+}
+
+.notes-info {
+  margin-top: 2rem;
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.8rem;
+  color: #6b6b6b;
+}
+
+.info-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6f8f7d;
+}
+
+/* === VIDEA === */
+
+.module-videos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.video-item {
+  background: #eef4ee;
+  border-radius: 28px;
+  padding: 1.6rem;
+}
+
+.video-item.main-video {
+  background: #eef4ee;
+}
+
+.video-header {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.video-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #6f8f7d;
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-author {
+  font-size: 0.75rem;
+  color: #6b6b6b;
+}
+
+.back-link,
+.back-link:visited,
+.back-link:hover,
+.back-link:focus,
+.back-link:active {
+  color: #6f8f7d;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+

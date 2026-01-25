@@ -1,171 +1,379 @@
-/* =========================
-        COURSE / MODULY
-        ========================= */
+/* =====================================================
+   COURSE PAGE – calm / sage / premium style
+===================================================== */
 
-        .section-title-sm {
-            font-size: 2.8rem;
-            font-weight: 600;
-            letter-spacing: -0.035em;
-            color: #2f3e3a;
-        }
+:root {
+  --sage: #8fae9b;
+  --sage-dark: #6f9380;
+  --sage-soft: rgba(143, 174, 155, 0.15);
 
-        .course-intro {
-            background: linear-gradient(
-                rgba(230,240,236,0.55),
-                rgba(255,255,255,0.95)
-            );
-            border-radius: 28px;
-        }
+  --cream: #faf9f7;
+  --card-bg: #ffffff;
+  --text-main: #2e2e2e;
+  --text-muted: #7a7a7a;
 
-        /* Pills (badge styl z Lovable) */
-        .pill {
-            display: inline-block;
-            padding: 0.35rem 0.9rem;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
 
-        .pill-outline {
-            border: 1px solid #d1d5db;
-            color: #374151;
-            background: #fff;
-        }
+  --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
 
-        .pill-soft {
-            background: var(--sage-soft);
-            color: var(--sage);
-        }
+/* -----------------------------------------------------
+   HEADINGS
+----------------------------------------------------- */
 
-        /* Modulová karta */
-        .module-card {
-            background: #fff;
-            border-radius: 28px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.06);
-            transition: transform .2s ease, box-shadow .2s ease;
-            height: 100%;
-        }
+.section-title-sm {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
 
-        .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 28px 60px rgba(0,0,0,0.1);
-        }
+.page-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
 
-        .module-card-body {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+/* -----------------------------------------------------
+   INTRO CARD
+----------------------------------------------------- */
 
-        .module-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.015em;
-            color: #2f3e3a;
-        }
+.course-intro {
+  background: linear-gradient(
+    145deg,
+    var(--cream),
+    #ffffff
+  );
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: none;
+}
 
-        /* =========================
-        TYPOGRAPHY – COURSE PAGE
-        ========================= */
+.course-intro p {
+  margin-bottom: 0.8rem;
+}
 
-        /* Hlavní nadpis stránky "Kurz" */
-        .section-title-sm {
-            font-size: 2.4rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            color: #2f3e3a;
-        }
+/* -----------------------------------------------------
+   MODULE CARD
+----------------------------------------------------- */
 
-        /* Podnadpis pod "Kurz" */
-        .page-subtitle {
-            font-size: 1.05rem;
-            color: #6b7280;
-        }
+.module-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  height: 100%;
+  display: flex;
+}
 
-        /* Nadpis sekcí (Vítejte / Jak kurz funguje / Moduly) */
-        .course-intro h3,
-        .course-intro h4 {
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: #2f3e3a;
-            margin-bottom: 0.6rem;
-        }
+.module-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+}
 
-        /* Text v úvodu kurzu */
-        .course-intro p {
-            font-size: 1.08rem;
-            line-height: 1.9;
-            color: #4b5563;
-        }
+.module-card-body {
+  padding: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* -----------------------------------------------------
+   PILLS
+----------------------------------------------------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.pill-outline {
+  border: 1px solid var(--sage);
+  color: var(--sage-dark);
+  background: transparent;
+}
+
+.pill-soft {
+  background: var(--sage-soft);
+  color: var(--sage-dark);
+}
+
+/* -----------------------------------------------------
+   MODULE TEXT
+----------------------------------------------------- */
+
+.module-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--text-main);
+}
+
+.module-card p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* -----------------------------------------------------
+   BUTTONS
+----------------------------------------------------- */
+
+.btn-sage {
+  background: var(--sage);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.btn-sage:hover {
+  background: var(--sage-dark);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-outline-sage {
+  border: 1px solid var(--sage);
+  color: var(--sage-dark);
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: transparent;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn-outline-sage:hover {
+  background: var(--sage-soft);
+  color: var(--sage-dark);
+}
+
+/* -----------------------------------------------------
+   EMPTY STATE
+----------------------------------------------------- */
+
+.card-soft {
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: none;
+}
+
+/* -----------------------------------------------------
+   RESPONSIVE
+----------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .module-card-body {
+    padding: 1.8rem;
+  }
+
+  .section-title-sm {
+    font-size: 1.5rem;
+  }
+}
+
+/* -----------------------------------------------------
+   COURSE INTRO – WELCOME BLOCK
+----------------------------------------------------- */
+
+.course-intro {
+  background: #ffffff;
+  border-radius: 48px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
+  position: relative;
+}
 
 
-        .course-intro {
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 22px 55px rgba(0,0,0,0.08);
-        }
-
-        .course-intro .card-body {
-            padding: 3rem 3.5rem;
-        }
-
-        .course-intro hr {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 2.5rem 0;
-        }
-
-        .section-title-sm {
-            font-size: 2.4rem;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            color: #2f3e3a;
-        }
+/* jemný dekorativní akcent */
+.course-intro::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 40px;
+  background: transparent;
+  pointer-events: none;
+}
 
 
-        .page-subtitle {
-            font-size: 1.1rem;
-            color: #6b7280;
-            line-height: 1.6;
-        }
+/* obsah */
+.course-intro-content {
+  max-width: 760px;
+}
 
-        /* =========================
-        MODULE BOX – LOVABLE STYLE
-        ========================= */
+/* nadpis */
+.course-intro-title {
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: var(--text-main);
+}
 
-        .module-box {
-            background: var(--sage-soft);
-            border-radius: 32px;
-            padding: 3rem 3.5rem;
-        }
+.course-intro-title span {
+  color: var(--sage-dark);
+}
 
-        .module-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: #2f3e3a;
-        }
+/* hlavní úvod */
+.course-intro-lead {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
 
-        .module-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1.8rem 0;
-        }
+/* běžný text */
+.course-intro-content p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
 
-        .module-list li {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.1rem;
-            margin-bottom: 0.9rem;
-            color: #2f3e3a;
-        }
+/* premium info box */
+.course-intro-note {
+  margin-top: 1.6rem;
+  padding: 1rem 1.2rem;
+  background: var(--sage-soft);
+  border-radius: 18px;
+  font-size: 0.85rem;
+  color: var(--sage-dark);
+}
 
-        .module-text {
-            font-size: 1.05rem;
-            line-height: 1.9;
-            color: #4b5563;
-        }
+/* RESPONSIVE */
+@media (max-width: 767px) {
+  .course-intro-title {
+    font-size: 1.25rem;
+  }
+}
 
+.py-3.py-md-4 {
+  background: #E8E5E1;
+  min-height: 100vh;
+}
+
+/* -----------------------------------------------------
+   COURSE MODULES – FINAL DESIGN
+----------------------------------------------------- */
+
+.course-modules {
+  margin-top: 1rem;
+}
+
+/* karta */
+.module-card {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 2.4rem 2.6rem;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* badge modul */
+.module-badge {
+  position: absolute;
+  top: -14px;
+  left: 32px;
+  background: #6f8f7d;
+  color: #ffffff;
+  padding: 0.35rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+/* typy obsahu */
+.module-types {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+}
+
+.type-pill {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: #f0f3ef;
+  color: #3f5a4f;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* title */
+.module-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: #1f2f28;
+}
+
+/* popis */
+.module-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4b5b53;
+  margin-bottom: 2rem;
+}
+
+/* footer */
+.module-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* status */
+.module-status {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.module-status.success {
+  color: #4fa66a;
+}
+
+.module-status.missing {
+  color: #8a8a8a;
+}
+
+/* tlačítko */
+.btn-sage {
+  background: #6f8f7d;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-sage:hover {
+  background: #5f7f6d;
+  color: #ffffff;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .module-card {
+    padding: 2rem 1.8rem;
+  }
+
+  .module-title {
+    font-size: 1.15rem;
+  }
+}

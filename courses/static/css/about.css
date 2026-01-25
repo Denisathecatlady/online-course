@@ -4,6 +4,7 @@
 
 .course-detail {
   padding: 6.5rem 0;
+  background: #D6D6D6;
 }
 
 
@@ -80,6 +81,11 @@
   margin-bottom: 1.3rem;
   color: #1f2f2a;
 }
+
+.audience-box h4 strong {
+  color: #ffffff;
+}
+
 
 .course-learn-box ul {
   list-style: none;
@@ -170,6 +176,7 @@
   font-size: 1.15rem;
   margin-bottom: 1.6rem;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .audience-box ul {
@@ -264,6 +271,7 @@
 
 .course-variants {
   padding: 6rem 0;
+  background: #96B096;
 }
 
 .variants-title {
@@ -298,17 +306,6 @@
   margin-bottom: 1.4rem;
 }
 
-/* STANDARD */
-
-.variant-standard {
-  border: none;
-}
-
-/* PREMIUM */
-
-.variant-premium {
-  border: 2px solid #5f766b;
-}
 
 /* BADGE */
 
@@ -378,3 +375,5 @@
   );
   padding-top: 4rem;
 }
+
+

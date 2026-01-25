@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Kurz{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="py-3 py-md-4">
@@ -19,15 +24,34 @@
     </div>
 
     <!-- INTRO KURZU -->
-    {% if course and course.private_intro %}
-      <div class="card card-soft course-intro mb-5">
-        <div class="card-body p-4 p-md-5">
-          <div class="text-muted" style="line-height: 1.7;">
-            {{ course.private_intro|linebreaks }}
+    <div class="course-intro mb-5">
+      <div class="card-body p-4 p-md-5">
+        <div class="course-intro-content">
+
+          <h2 class="course-intro-title">
+            🌿 Vítáme vás v kurzu <span>KONEJŠIVÉ SIGNÁLY V PRAXI</span>
+          </h2>
+
+          <p class="course-intro-lead">
+            Jednotlivé moduly je možné studovat vlastním tempem 🎓 a kdykoliv se k nim vracet.
+            Komentovaná videa 🎥 je možné shlédnout opakovaně.
+          </p>
+
+          <p>
+            Ke každému z modulů jsou vypracovány úkoly k procvičení, které směřují ke
+            <strong>skutečné dovednosti konejšivé signály zachytit, vyhodnotit a správně na ně reagovat</strong>
+            ze strany člověka.
+          </p>
+
+          <div class="course-intro-note">
+            Pro variantu <strong>PREMIUM</strong> najdete více informací v e-mailu
+            a v příslušné FB skupině.
           </div>
+
         </div>
       </div>
-    {% endif %}
+    </div>
+
 
     <!-- MODULY HEADER -->
     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -36,60 +60,52 @@
     </div>
 
     <!-- MODULY -->
-    <div class="row g-4">
+    <div class="row g-4 course-modules">
       {% for m in modules %}
         <div class="col-12 col-md-6">
-          <div class="module-card h-100">
 
-            <div class="module-card-body">
+          <div class="module-card">
 
-              <div class="d-flex align-items-center justify-content-between mb-3">
-                <span class="pill pill-outline">
-                  Modul {{ m.order }}
-                </span>
+            <!-- horní badge -->
+            <div class="module-badge">
+              Modul {{ m.order }}
+            </div>
 
-                <span class="pill pill-soft">
-                  Video + PDF
-                </span>
-              </div>
+            <!-- typ obsahu -->
+            <div class="module-types">
+              <span class="type-pill video">🎥 Video</span>
+              <span class="type-pill pdf">📄 PDF</span>
+            </div>
 
-              <h3 class="module-title">{{ m.title }}</h3>
+            <!-- obsah -->
+            <h3 class="module-title">{{ m.title }}</h3>
 
-              {% if m.intro_text %}
-                <p class="text-muted mb-4">
-                  {{ m.intro_text|truncatechars:120 }}
-                </p>
+            {% if m.intro_text %}
+              <p class="module-desc">
+                {{ m.intro_text|truncatechars:140 }}
+              </p>
+            {% endif %}
+
+            <!-- footer -->
+            <div class="module-footer">
+              <a href="{% url 'module_detail' m.slug %}" class="btn btn-sage">
+                Otevřít modul →
+              </a>
+
+              {% if m.pdf_file %}
+                <span class="module-status success">✓ PDF připraveno</span>
               {% else %}
-                <p class="text-muted mb-4">
-                  Krátký úvod k modulu můžeš doplnit v administraci.
-                </p>
+                <span class="module-status missing">PDF chybí</span>
               {% endif %}
-
-              <div class="mt-auto d-flex align-items-center justify-content-between gap-3">
-                <a href="{% url 'module_detail' m.slug %}" class="btn btn-sage">
-                  Otevřít modul →
-                </a>
-
-                <span class="small text-muted">
-                  {% if m.pdf_file %}PDF připraveno{% else %}PDF chybí{% endif %}
-                </span>
-              </div>
-
             </div>
 
           </div>
-        </div>
-      {% empty %}
-        <div class="col-12">
-          <div class="card card-soft p-4 text-center">
-            <strong>Žádné moduly zatím nejsou vytvořené</strong>
-            <p class="text-muted mb-0 mt-1">
-              V administraci vytvoř kurz a přidej 4 moduly.
-            </p>
-          </div>
+
         </div>
       {% endfor %}
     </div>
+
+
 
   </div>
 </section>
