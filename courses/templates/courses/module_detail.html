@@ -3,97 +3,85 @@
 {% block title %}{{ module.title }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/module.css' %}">
+  <link rel="stylesheet" href="{% static 'css/module.css' %}">
+  <link rel="stylesheet" href="{% static 'css/module-text.css' %}">
 {% endblock %}
+
 {% block content %}
-<section>
+<section class="module-page">
   <div class="container">
 
-    <!-- Header -->
-    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
-      <div>
-        <div class="text-muted small mb-2">
-          <a href="{% url 'course_dashboard' %}" class="back-link">
-            ← Zpět na moduly
-          </a>
+    <!-- HEADER -->
+    <div class="module-header">
+      <a href="{% url 'course_dashboard' %}" class="back-link">
+        ← Zpět na moduly
+      </a>
 
-        </div>
-        <h1 class="h3 mb-1">{{ module.order }}. {{ module.title }}</h1>
-        <div class="text-muted">
-          Modulový obsah – video + PDF.
-        </div>
-      </div>
+      <h1>{{ module.order }}. {{ module.title }}</h1>
+      <p class="text-muted">Modulový obsah – video + PDF.</p>
 
-      <div class="d-flex gap-2">
-        {% if module.pdf_file %}
-          <a class="btn btn-sage btn-sm" href="{% url 'download_module_pdf' module.slug %}">
-            Stáhnout PDF
-          </a>
-        {% else %}
-          <span class="badge text-bg-light border">PDF není nahrané</span>
-        {% endif %}
-      </div>
+      {% if module.pdf_file %}
+        <a class="btn btn-sage" href="{% url 'download_module_pdf' module.slug %}">
+          Stáhnout PDF
+        </a>
+      {% endif %}
     </div>
 
-    <div class="row g-4">
+    <!-- 🔹 GRID: TEXT + VIDEA -->
+    <div class="module-grid">
 
-      <!-- Left: Intro / Notes -->
-      <div class="col-lg-4">
-        <aside class="module-notes">
+      <!-- TEXT (SCROLLOVACÍ) -->
+      <section class="module-text-scroll">
 
-          <h2 class="notes-title">Úvod & poznámky</h2>
+        {% if module.order == 1 %}
+          {% include "courses/modules/texts/module_1.html" %}
+        {% elif module.order == 2 %}
+          {% include "courses/modules/texts/module_2.html" %}
+        {% elif module.order == 3 %}
+          {% include "courses/modules/texts/module_3.html" %}
+        {% elif module.order == 4 %}
+          {% include "courses/modules/texts/module_4.html" %}
+        {% endif %}
 
-          {% if module.intro_text %}
-            <div class="notes-content">
-              {{ module.intro_text|linebreaks }}
+      </section>
+
+      <!-- VIDEA -->
+      <div class="module-videos">
+
+        {% if module.vimeo_embed_url1 %}
+          <article class="video-item">
+            <div class="video-header">
+              <span class="video-badge">A</span>
+              <div>
+                <strong>{{ module.title }}, část první</strong>
+                <div class="video-author">Andrea Zoulová Ing.</div>
+              </div>
             </div>
-          {% else %}
-            <p class="text-muted mb-0">
-              Zatím tu není žádný text k tomuto modulu.
-            </p>
-          {% endif %}
 
-        </aside>
-      </div>
+            <div class="video-frame">
+              <iframe src="{{ module.vimeo_embed_url1 }}" allowfullscreen loading="lazy"></iframe>
+            </div>
+          </article>
+        {% endif %}
 
-
-      <!-- Right: Videos -->
-      <div class="col-lg-8">
-        <div class="module-videos">
-
-          {% if module.vimeo_embed_url1 %}
-            <article class="video-item main-video">
-              <div class="video-header">
-                <span class="video-badge">A</span>
-                <div>
-                  <strong>{{ module.title }}, část první</strong>
-                  <div class="video-author">Andrea Zoulová Ing.</div>
-                </div>
+        {% if module.vimeo_embed_url2 %}
+          <article class="video-item">
+            <div class="video-header">
+              <span class="video-badge">A</span>
+              <div>
+                <strong>{{ module.title }}, část druhá</strong>
+                <div class="video-author">Andrea Zoulová Ing.</div>
               </div>
+            </div>
 
-              <div class="ratio ratio-16x9">
-                <iframe src="{{ module.vimeo_embed_url1 }}" allowfullscreen></iframe>
-              </div>
-            </article>
-          {% endif %}
+            <div class="video-frame">
+              <iframe src="{{ module.vimeo_embed_url2 }}" allowfullscreen loading="lazy"></iframe>
+            </div>
+          </article>
+        {% endif %}
 
-          {% if module.vimeo_embed_url2 %}
-            <article class="video-item">
-              <div class="video-header">
-                <span class="video-badge">A</span>
-                <div>
-                  <strong>{{ module.title }}, část druhá</strong>
-                  <div class="video-author">Andrea Zoulová Ing.</div>
-                </div>
-              </div>
-
-              <div class="ratio ratio-16x9">
-                <iframe src="{{ module.vimeo_embed_url2 }}" allowfullscreen></iframe>
-              </div>
-            </article>
-          {% endif %}
-
-          <div class="video-item">
+        {% if module.vimeo_embed_url3 %}
+          <article class="video-item">
             <div class="video-header">
               <span class="video-badge">A</span>
               <div>
@@ -102,15 +90,15 @@
               </div>
             </div>
 
-            <div class="ratio ratio-16x9">
-              <iframe src="{{ module.vimeo_embed_url3 }}" allowfullscreen></iframe>
+            <div class="video-frame">
+              <iframe src="{{ module.vimeo_embed_url3 }}" allowfullscreen loading="lazy"></iframe>
             </div>
-          </div>
+          </article>
+        {% endif %}
 
-        </div>
       </div>
-    </div>  <!-- /.row -->
-  </div>    <!-- /.container -->
-</section>
+    </div>
 
+  </div>
+</section>
 {% endblock %}

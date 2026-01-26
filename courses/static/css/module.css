@@ -1,66 +1,69 @@
-/* === LAYOUT === */
+/* ==================================================
+   MODULE GRID – TEXT + VIDEA
+================================================== */
 
-.module-notes {
+.module-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ==================================================
+   TEXT MODULU (SCROLL)
+================================================== */
+
+.module-text-scroll {
   background: #ffffff;
   border-radius: 28px;
-  padding: 2.2rem;
-  height: 100%;
-}
+  padding: 2.5rem;
 
-.notes-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
 
-.notes-content {
-  font-size: 0.9rem;
   line-height: 1.7;
+  font-size: 0.95rem;
   color: #3a3a3a;
 }
 
-.notes-info {
-  margin-top: 2rem;
-  display: flex;
-  gap: 0.8rem;
-  font-size: 0.8rem;
-  color: #6b6b6b;
+/* jemný scrollbar */
+.module-text-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.module-text-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
 }
 
-.info-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #d0d0d0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  color: #6f8f7d;
-}
-
-/* === VIDEA === */
+/* ==================================================
+   VIDEA – GRID
+================================================== */
 
 .module-videos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 2.5rem;
 }
+
+/* ==================================================
+   JEDEN VIDEO BOX
+================================================== */
 
 .video-item {
   background: #eef4ee;
-  border-radius: 28px;
+  border-radius: 26px;
   padding: 1.6rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
 }
 
-.video-item.main-video {
-  background: #eef4ee;
-}
+/* ==================================================
+   HLAVIČKA VIDEA
+================================================== */
 
 .video-header {
   display: flex;
-  gap: 0.8rem;
   align-items: center;
+  gap: 0.8rem;
   margin-bottom: 1rem;
 }
 
@@ -69,7 +72,7 @@
   height: 36px;
   border-radius: 50%;
   background: #6f8f7d;
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -77,19 +80,83 @@
 }
 
 .video-author {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #6b6b6b;
 }
+
+/* ==================================================
+   VIDEO FRAME (16:9)
+================================================== */
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ==================================================
+   BACK LINK
+================================================== */
 
 .back-link,
 .back-link:visited,
 .back-link:hover,
-.back-link:focus,
-.back-link:active {
+.back-link:focus {
   color: #6f8f7d;
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
+/* ==================================================
+   MOBILE
+================================================== */
 
+@media (max-width: 1024px) {
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .module-text-scroll {
+    max-height: none;
+    overflow: visible;
+    padding: 1.6rem;
+  }
+
+  .module-videos {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.module-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: stretch; /* ⬅️ důležité */
+}
+
+.module-text-scroll {
+  height: 100%;
+  overflow-y: auto;
+
+  padding: 2.5rem;
+  background: var(--cream, #faf8f3);
+  border-radius: 24px;
+}
+
+.module-videos {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
