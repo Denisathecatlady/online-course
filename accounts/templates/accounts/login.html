@@ -1,12 +1,63 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block content %}
-    <h1>Přihlášení</h1>
+{% block title %}Přihlášení{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Přihlásit se</button>
-    </form>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+
 {% endblock %}
 
+{% block content %}
+
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+
+        <div class="auth-card">
+          <div class="card-body p-4 p-md-5">
+
+            <h1 class="section-title-sm mb-4 text-center">
+              Přihlášení
+            </h1>
+
+            <form method="post">
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                  {{ form.non_field_errors }}
+                </div>
+              {% endif %}
+
+              <div class="mb-4">
+                <label class="form-label">E-mail</label>
+                {{ form.username }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Heslo</label>
+                {{ form.password }}
+
+                <div class="text-end mt-1">
+                  <a href="/ucty/reset-hesla/" class="link-muted">
+                    Zapomněli jste heslo?
+                  </a>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-sage w-100">
+                Přihlásit se →
+              </button>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

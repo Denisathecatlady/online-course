@@ -1,8 +1,37 @@
 {% extends "base.html" %}
+{% block title %}Platba dokončena{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-  <h1>Děkujeme 💙</h1>
-  <p>Platba proběhla. Přístup ke kurzu se aktivuje během chvilky.</p>
-  <a class="btn btn-primary" href="{% url 'course_dashboard' %}">Jít do kurzu</a>
-</div>
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+
+        <div class="card card-soft text-center payment-success-card">
+          <div class="card-body p-4 p-md-5">
+
+            <span class="badge badge-success mb-3">
+              Platba dokončena
+            </span>
+
+            <h1 class="hero-title hero-title-dark mb-3">
+              Děkujeme za objednávku
+            </h1>
+
+            <p class="hero-lead mb-4">
+              Platba proběhla úspěšně.<br>
+              Přístup ke kurzu se aktivuje během chvilky.
+            </p>
+
+            <a href="{% url 'course_dashboard' %}" class="btn btn-sage">
+              Přejít do kurzu →
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

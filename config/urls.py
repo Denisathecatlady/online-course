@@ -21,24 +21,48 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 
+
+
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
+
     path("", include("courses.urls")),
     path("ucty/", include("accounts.urls")),
     path("payments/", include(("payments.urls", "payments"), namespace="payments")),
-    path("ucty/reset-hesla/", auth_views.PasswordResetView.as_view(), name="password_reset"),
-    path("ucty/reset-hesla/odeslano/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+
+    path(
+        "ucty/reset-hesla/",
+        auth_views.PasswordResetView.as_view(
+            template_name="accounts/registration/password_reset_form.html"
+        ),
+        name="password_reset",
+    ),
+
+    path(
+        "ucty/reset-hesla/odeslano/",
+        auth_views.PasswordResetDoneView.as_view(
+            template_name="accounts/registration/password_reset_done.html"
+        ),
+        name="password_reset_done",
+    ),
+
     path(
         "ucty/reset-hesla/<uidb64>/<token>/",
-        auth_views.PasswordResetConfirmView.as_view(),
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name="accounts/registration/password_reset_confirm.html"
+        ),
         name="password_reset_confirm",
     ),
+
     path(
         "ucty/reset-hesla/hotovo/",
-        auth_views.PasswordResetCompleteView.as_view(),
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name="accounts/registration/password_reset_complete.html"
+        ),
         name="password_reset_complete",
     ),
 ]
+
 
 
 

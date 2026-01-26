@@ -1,0 +1,99 @@
+/* =====================================================
+   LOGIN PAGE – CalmDog style
+   ===================================================== */
+
+/* obal celé přihlašovací karty */
+.auth-card {
+  background: #ffffff;
+  border: 2px solid #d7dfda;
+  border-radius: 52px;
+
+  /* 👇 víc prostoru do stran */
+  padding: 4.2rem 4.5rem;
+
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.08);
+}
+
+
+/* nadpis */
+.auth-card .section-title-sm {
+  font-size: 2.2rem;
+  color: #1f2f28;
+  margin-bottom: 2rem;
+}
+
+/* labely */
+.auth-card .form-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2e3d36;
+  margin-bottom: 0.4rem;
+}
+
+/* inputy */
+.auth-card input[type="email"],
+.auth-card input[type="text"],
+.auth-card input[type="password"] {
+  width: 100%;
+  padding: 0.9rem 1.1rem;
+  font-size: 1rem;
+
+  border-radius: 18px;
+  border: 2px solid #d7dfda;
+  background: #ffffff;
+  color: #1f2f28;
+
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* focus stav */
+.auth-card input:focus {
+  border-color: #5f766b;
+  box-shadow: 0 0 0 4px rgba(95, 118, 107, 0.15);
+}
+
+/* tlačítko */
+.btn-sage {
+  background: #5f766b;
+  color: #ffffff;
+  border: none;
+
+  border-radius: 999px;
+  padding: 1rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 500;
+
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.btn-sage:hover {
+  background: #7f968c;
+  transform: translateY(-1px);
+}
+
+.btn-sage:active {
+  transform: translateY(0);
+}
+
+/* odkaz "Zapomněli jste heslo?" */
+.link-muted {
+  font-size: 0.9rem;
+  color: #5f766b !important;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link-muted:hover {
+  color: #7f968c;
+  text-decoration: underline;
+}
+
+/* error hlášky */
+.auth-card .alert-danger {
+  background: #f8eaea;
+  border: 1px solid #e0b4b4;
+  color: #8a2c2c;
+  border-radius: 16px;
+  font-size: 0.95rem;
+}
