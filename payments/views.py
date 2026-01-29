@@ -246,9 +246,12 @@ def stripe_webhook(request):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
 
-        reset_url = request.build_absolute_uri(
-            reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+        reset_path = reverse(
+            "password_reset_confirm",
+            kwargs={"uidb64": uid, "token": token}
         )
+
+        reset_url = f"{settings.SITE_URL}{reset_path}"
 
         email = EmailMessage(
             subject="Přístup ke kurzu a faktura",
