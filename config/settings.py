@@ -30,6 +30,9 @@ ALLOWED_HOSTS = [
     
 ]
 
+SITE_URL = os.environ.get("SITE_URL", "http://127.0.0.1:8000")
+
+
 CSRF_TRUSTED_ORIGINS = [
     o.strip()
     for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
@@ -44,6 +47,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # APPS
 # ======================================================
 
+SITE_ID = 1
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -54,8 +59,10 @@ INSTALLED_APPS = [
     "accounts",
     "courses",
     "payments",
-    "django.contrib.humanize"
+    "django.contrib.humanize",
+    "django.contrib.sites",
 ]
+
 
 USE_S3_STORAGE = os.environ.get("USE_S3_STORAGE", "0") == "1"
 
@@ -241,3 +248,5 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
