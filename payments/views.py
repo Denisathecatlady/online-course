@@ -254,21 +254,28 @@ def stripe_webhook(request):
             subject="Přístup ke kurzu a faktura",
             body=f"""Dobrý den pan/paní {order.last_name},
 
-děkujeme za objednávku online kurzu.
+            děkujeme za objednávku online kurzu.
 
-Kurz: {order.course.title}
-Varianta: {order.plan.name}
+            Kurz: {order.course.title}
+            Varianta: {order.plan.name}
 
-Pro nastavení přístupu si prosím nastavte heslo zde:
-{reset_url}
+            Pro nastavení přístupu si prosím nastavte heslo zde:
+            {reset_url}
 
-V příloze tohoto e-mailu najdete fakturu č. {order.invoice_number}.
+            V příloze tohoto e-mailu najdete fakturu č. {order.invoice_number}.
 
-Po nastavení hesla se můžete ihned přihlásit a začít studovat.
-
-Děkujeme
-CalmDog
-""",
+            Po nastavení hesla se můžete ihned přihlásit a začít studovat.
+            """
+            + (
+                """\nPokud jste si zakoupili variantu Premium, napište nám prosím na e-mail info@calmdog.cz.
+            Do zprávy uveďte, že jste si zakoupili Premium verzi kurzu – co nejdříve vám zašleme další informace.\n"""
+                if order.plan.name.lower() == "premium"
+                else ""
+            )
+            + """
+            Děkujeme
+            CalmDog
+            """,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[order.buyer_email],
         )

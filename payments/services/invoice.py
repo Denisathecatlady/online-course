@@ -101,8 +101,13 @@ def generate_invoice_pdf(order):
     p.setFont("DejaVu", 10)
     p.drawString(40, y_top - 18, "Ing. Andrea Zoulová")
     p.drawString(40, y_top - 33, "IČO: 19603118")
-    p.drawString(40, y_top - 48, "E-mail: info@calmdog.cz")
-    p.drawString(40, y_top - 63, "Nejsem plátce DPH")
+
+    # 👉 ADRESA DODAVATELE – NOVĚ
+    p.drawString(40, y_top - 48, "Dobrošovská 770")
+    p.drawString(40, y_top - 63, "547 01 Náchod")
+
+    p.drawString(40, y_top - 78, "E-mail: info@calmdog.cz")
+    p.drawString(40, y_top - 93, "Nejsem plátce DPH")
 
     # --------------------------------------------------
     # ODBĚRATEL
@@ -123,22 +128,23 @@ def generate_invoice_pdf(order):
     # ČÁRA
     # --------------------------------------------------
     p.setLineWidth(0.5)
-    p.line(40, y_top - 85, width - 40, y_top - 85)
+    p.line(40, y_top - 115, width - 40, y_top - 115)
 
     # --------------------------------------------------
     # POLOŽKY
     # --------------------------------------------------
-    y = y_top - 120
+    y = y_top - 150
 
     p.setFont("DejaVu-Bold", 11)
     p.drawString(40, y, "Popis")
     p.drawRightString(width - 40, y, "Cena")
 
     p.setFont("DejaVu", 10)
+
     p.drawString(
         40,
         y - 22,
-        f"{order.course.title} – {order.plan.name}",
+        f"Online kurz KONEJŠIVÉ SIGNÁLY V PRAXI, Varianta {order.plan.name}",
     )
     p.drawRightString(
         width - 40,
@@ -167,7 +173,7 @@ def generate_invoice_pdf(order):
     p.drawCentredString(
         width / 2,
         40,
-        "CalmDog • online kurzy o porozumění psům",
+        "CalmDog • Online kurzy",
     )
 
     p.showPage()

@@ -30,7 +30,7 @@
     <!-- 🔹 GRID: TEXT + VIDEA -->
     <div class="module-grid">
 
-      <!-- TEXT (SCROLLOVACÍ) -->
+      <!-- LEVÝ SLOUPEC – TEXT -->
       <section class="module-text-scroll">
 
         {% if module.order == 1 %}
@@ -45,9 +45,27 @@
 
       </section>
 
-      <!-- VIDEA -->
+      <!-- PRAVÝ SLOUPEC – AKCE + VIDEA -->
       <div class="module-videos">
 
+        <!-- 🔹 AKCE NAD VIDEI -->
+        <div class="module-actions">
+          <form method="post" action="{% url 'toggle_module_completion' module.id %}">
+            {% csrf_token %}
+
+            {% if module_progress and module_progress.completed %}
+              <button class="btn btn-outline-sage btn-sm">
+                ✓ Hotovo
+              </button>
+            {% else %}
+              <button class="btn btn-sage btn-sm">
+                Označit jako hotovo
+              </button>
+            {% endif %}
+          </form>
+        </div>
+
+        <!-- VIDEA -->
         {% if module.vimeo_embed_url1 %}
           <article class="video-item">
             <div class="video-header">

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block body_class %}bg-hero{% endblock %}
 
@@ -344,7 +345,7 @@
             </p>
 
             <div class="pricing-price">
-              {{ plan.price_czk }} Kč
+              {{ plan.price_czk|intcomma }} Kč
               <span>jednorázová platba</span>
             </div>
 

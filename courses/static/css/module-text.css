@@ -109,3 +109,62 @@
     font-size: 1.05rem;
   }
 }
+
+/* =========================
+   MOBILE LAYOUT – VIDEA
+   ========================= */
+
+@media (max-width: 1024px) {
+
+  /* celý grid pod sebe */
+  .module-grid {
+    display: block;
+  }
+
+  /* text – zrušíme pevnou výšku a scroll */
+  .module-text-scroll {
+    max-height: none;
+    overflow: visible;
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  /* videa – plná šířka */
+  .module-videos {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .video-item {
+    padding: 1.2rem;
+    border-radius: 22px;
+  }
+
+  /* iframe správně škálované */
+  .video-frame {
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+  }
+
+  .video-frame iframe {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* extra malé mobily */
+@media (max-width: 480px) {
+
+  .module-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .video-header strong {
+    font-size: 0.95rem;
+  }
+
+  .video-author {
+    font-size: 0.75rem;
+  }
+}

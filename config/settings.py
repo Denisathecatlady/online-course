@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "accounts",
     "courses",
     "payments",
+    "django.contrib.humanize"
 ]
 
 USE_S3_STORAGE = os.environ.get("USE_S3_STORAGE", "0") == "1"

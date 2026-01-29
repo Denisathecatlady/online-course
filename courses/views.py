@@ -10,6 +10,14 @@ from .models import Course
 from django.shortcuts import render
 from django.http import FileResponse
 import os
+from django.utils.timezone import now
+from django.shortcuts import redirect, get_object_or_404
+from courses.models import Module, ModuleProgress
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+
+from courses.models import Module, ModuleProgress
 
 
 
@@ -31,13 +39,31 @@ def about(request):
     return render(request, "courses/about.html", {"course": course})
 
 
-@require_GET
+
 @login_required
+@require_GET
 @never_cache
 def course_dashboard(request):
     course = Course.objects.first()
     modules = course.modules.all() if course else []
-    return render(request, "courses/course_dashboard.html", {"course": course, "modules": modules})
+
+    total_modules = modules.count()
+
+    completed_modules = ModuleProgress.objects.filter(
+        user=request.user,
+        module__in=modules,
+        completed=True
+    ).count()
+
+    progress_percent = int((completed_modules / total_modules) * 100) if total_modules else 0
+
+    return render(request, "courses/course_dashboard.html", {
+        "course": course,
+        "modules": modules,
+        "completed_modules": completed_modules,
+        "total_modules": total_modules,
+        "progress_percent": progress_percent,
+    })
 
 
 @require_GET
@@ -45,13 +71,22 @@ def course_dashboard(request):
 @never_cache
 @xframe_options_sameorigin  # povolí iframe jen ze stejného webu (vimeo iframe je uvnitř stránky, to je ok)
 def module_detail(request, slug):
-    # Bezpečnější: modul v rámci konkrétního kurzu (když bys někdy měla víc kurzů)
     course = Course.objects.first()
     if not course:
         raise Http404("Kurz neexistuje.")
 
     module = get_object_or_404(Module, course=course, slug=slug)
-    return render(request, "courses/module_detail.html", {"course": course, "module": module})
+
+    module_progress = ModuleProgress.objects.filter(
+        user=request.user,
+        module=module
+    ).first()
+
+    return render(request, "courses/module_detail.html", {
+        "course": course,
+        "module": module,
+        "module_progress": module_progress,
+    })
 
 
 
@@ -94,3 +129,22 @@ def terms(request):
 
 def cookies_view(request):
     return render(request, "pages/cookies.html")
+
+
+
+
+@login_required
+@require_POST
+def toggle_module_completion(request, module_id):
+    module = get_object_or_404(Module, id=module_id)
+
+    progress, created = ModuleProgress.objects.get_or_create(
+        user=request.user,
+        module=module
+    )
+
+    progress.completed = not progress.completed
+    progress.completed_at = now() if progress.completed else None
+    progress.save()
+
+    return redirect("module_detail", slug=module.slug)

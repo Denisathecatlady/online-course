@@ -12,5 +12,7 @@ urlpatterns = [
     path("ochrana-osobnich-udaju/", views.privacy_policy, name="privacy_policy"),
     path("obchodni-podminky/", views.terms, name="terms"),
     path("cookies/", views.cookies_view, name="cookies"),
+    path("modul/<int:module_id>/hotovo/", views.toggle_module_completion, name="toggle_module_completion"),
+
 
 ]

@@ -17,10 +17,6 @@
         <p class="page-subtitle mb-0">Vyber si modul a pokračuj.</p>
 
       </div>
-
-      <a href="{% url 'about' %}" class="btn btn-outline-sage">
-        Pravidla & informace
-      </a>
     </div>
 
     <!-- INTRO KURZU -->
@@ -49,6 +45,16 @@
           </div>
 
         </div>
+      </div>
+    </div>
+    
+    <div class="course-progress mb-4">
+      <div class="progress-label">
+        Dokončeno {{ completed_modules }} z {{ total_modules }} modulů
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
       </div>
     </div>
 
