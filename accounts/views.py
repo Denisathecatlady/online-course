@@ -4,7 +4,10 @@ from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse
 
-reset_url = settings.SITE_URL + reverse(
+reset_path = reverse(
     "password_reset_confirm",
-    args=[uid, token]
+    kwargs={"uidb64": uid, "token": token}
 )
+
+reset_url = f"{settings.SITE_URL}{reset_path}"
+

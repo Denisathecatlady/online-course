@@ -30,7 +30,11 @@ ALLOWED_HOSTS = [
     
 ]
 
-SITE_URL = os.environ.get("SITE_URL", "http://127.0.0.1:8000")
+SITE_URL = os.environ.get(
+    "SITE_URL",
+    "https://academy.calmdog.cz"
+)
+
 
 
 CSRF_TRUSTED_ORIGINS = [
