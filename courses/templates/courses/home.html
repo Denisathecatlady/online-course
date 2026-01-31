@@ -348,6 +348,12 @@
               {{ plan.price_czk|intcomma }} Kč
               <span>jednorázová platba</span>
             </div>
+            
+            {% if plan.description %}
+            <p class="pricing-description">
+              {{ plan.description|linebreaksbr }}
+            </p>
+            {% endif %}
 
             <ul class="pricing-features">
               {% for line in plan.bullets.splitlines %}
