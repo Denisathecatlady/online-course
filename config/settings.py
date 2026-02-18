@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "accounts",
     "courses",
     "payments",
+    "shop",
     "django.contrib.humanize",
     "django.contrib.sites",
 ]

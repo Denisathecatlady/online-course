@@ -41,6 +41,7 @@ class CoursePlan(models.Model):
 
 class Order(models.Model):
     class Status(models.TextChoices):
+        CART = "cart", "Košík"
         PENDING = "pending", "Čeká na platbu"
         PAID = "paid", "Zaplaceno"
         FAILED = "failed", "Neúspěšné"
@@ -57,7 +58,7 @@ class Order(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="orders")
     plan = models.ForeignKey(CoursePlan, on_delete=models.PROTECT, related_name="orders")
 
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.CART)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -123,3 +124,67 @@ class CourseAccess(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user} → {self.course} ({self.plan.code})"
+
+# ======================================
+# PRODUCT (univerzální produkt systému)
+# ======================================
+
+class Product(models.Model):
+    PRODUCT_TYPES = (
+        ("course", "Course"),
+        ("physical", "Physical"),
+    )
+
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+
+    price_czk = models.PositiveIntegerField()
+
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES)
+
+    # Pokud je to kurz
+    course = models.OneToOneField(
+        Course,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="product"
+    )
+
+    # Pouze pro fyzické produkty
+    stock = models.PositiveIntegerField(null=True, blank=True)
+
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+# ======================================
+# ORDER ITEM (více položek v objednávce)
+# ======================================
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.PROTECT
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    price_at_purchase = models.PositiveIntegerField()
+
+    def total_price(self):
+        return self.quantity * self.price_at_purchase
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
