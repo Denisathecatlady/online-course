@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="mb-4">Košík</h1>
+
+    {% if items %}
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Produkt</th>
+                        <th>Varianta</th>
+                        <th>Množství</th>
+                        <th>Cena</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>
+                                {{ item.product.name }}
+                            </td>
+
+                            <td>
+                                {% if item.plan %}
+                                    {{ item.plan.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ item.quantity }}
+                            </td>
+
+                            <td>
+                                {{ item.total_price }} Kč
+                            </td>
+
+                            <td>
+                                <a class="btn btn-sm btn-outline-danger"
+                                   href="{% url 'payments:remove_from_cart' item.id %}">
+                                    Odebrat
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+
+            <h4>
+                Celkem: <strong>{{ cart.total_price }} Kč</strong>
+            </h4>
+
+            <a href="{% url 'payments:checkout' %}"
+               class="btn btn-primary">
+                Pokračovat k platbě
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            Košík je prázdný.
+        </div>
+
+        <a href="{% url 'home' %}" class="btn btn-secondary">
+            Zpět na nabídku
+        </a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

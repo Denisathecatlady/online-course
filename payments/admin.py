@@ -1,14 +1,14 @@
-from .models import CoursePlan, Order, CourseAccess
-from django.urls import path
-from django.utils.html import format_html
-from django.http import FileResponse, Http404
-from django.shortcuts import get_object_or_404
 from django.contrib import admin
 from django.urls import path, reverse
 from django.utils.html import format_html
-from .models import Order
+from django.http import FileResponse, Http404
+
+from .models import Product, CoursePlan, Order, OrderItem, CourseAccess
 
 
+# ======================================
+# COURSE PLAN
+# ======================================
 
 @admin.register(CoursePlan)
 class CoursePlanAdmin(admin.ModelAdmin):
@@ -27,6 +27,27 @@ class CoursePlanAdmin(admin.ModelAdmin):
     search_fields = ("name", "code")
     prepopulated_fields = {"code": ("name",)}
 
+
+# ======================================
+# PRODUCT
+# ======================================
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "product_type",
+        "is_active",
+        "created_at",
+    )
+    list_filter = ("product_type", "is_active")
+    search_fields = ("name", "slug")
+    prepopulated_fields = {"slug": ("name",)}
+
+
+# ======================================
+# ORDER
+# ======================================
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -73,6 +94,25 @@ class OrderAdmin(admin.ModelAdmin):
             filename=f"faktura_{order.invoice_number}.pdf",
         )
 
+
+# ======================================
+# ORDER ITEM
+# ======================================
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "order",
+        "product",
+        "plan",
+        "quantity",
+        "price_at_purchase",
+    )
+
+
+# ======================================
+# COURSE ACCESS
+# ======================================
 
 @admin.register(CourseAccess)
 class CourseAccessAdmin(admin.ModelAdmin):

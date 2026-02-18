@@ -1,0 +1,19 @@
+<h1>Kurzy</h1>
+
+<div class="row">
+  {% for product in courses %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5>{{ product.name }}</h5>
+          <p>{{ product.description }}</p>
+
+          <a href="{% url 'payments:course_detail' product.slug %}"
+             class="btn btn-outline-sage">
+            Detail kurzu
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

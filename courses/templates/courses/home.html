@@ -370,10 +370,11 @@
             </div>
             {% endif %}
 
-            <a href="{% url 'payments:checkout' plan.code %}"
-               class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
-              Vybrat variantu →
+            <a href="{% url 'payments:add_course_to_cart' plan.course.product.slug plan.code %}"
+              class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
+                Přidat do košíku
             </a>
+
 
             <div class="small text-muted text-center mt-2">
               Přístup ti po zaplacení přijde e-mailem

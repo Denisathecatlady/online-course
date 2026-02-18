@@ -602,6 +602,18 @@
                     <a class="nav-link" href="{% url 'about' %}">O kurzu</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'payments:course_list' %}">
+                        Kurzy
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'payments:physical_list' %}">
+                        Vodítka
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link nav-external"
                     href="https://www.calmdog.cz"
                     target="_blank"
@@ -609,6 +621,17 @@
                         CalmDog ↗
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'payments:cart_detail' %}">
+                        Košík
+                        {% if cart_items_count > 0 %}
+                            ({{ cart_items_count }})
+                        {% endif %}
+                    </a>
+                </li>
+
+
+
 
                 {% if user.is_authenticated %}
                 <li class="nav-item">

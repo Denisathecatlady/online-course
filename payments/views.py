@@ -13,152 +13,138 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 from django.db import transaction
-
-from courses.models import Course
-from .models import CoursePlan, Order, CourseAccess
+from django.contrib.auth.decorators import login_required
+from .models import CoursePlan, Order, CourseAccess, Product, OrderItem
+from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
+from django.shortcuts import render, get_object_or_404
+from .models import Product, CoursePlan
 
-# testy
 import logging
 
 logger = logging.getLogger(__name__)
 
-
-# ---------------------------------------------------------------------
-# STRIPE
-# ---------------------------------------------------------------------
-
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "").strip()
 
 
-# ---------------------------------------------------------------------
-# CHECKOUT – FORMULÁŘ + ODESLÁNÍ NA STRIPE
-# ---------------------------------------------------------------------
+# =====================================================
+# KOŠÍK
+# =====================================================
+
+
+def add_course_to_cart(request, product_slug, plan_code):
+    product = get_object_or_404(Product, slug=product_slug, product_type="course")
+    plan = get_object_or_404(CoursePlan, code=plan_code)
+
+    cart = get_or_create_cart(request)
+
+    OrderItem.objects.get_or_create(
+        order=cart,
+        product=product,
+        plan=plan,
+        defaults={
+            "quantity": 1,
+            "price_at_purchase": plan.price_czk
+        }
+    )
+
+    return redirect("payments:cart_detail")
+
+
+
+
+def cart_detail(request):
+    cart = get_or_create_cart(request)
+
+    cart = Order.objects.prefetch_related(
+        "items__product",
+        "items__plan"
+    ).get(id=cart.id)
+
+    items = cart.items.all()
+
+    return render(request, "payments/cart.html", {
+        "cart": cart,
+        "items": items
+    })
+
+
+# =====================================================
+# CHECKOUT
+# =====================================================
+
 
 @require_http_methods(["GET", "POST"])
-def checkout(request, plan_code):
+def checkout(request):
 
-    try:
-        # ----------------------------
-        # ZÁKLADNÍ KONTROLY
-        # ----------------------------
-        if not stripe.api_key:
-            return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
+    if not stripe.api_key:
+        return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
 
-        plan = get_object_or_404(CoursePlan, code=plan_code, is_active=True)
-        course = Course.objects.first()
-        if not course:
-            return HttpResponseBadRequest("Kurz neexistuje.")
+    cart = get_or_create_cart(request)
 
-        # ----------------------------
-        # GET – formulář
-        # ----------------------------
-        if request.method == "GET":
-            return render(
-                request,
-                "payments/checkout_form.html",
-                {
-                    "plan": plan,
-                    "course": course,
+    cart = Order.objects.prefetch_related(
+        "items__product",
+        "items__plan"
+    ).get(id=cart.id)
+
+    if not cart.items.exists():
+        return HttpResponseBadRequest("Košík je prázdný.")
+
+
+    if request.method == "GET":
+        return render(
+            request,
+            "payments/checkout_form.html",
+            {
+                "cart": cart,
+                "items": cart.items.all(),
+            },
+        )
+
+    # Uložení fakturačních údajů
+    cart.buyer_email = request.POST.get("email", "").strip()
+    cart.first_name = request.POST.get("first_name", "").strip()
+    cart.last_name = request.POST.get("last_name", "").strip()
+    cart.street = request.POST.get("street", "").strip()
+    cart.city = request.POST.get("city", "").strip()
+    cart.zip_code = request.POST.get("zip_code", "").strip()
+    cart.country = request.POST.get("country", "CZ").strip()
+    cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
+    cart.status = Order.Status.PENDING
+    cart.save()
+
+    line_items = []
+
+    for item in cart.items.all():
+        line_items.append({
+            "quantity": item.quantity,
+            "price_data": {
+                "currency": "czk",
+                "unit_amount": int(item.price_at_purchase * 100),
+                "product_data": {
+                    "name": item.product.name,
                 },
-            )
+            },
+        })
 
-        # ----------------------------
-        # POST – data z formuláře
-        # ----------------------------
-        buyer_email = request.POST.get("email", "").strip()
-        first_name = request.POST.get("first_name", "").strip()
-        last_name = request.POST.get("last_name", "").strip()
+    session = stripe.checkout.Session.create(
+        mode="payment",
+        customer_email=cart.buyer_email,
+        line_items=line_items,
+        success_url=request.build_absolute_uri("/payments/success/"),
+        cancel_url=request.build_absolute_uri("/payments/cancel/"),
+        metadata={"order_id": str(cart.id)},
+    )
 
-        street = request.POST.get("street", "").strip()
-        city = request.POST.get("city", "").strip()
-        zip_code = request.POST.get("zip_code", "").strip()
-        country = request.POST.get("country", "CZ").strip()
+    cart.stripe_checkout_session_id = session.id
+    cart.save(update_fields=["stripe_checkout_session_id"])
 
-        invoice_name = request.POST.get("invoice_name", "").strip()
-        invoice_street = request.POST.get("invoice_street", "").strip()
-        invoice_city = request.POST.get("invoice_city", "").strip()
-        invoice_zip = request.POST.get("invoice_zip", "").strip()
-        invoice_country = request.POST.get("invoice_country", country).strip()
-
-        # ----------------------------
-        # POVINNÝ SOUHLAS S PODMÍNKAMI
-        # ----------------------------
-        
-        if not request.POST.get("terms"):
-            return HttpResponseBadRequest(
-                "Musíš souhlasit s obchodními podmínkami."
-            )
-
-        wants_newsletter = bool(request.POST.get("newsletter"))
+    return redirect(session.url)
 
 
-        if not buyer_email or not first_name or not last_name:
-            return HttpResponseBadRequest("Vyplň e-mail, jméno a příjmení.")
-
-        # ----------------------------
-        # OBJEDNÁVKA (PENDING)
-        # ----------------------------
-        order = Order.objects.create(
-            user=None,
-            course=course,
-            plan=plan,
-            buyer_email=buyer_email,
-            first_name=first_name,
-            last_name=last_name,
-            street=street,
-            city=city,
-            zip_code=zip_code,
-            country=country,
-            invoice_name=invoice_name or f"{first_name} {last_name}",
-            invoice_street=invoice_street or street,
-            invoice_city=invoice_city or city,
-            invoice_zip=invoice_zip or zip_code,
-            invoice_country=invoice_country,
-            status=Order.Status.PENDING,
-        )
-
-        # ----------------------------
-        # STRIPE SESSION
-        # ----------------------------
-        session = stripe.checkout.Session.create(
-            mode="payment",
-            customer_email=buyer_email,
-            line_items=[
-                {
-                    "quantity": 1,
-                    "price_data": {
-                        "currency": "czk",
-                        "unit_amount": int(plan.price_czk * 100),
-                        "product_data": {
-                            "name": plan.name,
-                            "description": "Přístup k online kurzu",
-                        },
-                    },
-                }
-            ],
-            success_url=request.build_absolute_uri("/payments/success/"),
-            cancel_url=request.build_absolute_uri("/payments/cancel/"),
-            metadata={"order_id": str(order.id)},
-        )
-
-        order.stripe_checkout_session_id = session.id
-        order.save(update_fields=["stripe_checkout_session_id"])
-
-        return redirect(session.url)
-
-    except Exception:
-        # 🔥 TADY SE KONEČNĚ VYPÍŠE CHYBA 🔥
-        logger.exception("🔥 CHECKOUT ERROR 🔥")
-        return HttpResponse(
-            "Interní chyba serveru – chyba byla zalogována.",
-            status=500
-        )
-
-
-# ---------------------------------------------------------------------
+# =====================================================
 # SUCCESS / CANCEL
-# ---------------------------------------------------------------------
+# =====================================================
 
 @require_GET
 def success(request):
@@ -170,9 +156,9 @@ def cancel(request):
     return render(request, "payments/cancel.html")
 
 
-# ---------------------------------------------------------------------
+# =====================================================
 # STRIPE WEBHOOK
-# ---------------------------------------------------------------------
+# =====================================================
 
 @csrf_exempt
 @require_POST
@@ -198,7 +184,7 @@ def stripe_webhook(request):
             return HttpResponse(status=200)
 
         try:
-            order = Order.objects.select_related("course", "plan").get(id=order_id)
+            order = Order.objects.prefetch_related("items__product", "items__plan").get(id=order_id)
         except Order.DoesNotExist:
             return HttpResponse(status=200)
 
@@ -234,60 +220,78 @@ def stripe_webhook(request):
         order.user = user
         order.save(update_fields=["user"])
 
-        CourseAccess.objects.update_or_create(
-            user=user,
-            course=order.course,
-            defaults={
-                "plan": order.plan,
-                "is_active": True,
-            },
-        )
-
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-
-        reset_url = request.build_absolute_uri(
-            reverse(
-                "password_reset_confirm",
-                kwargs={"uidb64": uid, "token": token}
-            )
-        )
-
-        email = EmailMessage(
-            subject="Přístup ke kurzu a faktura",
-            body=f"""Dobrý den pan/paní {order.last_name},
-
-            děkujeme za objednávku online kurzu.
-
-            Kurz: {order.course.title}
-            Varianta: {order.plan.name}
-
-            Pro nastavení přístupu si prosím nastavte heslo zde:
-            {reset_url}
-
-            V příloze tohoto e-mailu najdete fakturu č. {order.invoice_number}.
-
-            Po nastavení hesla se můžete ihned přihlásit a začít studovat.
-            """
-            + (
-                """\nPokud jste si zakoupili variantu Premium, napište nám prosím na e-mail info@calmdog.cz.
-            Do zprávy uveďte, že jste si zakoupili Premium verzi kurzu – co nejdříve vám zašleme další informace.\n"""
-                if order.plan.name.lower() == "premium"
-                else ""
-            )
-            + """
-            Děkujeme
-            CalmDog
-            """,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[order.buyer_email],
-        )
-
-        if order.invoice_pdf:
-            email.attach_file(order.invoice_pdf.path)
-
-        email.send()
+        # Vytvoření přístupu ke kurzům podle položek
+        for item in order.items.all():
+            if item.product.product_type == "course":
+                CourseAccess.objects.update_or_create(
+                    user=user,
+                    course=item.product.course,
+                    defaults={
+                        "plan": item.plan,
+                        "is_active": True,
+                    },
+                )
 
     return HttpResponse(status=200)
 
 
+def remove_from_cart(request, item_id):
+    cart = get_or_create_cart(request)
+
+    try:
+        item = cart.items.get(id=item_id)
+        item.delete()
+    except OrderItem.DoesNotExist:
+        pass
+
+    return redirect("payments:cart_detail")
+
+def course_list(request):
+    courses = Product.objects.filter(
+        product_type="course",
+        is_active=True
+    ).select_related("course")
+
+    return render(request, "payments/course_list.html", {
+        "courses": courses
+    })
+
+def course_detail(request, slug):
+    product = get_object_or_404(
+        Product.objects.select_related("course"),
+        slug=slug,
+        product_type="course",
+        is_active=True
+    )
+
+    plans = CoursePlan.objects.filter(
+        course=product.course,
+        is_active=True
+    )
+
+    return render(request, "payments/course_detail.html", {
+        "product": product,
+        "plans": plans
+    })
+
+def physical_list(request):
+    products = Product.objects.filter(
+        product_type="physical",
+        is_active=True
+    )
+
+    return render(request, "payments/physical_list.html", {
+        "products": products
+    })
+
+def physical_detail(request, slug):
+    product = get_object_or_404(
+        Product,
+        slug=slug,
+        product_type="physical",
+        is_active=True
+    )
+
+    return render(request, "payments/physical_detail.html", {
+        "product": product
+    })
