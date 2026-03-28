@@ -311,7 +311,7 @@ PAGE BACKGROUND / WRAPPER
             rgba(255, 255, 255, 0.95),
             rgba(255, 255, 255, 0.9)
         ),
-        url("/static/img/pozadi-les-cesta.jpg");
+        url("../img/hero-dog.jpg");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
