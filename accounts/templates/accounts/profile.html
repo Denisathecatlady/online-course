@@ -1,0 +1,103 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Profil</p>
+      <h2 class="account-title mb-1">Nastavení účtu</h2>
+      <p class="account-copy mb-0">
+        Uprav si osobní údaje, doručovací adresu i fakturační informace.
+      </p>
+    </div>
+
+    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-sage">
+      Změna hesla
+    </a>
+  </div>
+
+  <form method="post" class="account-form">
+    {% csrf_token %}
+
+    <details class="account-accordion" open>
+      <summary class="account-accordion-trigger">Osobní údaje</summary>
+      <div class="account-accordion-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">E-mail</label>
+            <input type="email" class="form-control" value="{{ request.user.email }}" disabled>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Telefon</label>
+            {{ form.phone }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="account-accordion">
+      <summary class="account-accordion-trigger">Doručovací údaje</summary>
+      <div class="account-accordion-body">
+        <div class="mb-3">
+          {{ form.street.label_tag }}
+          {{ form.street }}
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.city.label_tag }}
+            {{ form.city }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.zip_code.label_tag }}
+            {{ form.zip_code }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.country.label_tag }}
+            {{ form.country }}
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="account-accordion">
+      <summary class="account-accordion-trigger">Fakturační adresa</summary>
+      <div class="account-accordion-body">
+        <div class="mb-3">
+          {{ form.invoice_name.label_tag }}
+          {{ form.invoice_name }}
+        </div>
+        <div class="mb-3">
+          {{ form.invoice_street.label_tag }}
+          {{ form.invoice_street }}
+        </div>
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            {{ form.invoice_city.label_tag }}
+            {{ form.invoice_city }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.invoice_zip.label_tag }}
+            {{ form.invoice_zip }}
+          </div>
+          <div class="col-md-4 mb-3">
+            {{ form.invoice_country.label_tag }}
+            {{ form.invoice_country }}
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <button type="submit" class="btn btn-sage mt-4">
+      Uložit změny
+    </button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,713 @@
+ /* =====================================================
+DESIGN TOKENS / VARIABLES
+===================================================== */
+:root {
+--cream: #FBFAF7;
+--sage: #5F766B;
+--sage-light: #E6ECE9;
+--sage-strong: #3E6A57;
+--sage-deep: #29493C;
+--text-dark: #1E2A32;
+--text-muted: #6F7C82;
+
+}
+
+
+
+/* =====================================================
+BASE / BODY
+===================================================== */
+body {
+    font-family: "Inter", system-ui, sans-serif;
+    background-color: var(--slate-soft);
+    color: #2f3e3a;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+
+.preview-banner {
+    background: linear-gradient(90deg, #29493c, #3e6a57);
+    color: #fff;
+    text-align: center;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+NAVBAR – CalmDog override Bootstrap
+===================================================== */
+
+.navbar {
+background: transparent;
+border-bottom: none;
+padding: 1.2rem 0 0.4rem;
+position: relative;
+z-index: 1000;
+}
+
+/* container trochu širší */
+.navbar .container {
+max-width: 1280px;
+background:
+    linear-gradient(180deg, rgba(250, 249, 245, 0.98), rgba(244, 247, 243, 0.96)),
+    linear-gradient(135deg, rgba(95, 118, 107, 0.08), rgba(62, 106, 87, 0.03));
+backdrop-filter: blur(18px);
+border: 1px solid rgba(95, 118, 107, 0.12);
+border-radius: 999px;
+padding: 0.8rem 1rem 0.8rem 1.3rem;
+box-shadow:
+    0 18px 40px rgba(35, 46, 41, 0.08),
+    0 10px 30px rgba(62, 106, 87, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* ===== BRAND ===== */
+
+.navbar-brand img {
+height: 36px;
+}
+
+/* ===== NAV LINKS ===== */
+
+.navbar-nav {
+gap: 0.45rem;
+}
+
+.navbar-nav .nav-link {
+font-size: 0.9rem;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+font-weight: 600;
+color: #345345;
+padding: 0.7rem 0.95rem;
+border-radius: 999px;
+transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+color: var(--sage-strong);
+background: rgba(95, 118, 107, 0.1);
+transform: translateY(-1px);
+}
+
+/* aktivní stránka */
+.navbar-nav .nav-link.active {
+color: #fff;
+background: linear-gradient(180deg, var(--sage-strong), var(--sage-deep));
+}
+
+/* žádné bootstrap podtržení */
+.navbar a {
+text-decoration: none;
+}
+
+/* ===== CTA BUTTONS ===== */
+
+.navbar .btn {
+border-radius: 999px;
+padding: 0.65rem 1.45rem;
+font-size: 0.78rem;
+letter-spacing: 0.12em;
+font-weight: 600;
+text-transform: uppercase;
+}
+
+/* primární */
+.navbar .btn-sage {
+background: linear-gradient(180deg, var(--sage-strong), var(--sage-deep));
+color: #fff;
+border: none;
+box-shadow: 0 12px 24px rgba(62, 106, 87, 0.18);
+}
+
+.navbar .btn-sage:hover {
+background: linear-gradient(180deg, #355a49, #233f34);
+color: #fff;
+}
+
+/* outline (odhlásit) */
+.navbar .btn-outline-sage {
+border: 1px solid rgba(62, 106, 87, 0.18);
+color: var(--sage-strong);
+background: rgba(240, 247, 243, 0.95);
+}
+
+.navbar .btn-outline-sage:hover {
+border-color: var(--sage-strong);
+color: var(--sage-deep);
+background: rgba(230, 236, 233, 0.8);
+}
+
+/* ===== TOGGLER ===== */
+
+.navbar-toggler {
+border: none;
+padding: 0.35rem 0.45rem;
+border-radius: 12px;
+background: rgba(62, 106, 87, 0.08);
+}
+
+.navbar-toggler:focus {
+box-shadow: none;
+}
+
+.navbar .nav-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.7rem 0.95rem;
+    }
+
+.nav-submenu {
+    position: relative;
+}
+
+.nav-submenu-link::after {
+    content: "";
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-left: 0.45rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-1px);
+}
+
+.nav-submenu-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.2rem);
+    left: 0;
+    min-width: 250px;
+    list-style: none;
+    margin: 0;
+    padding: 0.55rem;
+    border: 1px solid rgba(95, 118, 107, 0.1);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(251,250,247,0.99), rgba(245,247,244,0.98));
+    box-shadow: 0 24px 44px rgba(35, 46, 41, 0.14);
+    z-index: 1001;
+}
+
+.nav-submenu-menu::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 0;
+    right: 0;
+    height: 14px;
+}
+
+.nav-submenu:hover .nav-submenu-menu,
+.nav-submenu:focus-within .nav-submenu-menu {
+    display: block;
+}
+
+.nav-submenu-item {
+    display: block;
+    border-radius: 14px;
+    padding: 0.8rem 0.9rem;
+    color: #2f3e3a;
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.nav-submenu-item:hover,
+.nav-submenu-item:focus {
+    background: rgba(95, 118, 107, 0.1);
+    color: var(--sage-strong);
+}
+
+.icon-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(95, 118, 107, 0.12);
+    background: linear-gradient(180deg, rgba(251,250,247,0.96), rgba(243,246,242,0.96));
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.icon-toggle:hover {
+    border-color: rgba(95, 118, 107, 0.24);
+    background: rgba(235, 240, 236, 0.95);
+}
+
+.icon-toggle::after {
+    margin-left: 0.35rem;
+}
+
+.icon-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage-strong);
+}
+
+.icon-toggle-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #4d8a71, #325a49);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 8px 18px rgba(62, 106, 87, 0.24);
+}
+
+@media (max-width: 991px) {
+    .navbar {
+        padding-top: 0.9rem;
+    }
+
+    .navbar .container {
+        border-radius: 28px;
+        padding: 0.9rem 1rem;
+    }
+
+    .navbar-collapse {
+        padding-top: 0.75rem;
+    }
+
+    .navbar-nav {
+        gap: 0.25rem;
+    }
+
+    .nav-submenu-menu {
+        position: static;
+        margin-top: 0.4rem;
+        box-shadow: none;
+        min-width: 100%;
+    }
+
+    .nav-submenu:hover .nav-submenu-menu,
+    .nav-submenu:focus-within .nav-submenu-menu {
+        display: block;
+    }
+}
+
+/* =====================================================
+PAGE BACKGROUND / WRAPPER
+===================================================== */
+.page-wrapper {
+    background:
+        linear-gradient(
+            rgba(255, 255, 255, 0.95),
+            rgba(255, 255, 255, 0.9)
+        ),
+        url("/static/img/pozadi-les-cesta.jpg");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+
+/* =====================================================
+TYPOGRAPHY
+===================================================== */
+h1, h2, h3, h4, h5 {
+    letter-spacing: -0.02em;
+}
+
+.display-5,
+.display-6 {
+    letter-spacing: -0.03em;
+}
+
+.section-title {
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #2f3e3a;
+}
+
+.section-lead {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #6b7280;
+    max-width: 720px;
+}
+
+
+/* =====================================================
+BADGES
+===================================================== */
+.badge {
+    background-color: var(--sage-soft);
+    color: var(--sage);
+    font-weight: 500;
+    padding: 0.45rem 0.9rem;
+}
+
+.badge-soft {
+    background-color: #e6f0ec;
+    color: var(--sage);
+    padding: 0.45rem 0.9rem;
+    font-weight: 500;
+    border-radius: 999px;
+}
+
+
+/* =====================================================
+BUTTONS
+===================================================== */
+.btn {
+    border-radius: 999px;
+    padding: 0.65rem 1.4rem;
+}
+
+.btn-sage {
+    background-color: var(--sage);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1.6rem;
+    font-weight: 500;
+}
+
+.btn-sage:hover {
+    background-color: #3f5f55;
+    color: #fff;
+}
+
+.btn-outline-sage {
+    border: 2px solid var(--sage);
+    color: var(--sage);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.55rem 1.6rem;
+    font-weight: 500;
+}
+
+.btn-outline-sage:hover {
+    background-color: var(--sage-soft);
+}
+
+
+/* =====================================================
+LAYOUT / SPACING HELPERS
+===================================================== */
+.py-6 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.pb-6 {
+    padding-bottom: 4rem;
+}
+
+.mb-6 {
+    margin-bottom: 4rem;
+}
+
+
+/* =====================================================
+CARDS / CONTAINERS
+===================================================== */
+.card-large {
+    border-radius: 28px;
+    padding: 1.5rem;
+}
+
+
+/* =====================================================
+ICON BLOCKS
+===================================================== */
+.icon-block {
+    display: flex;
+    gap: 1rem;
+}
+
+.icon-block .icon {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+
+/* =====================================================
+BACKGROUND HELPERS
+===================================================== */
+.bg-light {
+    background-color: #faf9f6 !important;
+}
+
+
+/* =====================================================
+FOOTER
+===================================================== */
+footer {
+    font-size: 0.9rem;
+    color: #6b7280;
+    background-color: #fff;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.cookie-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 900px;
+    width: calc(100% - 2rem);
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2rem;
+    z-index: 9999;
+}
+
+.cookie-banner p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.cookie-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.navbar-logo {
+    height: 36px; 
+    }
+
+/* =====================================================
+GLOBAL TYPOGRAPHY
+===================================================== */
+
+body {
+font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+font-weight: 400;
+font-size: 16px;
+line-height: 1.75;
+color: #2f3e3a;
+}
+
+/* Nadpisy – jednotné všude */
+h1, h2, h3, h4, h5 {
+font-family: "Playfair Display", serif;
+font-weight: 500;
+letter-spacing: -0.02em;
+color: #1f2f2a;
+}
+
+/* Běžný text */
+p, li {
+font-family: "Inter", system-ui, sans-serif;
+font-weight: 400;
+}
+
+/* Malé texty / badge */
+small,
+.hero-badge,
+.course-badge,
+.variant-badge,
+.pricing-badge {
+font-family: "Inter", system-ui, sans-serif;
+font-weight: 500;
+letter-spacing: 0.12em;
+}
+
+.social-link {
+color: #6f8f7d;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.social-link:hover {
+opacity: 0.75;
+transform: translateY(-1px);
+}
+
+.footer-links {
+    flex-wrap: nowrap;
+    }
+
+@media (max-width: 576px) {
+.footer-links {
+    flex-wrap: wrap; /* na mobilu se klidně zalomí */
+    gap: 0.75rem;
+}
+}
+
+/* ===============================
+PAYMENT – CANCEL PAGE
+================================ */
+
+.payment-cancel-card {
+max-width: 640px;
+margin: 0 auto;
+}
+
+.badge-muted {
+display: inline-block;
+padding: 0.45rem 1.2rem;
+border-radius: 999px;
+font-size: 0.7rem;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+background: rgba(79,111,100,0.12);
+color: var(--sage);
+font-weight: 500;
+}
+
+/* ===============================
+PAYMENT – SUCCESS PAGE
+================================ */
+
+.payment-success-card {
+max-width: 640px;
+margin: 0 auto;
+}
+
+.badge-success {
+display: inline-block;
+padding: 0.45rem 1.2rem;
+border-radius: 999px;
+font-size: 0.7rem;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+background: rgba(79,111,100,0.14);
+color: var(--sage);
+font-weight: 500;
+}
+
+.footer-bottom {
+    font-size: 0.85rem;
+    color: #7f968c;
+    text-align: center;
+    }
+
+    .footer-author {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 500;
+    }
+
+    .footer-author:hover {
+    text-decoration: underline;
+    }
+
+
+    .phone-link {
+        color: inherit;
+        text-decoration: none;
+        }
+
+        .phone-link:hover {
+        text-decoration: underline;
+        }
+
+
+        
+/* =========================
+COURSE PROGRESS – CALMDOG
+========================= */
+
+.course-progress {
+max-width: 520px;
+margin-bottom: 2.5rem;
+}
+
+/* Text nad linkou */
+.progress-label {
+font-size: 1rem;
+font-weight: 700;
+color: #2f4f43;
+margin-bottom: 0.8rem;
+}
+
+/* Track – pozadí linky */
+.progress-track {
+position: relative;
+width: 100%;
+height: 22px;
+background: #edf3ef;
+border-radius: 999px;
+overflow: hidden;
+border: 1px solid #c2d4cb;
+}
+
+/* Vyplněná část */
+.progress-fill {
+height: 100%;
+width: 0; /* nastavuješ inline přes style="width: XX%" */
+background: linear-gradient(
+    90deg,
+    #3f6f5b,
+    #8fc1ac
+);
+border-radius: 999px;
+transition: width 0.5s ease;
+
+box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 2px 6px rgba(63,111,91,0.35);
+}
+
+/* Procenta uvnitř linky */
+.progress-percent {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+
+font-size: 0.8rem;
+font-weight: 800;
+letter-spacing: 0.03em;
+
+color: #ffffff;
+background: #2f4f43;
+padding: 4px 10px;
+border-radius: 999px;
+
+box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.module-actions {
+display: flex;
+justify-content: flex-end;
+margin-bottom: 1.2rem;
+}
+
+.module-actions .btn {
+border-radius: 999px;
+padding: 0.5rem 1.2rem;
+font-size: 0.9rem;
+}

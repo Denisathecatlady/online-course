@@ -1,84 +1,168 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock %}
 
 {% block content %}
+<section class="cart-page py-6">
+    <div class="container">
+        <div class="cart-shell">
+            <div class="cart-intro reveal">
+                <span class="badge badge-soft mb-3">Košík</span>
+                <h1 class="section-title mb-3">Přehled objednávky</h1>
+                <p class="cart-lead mb-0">
+                    Zkontroluj si vybrané produkty a pokračuj k dopravě nebo rovnou k platbě.
+                </p>
+            </div>
 
-<div class="container mt-5">
+            {% if items %}
+                <div class="cart-grid reveal">
+                    <div class="cart-main card card-soft border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="cart-panel-head">
+                                <div>
+                                    <p class="cart-panel-eyebrow mb-2">Vybrané položky</p>
+                                    <h2 class="cart-panel-title mb-1">Zkontroluj obsah košíku</h2>
+                                    <p class="cart-panel-copy mb-0">
+                                        Každou položku můžeš ještě odebrat, pak pokračuj na další krok objednávky.
+                                    </p>
+                                </div>
+                            </div>
 
-    <h1 class="mb-4">Košík</h1>
+                            <div class="cart-list mt-4">
+                                {% for item in items %}
+                                    <article class="cart-item-card">
+                                        <div class="cart-item-top">
+                                            <div class="cart-item-copy">
+                                                <div class="cart-item-kicker">
+                                                    {% if item.course_plan %}
+                                                        Online kurz
+                                                    {% elif item.product_variant %}
+                                                        Fyzický produkt
+                                                    {% endif %}
+                                                </div>
 
-    {% if items %}
+                                                <h2 class="cart-item-title">
+                                                    {% if item.course_plan %}
+                                                        {{ item.course_plan.course.title }}
+                                                    {% elif item.product_variant %}
+                                                        {{ item.product_variant.product.name }}
+                                                    {% endif %}
+                                                </h2>
 
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th>Produkt</th>
-                        <th>Varianta</th>
-                        <th>Množství</th>
-                        <th>Cena</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>
-                                {{ item.product.name }}
-                            </td>
+                                                <div class="cart-item-meta">
+                                                    {% if item.course_plan %}
+                                                        <span class="cart-meta-pill">{{ item.course_plan.name }}</span>
+                                                    {% endif %}
 
-                            <td>
-                                {% if item.plan %}
-                                    {{ item.plan.name }}
+                                                    {% if item.product_variant %}
+                                                        {% if item.product_variant.length %}
+                                                            <span class="cart-meta-pill">{{ item.product_variant.get_length_display }}</span>
+                                                        {% endif %}
+                                                        {% if item.product_variant.type %}
+                                                            <span class="cart-meta-pill">{{ item.product_variant.get_type_display }}</span>
+                                                        {% endif %}
+                                                        {% if item.product_variant.color %}
+                                                            <span class="cart-meta-pill">{{ item.product_variant.color.name }}</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="cart-item-total">
+                                                <span class="cart-item-total-label">Mezisoučet</span>
+                                                <strong>{{ item.subtotal|floatformat:0 }} Kč</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="cart-item-bottom">
+                                            <div class="cart-item-stats">
+                                                <div class="cart-stat">
+                                                    <span class="cart-stat-label">Množství</span>
+                                                    <strong>{{ item.quantity }}×</strong>
+                                                </div>
+                                                <div class="cart-stat">
+                                                    <span class="cart-stat-label">Cena za kus</span>
+                                                    <strong>{{ item.price_at_purchase|floatformat:0 }} Kč</strong>
+                                                </div>
+                                            </div>
+
+                                            <a href="{% url 'payments:remove_from_cart' item.id %}" class="btn-remove">
+                                                Odebrat
+                                            </a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="cart-side card card-soft border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <span class="cart-side-label">Souhrn</span>
+                            <h3 class="cart-side-title">Připraveno k dokončení</h3>
+                            <p class="cart-side-copy">
+                                {% if has_physical_products %}
+                                    V košíku máš fyzický produkt, proto bude následovat ještě výběr dopravy.
                                 {% else %}
-                                    —
+                                    V košíku máš jen digitální obsah, takže můžeš pokračovat rovnou k platbě.
                                 {% endif %}
-                            </td>
+                            </p>
 
-                            <td>
-                                {{ item.quantity }}
-                            </td>
+                            <div class="cart-summary-box">
+                                <div class="cart-summary-row">
+                                    <span>Položek v košíku</span>
+                                    <strong>{{ items|length }}</strong>
+                                </div>
+                                <div class="cart-summary-row">
+                                    <span>Mezisoučet</span>
+                                    <strong>{{ order.items_total|floatformat:0 }} Kč</strong>
+                                </div>
+                                {% if order.shipping_price > 0 %}
+                                    <div class="cart-summary-row">
+                                        <span>Doprava</span>
+                                        <strong>{{ order.shipping_price|floatformat:0 }} Kč</strong>
+                                    </div>
+                                {% endif %}
+                                <div class="cart-summary-row cart-summary-total">
+                                    <span>Celkem</span>
+                                    <strong>{{ order.total_price|floatformat:0 }} Kč</strong>
+                                </div>
+                            </div>
 
-                            <td>
-                                {{ item.total_price }} Kč
-                            </td>
-
-                            <td>
-                                <a class="btn btn-sm btn-outline-danger"
-                                   href="{% url 'payments:remove_from_cart' item.id %}">
-                                    Odebrat
+                            {% if has_physical_products %}
+                                <a href="{% url 'payments:shipping' %}" class="btn btn-sage w-100 cart-cta">
+                                    Pokračovat k dopravě
                                 </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            {% else %}
+                                <a href="{% url 'payments:contact_details' %}" class="btn btn-sage w-100 cart-cta">
+                                    Pokračovat na kontaktní údaje
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'courses:home' %}" class="btn btn-outline-sage w-100">
+                                Pokračovat v nákupu
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            {% else %}
+                <div class="cart-empty-state card card-soft border-0 reveal">
+                    <div class="card-body p-4 p-md-5 text-center">
+                        <span class="cart-empty-badge">Zatím nic vybraného</span>
+                        <h2 class="cart-empty-title mt-3">Košík je prázdný</h2>
+                        <p class="cart-empty-copy">
+                            Prohlédni si kurzy nebo vodítka a přidej si do košíku to, co teď potřebuješ.
+                        </p>
+                        <a href="{% url 'courses:home' %}" class="btn btn-sage">
+                            Zpět na nabídku
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-4">
-
-            <h4>
-                Celkem: <strong>{{ cart.total_price }} Kč</strong>
-            </h4>
-
-            <a href="{% url 'payments:checkout' %}"
-               class="btn btn-primary">
-                Pokračovat k platbě
-            </a>
-
-        </div>
-
-    {% else %}
-
-        <div class="alert alert-info">
-            Košík je prázdný.
-        </div>
-
-        <a href="{% url 'home' %}" class="btn btn-secondary">
-            Zpět na nabídku
-        </a>
-
-    {% endif %}
-
-</div>
-
+    </div>
+</section>
 {% endblock %}

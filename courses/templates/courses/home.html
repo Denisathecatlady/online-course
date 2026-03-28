@@ -5,258 +5,235 @@
 {% block body_class %}bg-hero{% endblock %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
-{# =========================
-   HERO – MIMO <main>
-========================= #}
 {% block hero %}
-<section class="hero">
+<section class="home-hero">
+  <div class="container">
+    <div class="home-hero-shell">
+      <div class="home-hero-copy">
+        <span class="home-kicker">CalmDog</span>
+        <h1 class="home-hero-title">
+          Klidnější soužití se psem
+          <span>online i naživo.</span>
+        </h1>
+        <p class="home-hero-lead">
+          Pomáháme lidem lépe rozumět psům skrze etické tréninky, online vzdělávání
+          a promyšlené vybavení pro každodenní život.
+        </p>
 
-  <!-- DESKTOP HERO -->
-  <div class="hero-desktop">
-    <div class="hero-card hero-with-image">
-      <div class="hero-inner">
+        <div class="home-hero-actions">
+          <a href="#sluzby" class="btn btn-sage">Co děláme</a>
+          <a href="{% url 'courses:contact' %}" class="btn btn-outline-sage">Domluvit konzultaci</a>
+        </div>
 
-        <div class="hero-content">
-          <span class="hero-badge">
-            ONLINE KURZ KONEJŠIVÉ SIGNÁLY V PRAXI
-          </span>
-
-          <h1 class="hero-title">
-            Naučte se rozumět<br>
-            <em>tiché řeči</em> psů.
-          </h1>
-
-          <div class="hero-alert">
-            Agrese nezačíná kousnutím. Začíná nepochopením.
+        <div class="home-proof-row">
+          <div class="proof-chip">
+            <strong>Etický přístup</strong>
+            <span>bez nátlaku a dominance</span>
           </div>
+          <div class="proof-chip">
+            <strong>Online i osobně</strong>
+            <span>tréninky, kurzy, vodítka</span>
+          </div>
+        </div>
+      </div>
 
-          <p class="hero-lead">
-            Konejšivé signály jsou klíčem k prevenci konfliktů,
-            klidnému soužití a ochraně wellbeing psa.
-          </p>
-
-          <ul class="hero-questions">
-            <li>Jaké funkce mají konejšivé signály a proč nejde o signály stresu?</li>
-            <li>Jak souvisí konejšivé signály a projevy agrese?</li>
-            <li>Jak je využít v tréninku reaktivních a bázlivých psů?</li>
+      <div class="home-hero-visual">
+        <div class="hero-photo-card hero-photo-main">
+          <img src="{% static 'img/hero-dog.jpg' %}" alt="Pes na klidné procházce">
+        </div>
+        <div class="hero-floating-card">
+          <span class="floating-label">Co u nás najdeš</span>
+          <ul>
+            <li>Osobní tréninky na míru</li>
+            <li>Online kurzy s praktickými ukázkami</li>
+            <li>Vodítka navržená pro reálné použití</li>
           </ul>
-
-          <div class="hero-actions">
-            <a href="#variants" class="btn-sage">Koupit kurz ↓</a>
-            <a href="{% url 'about' %}" class="btn-outline-sage">Více o kurzu →</a>
-          </div>
         </div>
-
-        <div class="hero-media">
-          <img src="{% static 'img/hero-dog.jpg' %}" alt="Klidný pes">
-
-          <div class="hero-quality">
-            <small>GARANCE KVALITY</small>
-            <strong>📜 Certifikovaný lektor</strong>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
-
-  <!-- MOBILE HERO -->
-  <div class="hero-mobile">
-    <div class="hero-mobile-inner">
-
-      <span class="hero-badge">
-        ONLINE KURZ
-      </span>
-
-      <h1 class="hero-title">
-        Naučte se rozumět<br>
-        <em>tiché řeči</em> psů.
-      </h1>
-
-      <div class="hero-alert">
-        Agrese nezačíná kousnutím.<br>
-        Začíná nepochopením.
-      </div>
-
-      <p class="hero-lead">
-        Konejšivé signály jsou klíčem k prevenci konfliktů,
-        klidnému soužití a ochraně wellbeing psa.
-      </p>
-
-      <ul class="hero-questions">
-        <li>Jaké funkce mají konejšivé signály a proč nejde o signály stresu?</li>
-        <li>Jak souvisí konejšivé signály a projevy agrese?</li>
-        <li>Jak je využít v tréninku reaktivních a bázlivých psů?</li>
-      </ul>
-
-      <div class="hero-actions">
-        <a href="#variants" class="btn-sage">
-          Koupit kurz
-        </a>
-      </div>
-
-    </div>
-
-  </div>
-
 </section>
 {% endblock %}
 
-
-{# =========================
-   ZBYTEK STRÁNKY – <main>
-========================= #}
 {% block content %}
-
-<section class="course-why py-6">
-  <div class="container text-center">
-
-    <h2 class="section-title mb-3">
-      Proč porozumět signálům?
-    </h2>
-
-    <p class="section-lead mx-auto mb-6">
-      Konejšivé signály nejsou náhodné. Jsou to komunikační nástroje, kterými psi
-      předcházejí konfliktům, vyjadřují zdvořilost a regulují stres v každodenních situacích.
-    </p>
-
-    <!-- PILÍŘE -->
-    <div class="row g-5 text-start">
-
-      <div class="col-md-4">
-        <div class="why-card">
-          <div class="why-icon eye">👁️</div>
-          <h5>Co se naučíte</h5>
-          <p>
-            V kurzu se naučíte rozpoznat, kdy jsou konejšivé signály
-            běžnou klidnou komunikací a kdy se objevují v souvislosti
-            s projevy agrese. Naučíte se vnímat i jemné detaily,
-            které běžnému pozorovateli unikají.
-          </p>
-        </div>
+<section class="home-intro section-space">
+  <div class="container">
+    <div class="section-head section-head-split">
+      <div>
+        <span class="section-kicker">Kdo jsme a co děláme</span>
+        <h2 class="section-title">Propojujeme vzdělávání, praxi a vybavení pro každodenní život se psem.</h2>
       </div>
-
-      <div class="col-md-4">
-        <div class="why-card">
-          <div class="why-icon video">🎥</div>
-          <h5>Kurz postavený na praxi</h5>
-          <p>
-            Teorie je jedna věc, praxe druhá. Kurz obsahuje množství
-            komentovaných videí z běžného života i potenciálně
-            problematických situací. Vše je vysvětleno srozumitelně
-            a v reálném kontextu.
-          </p>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="why-card">
-          <div class="why-icon heart">🤍</div>
-          <h5>Etický přístup a správné vyhodnocení</h5>
-          <p>
-            Bez nátlaku a dominance. Zaměřujeme se na rozlišení eustresu a distresu, správné
-            vyhodnocení situace a rozhodnutí, kdy je zásah člověka přínosný – a kdy ne.
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CÍLE KURZU -->
-
-    <div class="course-goals-wrapper">
-      <h4 class="course-goals-title">
-        Cílem kurzu je předat znalosti, které povedou k praxi:
-      </h4>
-
-      <ul class="course-goals-list">
-        <li>Správně interpretovat konejšivé signály v celkovém kontextu</li>
-        <li>Umět vyhodnotit závažnost situace a vhodně ji řešit</li>
-        <li>Reagovat na konejšivé signály v běžném soužití i při tréninku</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- O MODULECH -->
-<section class="course-structure py-6">
-  <div class="container structure-grid">
-
-    <!-- LEVÁ ČÁST -->
-    <div class="structure-text">
-      <h2 class="structure-title">
-        Struktura, která dává<br>
-        <span>smysl.</span>
-      </h2>
-
-      <p class="structure-lead">
-        Kurz je rozdělen do 4 logických modulů, které vás provedou od zdvořilých pozdravů až
-        po krizovou komunikaci.
+      <p class="section-text">
+        CalmDog stojí na porozumění psí komunikaci, respektu k potřebám psa a hledání
+        funkčních řešení pro běžné soužití i náročnější situace.
       </p>
-
-      <div class="module-list">
-
-        <div class="module-card">
-          <div class="module-number">01</div>
-          <div>
-            <h5>Zdvořilá konverzace</h5>
-            <p>Signály jako pozdrav, prevence a uklidnění situace dříve než nastane napětí.</p>
-          </div>
-        </div>
-
-        <div class="module-card">
-          <div class="module-number">02</div>
-          <div>
-            <h5>Silné signály</h5>
-            <p>Jak psi konejšivými signály zastavují vznikající konflikt a vyjadřují jasné „stop“.</p>
-          </div>
-        </div>
-
-        <div class="module-card">
-          <div class="module-number">03</div>
-          <div>
-            <h5>Interpretace v kontextu</h5>
-            <p>Spojení konejšivých signálů se stresem, agresí a přesměrovaným chováním.</p>
-          </div>
-        </div>
-
-        <div class="module-card">
-          <div class="module-number">04</div>
-          <div>
-            <h5>Člověk v komunikaci</h5>
-            <p>Které signály můžeme, my lidé, použít a jak na ně správně reagovat.</p>
-          </div>
-        </div>
-
-      </div>
     </div>
 
-    <!-- PRAVÁ ČÁST -->
-    <div class="structure-circle">
-      <div class="circle-content">
-        <div class="play-icon">▶</div>
-        <h4>V každém modulu najdete:</h4>
-        <ul>
-          <li>Odborný výklad</li>
-          <li>Komentované ukázky</li>
-          <li>Praktické úkoly</li>
-        </ul>
-      </div>
-    </div>
+    <div class="intro-grid">
+      <article class="intro-panel intro-panel-strong">
+        <span class="panel-number">01</span>
+        <h3>Pomáháme majitelům lépe číst chování psa</h3>
+        <p>
+          Zaměřujeme se na komunikaci psa, prevenci konfliktů, práci s emocemi a
+          hledání klidnějších a udržitelných řešení.
+        </p>
+      </article>
 
+      <article class="intro-panel">
+        <span class="panel-number">02</span>
+        <h3>Učíme přenositelné principy, ne rychlé triky</h3>
+        <p>
+          Cílem není krátkodobý efekt, ale dlouhodobé porozumění tomu, co pes říká,
+          proč reaguje a jak mu můžeme skutečně pomoci.
+        </p>
+      </article>
+
+      <article class="intro-panel">
+        <span class="panel-number">03</span>
+        <h3>Vybíráme i tvoříme věci, které dávají smysl v praxi</h3>
+        <p>
+          Vedle vzdělávání nabízíme také vodítka a vybavení, které podporují pohodlí,
+          bezpečí a funkčnost při každodenním používání.
+        </p>
+      </article>
+    </div>
   </div>
 </section>
 
-    <!-- AUTOR -->
+<section id="sluzby" class="services-section section-space">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-kicker">Služby</span>
+      <h2 class="section-title">Jedno místo pro trénink, vzdělávání i výbavu.</h2>
+    </div>
+
+    <div class="services-grid">
+      <article class="service-card service-card-trainings">
+        <div class="service-icon">01</div>
+        <h3>Osobní tréninky</h3>
+        <p>
+          Individuální konzultace a praktické lekce pro psy i jejich lidi. Řešíme běžné
+          soužití, reaktivitu, bázlivost i komunikaci v náročnějších situacích.
+        </p>
+        <a href="{% url 'courses:trainings' %}" class="service-link">Zobrazit tréninky</a>
+      </article>
+
+      <article class="service-card service-card-courses">
+        <div class="service-icon">02</div>
+        <h3>Online kurzy</h3>
+        <p>
+          Studium vlastním tempem, odborný obsah a praktické ukázky z reálných situací.
+          Ideální pro každého, kdo chce porozumět chování psa do hloubky.
+        </p>
+        <a href="{% url 'payments:course_list' %}" class="service-link">Prohlédnout kurzy</a>
+      </article>
+
+      <article class="service-card service-card-products">
+        <div class="service-icon">03</div>
+        <h3>Vodítka a vybavení</h3>
+        <p>
+          Produkty vybíráme s důrazem na funkčnost, pohodlí a každodenní použitelnost.
+          Nejde jen o vzhled, ale o to, aby vybavení dobře sloužilo vám oběma.
+        </p>
+        <a href="{% url 'shop:product_list' %}" class="service-link">Prohlédnout vodítka</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="approach-section section-space">
+  <div class="container">
+    <div class="approach-shell">
+      <div class="approach-copy">
+        <span class="section-kicker">Jak pracujeme</span>
+        <h2 class="section-title">Klid, kontext a řešení, která fungují i doma.</h2>
+        <p class="section-text">
+          Neslibujeme zázraky přes noc. Díváme se na příčiny chování, na prostředí psa
+          i na to, co je realistické a bezpečné pro každodenní život.
+        </p>
+      </div>
+
+      <div class="approach-steps">
+        <article class="approach-step">
+          <strong>1. Porozumění situaci</strong>
+          <p>Nejdřív potřebujeme vědět, co pes prožívá a v jakém kontextu reaguje.</p>
+        </article>
+        <article class="approach-step">
+          <strong>2. Návrh vhodného postupu</strong>
+          <p>Volíme cestu, která je etická, srozumitelná a dlouhodobě udržitelná.</p>
+        </article>
+        <article class="approach-step">
+          <strong>3. Přenos do běžného života</strong>
+          <p>Neřešíme jen jednu lekci, ale i to, jak změny fungují doma, venku a v praxi.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="course-preview-section section-space">
+  <div class="container">
+    <div class="section-head section-head-split">
+      <div>
+        <span class="section-kicker">Online kurzy</span>
+        <h2 class="section-title">Obsah, který jde do hloubky a zůstává praktický.</h2>
+      </div>
+      <p class="section-text">
+        Kurzy stavíme tak, aby byly srozumitelné i použitelné. Teorie je vždy propojená
+        s reálnými ukázkami a každodenní prací se psem.
+      </p>
+    </div>
+
+    <div class="course-preview-grid">
+      {% for course in courses %}
+        <article class="course-preview-card">
+          <span class="course-preview-tag">Online kurz</span>
+          <h3>{{ course.title }}</h3>
+          <p>{{ course.public_intro|default:course.about_text|truncatewords:28 }}</p>
+          <div class="course-preview-footer">
+            <span>{{ course.plans.count }} variant{{ course.plans.count|pluralize:"a,y" }}</span>
+            <a href="{% url 'payments:course_detail' course.slug %}">Detail kurzu</a>
+          </div>
+        </article>
+      {% empty %}
+        <article class="course-preview-card course-preview-card-empty">
+          <span class="course-preview-tag">Online kurzy</span>
+          <h3>Nové kurzy se připravují</h3>
+          <p>Aktuální nabídku brzy doplníme. Pokud chceš vědět mezi prvními, napiš nám.</p>
+          <div class="course-preview-footer">
+            <span>Brzy více</span>
+            <a href="{% url 'courses:contact' %}">Napsat nám</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="home-cta section-space">
+  <div class="container">
+    <div class="home-cta-shell">
+      <div>
+        <span class="section-kicker">Kam dál</span>
+        <h2 class="section-title">Vyber si cestu, která teď dává největší smysl.</h2>
+      </div>
+      <div class="home-cta-actions">
+        <a href="{% url 'courses:trainings' %}" class="btn btn-sage">Chci osobní trénink</a>
+        <a href="{% url 'payments:course_list' %}" class="btn btn-outline-sage">Chci online kurz</a>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-sage">Chci vodítko</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="lecturer-section">
   <div class="container lecturer-grid">
-
-    <!-- TEXT -->
     <div class="lecturer-content">
       <span class="lecturer-badge">
         ● VAŠE LEKTORKA
@@ -284,11 +261,8 @@
           <span class="stat-label">Etický přístup</span>
         </div>
       </div>
-
-
     </div>
 
-    <!-- DEKOR / PRAVÁ ČÁST -->
     <div class="lecturer-visual">
       <div class="lecturer-photo-wrap">
         <img
@@ -298,102 +272,6 @@
         >
       </div>
     </div>
-
-
   </div>
 </section>
-
-
-
-
-<!-- VARIANTY KURZU -->
-<section id="variants" class="py-6 reveal">
-  <div class="container">
-
-    <h2 class="section-title text-center mb-2">
-      Vyber si variantu kurzu
-    </h2>
-
-    <p class="text-muted text-center mb-5">
-      Bezpečná platba • Doklad e-mailem • Okamžitý přístup
-      V případě potřeby platit jiným způsobem nás prosím kontaktujte e-mailem:
-      info@calmdog.cz
-    </p>
-
-    <div class="row g-4 justify-content-center">
-
-      {% for plan in plans %}
-      <div class="col-md-6 col-lg-5">
-
-        {% if plan.recommended %}
-        <div class="pricing-frame">
-        {% endif %}
-
-          <div class="pricing-card {% if plan.recommended %}pricing-card-featured pricing-card--highlight{% endif %}">
-
-
-            {% if plan.recommended %}
-            <div class="pricing-badge">Doporučujeme</div>
-            {% endif %}
-
-            <h3 class="pricing-title">
-              {{ plan.name }}
-            </h3>
-
-            <p class="pricing-subtitle">
-              {{ plan.subtitle }}
-            </p>
-
-            <div class="pricing-price">
-              {{ plan.price_czk|intcomma }} Kč
-              <span>jednorázová platba</span>
-            </div>
-            
-            {% if plan.description %}
-            <p class="pricing-description">
-              {{ plan.description|linebreaksbr }}
-            </p>
-            {% endif %}
-
-            <ul class="pricing-features">
-              {% for line in plan.bullets.splitlines %}
-                {% if line %}
-                  <li>{{ line }}</li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-
-            {% if plan.target_group %}
-            <div class="pricing-note">
-              <strong>Pro koho je kurz vhodný:</strong><br>
-              {{ plan.target_group }}
-            </div>
-            {% endif %}
-
-            <a href="{% url 'payments:add_course_to_cart' plan.course.product.slug plan.code %}"
-              class="btn {% if plan.recommended %}btn-sage{% else %}btn-outline-sage{% endif %} w-100 mt-4">
-                Přidat do košíku
-            </a>
-
-
-            <div class="small text-muted text-center mt-2">
-              Přístup ti po zaplacení přijde e-mailem
-            </div>
-
-          </div>
-
-        {% if plan.recommended %}
-        </div>
-        {% endif %}
-
-      </div>
-      {% endfor %}
-
-    </div>
-
-  </div>
-</section>
-
-
-
 {% endblock %}

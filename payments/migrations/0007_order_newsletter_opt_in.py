@@ -10,9 +10,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='order',
-            name='newsletter_opt_in',
-            field=models.BooleanField(default=False, help_text='Souhlas se zasíláním newsletteru'),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.AddField(
+                    model_name='order',
+                    name='newsletter_opt_in',
+                    field=models.BooleanField(default=False, help_text='Souhlas se zasíláním newsletteru'),
+                ),
+            ],
         ),
     ]

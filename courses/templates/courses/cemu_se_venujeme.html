@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about-us.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="about-page py-6">
+  <div class="container">
+    <div class="about-shell">
+      <div class="about-hero reveal">
+        <span class="badge badge-soft mb-3">Čemu se věnujeme</span>
+        <h1 class="section-title mb-3">Klidnější komunikace mezi člověkem a psem</h1>
+        <p class="about-lead mb-0">
+          CalmDog staví na porozumění psí řeči, respektu k potřebám psa a etickém přístupu bez nátlaku.
+        </p>
+      </div>
+
+      <section id="what-we-do" class="about-section card card-soft border-0 reveal">
+        <div class="card-body p-4 p-md-5">
+          <p class="about-eyebrow mb-2">Čemu se věnujeme</p>
+          <h2 class="about-title mb-3">Komplexnímu poradenství a tréninku v oblasti problémového chování psů</h2>
+          <p class="about-copy">
+            Specializujeme se na lidsko-psí komunikaci, konejšivé signály a uspokojování přirozených potřeb psa.
+            Cílem není jen zvládnout konkrétní problém, ale porozumět psovi v širších souvislostech.
+          </p>
+
+          <div class="about-topic-grid">
+            <article class="about-topic-card">
+              <div class="about-topic-media">
+                <img src="{% static 'img/Cemu-se-venujeme-1.png' %}" alt="Komunikace a chování" class="about-topic-image">
+              </div>
+              <h3>Komunikace a chování</h3>
+              <ul>
+                <li>Psí řeč: konejšivé signály, signály agrese a žádosti o vzdálenost, štěkání a jeho funkce.</li>
+                <li>Psí komunikace mezi psy, směrem ke člověku i prostředí a také řeč našeho těla.</li>
+                <li>Přirozené chování a instinkty psa.</li>
+                <li>Agresivita, strach a úzkost u psů.</li>
+                <li>Řešení problémového chování.</li>
+              </ul>
+            </article>
+
+            <article class="about-topic-card">
+              <div class="about-topic-media">
+                <img src="{% static 'img/Cemu-se-venujeme-2.png' %}" alt="Každodenní fungování" class="about-topic-image">
+              </div>
+              <h3>Každodenní fungování</h3>
+              <ul>
+                <li>Stres a stres snižující aktivity.</li>
+                <li>Zdraví a bolest ve vztahu k problémovému chování psa.</li>
+                <li>Chůze na vodítku a používání postroje.</li>
+                <li>Kvalita procházek a aktivit se psem.</li>
+                <li>Socializační a komunikační procházky, socializační aktivity.</li>
+              </ul>
+            </article>
+
+            <article class="about-topic-card">
+              <div class="about-topic-media">
+                <img src="{% static 'img/Cemu-se-venujeme-3.png' %}" alt="Další oblasti, kterým se věnujeme" class="about-topic-image">
+              </div>
+              <h3>Další oblasti, kterým se věnujeme</h3>
+              <ul>
+                <li>Mentální aktivity, obohacené prostředí a nosework jako nesoutěžní disciplína.</li>
+                <li>Desenzibilizace jako tréninková metoda.</li>
+                <li>Odměňování a pozitivní interakce.</li>
+                <li>Péče o psychické i fyzické zdraví psa.</li>
+                <li>Specifika soužití se štěnětem, dospívajícím, dospělým i stárnoucím psem.</li>
+                <li>Specifika soužití daná plemenem a individualitou psa.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="about-contrast-box">
+            <div>
+              <p class="about-eyebrow mb-2">Co u nás nenajdete</p>
+              <h3 class="about-contrast-title">Nepracujeme přes nátlak a tresty</h3>
+            </div>
+
+            <ul class="about-contrast-list">
+              <li>Stres jako nástroj tréninku</li>
+              <li>Nátlak</li>
+              <li>Klikr trénink jako univerzální řešení všeho</li>
+              <li>Tradiční povely jako hlavní odpověď na problémové chování</li>
+              <li>Tresty</li>
+            </ul>
+
+            <p class="about-contrast-copy mb-0">
+              Často se setkáváme s tím, že problémové chování psa bývá řešeno povely nebo tresty.
+              To ale nemusí vést k tomu, aby se pes dokázal vyrovnat s příčinou svého chování.
+              Pomáháme psu, aby náročné situace zvládal sám a s větší jistotou.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

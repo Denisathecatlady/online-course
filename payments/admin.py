@@ -2,52 +2,23 @@ from django.contrib import admin
 from django.urls import path, reverse
 from django.utils.html import format_html
 from django.http import FileResponse, Http404
-
-from .models import Product, CoursePlan, Order, OrderItem, CourseAccess
-
-
-# ======================================
-# COURSE PLAN
-# ======================================
-
-@admin.register(CoursePlan)
-class CoursePlanAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "price_czk",
-        "includes_consultation",
-        "includes_certificate",
-        "is_active",
-    )
-    list_filter = (
-        "is_active",
-        "includes_consultation",
-        "includes_certificate",
-    )
-    search_fields = ("name", "code")
-    prepopulated_fields = {"code": ("name",)}
-
-
-# ======================================
-# PRODUCT
-# ======================================
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "product_type",
-        "is_active",
-        "created_at",
-    )
-    list_filter = ("product_type", "is_active")
-    search_fields = ("name", "slug")
-    prepopulated_fields = {"slug": ("name",)}
+from .models import Order, OrderItem, CourseAccess
 
 
 # ======================================
 # ORDER
 # ======================================
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = (
+        "product_variant",
+        "course_plan",
+        "quantity",
+        "price_at_purchase",
+    )
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -55,12 +26,30 @@ class OrderAdmin(admin.ModelAdmin):
         "id",
         "buyer_email",
         "status",
+        "shipping_method",
+        "packeta_point_name",
+        "packeta_tracking_number",
         "invoice_number",
         "invoice_download",
         "created_at",
     )
 
-    readonly_fields = ("created_at",)
+    list_filter = ("status", "shipping_method")
+    readonly_fields = (
+        "created_at",
+        "packeta_packet_id",
+        "packeta_tracking_number",
+        "packeta_created_at",
+    )
+    search_fields = (
+        "buyer_email",
+        "first_name",
+        "last_name",
+        "packeta_point_name",
+        "packeta_packet_id",
+        "packeta_tracking_number",
+    )
+    inlines = [OrderItemInline]
 
     def invoice_download(self, obj):
         if not obj.invoice_pdf:
@@ -103,8 +92,8 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = (
         "order",
-        "product",
-        "plan",
+        "product_variant",
+        "course_plan",
         "quantity",
         "price_at_purchase",
     )

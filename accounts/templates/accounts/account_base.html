@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/account-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="account-page py-6">
+  <div class="container">
+    <div class="account-shell">
+      <aside class="account-sidebar reveal">
+        <div class="account-sidebar-card">
+          <span class="badge badge-soft mb-3">Můj účet</span>
+          <h1 class="account-sidebar-title">{{ request.user.first_name|default:request.user.email }}</h1>
+          <p class="account-sidebar-copy">
+            Správa profilu, objednávek a přístupů ke kurzům na jednom místě.
+          </p>
+
+          <nav class="account-nav">
+            <a href="{% url 'accounts:profile' %}" class="account-nav-link {% if account_section == 'profile' %}is-active{% endif %}">
+              Profil
+            </a>
+            <a href="{% url 'accounts:order_history' %}" class="account-nav-link {% if account_section == 'orders' %}is-active{% endif %}">
+              Objednávky
+            </a>
+            <a href="{% url 'accounts:my_courses' %}" class="account-nav-link {% if account_section == 'courses' %}is-active{% endif %}">
+              Moje kurzy
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <div class="account-content reveal">
+        {% block account_content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

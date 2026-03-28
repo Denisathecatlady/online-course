@@ -10,76 +10,81 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='order',
-            name='city',
-            field=models.CharField(blank=True, max_length=120),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='country',
-            field=models.CharField(default='CZ', max_length=2),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='first_name',
-            field=models.CharField(default='', max_length=120),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_city',
-            field=models.CharField(blank=True, max_length=120),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_country',
-            field=models.CharField(blank=True, default='CZ', max_length=2),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_name',
-            field=models.CharField(blank=True, max_length=255),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_pdf',
-            field=models.FileField(blank=True, null=True, upload_to='invoices/'),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_street',
-            field=models.CharField(blank=True, max_length=255),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='invoice_zip',
-            field=models.CharField(blank=True, max_length=20),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='last_name',
-            field=models.CharField(default='', max_length=120),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='phone',
-            field=models.CharField(blank=True, max_length=40),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='street',
-            field=models.CharField(blank=True, max_length=255),
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='zip_code',
-            field=models.CharField(blank=True, max_length=20),
-        ),
-        migrations.AlterField(
-            model_name='order',
-            name='buyer_email',
-            field=models.EmailField(max_length=254),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.AddField(
+                    model_name='order',
+                    name='city',
+                    field=models.CharField(blank=True, max_length=120),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='country',
+                    field=models.CharField(default='CZ', max_length=2),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='first_name',
+                    field=models.CharField(default='', max_length=120),
+                    preserve_default=False,
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_city',
+                    field=models.CharField(blank=True, max_length=120),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_country',
+                    field=models.CharField(blank=True, default='CZ', max_length=2),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_name',
+                    field=models.CharField(blank=True, max_length=255),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_pdf',
+                    field=models.FileField(blank=True, null=True, upload_to='invoices/'),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_street',
+                    field=models.CharField(blank=True, max_length=255),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_zip',
+                    field=models.CharField(blank=True, max_length=20),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='last_name',
+                    field=models.CharField(default='', max_length=120),
+                    preserve_default=False,
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='phone',
+                    field=models.CharField(blank=True, max_length=40),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='street',
+                    field=models.CharField(blank=True, max_length=255),
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='zip_code',
+                    field=models.CharField(blank=True, max_length=20),
+                ),
+                migrations.AlterField(
+                    model_name='order',
+                    name='buyer_email',
+                    field=models.EmailField(max_length=254),
+                ),
+            ],
         ),
     ]

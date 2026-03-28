@@ -4,6 +4,15 @@ from django.conf import settings
 from django.db import migrations
 
 
+def rename_coursesaccess_table(apps, schema_editor):
+    tables = set(schema_editor.connection.introspection.table_names())
+    old_table = "payments_coursesaccess"
+    new_table = "payments_courseaccess"
+
+    if old_table in tables and new_table not in tables:
+        schema_editor.alter_db_table(None, old_table, new_table)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -13,8 +22,18 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='CoursesAccess',
-            new_name='CourseAccess',
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(
+                    rename_coursesaccess_table,
+                    migrations.RunPython.noop,
+                ),
+            ],
+            state_operations=[
+                migrations.RenameModel(
+                    old_name='CoursesAccess',
+                    new_name='CourseAccess',
+                ),
+            ],
         ),
     ]

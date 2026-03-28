@@ -1,5 +1,6 @@
 from .services.cart import get_or_create_cart
 from .models import Order
+from django.conf import settings
 
 
 def cart_context(request):
@@ -22,10 +23,14 @@ def cart_context(request):
         count = cart.items.count() if cart else 0
 
         return {
-            "cart_items_count": count
+            "cart_items_count": count,
+            "app_env": settings.APP_ENV,
+            "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
         }
 
     except Exception:
         return {
-            "cart_items_count": 0
+            "cart_items_count": 0,
+            "app_env": settings.APP_ENV,
+            "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
         }

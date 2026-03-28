@@ -1,0 +1,32 @@
+{% extends "accounts/account_base.html" %}
+{% load humanize %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Objednávky</p>
+      <h2 class="account-title mb-1">Historie objednávek</h2>
+      <p class="account-copy mb-0">
+        Přehled zaplacených objednávek a detailů nákupů.
+      </p>
+    </div>
+  </div>
+
+  {% if orders %}
+    <div class="account-list">
+      {% for order in orders %}
+        <a href="{% url 'accounts:order_detail' order.id %}" class="account-list-item">
+          <div>
+            <strong>Objednávka #{{ order.id }}</strong><br>
+            <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
+          </div>
+          <span class="account-price">{{ order.total_price|intcomma }} Kč</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="account-empty">Zatím nemáš žádné objednávky.</p>
+  {% endif %}
+</div>
+{% endblock %}

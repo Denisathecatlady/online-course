@@ -1,5 +1,8 @@
 import os
 import stripe
+import logging
+from payments.services.packeta import create_packeta_shipment
+from django.utils import timezone
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -7,122 +10,239 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.urls import reverse
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.core.mail import EmailMessage
 from django.db import transaction
-from django.contrib.auth.decorators import login_required
-from .models import CoursePlan, Order, CourseAccess, Product, OrderItem
+
+from shop.models import Product, ProductVariant
+from courses.models import CoursePlan
+from courses.models import Course
+from .models import Order, OrderItem, CourseAccess
 from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
-from django.shortcuts import render, get_object_or_404
-from .models import Product, CoursePlan
 
-import logging
 
 logger = logging.getLogger(__name__)
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "").strip()
+
+def get_stripe_secret_key():
+    return settings.STRIPE_SECRET_KEY.strip()
+
+
+def get_stripe_webhook_secret():
+    return settings.STRIPE_WEBHOOK_SECRET.strip()
+
+
+def build_site_url(path):
+    base_url = settings.SITE_URL.rstrip("/")
+    return f"{base_url}{path}"
 
 
 # =====================================================
-# KOŠÍK
+# KOŠÍK – ONLINE KURZ
 # =====================================================
 
+@require_POST
+def add_course_to_cart(request, plan_id):
 
-def add_course_to_cart(request, product_slug, plan_code):
-    product = get_object_or_404(Product, slug=product_slug, product_type="course")
-    plan = get_object_or_404(CoursePlan, code=plan_code)
+    plan = get_object_or_404(
+        CoursePlan,
+        id=plan_id,
+        is_active=True
+    )
 
     cart = get_or_create_cart(request)
 
     OrderItem.objects.get_or_create(
         order=cart,
-        product=product,
-        plan=plan,
+        course_plan=plan,
         defaults={
             "quantity": 1,
-            "price_at_purchase": plan.price_czk
+            "price_at_purchase": plan.price
         }
     )
 
     return redirect("payments:cart_detail")
 
+# =====================================================
+# KOŠÍK – FYZICKÝ PRODUKT (VODÍTKO)
+# =====================================================
+@require_POST
+def add_variant_to_cart(request, variant_id):
 
+    variant = get_object_or_404(
+        ProductVariant,
+        id=variant_id,
+        is_active=True
+    )
 
+    cart = get_or_create_cart(request)
+
+    quantity = int(request.POST.get("quantity", 1))
+
+    # 🔒 OCHRANA 1 – není skladem
+    if variant.stock <= 0:
+        return HttpResponseBadRequest("Produkt není skladem.")
+
+    # 🔒 OCHRANA 2 – víc než je skladem
+    if quantity > variant.stock:
+        return HttpResponseBadRequest("Není dostatek kusů skladem.")
+
+    # Pokud už položka v košíku existuje
+    order_item, created = OrderItem.objects.get_or_create(
+        order=cart,
+        product_variant=variant,
+        defaults={
+            "quantity": quantity,
+            "price_at_purchase": variant.price
+        }
+    )
+
+    if not created:
+        new_quantity = order_item.quantity + quantity
+
+        if new_quantity > variant.stock:
+            return HttpResponseBadRequest("Překročen dostupný sklad.")
+
+        order_item.quantity = new_quantity
+        order_item.save(update_fields=["quantity"])
+
+    return redirect("payments:cart_detail")
+
+# =====================================================
+# DETAIL KOŠÍKU
+# =====================================================
 
 def cart_detail(request):
     cart = get_or_create_cart(request)
 
     cart = Order.objects.prefetch_related(
-        "items__product",
-        "items__plan"
+        "items__product_variant__product",
+        "items__course_plan__course"
     ).get(id=cart.id)
 
-    items = cart.items.all()
+    has_physical_products = cart.contains_physical_product()
 
     return render(request, "payments/cart.html", {
-        "cart": cart,
-        "items": items
+        "order": cart,
+        "items": cart.items.all(),
+        "has_physical_products": has_physical_products,
     })
-
 
 # =====================================================
 # CHECKOUT
 # =====================================================
 
-
 @require_http_methods(["GET", "POST"])
 def checkout(request):
-
-    if not stripe.api_key:
-        return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
-
     cart = get_or_create_cart(request)
 
-    cart = Order.objects.prefetch_related(
-        "items__product",
-        "items__plan"
-    ).get(id=cart.id)
+    cart = (
+        Order.objects
+        .prefetch_related(
+            "items__product_variant__product",
+            "items__course_plan__course"
+        )
+        .get(id=cart.id)
+    )
 
     if not cart.items.exists():
         return HttpResponseBadRequest("Košík je prázdný.")
 
+    has_physical_products = cart.contains_physical_product()
+    is_packeta_delivery = cart.shipping_method == Order.ShippingMethod.ZASILKOVNA
+
+    if has_physical_products and not cart.shipping_method:
+        return redirect("payments:shipping")
 
     if request.method == "GET":
-        return render(
-            request,
-            "payments/checkout_form.html",
-            {
-                "cart": cart,
-                "items": cart.items.all(),
-            },
-        )
+        return render(request, "payments/checkout_form.html", {
+            "cart": cart,
+            "items": cart.items.all(),
+            "has_physical_products": has_physical_products,
+            "is_packeta_delivery": is_packeta_delivery,
+        })
 
-    # Uložení fakturačních údajů
+    stripe_secret_key = get_stripe_secret_key()
+
+    if not stripe_secret_key:
+        return HttpResponseBadRequest("Chybí STRIPE_SECRET_KEY.")
+
+    if not stripe_secret_key.startswith("sk_"):
+        logger.error("Invalid STRIPE_SECRET_KEY configured. Expected secret key starting with 'sk_'.")
+        return HttpResponseBadRequest("Neplatná konfigurace Stripe.")
+
+    stripe.api_key = stripe_secret_key
+
+    # ------------------------------
+    # ULOŽENÍ ÚDAJŮ
+    # ------------------------------
+
     cart.buyer_email = request.POST.get("email", "").strip()
     cart.first_name = request.POST.get("first_name", "").strip()
     cart.last_name = request.POST.get("last_name", "").strip()
+    cart.phone = request.POST.get("phone", "").strip()
     cart.street = request.POST.get("street", "").strip()
     cart.city = request.POST.get("city", "").strip()
     cart.zip_code = request.POST.get("zip_code", "").strip()
     cart.country = request.POST.get("country", "CZ").strip()
+    cart.invoice_name = request.POST.get("invoice_name", "").strip()
+    cart.invoice_street = request.POST.get("invoice_street", "").strip()
+    cart.invoice_city = request.POST.get("invoice_city", "").strip()
+    cart.invoice_zip = request.POST.get("invoice_zip", "").strip()
+    cart.invoice_country = request.POST.get("invoice_country", "CZ").strip()
     cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
     cart.status = Order.Status.PENDING
-    cart.save()
+
+    cart.save(update_fields=[
+        "buyer_email",
+        "first_name",
+        "last_name",
+        "phone",
+        "street",
+        "city",
+        "zip_code",
+        "country",
+        "invoice_name",
+        "invoice_street",
+        "invoice_city",
+        "invoice_zip",
+        "invoice_country",
+        "newsletter_opt_in",
+        "status"
+    ])
+
+    # Pokud je fyzický produkt a není doprava
+    # ------------------------------
+    # STRIPE LINE ITEMS
+    # ------------------------------
 
     line_items = []
 
     for item in cart.items.all():
+
+        if item.course_plan:
+            name = item.course_plan.course.title
+        elif item.product_variant:
+            name = item.product_variant.product.name
+        else:
+            continue
+
         line_items.append({
             "quantity": item.quantity,
             "price_data": {
                 "currency": "czk",
                 "unit_amount": int(item.price_at_purchase * 100),
+                "product_data": {"name": name},
+            },
+        })
+
+    if cart.shipping_price > 0:
+        line_items.append({
+            "quantity": 1,
+            "price_data": {
+                "currency": "czk",
+                "unit_amount": int(cart.shipping_price * 100),
                 "product_data": {
-                    "name": item.product.name,
+                    "name": f"Doprava – {cart.get_shipping_method_display()}",
                 },
             },
         })
@@ -131,8 +251,8 @@ def checkout(request):
         mode="payment",
         customer_email=cart.buyer_email,
         line_items=line_items,
-        success_url=request.build_absolute_uri("/payments/success/"),
-        cancel_url=request.build_absolute_uri("/payments/cancel/"),
+        success_url=build_site_url("/payments/success/"),
+        cancel_url=build_site_url("/payments/cancel/"),
         metadata={"order_id": str(cart.id)},
     )
 
@@ -163,9 +283,18 @@ def cancel(request):
 @csrf_exempt
 @require_POST
 def stripe_webhook(request):
+
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-    endpoint_secret = os.environ.get("STRIPE_WEBHOOK_SECRET", "").strip()
+    endpoint_secret = get_stripe_webhook_secret()
+
+    stripe_secret_key = get_stripe_secret_key()
+    if stripe_secret_key.startswith("sk_"):
+        stripe.api_key = stripe_secret_key
+
+    if not endpoint_secret:
+        logger.error("Missing STRIPE_WEBHOOK_SECRET.")
+        return HttpResponseBadRequest("Missing webhook configuration")
 
     try:
         event = stripe.Webhook.construct_event(
@@ -176,64 +305,140 @@ def stripe_webhook(request):
     except Exception:
         return HttpResponseBadRequest("Invalid webhook")
 
-    if event["type"] == "checkout.session.completed":
-        session = event["data"]["object"]
-        order_id = session.get("metadata", {}).get("order_id")
+    if event["type"] != "checkout.session.completed":
+        return HttpResponse(status=200)
 
-        if not order_id:
-            return HttpResponse(status=200)
+    session = event["data"]["object"]
+    order_id = session.get("metadata", {}).get("order_id")
 
-        try:
-            order = Order.objects.prefetch_related("items__product", "items__plan").get(id=order_id)
-        except Order.DoesNotExist:
-            return HttpResponse(status=200)
+    if not order_id:
+        return HttpResponse(status=200)
 
-        if order.status == Order.Status.PAID:
-            return HttpResponse(status=200)
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        return HttpResponse(status=200)
 
-        with transaction.atomic():
+    # Pokud už je zaplaceno → nic nedělat
+    if order.status == Order.Status.PAID:
+        return HttpResponse(status=200)
 
-            order.status = Order.Status.PAID
-            order.stripe_payment_intent_id = session.get("payment_intent", "")
-            order.save(update_fields=["status", "stripe_payment_intent_id"])
+    # ======================================
+    # 1️⃣ ULOŽENÍ ZAPLACENÍ (KRITICKÁ ČÁST)
+    # ======================================
 
-            assign_invoice_number(order)
+    with transaction.atomic():
 
-            invoice_file = generate_invoice_pdf(order)
-            order.invoice_pdf.save(invoice_file.name, invoice_file)
-            order.save(update_fields=["invoice_pdf"])
-
-        User = get_user_model()
-        user, created = User.objects.get_or_create(
-            email=order.buyer_email,
-            defaults={
-                "username": order.buyer_email,
-                "first_name": order.first_name,
-                "last_name": order.last_name,
-            },
+        order = (
+            Order.objects
+            .select_for_update()
+            .prefetch_related("items__product_variant", "items__course_plan__course")
+            .get(id=order_id)
         )
 
-        if created:
-            user.set_unusable_password()
-            user.save()
+        order.status = Order.Status.PAID
+        order.stripe_payment_intent_id = session.get("payment_intent", "")
+        order.save(update_fields=["status", "stripe_payment_intent_id"])
 
-        order.user = user
-        order.save(update_fields=["user"])
+        assign_invoice_number(order)
 
-        # Vytvoření přístupu ke kurzům podle položek
-        for item in order.items.all():
-            if item.product.product_type == "course":
-                CourseAccess.objects.update_or_create(
-                    user=user,
-                    course=item.product.course,
-                    defaults={
-                        "plan": item.plan,
-                        "is_active": True,
-                    },
-                )
+        invoice_file = generate_invoice_pdf(order)
+        order.invoice_pdf.save(invoice_file.name, invoice_file)
+        order.save(update_fields=["invoice_pdf"])
+
+        # ======================================
+        # 2️⃣ ODEČTENÍ SKLADU (POUZE JEDNOU)
+        # ======================================
+
+        if not order.stock_reduced:
+
+            for item in order.items.all():
+
+                if item.product_variant:
+
+                    variant = (
+                        ProductVariant.objects
+                        .select_for_update()
+                        .get(id=item.product_variant.id)
+                    )
+
+                    if item.quantity > variant.stock:
+                        logger.error(
+                            f"Insufficient stock for variant {variant.id} "
+                            f"in order {order.id}"
+                        )
+                        continue
+
+                    variant.stock -= item.quantity
+                    variant.save(update_fields=["stock"])
+
+            order.stock_reduced = True
+            order.save(update_fields=["stock_reduced"])
+
+    # ======================================
+    # 3️⃣ VYTVOŘENÍ ZÁSILKY (MIMO TRANSACTION)
+    # ======================================
+
+    if (
+        order.shipping_method == Order.ShippingMethod.ZASILKOVNA
+        and not order.packeta_packet_id
+    ):
+        try:
+            shipment = create_packeta_shipment(order)
+
+            order.packeta_packet_id = shipment["packet_id"]
+            order.packeta_tracking_number = shipment["tracking_number"]
+            order.packeta_created_at = timezone.now()
+
+            order.save(update_fields=[
+                "packeta_packet_id",
+                "packeta_tracking_number",
+                "packeta_created_at"
+            ])
+
+        except Exception as e:
+            logger.error(f"Packeta creation failed for order {order.id}: {e}")
+
+    # ======================================
+    # 4️⃣ VYTVOŘENÍ / NAPOJENÍ UŽIVATELE
+    # ======================================
+
+    User = get_user_model()
+    user, created = User.objects.get_or_create(
+        email=order.buyer_email,
+        defaults={
+            "username": order.buyer_email,
+            "first_name": order.first_name,
+            "last_name": order.last_name,
+        },
+    )
+
+    if created:
+        user.set_unusable_password()
+        user.save()
+
+    order.user = user
+    order.save(update_fields=["user"])
+
+    # ======================================
+    # 5️⃣ PŘÍSTUP KE KURZŮM
+    # ======================================
+
+    for item in order.items.all():
+        if item.course_plan:
+            CourseAccess.objects.update_or_create(
+                user=user,
+                course=item.course_plan.course,
+                defaults={
+                    "plan": item.course_plan,
+                    "is_active": True,
+                },
+            )
 
     return HttpResponse(status=200)
-
+# =====================================================
+# ODEBRÁNÍ Z KOŠÍKU
+# =====================================================
 
 def remove_from_cart(request, item_id):
     cart = get_or_create_cart(request)
@@ -246,52 +451,97 @@ def remove_from_cart(request, item_id):
 
     return redirect("payments:cart_detail")
 
+
+# =====================================================
+# LIST + DETAIL KURZŮ
+# =====================================================
+
 def course_list(request):
-    courses = Product.objects.filter(
-        product_type="course",
-        is_active=True
-    ).select_related("course")
+    courses = Course.objects.all()
 
     return render(request, "payments/course_list.html", {
         "courses": courses
     })
 
 def course_detail(request, slug):
-    product = get_object_or_404(
-        Product.objects.select_related("course"),
-        slug=slug,
-        product_type="course",
-        is_active=True
+    course = get_object_or_404(
+        Course,
+        slug=slug
     )
 
-    plans = CoursePlan.objects.filter(
-        course=product.course,
-        is_active=True
-    )
+    plans = course.plans.filter(is_active=True)
 
     return render(request, "payments/course_detail.html", {
-        "product": product,
+        "course": course,
         "plans": plans
     })
 
-def physical_list(request):
-    products = Product.objects.filter(
-        product_type="physical",
-        is_active=True
-    )
+# =====================================================
+# VOLBA DOPRAVY (POKUD JE V KOŠÍKU FYZICKÝ PRODUKT)
+# =====================================================
+@require_http_methods(["GET", "POST"])
+def shipping(request):
 
-    return render(request, "payments/physical_list.html", {
-        "products": products
-    })
+    cart = get_or_create_cart(request)
+    cart = Order.objects.get(id=cart.id)
 
-def physical_detail(request, slug):
-    product = get_object_or_404(
-        Product,
-        slug=slug,
-        product_type="physical",
-        is_active=True
-    )
+    if not cart.contains_physical_product():
+        return redirect("payments:contact_details")
 
-    return render(request, "payments/physical_detail.html", {
-        "product": product
+    if request.method == "POST":
+
+        method = request.POST.get("shipping_method")
+        packeta_point_id = request.POST.get("packeta_point_id", "").strip()
+        packeta_point_name = request.POST.get("packeta_point_name", "").strip()
+
+        if method == Order.ShippingMethod.ZASILKOVNA and settings.PACKETA_MODE == "mock":
+            packeta_point_id = packeta_point_id or settings.PACKETA_MOCK_POINT_ID
+            packeta_point_name = packeta_point_name or settings.PACKETA_MOCK_POINT_NAME
+
+        if method == Order.ShippingMethod.ZASILKOVNA and not packeta_point_id:
+            return render(request, "payments/shipping.html", {
+                "order": cart,
+                "error": "Pro Zásilkovnu vyber výdejní místo.",
+                "selected_method": method,
+                "packeta_point_id": packeta_point_id,
+                "packeta_point_name": packeta_point_name,
+                "packeta_widget_api_key": settings.PACKETA_WIDGET_API_KEY,
+                "packeta_mode": settings.PACKETA_MODE,
+                "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
+                "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
+            })
+
+        cart.shipping_method = method
+
+        if method == Order.ShippingMethod.ZASILKOVNA:
+            cart.shipping_price = 79
+            cart.packeta_point_id = packeta_point_id
+            cart.packeta_point_name = packeta_point_name or packeta_point_id
+        elif method == Order.ShippingMethod.KURYR:
+            cart.shipping_price = 119
+            cart.packeta_point_id = None
+            cart.packeta_point_name = None
+        else:
+            cart.shipping_price = 0
+            cart.packeta_point_id = None
+            cart.packeta_point_name = None
+
+        cart.save(update_fields=[
+            "shipping_method",
+            "shipping_price",
+            "packeta_point_id",
+            "packeta_point_name",
+        ])
+
+        return redirect("payments:contact_details")
+
+    return render(request, "payments/shipping.html", {
+        "order": cart,
+        "selected_method": cart.shipping_method,
+        "packeta_point_id": cart.packeta_point_id or "",
+        "packeta_point_name": cart.packeta_point_name or "",
+        "packeta_widget_api_key": settings.PACKETA_WIDGET_API_KEY,
+        "packeta_mode": settings.PACKETA_MODE,
+        "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
+        "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
     })

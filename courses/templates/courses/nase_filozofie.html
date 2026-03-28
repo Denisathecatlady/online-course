@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about-us.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="about-page py-6">
+  <div class="container">
+    <div class="about-shell">
+      <section class="about-section about-banner-card card card-soft border-0 reveal">
+        <div class="about-banner-media">
+          <img src="{% static 'img/folozofie_banner.png' %}" alt="Naše filozofie tréninku" class="about-banner-image">
+        </div>
+        <div class="card-body p-4 p-md-5">
+          <p class="about-eyebrow mb-2">Naše filozofie</p>
+          <h1 class="about-title mb-3">Bez nátlaku. S respektem. S důvěrou.</h1>
+          <p class="about-copy mb-0">
+            Náš přístup ke psu stojí na spolupráci, porozumění, respektu a důvěře.
+            Nehledáme rychlé potlačení projevu, ale skutečné příčiny chování a cesty,
+            jak psovi pomoci fungovat jistěji, bezpečněji a s větší lehkostí.
+          </p>
+        </div>
+      </section>
+
+      <section class="about-section card card-soft border-0 reveal">
+        <div class="card-body p-4 p-md-5">
+          <div class="about-two-column">
+            <div>
+              <p class="about-eyebrow mb-2">Jak se na psa díváme</p>
+              <h2 class="about-subtitle mb-3">Chování není zlobení, ale informace</h2>
+              <p class="about-copy">
+                Stejně jako lidé i psi prožívají v různých situacích různé emoce. Radost, obavu,
+                nejistotu i strach. A stejně jako my komunikují se světem tím, co zrovna cítí.
+                Pes nám velmi přesně ukazuje svůj stav řečí těla a konejšivými signály.
+              </p>
+              <p class="about-copy mb-0">
+                Když této komunikaci rozumíme, dokážeme psa nejen učit, ale především s ním budovat
+                vztah založený na bezpečí, spolupráci a skutečném porozumění.
+              </p>
+            </div>
+            <div class="about-side-media">
+              <img src="{% static 'img/Nase-filosofie-treninku-1-.png' %}" alt="Pes v přirozené komunikaci" class="about-side-image">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section card card-soft border-0 reveal">
+        <div class="card-body p-4 p-md-5">
+          <p class="about-eyebrow mb-2">Na čem stavíme řešení</p>
+          <h2 class="about-subtitle mb-4">Problémové chování vždy čteme v širším kontextu</h2>
+          <div class="about-topic-grid about-topic-grid-wide">
+            <article class="about-topic-card">
+              <h3>Emoce a komunikace</h3>
+              <ul>
+                <li>řeč těla a konejšivé signály</li>
+                <li>schopnost psa zvládat obtížné situace</li>
+                <li>vzájemná komunikace mezi člověkem a psem</li>
+              </ul>
+            </article>
+            <article class="about-topic-card">
+              <h3>Potřeby a zdraví</h3>
+              <ul>
+                <li>základní potřeby psa a jejich naplnění</li>
+                <li>vliv zdravotního stavu a nepohodlí</li>
+                <li>míra stresu a celková životní pohoda</li>
+              </ul>
+            </article>
+            <article class="about-topic-card">
+              <h3>Prostředí a predispozice</h3>
+              <ul>
+                <li>životní prostředí a každodenní podmínky</li>
+                <li>etogram a přirozené chování psa</li>
+                <li>genetika a individuální nastavení</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-contrast-box about-quote-box reveal">
+        <p class="about-eyebrow mb-2">CalmDog přístup</p>
+        <h2 class="about-contrast-title">Pomáháme psovi zvládnout příčinu, ne jen umlčet projev.</h2>
+        <p class="about-contrast-copy">
+          Porozumění chování psa stojí na znalosti jeho přirozeného chování, psí komunikace,
+          konejšivých signálů a respektování toho, co pes skutečně potřebuje. Cílem je takové
+          řešení, které vede k welfare psa a k dlouhodobě funkčnému soužití.
+        </p>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

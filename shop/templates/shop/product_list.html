@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="product-list-page py-6">
+    <div class="container">
+        <div class="product-list-shell">
+            <div class="product-list-intro reveal">
+                <span class="badge badge-soft mb-3">Vodítka</span>
+                <h1 class="section-title mb-3">Ručně laděná vodítka pro klidnější procházky</h1>
+                <p class="product-list-lead mb-0">
+                    Vyber si střih, délku i barvu, která bude sedět tobě i tvému psovi.
+                    Každý kus je navržený tak, aby byl funkční, odolný a vizuálně čistý.
+                </p>
+            </div>
+
+            {% if products %}
+                <div class="product-grid reveal">
+                    {% for product in products %}
+                        <article class="product-card">
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="product-card-media">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card-image">
+                                {% else %}
+                                    <div class="product-card-placeholder">CalmDog</div>
+                                {% endif %}
+                            </a>
+
+                            <div class="product-card-body">
+                                <div class="product-card-top">
+                                    <span class="product-card-kicker">Vodítko</span>
+                                    <h2 class="product-card-title">
+                                        <a href="{% url 'shop:product_detail' product.slug %}">
+                                            {{ product.name }}
+                                        </a>
+                                    </h2>
+                                    <p class="product-card-text">
+                                        {{ product.description|truncatewords:24 }}
+                                    </p>
+                                </div>
+
+                                <div class="product-card-bottom">
+                                    {% if product.variants.all %}
+                                        {% with product.variants.all|first as first_variant %}
+                                            <div class="product-price-wrap">
+                                                <span class="product-price-label">Cena od</span>
+                                                <strong class="product-price">{{ first_variant.price|intcomma }} Kč</strong>
+                                            </div>
+                                        {% endwith %}
+                                    {% endif %}
+
+                                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-sage w-100">
+                                        Zobrazit detail
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="product-empty card card-soft border-0 reveal">
+                    <div class="card-body p-4 p-md-5 text-center">
+                        <span class="product-empty-badge">Momentálně prázdné</span>
+                        <h2 class="product-empty-title mt-3">Žádná vodítka nejsou právě dostupná</h2>
+                        <p class="product-empty-copy">
+                            Jakmile budou znovu skladem, objeví se tady.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

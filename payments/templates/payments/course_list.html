@@ -1,19 +1,68 @@
-<h1>Kurzy</h1>
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
 
-<div class="row">
-  {% for product in courses %}
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5>{{ product.name }}</h5>
-          <p>{{ product.description }}</p>
+{% block body_class %}bg-hero{% endblock %}
 
-          <a href="{% url 'payments:course_detail' product.slug %}"
-             class="btn btn-outline-sage">
-            Detail kurzu
-          </a>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="course-list-section">
+
+    <div class="course-list-container">
+
+        <h1 class="course-list-title">
+            Online kurzy
+        </h1>
+
+        <div class="course-grid">
+
+            {% for course in courses %}
+            <div class="course-card">
+
+                {% if course.image %}
+                <div class="course-image-wrapper">
+                    <img src="{{ course.image.url }}"
+                         alt="{{ course.title }}">
+                </div>
+                {% endif %}
+
+                <div class="course-card-body">
+
+                    <h5 class="course-title">
+                        {{ course.title }}
+                    </h5>
+
+                    <p class="course-description">
+                        {{ course.short_description|truncatewords:20 }}
+                    </p>
+
+                    <div class="course-footer">
+
+                        {% with course.plans.all|first as first_plan %}
+                        <p class="course-price">
+                            od {{ first_plan.price|intcomma }} Kč
+                        </p>
+                        {% endwith %}
+
+                        <a href="{% url 'payments:course_detail' course.slug %}"
+                           class="btn-sage">
+                            Zobrazit detail
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+
         </div>
-      </div>
+
     </div>
-  {% endfor %}
-</div>
+
+</section>
+
+{% endblock %}

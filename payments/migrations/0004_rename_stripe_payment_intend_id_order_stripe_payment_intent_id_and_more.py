@@ -13,24 +13,29 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='order',
-            old_name='stripe_payment_intend_id',
-            new_name='stripe_payment_intent_id',
-        ),
-        migrations.AddField(
-            model_name='order',
-            name='buyer_email',
-            field=models.EmailField(blank=True, default='', help_text='E-mail kupujícího (pro objednávky bez registrace)', max_length=254),
-        ),
-        migrations.AlterField(
-            model_name='order',
-            name='status',
-            field=models.CharField(choices=[('pending', 'Čeká na platbu'), ('paid', 'Zaplaceno'), ('failed', 'Neúspěšné'), ('canceled', 'Zrušeno')], default='pending', max_length=20),
-        ),
-        migrations.AlterField(
-            model_name='order',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='orders', to=settings.AUTH_USER_MODEL),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.RenameField(
+                    model_name='order',
+                    old_name='stripe_payment_intend_id',
+                    new_name='stripe_payment_intent_id',
+                ),
+                migrations.AddField(
+                    model_name='order',
+                    name='buyer_email',
+                    field=models.EmailField(blank=True, default='', help_text='E-mail kupujícího (pro objednávky bez registrace)', max_length=254),
+                ),
+                migrations.AlterField(
+                    model_name='order',
+                    name='status',
+                    field=models.CharField(choices=[('pending', 'Čeká na platbu'), ('paid', 'Zaplaceno'), ('failed', 'Neúspěšné'), ('canceled', 'Zrušeno')], default='pending', max_length=20),
+                ),
+                migrations.AlterField(
+                    model_name='order',
+                    name='user',
+                    field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='orders', to=settings.AUTH_USER_MODEL),
+                ),
+            ],
         ),
     ]

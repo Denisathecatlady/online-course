@@ -10,24 +10,29 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='courseplan',
-            name='bullets',
-            field=models.TextField(blank=True, help_text='Jedna položka na řádek – zobrazí se jako seznam'),
-        ),
-        migrations.AddField(
-            model_name='courseplan',
-            name='description',
-            field=models.TextField(blank=True, help_text='Textový popis varianty (volitelné)'),
-        ),
-        migrations.AddField(
-            model_name='courseplan',
-            name='subtitle',
-            field=models.CharField(blank=True, help_text='Krátký podtitulek pod názvem (např. Bez konzultace • Bez certifikátu)', max_length=255),
-        ),
-        migrations.AlterField(
-            model_name='courseplan',
-            name='name',
-            field=models.CharField(max_length=200),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.AddField(
+                    model_name='courseplan',
+                    name='bullets',
+                    field=models.TextField(blank=True, help_text='Jedna položka na řádek – zobrazí se jako seznam'),
+                ),
+                migrations.AddField(
+                    model_name='courseplan',
+                    name='description',
+                    field=models.TextField(blank=True, help_text='Textový popis varianty (volitelné)'),
+                ),
+                migrations.AddField(
+                    model_name='courseplan',
+                    name='subtitle',
+                    field=models.CharField(blank=True, help_text='Krátký podtitulek pod názvem (např. Bez konzultace • Bez certifikátu)', max_length=255),
+                ),
+                migrations.AlterField(
+                    model_name='courseplan',
+                    name='name',
+                    field=models.CharField(max_length=200),
+                ),
+            ],
         ),
     ]

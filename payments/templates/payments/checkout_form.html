@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Objednávka kurzu{% endblock %}
+{% block title %}Dokončení objednávky{% endblock %}
 
 {% block content %}
 <section class="py-6">
@@ -9,16 +9,39 @@
 
         <div class="mb-4 text-center">
           <span class="badge mb-2">Objednávka</span>
-          <h1 class="section-title-sm mb-1">
-            {{ plan.name }}
-          </h1>
+          <h1 class="section-title-sm mb-1">Kontaktní a adresní údaje</h1>
           <p class="text-muted">
-            Dokončení objednávky a platba
+            {% if has_physical_products %}
+              Po výběru dopravy doplň údaje pro doručení a fakturaci.
+            {% else %}
+              Doplň údaje a pokračuj bezpečně k platbě.
+            {% endif %}
           </p>
         </div>
 
         <form method="post">
           {% csrf_token %}
+
+          {% if has_physical_products %}
+            <div class="card card-soft mb-4">
+              <div class="card-body p-4 p-md-5">
+                <h2 class="h6 fw-semibold mb-3">Zvolená doprava</h2>
+                <p class="mb-1">
+                  <strong>{{ cart.get_shipping_method_display }}</strong>
+                  {% if cart.packeta_point_name %}
+                    - {{ cart.packeta_point_name }}
+                  {% endif %}
+                </p>
+                <p class="text-muted mb-0">
+                  {% if is_packeta_delivery %}
+                    Objednávku odešleme na vybrané výdejní místo Zásilkovny.
+                  {% else %}
+                    Objednávku doručíme na adresu, kterou vyplníš níže.
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          {% endif %}
 
           <!-- KONTAKT -->
           <div class="card card-soft mb-4">
@@ -27,23 +50,23 @@
 
               <div class="mb-3">
                 <label class="form-label">E-mail *</label>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control" value="{{ cart.buyer_email }}" required>
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Jméno *</label>
-                  <input type="text" name="first_name" class="form-control" required>
+                  <input type="text" name="first_name" class="form-control" value="{{ cart.first_name }}" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Příjmení *</label>
-                  <input type="text" name="last_name" class="form-control" required>
+                  <input type="text" name="last_name" class="form-control" value="{{ cart.last_name }}" required>
                 </div>
               </div>
 
               <div class="mb-0">
                 <label class="form-label">Telefon *</label>
-                <input type="text" name="phone" class="form-control" required>
+                <input type="text" name="phone" class="form-control" value="{{ cart.phone }}" required>
               </div>
             </div>
           </div>
@@ -51,21 +74,33 @@
           <!-- ADRESA -->
           <div class="card card-soft mb-4">
             <div class="card-body p-4 p-md-5">
-              <h2 class="h6 fw-semibold mb-4">Adresa</h2>
+              <h2 class="h6 fw-semibold mb-4">
+                {% if is_packeta_delivery %}
+                  Kontaktní adresa
+                {% else %}
+                  Doručovací adresa
+                {% endif %}
+              </h2>
+
+              {% if is_packeta_delivery %}
+                <p class="text-muted mb-4">
+                  Výdejní místo už máš zvolené. Tady doplň kontaktní adresu kvůli objednávce a fakturaci.
+                </p>
+              {% endif %}
 
               <div class="mb-3">
                 <label class="form-label">Ulice *</label>
-                <input type="text" name="street" class="form-control" required>
+                <input type="text" name="street" class="form-control" value="{{ cart.street }}" required>
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Město *</label>
-                  <input type="text" name="city" class="form-control" required>
+                  <input type="text" name="city" class="form-control" value="{{ cart.city }}" required>
                 </div>
                 <div class="col-md-6 mb-0">
                   <label class="form-label">PSČ *</label>
-                  <input type="text" name="zip_code" class="form-control" required>
+                  <input type="text" name="zip_code" class="form-control" value="{{ cart.zip_code }}" required>
                 </div>
               </div>
             </div>
@@ -80,7 +115,7 @@
                 <input class="form-check-input"
                        type="checkbox"
                        id="invoiceSame"
-                       checked>
+                       {% if not cart.invoice_name and not cart.invoice_street and not cart.invoice_city and not cart.invoice_zip %}checked{% endif %}>
                 <label class="form-check-label" for="invoiceSame">
                   Fakturační adresa je stejná jako kontaktní
                 </label>
@@ -91,7 +126,7 @@
                 <!-- Jméno / firma -->
                 <div class="mb-3">
                   <label class="form-label">Jméno / název firmy</label>
-                  <input type="text" name="invoice_name" class="form-control">
+                  <input type="text" name="invoice_name" class="form-control" value="{{ cart.invoice_name }}">
                 </div>
 
                 <!-- IČO -->
@@ -103,19 +138,19 @@
                 <!-- Ulice -->
                 <div class="mb-3">
                   <label class="form-label">Ulice a číslo popisné</label>
-                  <input type="text" name="invoice_street" class="form-control">
+                  <input type="text" name="invoice_street" class="form-control" value="{{ cart.invoice_street }}">
                 </div>
 
                 <!-- PSČ + Město -->
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <label class="form-label">PSČ</label>
-                    <input type="text" name="invoice_zip" class="form-control">
+                    <input type="text" name="invoice_zip" class="form-control" value="{{ cart.invoice_zip }}">
                   </div>
 
                   <div class="col-md-8 mb-3">
                     <label class="form-label">Město</label>
-                    <input type="text" name="invoice_city" class="form-control">
+                    <input type="text" name="invoice_city" class="form-control" value="{{ cart.invoice_city }}">
                   </div>
                 </div>
 
@@ -137,7 +172,9 @@
                       required>
                 <label class="form-check-label" for="terms">
                   Souhlasím s
-                  <a href="{% url 'terms' %}" target="_blank">obchodními podmínkami</a> *
+                  <a href="{% url 'courses:terms' %}" target="_blank">obchodními podmínkami</a>
+                  a
+                  <a href="{% url 'courses:gdpr' %}" target="_blank">GDPR</a> *
                 </label>
               </div>
 
@@ -146,7 +183,8 @@
                       type="checkbox"
                       name="newsletter"
                       value="1"
-                      id="newsletter">
+                      id="newsletter"
+                      {% if cart.newsletter_opt_in %}checked{% endif %}>
                 <label class="form-check-label" for="newsletter">
                   Chci dostávat e-mailový newsletter (tipy, novinky)
                 </label>
@@ -160,8 +198,8 @@
           <div class="card card-soft">
             <div class="card-body p-4 p-md-5 d-flex justify-content-between align-items-center">
               <div>
-                <strong>{{ plan.name }}</strong><br>
-                <span class="text-muted">{{ plan.price_czk }} Kč</span>
+                <strong>Celkem</strong><br>
+                <span class="text-muted">{{ cart.total_price|floatformat:0 }} Kč</span>
               </div>
 
               <button type="submit" class="btn btn-sage">

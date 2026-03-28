@@ -20,6 +20,7 @@ if ENV_FILE.exists():
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
+APP_ENV = os.environ.get("APP_ENV", "development").strip().lower() or "development"
 
 ALLOWED_HOSTS = [
     h.strip()
@@ -34,6 +35,8 @@ SITE_URL = os.environ.get(
     "SITE_URL",
     "http://127.0.0.1:8000"
 )
+
+SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "1") == "1" and APP_ENV != "production"
 
 
 
@@ -147,9 +150,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "course_dashboard"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "courses:course_dashboard"
+LOGOUT_REDIRECT_URL = "courses:home"
 
 # ======================================================
 # I18N
@@ -167,11 +170,18 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+if DEBUG:
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 if USE_S3_STORAGE:
     # Cloudflare R2 (S3 compatible)
@@ -256,4 +266,19 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# ======================================================
+#  PACKETA
+# ======================================================
 
+PACKETA_API_PASSWORD = os.environ.get("PACKETA_API_PASSWORD")
+PACKETA_WIDGET_API_KEY = os.environ.get("PACKETA_WIDGET_API_KEY", "")
+PACKETA_MODE = os.environ.get("PACKETA_MODE", "live").strip().lower() or "live"
+PACKETA_API_URL = os.environ.get(
+    "PACKETA_API_URL",
+    "https://api.packeta.com/v1/createPacket",
+)
+PACKETA_MOCK_POINT_ID = os.environ.get("PACKETA_MOCK_POINT_ID", "mock-point-prague-1")
+PACKETA_MOCK_POINT_NAME = os.environ.get(
+    "PACKETA_MOCK_POINT_NAME",
+    "TEST Zasilkovna, Praha 1",
+)

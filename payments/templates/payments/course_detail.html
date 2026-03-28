@@ -1,24 +1,156 @@
-<h1>{{ product.name }}</h1>
-<p>{{ product.description }}</p>
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
 
-<hr>
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/course-detail-offer.css' %}">
+{% if course.slug == "konejsive-signaly-v-praxi" %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endif %}
+{% endblock %}
 
-<h3>Varianty</h3>
+{% block content %}
+<section class="course-offer-hero">
+  <div class="container">
+    <div class="course-offer-shell">
+      <div class="course-offer-copy">
+        <span class="course-offer-kicker">Online kurz</span>
+        <h1 class="course-offer-title">{{ course.title }}</h1>
+        <p class="course-offer-lead">
+          {{ course.public_intro|default:course.about_text|default:"Praktický kurz zaměřený na porozumění psí komunikaci, správnou interpretaci chování a klidnější každodenní soužití." }}
+        </p>
 
-<div class="row">
-{% for plan in plans %}
-  <div class="col-md-4 mb-4">
-    <div class="card p-4">
+        <div class="course-offer-points">
+          <div class="offer-point">
+            <strong>{{ course.modules.count }} modul{{ course.modules.count|pluralize:"y,ů" }}</strong>
+            <span>strukturovaný obsah a jasný postup</span>
+          </div>
+          <div class="offer-point">
+            <strong>Praktické ukázky</strong>
+            <span>videa a vysvětlení v reálném kontextu</span>
+          </div>
+          <div class="offer-point">
+            <strong>Etický přístup</strong>
+            <span>bez nátlaku, s důrazem na porozumění</span>
+          </div>
+        </div>
 
-      <h4>{{ plan.name }}</h4>
-      <p>{{ plan.price_czk }} Kč</p>
+        <div class="course-offer-actions">
+          <a href="#varianty" class="btn btn-sage">Vybrat variantu</a>
+          {% if course.slug == "konejsive-signaly-v-praxi" %}
+          <a href="#obsah-kurzu" class="btn btn-outline-sage">Zjistit víc o kurzu</a>
+          {% endif %}
+        </div>
+      </div>
 
-      <a href="{% url 'payments:add_course_to_cart' product.slug plan.code %}"
-         class="btn btn-sage w-100">
-         Přidat do košíku
-      </a>
+      <div class="course-offer-visual">
+        <div class="course-offer-image-card">
+          {% if course.image %}
+          <img src="{{ course.image.url }}" alt="{{ course.title }}">
+          {% else %}
+          <img src="{% static 'img/hero-dog.jpg' %}" alt="{{ course.title }}">
+          {% endif %}
+        </div>
 
+        <div class="course-offer-note">
+          <span class="offer-note-label">Pro koho je kurz</span>
+          <ul>
+            <li>Pro majitele, kteří chtějí lépe rozumět psovi</li>
+            <li>Pro lidi, kteří chtějí vnímat signály v souvislostech</li>
+            <li>Pro práci s běžným soužitím i problémovým chováním</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
-{% endfor %}
+</section>
+
+<section class="course-benefits-band">
+  <div class="container">
+    <div class="course-benefits-grid">
+      <article class="benefit-tile benefit-tile-sage">
+        <span>Co získáš</span>
+        <strong>Jasnější čtení psí komunikace</strong>
+      </article>
+      <article class="benefit-tile benefit-tile-sand">
+        <span>Jak studuješ</span>
+        <strong>Vlastním tempem a s praktickými ukázkami</strong>
+      </article>
+      <article class="benefit-tile benefit-tile-blue">
+        <span>Výsledek</span>
+        <strong>Lepší rozhodování v běžných i náročných situacích</strong>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="varianty" class="course-plan-section">
+  <div class="container">
+    <div class="course-plan-head">
+      <div>
+        <span class="course-offer-kicker">Varianty kurzu</span>
+        <h2>Vyber si způsob studia, který ti bude sedět.</h2>
+      </div>
+      <p>
+        Každá varianta ti otevře přístup ke kurzu. Liší se rozsahem podpory,
+        hloubkou vedení a tím, jestli chceš studovat samostatně nebo s větší oporou.
+      </p>
+    </div>
+
+    <div class="course-plan-grid">
+      {% for plan in plans %}
+      <article class="course-plan-card{% if forloop.last %} course-plan-card-featured{% endif %}">
+        <div class="course-plan-top">
+          <span class="course-plan-chip">
+            {% if forloop.first %}Samostudium{% else %}Rozšířená podpora{% endif %}
+          </span>
+          <h3>{{ plan.name }}</h3>
+          <p class="course-plan-subtitle">
+            {% if plan.includes_consultation %}
+              Vhodné, pokud chceš jít víc do hloubky a mít vedení navíc.
+            {% else %}
+              Vhodné, pokud chceš studovat vlastním tempem a vracet se k obsahu kdykoliv potřebuješ.
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="course-plan-price">
+          <strong>{{ plan.price|intcomma }} Kč</strong>
+          <span>Přístup na {{ plan.access_duration_days }} dní</span>
+        </div>
+
+        <ul class="course-plan-list">
+          <li>Přístup ke kompletnímu online obsahu</li>
+          <li>Studium zaměřené na praxi a interpretaci v kontextu</li>
+          {% if plan.includes_consultation %}
+          <li>Konzultační nebo podpůrná část navíc</li>
+          {% else %}
+          <li>Samostatné studium bez nutnosti čekat na termíny</li>
+          {% endif %}
+          {% if plan.includes_certificate %}
+          <li>Možnost získání certifikátu</li>
+          {% else %}
+          <li>Bez certifikace, čistě pro vlastní praxi</li>
+          {% endif %}
+        </ul>
+
+        <form method="post" action="{% url 'payments:add_course_to_cart' plan.id %}">
+          {% csrf_token %}
+          <button class="btn btn-sage w-100">Přidat do košíku</button>
+        </form>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if course.slug == "konejsive-signaly-v-praxi" %}
+<div id="obsah-kurzu">
+  {% include "courses/about.html" %}
 </div>
+{% endif %}
+
+{% endblock %}

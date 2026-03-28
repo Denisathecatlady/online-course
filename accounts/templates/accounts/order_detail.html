@@ -1,0 +1,58 @@
+{% extends "accounts/account_base.html" %}
+{% load humanize %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Objednávka</p>
+      <h2 class="account-title mb-1">Detail objednávky #{{ order.id }}</h2>
+      <p class="account-copy mb-0">
+        Přehled položek, dopravy a stavu zásilky.
+      </p>
+    </div>
+  </div>
+
+  <div class="account-list">
+    {% for item in order.items.all %}
+      <div class="account-list-item">
+        <div>
+          {% if item.product_variant %}
+            <strong>{{ item.product_variant.product.name }}</strong><br>
+            <small>{{ item.product_variant.get_length_display }}, {{ item.product_variant.get_type_display }}, {{ item.product_variant.color.name }}</small>
+          {% elif item.course_plan %}
+            <strong>{{ item.course_plan.course.title }}</strong><br>
+            <small>{{ item.course_plan.name }}</small>
+          {% endif %}
+        </div>
+        <span class="account-price">{{ item.subtotal|intcomma }} Kč</span>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if order.shipping_method %}
+    <details class="account-accordion mt-4" open>
+      <summary class="account-accordion-trigger">Doprava</summary>
+      <div class="account-accordion-body">
+        <p class="mb-2">
+          <strong>{{ order.get_shipping_method_display }}</strong>
+          {% if order.packeta_point_name %} - {{ order.packeta_point_name }}{% endif %}
+        </p>
+        {% if order.packeta_tracking_number %}
+          <p class="mb-1">Tracking: {{ order.packeta_tracking_number }}</p>
+        {% endif %}
+        {% if order.packeta_packet_id %}
+          <p class="mb-0 text-muted">ID zásilky: {{ order.packeta_packet_id }}</p>
+        {% endif %}
+      </div>
+    </details>
+  {% endif %}
+
+  <div class="account-total-box mt-4">
+    <div class="account-total-row">
+      <span>Celkem</span>
+      <strong>{{ order.total_price|intcomma }} Kč</strong>
+    </div>
+  </div>
+</div>
+{% endblock %}

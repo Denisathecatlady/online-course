@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="product-detail-page py-6">
+  <div class="container">
+    <div class="product-detail-shell">
+      <div class="product-detail-grid">
+        <div class="product-visual card card-soft border-0 reveal">
+          <div class="card-body p-3 p-md-4">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" class="product-detail-image" alt="{{ product.name }}">
+            {% else %}
+              <div class="product-detail-placeholder">CalmDog</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="product-info reveal">
+          <span class="badge badge-soft mb-3">Vodítko</span>
+          <h1 class="product-detail-title">{{ product.name }}</h1>
+          <p class="product-detail-copy">{{ product.description }}</p>
+
+          <div class="product-detail-highlights">
+            <div class="product-highlight-chip">Ručně vyráběné</div>
+            <div class="product-highlight-chip">Výběr variant na míru</div>
+            <div class="product-highlight-chip">Bezpečné dokončení přes Stripe</div>
+          </div>
+
+          <div class="product-detail-price-card">
+            <span class="product-detail-price-label">Aktuální cena</span>
+            <h2 id="product-price" class="mb-0">Vyberte variantu</h2>
+            <p id="variant-summary" class="product-variant-summary mb-0">
+              Zvolte parametry níže a zobrazí se přesná kombinace.
+            </p>
+          </div>
+
+          <form method="post"
+                id="add-to-cart-form"
+                class="product-detail-form"
+                data-show-type-summary="{% if has_types %}1{% else %}0{% endif %}"
+                data-url-template="{% url 'payments:add_variant_to_cart' 0 %}">
+            {% csrf_token %}
+
+            {% if has_lengths %}
+            <div class="product-form-card">
+              <label class="form-label">Délka</label>
+              <select id="length-select" class="form-select" required>
+                {% for length in lengths %}
+                  <option value="{{ length.value }}">
+                    {{ length.label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+
+            {% if has_types %}
+            <div class="product-form-card">
+              <label class="form-label">Typ</label>
+              <select id="type-select" class="form-select" required>
+                {% for type in types %}
+                  <option value="{{ type.value }}">
+                    {{ type.label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+
+            <div class="product-form-card">
+              <label class="form-label">Barva</label>
+              <div class="product-color-row">
+                <select id="color-select" class="form-select" required>
+                  {% for color in colors %}
+                    <option value="{{ color.id }}" data-hex="{{ color.hex_code }}">
+                      {{ color.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+                <div id="color-preview" class="color-preview"></div>
+              </div>
+            </div>
+
+            <div class="product-stock-row">
+              <p id="stock-status" class="fw-semibold mb-0"></p>
+              <p class="product-stock-note mb-0">Dostupnost se aktualizuje podle vybrané varianty.</p>
+            </div>
+
+            <button type="submit" class="btn btn-sage product-submit" disabled>
+              Přidat do košíku
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const variants = {{ variants_json|safe }};
+
+const form = document.getElementById("add-to-cart-form");
+const baseUrl = form.dataset.urlTemplate;
+const showTypeSummary = form.dataset.showTypeSummary === "1";
+
+const lengthSelect = document.getElementById("length-select");
+const typeSelect = document.getElementById("type-select");
+const colorSelect = document.getElementById("color-select");
+const priceElement = document.getElementById("product-price");
+const stockElement = document.getElementById("stock-status");
+const variantSummaryElement = document.getElementById("variant-summary");
+const colorPreview = document.getElementById("color-preview");
+const submitButton = document.querySelector(".product-submit");
+
+function updateVariant() {
+  const selectedLength = lengthSelect ? lengthSelect.value : null;
+  const selectedType = typeSelect ? typeSelect.value : null;
+  const selectedColor = parseInt(colorSelect.value);
+
+  const match = variants.find(v =>
+    (selectedLength === null || v.length === selectedLength) &&
+    (selectedType === null || v.type === selectedType) &&
+    v.color === selectedColor
+  );
+
+  if (match) {
+    priceElement.innerText = match.price.toLocaleString("cs-CZ") + " Kč";
+    form.action = baseUrl.replace("0", match.id);
+    submitButton.disabled = match.stock < 1;
+
+    const summaryParts = [];
+    if (match.length_label) {
+      summaryParts.push(match.length_label);
+    }
+    if (showTypeSummary && match.type_label) {
+      summaryParts.push(match.type_label);
+    }
+    if (match.color_name) {
+      summaryParts.push(match.color_name);
+    }
+    variantSummaryElement.innerText = summaryParts.length
+      ? summaryParts.join(" • ")
+      : "Zvolená varianta";
+
+    if (match.stock > 0) {
+      stockElement.innerText = "Skladem: " + match.stock + " ks";
+      stockElement.classList.remove("text-danger");
+      stockElement.classList.add("text-success");
+    } else {
+      stockElement.innerText = "Vyprodáno";
+      stockElement.classList.remove("text-success");
+      stockElement.classList.add("text-danger");
+    }
+  } else {
+    priceElement.innerText = "Varianta není dostupná";
+    stockElement.innerText = "Tato kombinace momentálně není dostupná.";
+    stockElement.classList.remove("text-success");
+    stockElement.classList.add("text-danger");
+    variantSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
+    form.action = "";
+    submitButton.disabled = true;
+  }
+}
+
+function hasCompatibleVariant(filters) {
+  return variants.some(v =>
+    (filters.length === null || v.length === filters.length) &&
+    (filters.type === null || v.type === filters.type) &&
+    (filters.color === null || v.color === filters.color)
+  );
+}
+
+function syncSelectAvailability() {
+  const selectedLength = lengthSelect ? lengthSelect.value : null;
+  const selectedType = typeSelect ? typeSelect.value : null;
+  const selectedColor = colorSelect ? parseInt(colorSelect.value) : null;
+
+  if (lengthSelect) {
+    Array.from(lengthSelect.options).forEach(option => {
+      option.disabled = !hasCompatibleVariant({
+        length: option.value,
+        type: selectedType,
+        color: selectedColor,
+      });
+    });
+
+    if (lengthSelect.selectedOptions[0]?.disabled) {
+      const firstEnabled = Array.from(lengthSelect.options).find(option => !option.disabled);
+      if (firstEnabled) {
+        lengthSelect.value = firstEnabled.value;
+      }
+    }
+  }
+
+  if (typeSelect) {
+    Array.from(typeSelect.options).forEach(option => {
+      option.disabled = !hasCompatibleVariant({
+        length: lengthSelect ? lengthSelect.value : null,
+        type: option.value,
+        color: selectedColor,
+      });
+    });
+
+    if (typeSelect.selectedOptions[0]?.disabled) {
+      const firstEnabled = Array.from(typeSelect.options).find(option => !option.disabled);
+      if (firstEnabled) {
+        typeSelect.value = firstEnabled.value;
+      }
+    }
+  }
+
+  if (colorSelect) {
+    Array.from(colorSelect.options).forEach(option => {
+      option.disabled = !hasCompatibleVariant({
+        length: lengthSelect ? lengthSelect.value : null,
+        type: typeSelect ? typeSelect.value : null,
+        color: parseInt(option.value),
+      });
+    });
+
+    if (colorSelect.selectedOptions[0]?.disabled) {
+      const firstEnabled = Array.from(colorSelect.options).find(option => !option.disabled);
+      if (firstEnabled) {
+        colorSelect.value = firstEnabled.value;
+      }
+    }
+  }
+}
+
+function updateColorPreview() {
+  const selectedOption = colorSelect ? colorSelect.options[colorSelect.selectedIndex] : null;
+  const hex = selectedOption ? selectedOption.getAttribute("data-hex") : "";
+  colorPreview.style.backgroundColor = hex || "#e8ece9";
+}
+
+if (lengthSelect) {
+  lengthSelect.addEventListener("change", function () {
+    syncSelectAvailability();
+    updateVariant();
+  });
+}
+
+if (typeSelect) {
+  typeSelect.addEventListener("change", function () {
+    syncSelectAvailability();
+    updateVariant();
+  });
+}
+
+if (colorSelect) {
+  colorSelect.addEventListener("change", function () {
+    syncSelectAvailability();
+    updateVariant();
+    updateColorPreview();
+  });
+}
+
+syncSelectAvailability();
+updateVariant();
+updateColorPreview();
+</script>
+{% endblock %}

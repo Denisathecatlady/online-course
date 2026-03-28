@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/shipping.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="shipping-page py-6">
+    <div class="container">
+        <div class="shipping-shell">
+            <div class="shipping-intro reveal">
+                <span class="badge badge-soft mb-3">Doprava</span>
+                <h1 class="section-title mb-3">Vyber si způsob doručení</h1>
+                <p class="shipping-lead mb-0">
+                    Dokonči objednávku způsobem, který ti bude nejvíc vyhovovat.
+                    V dalším kroku pak doplníš kontaktní a adresní údaje.
+                </p>
+            </div>
+
+            <form method="post" class="shipping-grid reveal">
+                {% csrf_token %}
+
+                <div class="shipping-main card card-soft border-0">
+                    <div class="card-body p-4 p-md-5">
+                        {% if error %}
+                            <div class="shipping-alert mb-4">{{ error }}</div>
+                        {% endif %}
+
+                        <div class="shipping-option-list">
+                            <label class="shipping-option-card">
+                                <input
+                                    type="radio"
+                                    name="shipping_method"
+                                    value="zasilkovna"
+                                    required
+                                    {% if selected_method == "zasilkovna" %}checked{% endif %}
+                                >
+                                <span class="shipping-option-content">
+                                    <span class="shipping-option-head">
+                                        <span>
+                                            <span class="shipping-option-title">Zásilkovna</span>
+                                            <span class="shipping-option-copy">
+                                                Výdejní místo nebo Z-BOX po celé ČR
+                                            </span>
+                                        </span>
+                                        <strong class="shipping-price">79 Kč</strong>
+                                    </span>
+                                    <span class="shipping-option-meta">
+                                        Rychlé vyzvednutí, ideální pokud nechceš čekat doma na kurýra.
+                                    </span>
+                                </span>
+                            </label>
+
+                            <label class="shipping-option-card">
+                                <input
+                                    type="radio"
+                                    name="shipping_method"
+                                    value="kuryr"
+                                    {% if selected_method == "kuryr" %}checked{% endif %}
+                                >
+                                <span class="shipping-option-content">
+                                    <span class="shipping-option-head">
+                                        <span>
+                                            <span class="shipping-option-title">Kurýr</span>
+                                            <span class="shipping-option-copy">
+                                                Doručení na adresu
+                                            </span>
+                                        </span>
+                                        <strong class="shipping-price">119 Kč</strong>
+                                    </span>
+                                    <span class="shipping-option-meta">
+                                        Pohodlné doručení až ke dveřím na zadanou adresu.
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div id="packeta-fields" class="packeta-panel">
+                            <div class="packeta-panel-header">
+                                <div>
+                                    <p class="packeta-eyebrow mb-2">Výdejní místo</p>
+                                    <h2 class="packeta-title mb-1">Zvol pobočku Zásilkovny</h2>
+                                    <p class="packeta-copy mb-0">
+                                        Klikni na výběr a potvrď pobočku, kam chceš objednávku doručit.
+                                    </p>
+                                </div>
+                                {% if packeta_mode == "mock" %}
+                                    <button type="button" id="packeta-picker-button" class="btn btn-sage">
+                                        Použít testovací pobočku
+                                    </button>
+                                {% else %}
+                                    <button type="button" id="packeta-picker-button" class="btn btn-sage">
+                                        Vybrat výdejní místo
+                                    </button>
+                                {% endif %}
+                            </div>
+
+                            {% if packeta_mode == "mock" %}
+                                <div class="shipping-note mb-3">
+                                    Běží testovací režim Zásilkovny. Po kliknutí se doplní zkušební výdejní místo bez volání do Packeta API.
+                                </div>
+                            {% endif %}
+
+                            <div class="packeta-summary-card">
+                                <div class="packeta-summary-label">Vybraná pobočka</div>
+                                <div id="packeta-point-summary" class="packeta-summary-value">
+                                    {% if packeta_point_name %}
+                                        {{ packeta_point_name }}
+                                    {% else %}
+                                        Výdejní místo zatím není vybrané.
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <input
+                                type="hidden"
+                                name="packeta_point_id"
+                                value="{{ packeta_point_id }}"
+                            >
+                            <input
+                                type="hidden"
+                                name="packeta_point_name"
+                                value="{{ packeta_point_name }}"
+                            >
+
+                            {% if packeta_mode != "mock" and not packeta_widget_api_key %}
+                                <div class="shipping-note mt-3">
+                                    Chybí `PACKETA_WIDGET_API_KEY`, takže výběr přes widget teď nebude fungovat.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="shipping-side card card-soft border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <span class="shipping-side-label">Souhrn kroku</span>
+                        <h3 class="shipping-side-title">Ještě kousek</h3>
+                        <p class="shipping-side-copy">
+                            Po výběru dopravy bude následovat formulář s kontaktními a adresními údaji.
+                        </p>
+
+                        <div class="shipping-side-points">
+                            <div class="shipping-side-point">
+                                <strong>1.</strong>
+                                <span>Zvol způsob dopravy</span>
+                            </div>
+                            <div class="shipping-side-point">
+                                <strong>2.</strong>
+                                <span>U Zásilkovny potvrď výdejní místo</span>
+                            </div>
+                            <div class="shipping-side-point">
+                                <strong>3.</strong>
+                                <span>Pokračuj na kontaktní údaje</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-sage shipping-submit w-100">
+                            Pokračovat na kontaktní údaje
+                        </button>
+                    </div>
+                </aside>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if packeta_mode != "mock" %}
+<script src="https://widget.packeta.com/v6/www/js/library.js"></script>
+{% endif %}
+<script>
+    const shippingInputs = document.querySelectorAll('input[name="shipping_method"]');
+    const packetaFields = document.getElementById("packeta-fields");
+    const packetaPointId = document.querySelector('input[name="packeta_point_id"]');
+    const packetaPointName = document.querySelector('input[name="packeta_point_name"]');
+    const packetaSummary = document.getElementById("packeta-point-summary");
+    const packetaPickerButton = document.getElementById("packeta-picker-button");
+    const packetaWidgetApiKey = "{{ packeta_widget_api_key|escapejs }}";
+    const packetaMode = "{{ packeta_mode|escapejs }}";
+    const packetaMockPointId = "{{ packeta_mock_point_id|escapejs }}";
+    const packetaMockPointName = "{{ packeta_mock_point_name|escapejs }}";
+
+    function togglePacketaFields() {
+        const selected = document.querySelector('input[name="shipping_method"]:checked');
+        const isPacketa = selected && selected.value === "zasilkovna";
+
+        packetaFields.style.display = isPacketa ? "block" : "none";
+        packetaPointId.required = Boolean(isPacketa);
+    }
+
+    function updatePacketaSummary(name) {
+        packetaSummary.textContent = name || "Výdejní místo zatím není vybrané.";
+    }
+
+    function handlePacketaPoint(point) {
+        if (!point) {
+            return;
+        }
+
+        const pointId = point.id || point.placeId || "";
+        const labelParts = [point.name, point.city, point.street].filter(Boolean);
+        const pointLabel = labelParts.join(", ") || pointId;
+
+        packetaPointId.value = pointId;
+        packetaPointName.value = pointLabel;
+        updatePacketaSummary(pointLabel);
+    }
+
+    function openPacketaWidget() {
+        if (packetaMode === "mock") {
+            handlePacketaPoint({
+                id: packetaMockPointId,
+                name: packetaMockPointName,
+            });
+            return;
+        }
+
+        if (!packetaWidgetApiKey || !window.Packeta || !window.Packeta.Widget) {
+            return;
+        }
+
+        window.Packeta.Widget.pick(
+            packetaWidgetApiKey,
+            handlePacketaPoint,
+            {
+                country: "cz",
+                language: "cs",
+            }
+        );
+    }
+
+    shippingInputs.forEach((input) => {
+        input.addEventListener("change", togglePacketaFields);
+    });
+
+    packetaPickerButton.addEventListener("click", openPacketaWidget);
+
+    if (packetaMode !== "mock" && !packetaWidgetApiKey) {
+        packetaPickerButton.disabled = true;
+    }
+
+    updatePacketaSummary(packetaPointName.value);
+    togglePacketaFields();
+</script>
+{% endblock %}

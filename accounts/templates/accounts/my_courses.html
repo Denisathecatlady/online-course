@@ -1,0 +1,31 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Moje kurzy</p>
+      <h2 class="account-title mb-1">Zakoupené přístupy</h2>
+      <p class="account-copy mb-0">
+        Tady najdeš všechny kurzy, ke kterým máš aktuálně přístup.
+      </p>
+    </div>
+  </div>
+
+  {% if accesses %}
+    <div class="account-course-grid">
+      {% for access in accesses %}
+        <article class="account-course-card">
+          <h3>{{ access.course.title }}</h3>
+          <p>Varianta: {% if access.plan %}{{ access.plan.name }}{% else %}Původní přístup{% endif %}</p>
+          <a href="{% url 'courses:course_dashboard' access.course.slug %}" class="btn btn-sage">
+            Pokračovat
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="account-empty">Zatím nemáš žádné zakoupené kurzy.</p>
+  {% endif %}
+</div>
+{% endblock %}

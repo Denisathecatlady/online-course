@@ -10,14 +10,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='order',
-            name='invoice_number',
-            field=models.PositiveIntegerField(blank=True, help_text='Číslo faktury – generuje se po zaplacení', null=True, unique=True),
-        ),
-        migrations.AlterField(
-            model_name='order',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.AddField(
+                    model_name='order',
+                    name='invoice_number',
+                    field=models.PositiveIntegerField(blank=True, help_text='Číslo faktury – generuje se po zaplacení', null=True, unique=True),
+                ),
+                migrations.AlterField(
+                    model_name='order',
+                    name='created_at',
+                    field=models.DateTimeField(auto_now_add=True),
+                ),
+            ],
         ),
     ]

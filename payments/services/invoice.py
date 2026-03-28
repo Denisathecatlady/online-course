@@ -141,28 +141,39 @@ def generate_invoice_pdf(order):
 
     p.setFont("DejaVu", 10)
 
-    p.drawString(
-        40,
-        y - 22,
-        f"Online kurz KONEJŠIVÉ SIGNÁLY V PRAXI, Varianta {order.plan.name}",
-    )
-    p.drawRightString(
-        width - 40,
-        y - 22,
-        f"{order.plan.price_czk} Kč",
-    )
+    line_y = y - 22
+    total_amount = 0
+
+    for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+        if item.course_plan:
+            description = f"Online kurz {item.course_plan.course.title}, varianta {item.course_plan.name}"
+        elif item.product_variant:
+            description = item.product_variant.product.name
+        else:
+            description = f"Polozka #{item.id}"
+
+        p.drawString(40, line_y, description[:75])
+        p.drawRightString(width - 40, line_y, f"{item.subtotal:.2f} Kč")
+        total_amount += item.subtotal
+        line_y -= 18
+
+    if order.shipping_price:
+        p.drawString(40, line_y, f"Doprava - {order.get_shipping_method_display() or 'bez specifikace'}")
+        p.drawRightString(width - 40, line_y, f"{order.shipping_price:.2f} Kč")
+        total_amount += order.shipping_price
+        line_y -= 18
 
     # --------------------------------------------------
     # CELKEM
     # --------------------------------------------------
     p.setLineWidth(0.5)
-    p.line(40, y - 50, width - 40, y - 50)
+    p.line(40, line_y - 10, width - 40, line_y - 10)
 
     p.setFont("DejaVu-Bold", 13)
     p.drawRightString(
         width - 40,
-        y - 80,
-        f"Celkem k úhradě: {order.plan.price_czk} Kč",
+        line_y - 40,
+        f"Celkem k úhradě: {total_amount:.2f} Kč",
     )
 
     # --------------------------------------------------
