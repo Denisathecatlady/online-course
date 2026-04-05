@@ -39,7 +39,7 @@
 
         <article class="course-mentor-card">
           <div class="course-mentor-avatar">
-            <img src="{% static 'img/lecturer-portrait.png' %}" alt="Ing. Andrea Zoulová">
+            <img src="{% static 'img/courses/lecturer-portrait.png' %}" alt="Ing. Andrea Zoulová">
           </div>
           <div class="course-mentor-copy">
             <span>Instruktor</span>
@@ -51,10 +51,10 @@
 
       <aside class="course-purchase-card">
         <a href="#obsah-kurzu" class="course-purchase-media">
-          {% if course.image %}
-          <img src="{{ course.image.url }}" alt="{{ course.title }}">
+          {% if course.public_image_url %}
+          <img src="{{ course.public_image_url }}" alt="{{ course.title }}">
           {% else %}
-          <img src="{% static 'img/psi-rec-konejsive-signaly-agrese-stekani.png' %}" alt="{{ course.title }}">
+          <img src="{% static 'img/courses/psi-rec-konejsive-signaly-agrese-stekani.png' %}" alt="{{ course.title }}">
           {% endif %}
           <span class="course-purchase-play" aria-hidden="true">▶</span>
         </a>
@@ -245,10 +245,10 @@
 
       <div class="course-offer-visual">
         <div class="course-offer-image-card">
-          {% if course.image %}
-          <img src="{{ course.image.url }}" alt="{{ course.title }}">
+          {% if course.public_image_url %}
+          <img src="{{ course.public_image_url }}" alt="{{ course.title }}">
           {% else %}
-          <img src="{% static 'img/hero-dog.jpg' %}" alt="{{ course.title }}">
+          <img src="{% static 'img/shared/hero-dog.jpg' %}" alt="{{ course.title }}">
           {% endif %}
         </div>
 

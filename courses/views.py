@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.urls import reverse
+from django.templatetags.static import static
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -326,9 +327,23 @@ def evaluate_step_quiz(quiz, submitted_data):
 # PUBLIC PAGES
 # ======================================
 
+PUBLIC_COURSE_IMAGE_PATHS = {
+    "konejsive-signaly-v-praxi": "img/courses/psi-rec-konejsive-signaly-agrese-stekani.png",
+    "netahani-na-voditku": "img/courses/kurz_netahani_na_voditku.png",
+}
+
+
+def get_public_course_image_url(course):
+    image_path = PUBLIC_COURSE_IMAGE_PATHS.get(course.slug)
+    if image_path:
+        return static(image_path)
+    if course.image:
+        return course.image.url
+    return static("img/shared/hero-dog.jpg")
+
 @require_GET
 def home(request):
-    featured_courses = (
+    featured_courses = list(
         Course.objects
         .filter(is_active=True)
         .annotate(
@@ -342,6 +357,9 @@ def home(request):
             )
         )[:2]
     )
+
+    for course in featured_courses:
+        course.public_image_url = get_public_course_image_url(course)
 
     plans = (
         CoursePlan.objects
@@ -363,6 +381,7 @@ def course_detail_public(request, slug):
         slug=slug,
         is_active=True
     )
+    course.public_image_url = get_public_course_image_url(course)
 
     plans = course.plans.filter(is_active=True)
 
@@ -432,7 +451,7 @@ def contact(request):
                 "a práci s emocemi u psů i jejich lidí. Vzdělávání staví na "
                 "etických principech a respektu k potřebám zvířat."
             ),
-            "image_url": f"{settings.MEDIA_URL}products/andrea_zoulova_portret.png",
+            "image_url": static("img/contact/andrea_zoulova_portret.png"),
             "accent_class": "contact-team-card-sage",
         },
         {
@@ -444,7 +463,7 @@ def contact(request):
                 "zákaznickou podporu. Zároveň se věnuje tréninkům pod vedením Andrey "
                 "a pomáhá s komunikačními procházkami a socializačními aktivitami."
             ),
-            "image_url": f"{settings.MEDIA_URL}products/denisa_zoulova_portret.png",
+            "image_url": static("img/contact/denisa_zoulova_portret.png"),
             "accent_class": "contact-team-card-accent",
         },
     ]
@@ -491,7 +510,7 @@ def trainings(request):
         {
             "title": "Individuální konzultace problémového chování psa",
             "summary": "Porozumění příčině problémového chování a návrh vhodného řešení na míru.",
-            "image": "img/treninky_1.png",
+            "image": "img/trainings/treninky_1.png",
             "highlights": [
                 "Porozumíme příčině problémového chování a navrhneme řešení.",
                 "Naučíme se komunikovat se psem.",
@@ -504,7 +523,7 @@ def trainings(request):
         {
             "title": "Psí řeč: konejšivé signály, signály agrese, štěkání",
             "summary": "Trénink zaměřený na čtení psí komunikace a lepší porozumění psím potřebám.",
-            "image": "img/treninky_2.png",
+            "image": "img/trainings/treninky_2.png",
             "highlights": [
                 "Naučíme se pozorovat a rozumět psí komunikaci.",
                 "Naučíme se komunikovat se psem.",
@@ -517,7 +536,7 @@ def trainings(request):
         {
             "title": "Chůze na volném vodítku",
             "summary": "Klidnější a funkční procházky bez tahání na vodítku.",
-            "image": "img/treninky_3.png",
+            "image": "img/trainings/treninky_3.png",
             "highlights": [
                 "Naučíme psa netahat na vodítku.",
                 "Uspokojíme psí potřeby.",
@@ -530,7 +549,7 @@ def trainings(request):
         {
             "title": "Komunikační / socializační procházky",
             "summary": "Podpora psů, kteří potřebují zvládnout kontakt s jinými psy klidněji.",
-            "image": "img/treninky_4.png",
+            "image": "img/trainings/treninky_4.png",
             "highlights": [
                 "Pochopíme příčinu reaktivity na psy.",
                 "Pomůžeme psu zvládnout kontakt s ostatními psy.",
@@ -543,7 +562,7 @@ def trainings(request):
         {
             "title": "Socializační aktivity",
             "summary": "Bezpečné seznamování psa s prostředím, které mu dělá potíže.",
-            "image": "img/treninky_5.png",
+            "image": "img/trainings/treninky_5.png",
             "highlights": [
                 "Pochopíme příčinu reaktivity a bázlivosti vašeho psa.",
                 "Pomůžeme psu zvládnout kontakt s obtížným prostředím.",
@@ -556,7 +575,7 @@ def trainings(request):
         {
             "title": "Aktivity zvyšující sebevědomí psa / snižující stres",
             "summary": "Činnosti, které pomáhají psovi lépe zvládat tlak a budovat jistotu.",
-            "image": "img/treninky_6.png",
+            "image": "img/trainings/treninky_6.png",
             "highlights": [
                 "Budeme zvyšovat sebevědomí psa a snižovat stres.",
                 "Budeme pečovat o psí pohybový aparát.",

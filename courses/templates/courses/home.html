@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band motion-band reveal reveal-band" aria-label="Detail psího oka">
-  <img src="{% static 'img/hero_pes_oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
+  <img src="{% static 'img/home/hero_pes_oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
 </section>
 
 <section id="sluzby" class="services-section section-space">
@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band home-image-band-forest motion-band reveal reveal-band" aria-label="Lesní hero">
-  <img src="{% static 'img/obrazek_les_hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
+  <img src="{% static 'img/home/obrazek_les_hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
 </section>
 
 <section class="course-preview-section section-space">
@@ -293,10 +293,10 @@ document.addEventListener("DOMContentLoaded", () => {
       {% for course in courses %}
         <article class="course-preview-card course-preview-card-rich reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}">
           <a href="{% url 'payments:course_detail' course.slug %}" class="course-preview-image-link" aria-label="{{ course.title }}">
-            {% if course.image %}
-              <img src="{{ course.image.url }}" alt="{{ course.title }}" class="course-preview-image">
+            {% if course.public_image_url %}
+              <img src="{{ course.public_image_url }}" alt="{{ course.title }}" class="course-preview-image">
             {% else %}
-              <img src="{% static 'img/hero-dog.jpg' %}" alt="{{ course.title }}" class="course-preview-image">
+              <img src="{% static 'img/shared/hero-dog.jpg' %}" alt="{{ course.title }}" class="course-preview-image">
             {% endif %}
           </a>
 
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="lecturer-visual motion-float reveal reveal-right reveal-delay-2">
       <div class="lecturer-photo-wrap">
         <img
-          src="{% static 'img/lecturer-portrait.png' %}"
+          src="{% static 'img/courses/lecturer-portrait.png' %}"
           alt="Ing. Andrea Zoulová"
           class="lecturer-photo"
         >

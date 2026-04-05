@@ -1,24 +1,24 @@
-from pathlib import Path
-
-from django.conf import settings
 from django.db.models import Min
 from django.shortcuts import render, get_object_or_404
+from django.templatetags.static import static
 from django.utils.text import slugify
 
-from .models import Product, ProductVariant, Color
+from .models import Product, ProductVariant
 import json
 
 
-PRODUCT_COLOR_IMAGE_FILES = {
+PRODUCT_COLOR_IMAGE_PATHS = {
     "samostatne-ocko": {
-        "pastelove-ruzova": "ocko_pres_rameno_ruzove.png",
+        "pastelove-ruzova": "img/shop/ocko_pres_rameno_ruzove.png",
+        "seda": "img/shop/ocko_pres_rameno_sede.png",
     },
     "voditko-bez-ocka": {
-        "pastelove-ruzova": "voditko_bez_ocka_ruzove.png",
+        "pastelove-ruzova": "img/shop/voditko_bez_ocka_ruzove.png",
+        "seda": "img/shop/voditko_bez_ocka_sede.png",
     },
     "voditko-s-poutkem": {
-        "pastelove-ruzova": "voditko_s_ockem_na_ruku_ruzove.png",
-        "seda": "voditko_s_ockem_na_ruku_sede.png",
+        "pastelove-ruzova": "img/shop/voditko_s_ockem_na_ruku_ruzove.png",
+        "seda": "img/shop/voditko_s_ockem_na_ruku_sede.png",
     },
 }
 
@@ -36,7 +36,7 @@ PRODUCT_CARD_CONTENT = {
             "Ruční výroba",
         ],
         "button_theme": "sage",
-        "image": "products/pes_voditko_2.png",
+        "image": "img/shop/ocko_pres_rameno_sede.png",
     },
     "voditko-bez-ocka": {
         "eyebrow": "Oblíbené",
@@ -52,7 +52,7 @@ PRODUCT_CARD_CONTENT = {
             "Volba barvy i délky",
         ],
         "button_theme": "accent",
-        "image": "products/pes_voditko_3.png",
+        "image": "img/shop/voditko_bez_ocka_sede.png",
     },
     "voditko-s-poutkem": {
         "eyebrow": "Komplet",
@@ -67,7 +67,7 @@ PRODUCT_CARD_CONTENT = {
             "Prémiové materiály",
         ],
         "button_theme": "dark",
-        "image": "products/pes_voditko_1.png",
+        "image": "img/shop/voditko_s_ockem_na_ruku_sede.png",
     },
 }
 
@@ -95,33 +95,34 @@ SHOP_STATS = [
 
 SHOP_GALLERY = [
     {
-        "image": "products/pes_voditko_2.png",
+        "image": "img/shop/pes_voditko_2.png",
         "alt": "Pes s obojkem v trávě",
     },
     {
-        "image": "products/pes_voditko_3.png",
+        "image": "img/shop/pes_voditko_3.png",
         "alt": "Psovodka se psy při večerní procházce",
     },
 ]
 
 
-def build_media_url(relative_path):
-    return f"{settings.MEDIA_URL.rstrip('/')}/{relative_path.lstrip('/')}"
+def build_static_image_url(relative_path):
+    return static(relative_path)
+
+
+def get_default_product_image_url(product):
+    image_path = PRODUCT_CARD_CONTENT.get(product.slug, {}).get("image")
+    if image_path:
+        return build_static_image_url(image_path)
+    if product.image:
+        return product.image.url
+    return ""
 
 
 def get_variant_image_url(product, color):
-    if not product.image:
-        return ""
-
-    product_images = PRODUCT_COLOR_IMAGE_FILES.get(product.slug, {})
-    image_name = product_images.get(slugify(color.name))
-
-    if image_name:
-        image_path = Path(settings.MEDIA_ROOT) / "products" / image_name
-        if image_path.exists():
-            return f"{settings.MEDIA_URL}products/{image_name}"
-
-    return product.image.url
+    image_path = PRODUCT_COLOR_IMAGE_PATHS.get(product.slug, {}).get(slugify(color.name))
+    if image_path:
+        return build_static_image_url(image_path)
+    return get_default_product_image_url(product)
 
 
 def product_list(request):
@@ -156,7 +157,7 @@ def product_list(request):
         product_cards.append({
             "product": product,
             "price_from": min_price,
-            "image_url": product.image.url if product.image else build_media_url(card_content["image"]),
+            "image_url": get_default_product_image_url(product),
             "available_colors": available_colors,
             **card_content,
         })
@@ -164,13 +165,13 @@ def product_list(request):
     return render(request, "shop/product_list.html", {
         "products": products,
         "product_cards": product_cards,
-        "hero_image_url": build_media_url("products/pes_voditko_1.png"),
-        "cta_image_url": build_media_url("products/pes_voditko_2.png"),
+        "hero_image_url": build_static_image_url("img/shop/pes_voditko_1.png"),
+        "cta_image_url": build_static_image_url("img/shop/pes_voditko_2.png"),
         "hero_stats": SHOP_STATS,
         "gallery_images": [
             {
                 **item,
-                "image_url": build_media_url(item["image"]),
+                "image_url": build_static_image_url(item["image"]),
             }
             for item in SHOP_GALLERY
         ],
@@ -267,6 +268,7 @@ def product_detail(request, slug):
 
     return render(request, "shop/product_detail.html", {
         "product": product,
+        "product_image_url": get_default_product_image_url(product),
         "lengths": lengths,
         "types": types,
         "colors": colors,

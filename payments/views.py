@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.contrib.auth import get_user_model
@@ -21,6 +22,21 @@ from payments.services.invoice import generate_invoice_pdf, assign_invoice_numbe
 
 
 logger = logging.getLogger(__name__)
+
+
+PUBLIC_COURSE_IMAGE_PATHS = {
+    "konejsive-signaly-v-praxi": "img/courses/psi-rec-konejsive-signaly-agrese-stekani.png",
+    "netahani-na-voditku": "img/courses/kurz_netahani_na_voditku.png",
+}
+
+
+def get_public_course_image_url(course):
+    image_path = PUBLIC_COURSE_IMAGE_PATHS.get(course.slug)
+    if image_path:
+        return static(image_path)
+    if course.image:
+        return course.image.url
+    return static("img/shared/hero-dog.jpg")
 
 
 COURSE_MARKETING_CONTENT = {
@@ -692,7 +708,10 @@ def remove_from_cart(request, item_id):
 # =====================================================
 
 def course_list(request):
-    courses = Course.objects.all()
+    courses = list(Course.objects.all())
+
+    for course in courses:
+        course.public_image_url = get_public_course_image_url(course)
 
     return render(request, "payments/course_list.html", {
         "courses": courses
@@ -712,6 +731,7 @@ def course_detail(request, slug):
     featured_plan = plans[0] if plans else None
     course_marketing = build_course_marketing_content(course, plans)
     plan_cards = build_plan_cards(plans)
+    course.public_image_url = get_public_course_image_url(course)
 
     return render(request, "payments/course_detail.html", {
         "course": course,

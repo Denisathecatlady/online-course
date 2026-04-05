@@ -34,7 +34,7 @@
   background:
     linear-gradient(90deg, rgba(245, 245, 240, 0.78) 0%, rgba(245, 245, 240, 0.58) 28%, rgba(245, 245, 240, 0.16) 52%, rgba(245, 245, 240, 0.08) 100%),
     linear-gradient(180deg, rgba(245, 245, 240, 0.06) 0%, rgba(245, 245, 240, 0) 36%, rgba(245, 245, 240, 0.9) 100%),
-    url("../img/uvodni_stranka_hero.png");
+    url("../img/home/uvodni_stranka_hero.png");
   background-size: cover;
   background-position: center top;
   transform:

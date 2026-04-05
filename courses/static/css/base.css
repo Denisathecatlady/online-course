@@ -322,7 +322,7 @@ PAGE BACKGROUND / WRAPPER
             rgba(255, 255, 255, 0.95),
             rgba(255, 255, 255, 0.9)
         ),
-        url("../img/hero-dog.jpg");
+        url("../img/shared/hero-dog.jpg");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;

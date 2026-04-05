@@ -22,9 +22,9 @@
             {% for course in courses %}
             <div class="course-card">
 
-                {% if course.image %}
+                {% if course.public_image_url %}
                 <div class="course-image-wrapper">
-                    <img src="{{ course.image.url }}"
+                    <img src="{{ course.public_image_url }}"
                          alt="{{ course.title }}">
                 </div>
                 {% endif %}
