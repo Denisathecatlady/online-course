@@ -166,3 +166,27 @@ class ModuleProgress(models.Model):
 
     def __str__(self):
         return f"{self.user} – {self.module}"
+
+
+# ======================================
+# MODULE QUIZ PROGRESS
+# ======================================
+
+class ModuleQuizProgress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    module = models.ForeignKey("Module", on_delete=models.CASCADE, related_name="quiz_progresses")
+
+    step = models.PositiveSmallIntegerField()
+    attempts_count = models.PositiveIntegerField(default=0)
+    passed = models.BooleanField(default=False)
+    passed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("user", "module", "step")
+        indexes = [
+            models.Index(fields=["user", "module"]),
+            models.Index(fields=["module", "step"]),
+        ]
+
+    def __str__(self):
+        return f"{self.user} – {self.module} – krok {self.step}"

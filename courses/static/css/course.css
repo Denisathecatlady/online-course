@@ -125,36 +125,36 @@
 ----------------------------------------------------- */
 
 .btn-sage {
-  background: var(--sage);
+  background: #6f8780;
   color: #ffffff;
   border-radius: 999px;
-  padding: 0.55rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.95rem 1.9rem;
+  font-size: 1rem;
+  font-weight: 500;
   border: none;
   transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .btn-sage:hover {
-  background: var(--sage-dark);
+  background: #5f766f;
   color: #ffffff;
   transform: translateY(-1px);
 }
 
 .btn-outline-sage {
-  border: 1px solid var(--sage);
-  color: var(--sage-dark);
+  border: 2px solid #2d2d2d;
+  color: #2d2d2d;
   border-radius: 999px;
-  padding: 0.55rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: transparent;
+  padding: 0.95rem 1.9rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #ffffff;
   transition: background 0.25s ease, color 0.25s ease;
 }
 
 .btn-outline-sage:hover {
-  background: var(--sage-soft);
-  color: var(--sage-dark);
+  background: #2d2d2d;
+  color: #ffffff;
 }
 
 /* -----------------------------------------------------
@@ -311,6 +311,11 @@
   gap: 0.3rem;
 }
 
+.type-pill.quiz {
+  background: rgba(245, 161, 87, 0.16);
+  color: #a15f1c;
+}
+
 /* title */
 .module-title {
   font-size: 1.3rem;
@@ -333,6 +338,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 /* status */
@@ -347,23 +353,37 @@
   color: #4fa66a;
 }
 
+.module-status.pending {
+  color: #7a6649;
+}
+
+.module-status.locked {
+  color: #7b6f6a;
+}
+
 .module-status.missing {
   color: #8a8a8a;
 }
 
+.module-locked-btn {
+  opacity: 0.6;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 /* tlačítko */
 .btn-sage {
-  background: #6f8f7d;
+  background: #6f8780;
   color: #ffffff;
   border-radius: 999px;
-  padding: 0.6rem 1.6rem;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 0.95rem 1.9rem;
+  font-size: 1rem;
+  font-weight: 500;
   border: none;
 }
 
 .btn-sage:hover {
-  background: #5f7f6d;
+  background: #5f766f;
   color: #ffffff;
 }
 

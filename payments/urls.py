@@ -23,6 +23,11 @@ urlpatterns = [
         views.add_variant_to_cart,
         name="add_variant_to_cart"
     ),
+    path(
+        "add-bundle/<int:variant_id>/",
+        views.add_bundle_to_cart,
+        name="add_bundle_to_cart"
+    ),
 
     # Checkout
     path("checkout/", views.checkout, name="checkout"),

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, CoursePlan, Module
+from .models import Course, CoursePlan, Module, ModuleQuizProgress
 
 
 # =========================
@@ -52,3 +52,10 @@ class CoursePlanAdmin(admin.ModelAdmin):
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ("order", "title", "course")
     prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(ModuleQuizProgress)
+class ModuleQuizProgressAdmin(admin.ModelAdmin):
+    list_display = ("user", "module", "step", "passed", "attempts_count", "passed_at")
+    list_filter = ("passed", "module__course")
+    search_fields = ("user__email", "user__first_name", "module__title", "module__course__title")

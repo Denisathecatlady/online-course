@@ -81,6 +81,9 @@
             <div class="module-types">
               <span class="type-pill video">🎥 Video</span>
               <span class="type-pill pdf">📄 PDF</span>
+              {% if m.requires_quiz_flow %}
+                <span class="type-pill quiz">🧠 {{ m.quiz_total_steps }} testy</span>
+              {% endif %}
             </div>
 
             <!-- obsah -->
@@ -94,11 +97,23 @@
 
             <!-- footer -->
             <div class="module-footer">
-              <a href="{% url 'module_detail' m.slug %}" class="btn btn-sage">
-                Otevřít modul →
-              </a>
+              {% if m.is_unlocked %}
+                <a href="{% url 'courses:module_detail' course.slug m.slug %}" class="btn btn-sage">
+                  Otevřít modul →
+                </a>
+              {% else %}
+                <span class="btn btn-outline-sage module-locked-btn" aria-disabled="true">
+                  Modul je zamčený
+                </span>
+              {% endif %}
 
-              {% if m.pdf_file %}
+              {% if not m.is_unlocked %}
+                <span class="module-status locked">{{ m.locked_reason }}</span>
+              {% elif m.is_completed %}
+                <span class="module-status success">✓ Modul splněn</span>
+              {% elif m.requires_quiz_flow %}
+                <span class="module-status pending">{{ m.quiz_passed_steps }} / {{ m.quiz_total_steps }} testů splněno</span>
+              {% elif m.pdf_file %}
                 <span class="module-status success">✓ PDF připraveno</span>
               {% else %}
                 <span class="module-status missing">PDF chybí</span>

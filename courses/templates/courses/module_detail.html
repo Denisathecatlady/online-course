@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block title %}{{ module.title }}{% endblock %}
 
 {% block extra_css %}
@@ -9,114 +10,316 @@
 
 {% block content %}
 <section class="module-page">
-  <div class="container">
+  <div class="module-shell">
+    {% if messages %}
+      <div class="module-flashes">
+        {% for message in messages %}
+          <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags|default:'info' }}{% endif %}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-    <!-- HEADER -->
-    <div class="module-header">
-      <a href="{% url 'course_dashboard' %}" class="back-link">
-        ← Zpět na moduly
-      </a>
-
-      <h1>{{ module.order }}. {{ module.title }}</h1>
-      <p class="text-muted">Modulový obsah – video + PDF.</p>
-
-      {% if module.pdf_file %}
-        <a class="btn btn-sage" href="{% url 'download_module_pdf' module.slug %}">
-          Stáhnout PDF
+    <header class="module-hero">
+      <div class="module-hero-main">
+        <a href="{% url 'courses:course_dashboard' course.slug %}" class="module-back-link">
+          <span aria-hidden="true">‹</span>
+          Zpět na moduly
         </a>
-      {% endif %}
-    </div>
 
-    <!-- 🔹 GRID: TEXT + VIDEA -->
-    <div class="module-grid">
+        <p class="module-hero-kicker">Modul {{ module.order }}</p>
+        <h1 class="module-hero-title">{{ module.title }}</h1>
 
-      <!-- LEVÝ SLOUPEC – TEXT -->
-      <section class="module-text-scroll">
+        <p class="module-hero-copy">
+          Modulový obsah
+          {% if module_steps %}— video{% endif %}
+          {% if module.pdf_file %} + PDF{% endif %}.
+          {% if has_step_quiz_flow %}
+            Splněno {{ quiz_passed_steps }} z {{ quiz_total_steps }} testů.
+            Každou další část odemkne úspěšné splnění testu z předchozí části.
+          {% elif module.intro_text %}
+            {{ module.intro_text }}
+          {% endif %}
+        </p>
+      </div>
 
-        {% if module.order == 1 %}
-          {% include "courses/modules/texts/module_1.html" %}
-        {% elif module.order == 2 %}
-          {% include "courses/modules/texts/module_2.html" %}
-        {% elif module.order == 3 %}
-          {% include "courses/modules/texts/module_3.html" %}
-        {% elif module.order == 4 %}
-          {% include "courses/modules/texts/module_4.html" %}
-        {% endif %}
+      <aside class="module-hero-progress">
+        <p class="module-hero-progress-label">
+          Dokončeno {{ timeline_completed_items }} z {{ timeline_total_items }} kroků
+        </p>
+        <div class="module-hero-progress-track" aria-hidden="true">
+          <div class="module-hero-progress-fill" style="width: {{ timeline_progress_percent }}%;"></div>
+        </div>
+        <p class="module-hero-progress-value">{{ timeline_progress_percent }}%</p>
 
-      </section>
-
-      <!-- PRAVÝ SLOUPEC – AKCE + VIDEA -->
-      <div class="module-videos">
-
-        <!-- 🔹 AKCE NAD VIDEI -->
-        <div class="module-actions">
-          <form method="post" action="{% url 'toggle_module_completion' module.id %}">
+        {% if not has_step_quiz_flow %}
+          <form method="post" action="{% url 'courses:toggle_module_completion' course.slug module.id %}" class="module-hero-action">
             {% csrf_token %}
-
             {% if module_progress and module_progress.completed %}
-              <button class="btn btn-outline-sage btn-sm">
-                ✓ Hotovo
-              </button>
+              <button class="btn btn-outline-sage btn-sm">✓ Hotovo</button>
             {% else %}
-              <button class="btn btn-sage btn-sm">
-                Označit jako hotovo
-              </button>
+              <button class="btn btn-sage btn-sm">Označit jako hotovo</button>
             {% endif %}
           </form>
+        {% endif %}
+      </aside>
+    </header>
+
+    <div class="module-layout">
+      <aside class="module-study-panel">
+        <article class="module-study-card">
+          <div class="module-study-head">
+            <span class="module-study-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M8 4.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V6A1.5 1.5 0 0 1 7.5 4.5H8Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 4.5V9h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.5 13h5M9.5 16.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div>
+              <p class="module-study-kicker">Studijní materiál</p>
+              <h2 class="module-study-title">Modul {{ module.order }}</h2>
+            </div>
+          </div>
+
+          <div class="module-study-content" data-module-study-content>
+            {% if module.order == 1 %}
+              {% include "courses/modules/texts/module_1.html" %}
+            {% elif module.order == 2 %}
+              {% include "courses/modules/texts/module_2.html" %}
+            {% elif module.order == 3 %}
+              {% include "courses/modules/texts/module_3.html" %}
+            {% elif module.order == 4 %}
+              {% include "courses/modules/texts/module_4.html" %}
+            {% endif %}
+          </div>
+
+          <button type="button" class="module-study-toggle" data-module-study-toggle aria-expanded="false">
+            <span>Zobrazit více</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6.5 8 10l4-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </article>
+      </aside>
+
+      <section class="module-timeline-panel">
+        <div class="module-type-legend" aria-label="Typy kroků">
+          <span class="module-type-pill">
+            <span class="module-type-icon video">▶</span>
+            Video
+          </span>
+          <span class="module-type-pill">
+            <span class="module-type-icon quiz">?</span>
+            Kvíz
+          </span>
+          <span class="module-type-pill">
+            <span class="module-type-icon pdf">▣</span>
+            PDF
+          </span>
+          <span class="module-type-pill">
+            <span class="module-type-icon locked">⌂</span>
+            Zamčeno
+          </span>
         </div>
 
-        <!-- VIDEA -->
-        {% if module.vimeo_embed_url1 %}
-          <article class="video-item">
-            <div class="video-header">
-              <span class="video-badge">A</span>
-              <div>
-                <strong>{{ module.title }}, část první</strong>
-                <div class="video-author">Andrea Zoulová Ing.</div>
+        <div class="module-timeline">
+          {% for item in timeline_items %}
+            <article class="module-timeline-item module-timeline-item-{{ item.kind }}{% if item.is_complete %} is-complete{% endif %}{% if not item.is_unlocked %} is-locked{% endif %}">
+              <div class="module-timeline-marker">
+                <span class="module-timeline-marker-inner">
+                  {% if not item.is_unlocked %}
+                    {% if item.kind == "quiz" %}⌂{% else %}⌂{% endif %}
+                  {% elif item.kind == "video" %}
+                    ▶
+                  {% elif item.kind == "quiz" %}
+                    ?
+                  {% else %}
+                    ▣
+                  {% endif %}
+                </span>
               </div>
-            </div>
 
-            <div class="video-frame">
-              <iframe src="{{ module.vimeo_embed_url1 }}" allowfullscreen loading="lazy"></iframe>
-            </div>
-          </article>
-        {% endif %}
+              <div class="module-timeline-body">
+                <p class="module-timeline-step">Krok {{ item.position }}</p>
 
-        {% if module.vimeo_embed_url2 %}
-          <article class="video-item">
-            <div class="video-header">
-              <span class="video-badge">A</span>
-              <div>
-                <strong>{{ module.title }}, část druhá</strong>
-                <div class="video-author">Andrea Zoulová Ing.</div>
+                {% if item.kind == "video" %}
+                  <article class="module-card{% if item.is_complete %} is-complete{% endif %}{% if not item.is_unlocked %} is-locked{% endif %}">
+                    <div id="video-step-{{ item.step_number }}" class="module-card-media-wrap">
+                      {% if item.is_complete %}
+                        <span class="module-card-badge">Splněno</span>
+                      {% elif not item.is_unlocked %}
+                        <span class="module-card-badge module-card-badge-muted">Zamčeno</span>
+                      {% endif %}
+
+                      {% if item.is_unlocked %}
+                        <div class="module-card-media module-card-video">
+                          <iframe src="{{ item.video_url }}" allowfullscreen loading="lazy" title="{{ item.title }}"></iframe>
+                        </div>
+                      {% else %}
+                        <div class="module-card-media module-card-placeholder">
+                          <div class="module-card-lock" aria-hidden="true">⌂</div>
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    <div class="module-card-content">
+                      <h2 class="module-card-title">{{ item.title }}</h2>
+                      <p class="module-card-subtitle">
+                        {% if item.is_unlocked %}
+                          {{ item.subtitle }}
+                        {% else %}
+                          Tato část se odemkne po úspěšném dokončení testu z předchozí části.
+                        {% endif %}
+                      </p>
+                    </div>
+                  </article>
+
+                {% elif item.kind == "quiz" %}
+                  {% if item.is_unlocked %}
+                    <details id="step-{{ item.step_number }}" class="module-quiz-card{% if item.quiz_passed %} is-complete{% endif %}" {% if item.quiz_passed and item.step_number == 1 or not item.quiz_passed %}open{% endif %}>
+                      <summary class="module-quiz-summary">
+                        <div class="module-quiz-summary-main">
+                          <span class="module-quiz-summary-icon">✓</span>
+                          <div>
+                            <h3>{{ item.title }}</h3>
+                            <p>
+                              Pokusy: {{ item.attempts_count }}
+                              {% if item.quiz_passed %}
+                                <span>Test máš správně. Můžeš pokračovat dál.</span>
+                              {% else %}
+                                <span>Počet pokusů není omezený.</span>
+                              {% endif %}
+                            </p>
+                          </div>
+                        </div>
+                        <span class="module-quiz-summary-arrow" aria-hidden="true">⌃</span>
+                      </summary>
+
+                      <div class="module-quiz-body">
+                        {% if item.quiz_passed %}
+                          {% for question in item.quiz.questions %}
+                            <fieldset class="module-quiz-question module-quiz-question-static">
+                              <legend>{{ forloop.counter }}. {{ question.prompt }}</legend>
+
+                              {% for option in question.options %}
+                                <label class="module-quiz-option{% if option.value == question.correct %} is-selected is-correct{% endif %}">
+                                  <input type="radio" disabled {% if option.value == question.correct %}checked{% endif %}>
+                                  <span>{{ option.label }}</span>
+                                </label>
+                              {% endfor %}
+                            </fieldset>
+                          {% endfor %}
+                        {% else %}
+                          <form method="post" action="{% url 'courses:submit_module_quiz' course.slug module.slug item.step_number %}" class="module-quiz-form">
+                            {% csrf_token %}
+
+                            {% for question in item.quiz.questions %}
+                              <fieldset class="module-quiz-question">
+                                <legend>{{ forloop.counter }}. {{ question.prompt }}</legend>
+
+                                {% for option in question.options %}
+                                  <label class="module-quiz-option">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ option.value }}">
+                                    <span>{{ option.label }}</span>
+                                  </label>
+                                {% endfor %}
+                              </fieldset>
+                            {% endfor %}
+
+                            <button class="btn btn-sage module-quiz-submit" type="submit">
+                              Odevzdat test
+                            </button>
+                          </form>
+                        {% endif %}
+                      </div>
+                    </details>
+                  {% else %}
+                    <article id="step-{{ item.step_number }}" class="module-locked-card">
+                      <div class="module-locked-card-copy">
+                        <h3>{{ item.title }}</h3>
+                        <p>Pokusy: {{ item.attempts_count }}</p>
+                      </div>
+                    </article>
+                  {% endif %}
+
+                {% else %}
+                  <article class="module-pdf-card{% if not item.is_unlocked %} is-locked{% endif %}">
+                    <div class="module-pdf-card-main">
+                      <span class="module-pdf-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <path d="M8 4.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V6A1.5 1.5 0 0 1 7.5 4.5H8Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M14 4.5V9h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.subtitle }}</p>
+                      </div>
+                    </div>
+
+                    {% if item.is_unlocked %}
+                      <a href="{{ item.href }}" class="module-pdf-link">
+                        Otevřít
+                      </a>
+                    {% else %}
+                      <span class="module-pdf-link is-disabled">Zamčeno</span>
+                    {% endif %}
+                  </article>
+                {% endif %}
               </div>
-            </div>
+            </article>
+          {% endfor %}
+        </div>
 
-            <div class="video-frame">
-              <iframe src="{{ module.vimeo_embed_url2 }}" allowfullscreen loading="lazy"></iframe>
-            </div>
-          </article>
-        {% endif %}
-
-        {% if module.vimeo_embed_url3 %}
-          <article class="video-item">
-            <div class="video-header">
-              <span class="video-badge">A</span>
+        {% if next_module %}
+          {% if next_module_unlocked %}
+            <a href="{% url 'courses:module_detail' course.slug next_module.slug %}" class="module-next-card">
               <div>
-                <strong>{{ module.title }}, část třetí</strong>
-                <div class="video-author">Andrea Zoulová Ing.</div>
+                <p class="module-next-kicker">Další modul</p>
+                <h2>Modul {{ next_module.order }} — {{ next_module.title }}</h2>
               </div>
+              <span class="module-next-arrow" aria-hidden="true">→</span>
+            </a>
+          {% else %}
+            <div class="module-next-card is-disabled">
+              <div>
+                <p class="module-next-kicker">Další modul</p>
+                <h2>Modul {{ next_module.order }} — {{ next_module.title }}</h2>
+              </div>
+              <span class="module-next-arrow" aria-hidden="true">→</span>
             </div>
-
-            <div class="video-frame">
-              <iframe src="{{ module.vimeo_embed_url3 }}" allowfullscreen loading="lazy"></iframe>
-            </div>
-          </article>
+          {% endif %}
         {% endif %}
-
-      </div>
+      </section>
     </div>
-
   </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const studyContent = document.querySelector("[data-module-study-content]");
+  const studyToggle = document.querySelector("[data-module-study-toggle]");
+
+  if (!studyContent || !studyToggle) return;
+
+  const collapsedHeight = 920;
+  const needsToggle = studyContent.scrollHeight > collapsedHeight + 40;
+
+  if (!needsToggle) {
+    studyToggle.hidden = true;
+    studyContent.classList.add("is-expanded");
+    return;
+  }
+
+  studyContent.style.setProperty("--module-study-collapsed-height", `${collapsedHeight}px`);
+
+  studyToggle.addEventListener("click", () => {
+    const expanded = studyContent.classList.toggle("is-expanded");
+    studyToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    studyToggle.querySelector("span").textContent = expanded ? "Zobrazit méně" : "Zobrazit více";
+  });
+});
+</script>
 {% endblock %}

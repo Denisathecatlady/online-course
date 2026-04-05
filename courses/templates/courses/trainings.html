@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}page-trainings{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/trainings.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="trainings-page py-6">
+<section class="trainings-page pb-6">
   <div class="container">
     <div class="trainings-shell">
       <div class="trainings-intro reveal">
-        <span class="badge badge-soft mb-3">Tréninky</span>
-        <h1 class="section-title mb-3">Praktické tréninky pro klidnější soužití se psem</h1>
-        <p class="trainings-lead mb-0">
+        <span class="trainings-kicker">Tréninky</span>
+        <h1 class="trainings-title">Praktické tréninky pro klidnější soužití se psem</h1>
+        <p class="trainings-lead">
           Vycházíme z porozumění psí komunikaci, respektu k potřebám psa a hledání skutečných příčin chování.
           Vyber si formu podpory, která nejlépe sedí vám oběma.
         </p>
       </div>
 
-      <div class="trainings-grid reveal">
+      <div class="trainings-grid">
         {% for training in trainings %}
-          <article class="training-card">
+          <article class="training-card reveal {% if forloop.counter == 1 or forloop.counter == 2 %}training-card-delay-1{% elif forloop.counter == 3 or forloop.counter == 4 %}training-card-delay-2{% else %}training-card-delay-3{% endif %}">
             <div class="training-card-head">
-              <p class="trainings-eyebrow mb-2">Trénink</p>
+              <p class="trainings-eyebrow">Trénink</p>
               <h2 class="training-card-title">{{ training.title }}</h2>
             </div>
 
@@ -34,13 +36,15 @@
               {% endif %}
             </div>
 
-            <p class="training-card-summary">{{ training.summary }}</p>
+            <div class="training-card-body">
+              <p class="training-card-summary">{{ training.summary }}</p>
 
-            <ul class="training-card-list">
-              {% for item in training.highlights %}
-                <li>{{ item }}</li>
-              {% endfor %}
-            </ul>
+              <ul class="training-card-list">
+                {% for item in training.highlights %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            </div>
 
             <div class="training-meta">
               <div class="training-meta-item">
@@ -50,7 +54,7 @@
                     <path d="M12 7.8V12l2.8 2.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                   </svg>
                 </span>
-                <strong>{{ training.duration }}</strong>
+                <span>{{ training.duration }}</span>
               </div>
               <div class="training-meta-item">
                 <span class="training-meta-icon" aria-hidden="true">
@@ -61,9 +65,9 @@
                     <circle cx="16.3" cy="15.8" r="1.1" fill="currentColor"/>
                   </svg>
                 </span>
-                <strong>{{ training.capacity }}</strong>
+                <span>{{ training.capacity }}</span>
               </div>
-              <div class="training-meta-item">
+              <div class="training-meta-item training-meta-item-price">
                 <span class="training-meta-icon" aria-hidden="true">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <rect x="4" y="7" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
@@ -78,12 +82,12 @@
         {% endfor %}
       </div>
 
-      <div class="trainings-contact card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5 trainings-contact-body">
-          <div>
-            <p class="trainings-eyebrow mb-2">Nevíš, co vybrat?</p>
-            <h2 class="trainings-contact-title mb-2">Ozvi se a zvolíme vhodný typ tréninku spolu</h2>
-            <p class="trainings-contact-copy mb-0">
+      <div class="trainings-contact reveal">
+        <div class="trainings-contact-body">
+          <div class="trainings-contact-copy-wrap">
+            <p class="trainings-eyebrow">Nevíš, co vybrat?</p>
+            <h2 class="trainings-contact-title">Ozvi se a zvolíme vhodný typ tréninku spolu</h2>
+            <p class="trainings-contact-copy">
               Pokud si nejsi jistá, jaký typ tréninku zvolit, napiš nebo zavolej. Pomůžeme ti vybrat nejvhodnější variantu.
             </p>
           </div>

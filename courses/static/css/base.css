@@ -18,12 +18,19 @@ DESIGN TOKENS / VARIABLES
 BASE / BODY
 ===================================================== */
 body {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--slate-soft);
     color: #2f3e3a;
     font-size: 16px;
-    line-height: 1.75;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
 }
 
 .preview-banner {
@@ -43,27 +50,23 @@ NAVBAR – CalmDog override Bootstrap
 ===================================================== */
 
 .navbar {
-background: transparent;
-border-bottom: none;
-padding: 1.2rem 0 0.4rem;
+background: linear-gradient(180deg, rgba(250, 249, 245, 0.96), rgba(244, 247, 243, 0.92));
+border-bottom: 1px solid rgba(95, 118, 107, 0.1);
+padding: 1rem 0;
 position: relative;
 z-index: 1000;
+backdrop-filter: blur(14px);
 }
 
-/* container trochu širší */
 .navbar .container {
-max-width: 1280px;
-background:
-    linear-gradient(180deg, rgba(250, 249, 245, 0.98), rgba(244, 247, 243, 0.96)),
-    linear-gradient(135deg, rgba(95, 118, 107, 0.08), rgba(62, 106, 87, 0.03));
-backdrop-filter: blur(18px);
-border: 1px solid rgba(95, 118, 107, 0.12);
-border-radius: 999px;
-padding: 0.8rem 1rem 0.8rem 1.3rem;
-box-shadow:
-    0 18px 40px rgba(35, 46, 41, 0.08),
-    0 10px 30px rgba(62, 106, 87, 0.08),
-    inset 0 1px 0 rgba(255,255,255,0.9);
+max-width: none;
+width: 100%;
+padding: 0 2rem;
+background: transparent;
+border: none;
+border-radius: 0;
+box-shadow: none;
+backdrop-filter: none;
 }
 
 /* ===== BRAND ===== */
@@ -87,6 +90,10 @@ color: #345345;
 padding: 0.7rem 0.95rem;
 border-radius: 999px;
 transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-utility-link {
+white-space: nowrap;
 }
 
 .navbar-nav .nav-link:hover {
@@ -119,28 +126,28 @@ text-transform: uppercase;
 
 /* primární */
 .navbar .btn-sage {
-background: linear-gradient(180deg, var(--sage-strong), var(--sage-deep));
+background: #6f8780;
 color: #fff;
 border: none;
-box-shadow: 0 12px 24px rgba(62, 106, 87, 0.18);
+box-shadow: none;
 }
 
 .navbar .btn-sage:hover {
-background: linear-gradient(180deg, #355a49, #233f34);
+background: #5f766f;
 color: #fff;
 }
 
 /* outline (odhlásit) */
 .navbar .btn-outline-sage {
-border: 1px solid rgba(62, 106, 87, 0.18);
-color: var(--sage-strong);
-background: rgba(240, 247, 243, 0.95);
+border: 2px solid #2d2d2d;
+color: #2d2d2d;
+background: #ffffff;
 }
 
 .navbar .btn-outline-sage:hover {
-border-color: var(--sage-strong);
-color: var(--sage-deep);
-background: rgba(230, 236, 233, 0.8);
+border-color: #2d2d2d;
+color: #ffffff;
+background: #2d2d2d;
 }
 
 /* ===== TOGGLER ===== */
@@ -273,12 +280,11 @@ box-shadow: none;
 
 @media (max-width: 991px) {
     .navbar {
-        padding-top: 0.9rem;
+        padding: 0.9rem 0;
     }
 
     .navbar .container {
-        border-radius: 28px;
-        padding: 0.9rem 1rem;
+        padding: 0 1rem;
     }
 
     .navbar-collapse {
@@ -299,6 +305,11 @@ box-shadow: none;
     .nav-submenu:hover .nav-submenu-menu,
     .nav-submenu:focus-within .nav-submenu-menu {
         display: block;
+    }
+
+    .site-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
     }
 }
 
@@ -369,34 +380,38 @@ BUTTONS
 ===================================================== */
 .btn {
     border-radius: 999px;
-    padding: 0.65rem 1.4rem;
+    padding: 0.95rem 1.9rem;
+    min-height: 60px;
 }
 
 .btn-sage {
-    background-color: var(--sage);
+    background-color: #6f8780;
     color: #fff;
     border: none;
     border-radius: 999px;
-    padding: 0.55rem 1.6rem;
+    padding: 0.95rem 1.9rem;
     font-weight: 500;
+    box-shadow: none;
 }
 
 .btn-sage:hover {
-    background-color: #3f5f55;
+    background-color: #5f766f;
     color: #fff;
 }
 
 .btn-outline-sage {
-    border: 2px solid var(--sage);
-    color: var(--sage);
-    background: transparent;
+    border: 2px solid #2d2d2d;
+    color: #2d2d2d;
+    background: #ffffff;
     border-radius: 999px;
-    padding: 0.55rem 1.6rem;
+    padding: 0.95rem 1.9rem;
     font-weight: 500;
 }
 
 .btn-outline-sage:hover {
-    background-color: var(--sage-soft);
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-color: #2d2d2d;
 }
 
 
@@ -451,10 +466,116 @@ BACKGROUND HELPERS
 /* =====================================================
 FOOTER
 ===================================================== */
-footer {
-    font-size: 0.9rem;
-    color: #6b7280;
-    background-color: #fff;
+.site-footer {
+    background: #2f2f2f;
+    color: rgba(255, 255, 255, 0.88);
+    padding: 4.5rem 0 4rem;
+}
+
+.site-footer-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.7fr 0.85fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.site-footer-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1.6rem;
+}
+
+.site-footer-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.site-footer-name {
+    color: #ffffff;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.site-footer-text,
+.site-footer-copy,
+.site-footer-contact p,
+.site-footer-links a {
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.site-footer-text {
+    max-width: 420px;
+    margin: 0 0 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.site-footer-copy {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.site-footer-heading {
+    margin: 0 0 1.4rem;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-footer-links {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.site-footer-links a,
+.site-footer-contact a {
+    text-decoration: none;
+}
+
+.site-footer-links a:hover,
+.site-footer-contact a:hover {
+    color: #ffffff;
+}
+
+.site-footer-contact p {
+    margin: 0 0 0.85rem;
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.site-footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.25rem;
+}
+
+.site-footer-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.76);
+    text-decoration: none;
+    font-size: 0.92rem;
+}
+
+.site-footer-pill:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.36);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .reveal {
@@ -513,7 +634,7 @@ body {
 font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 font-weight: 400;
 font-size: 16px;
-line-height: 1.75;
+line-height: 1.65;
 color: #2f3e3a;
 }
 
@@ -521,13 +642,13 @@ color: #2f3e3a;
 h1, h2, h3, h4, h5 {
 font-family: "Playfair Display", serif;
 font-weight: 500;
-letter-spacing: -0.02em;
+letter-spacing: -0.03em;
 color: #1f2f2a;
 }
 
 /* Běžný text */
 p, li {
-font-family: "Inter", system-ui, sans-serif;
+font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 font-weight: 400;
 }
 
@@ -537,9 +658,20 @@ small,
 .course-badge,
 .variant-badge,
 .pricing-badge {
-font-family: "Inter", system-ui, sans-serif;
+font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 font-weight: 500;
-letter-spacing: 0.12em;
+letter-spacing: 0.08em;
+}
+
+button,
+.btn,
+.nav-link,
+.nav-submenu-item,
+input,
+textarea,
+select,
+label {
+font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .social-link {

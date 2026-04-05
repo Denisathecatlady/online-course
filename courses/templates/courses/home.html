@@ -13,10 +13,11 @@
 
 {% block hero %}
 <section class="home-hero">
-  <div class="container">
-    <div class="home-hero-shell">
+  <div class="home-hero-shell">
+    <div class="home-hero-media" aria-hidden="true"></div>
+    <div class="container">
       <div class="home-hero-copy">
-        <span class="home-kicker">CalmDog</span>
+        <span class="home-kicker">CalmDog — Ing. Andrea Zoulová</span>
         <h1 class="home-hero-title">
           Klidnější soužití se psem
           <span>online i naživo.</span>
@@ -27,44 +28,132 @@
         </p>
 
         <div class="home-hero-actions">
-          <a href="#sluzby" class="btn btn-sage">Co děláme</a>
-          <a href="{% url 'courses:contact' %}" class="btn btn-outline-sage">Domluvit konzultaci</a>
+          <a href="#sluzby" class="btn btn-sage home-hero-btn">
+            <span>Co děláme</span>
+            <span class="hero-btn-arrow" aria-hidden="true">→</span>
+          </a>
+          <a href="{% url 'courses:contact' %}" class="btn home-hero-btn-outline">Domluvit konzultaci</a>
         </div>
 
-        <div class="home-proof-row">
-          <div class="proof-chip">
-            <strong>Etický přístup</strong>
-            <span>bez nátlaku a dominance</span>
-          </div>
-          <div class="proof-chip">
-            <strong>Online i osobně</strong>
-            <span>tréninky, kurzy, vodítka</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="home-hero-visual">
-        <div class="hero-photo-card hero-photo-main">
-          <img src="{% static 'img/hero-dog.jpg' %}" alt="Pes na klidné procházce">
-        </div>
-        <div class="hero-floating-card">
-          <span class="floating-label">Co u nás najdeš</span>
-          <ul>
-            <li>Osobní tréninky na míru</li>
-            <li>Online kurzy s praktickými ukázkami</li>
-            <li>Vodítka navržená pro reálné použití</li>
-          </ul>
-        </div>
+        <nav class="home-hero-links" aria-label="Rychlé odkazy">
+          <a href="{% url 'payments:course_list' %}" class="home-hero-chip">Online kurzy</a>
+          <a href="{% url 'courses:trainings' %}" class="home-hero-chip">Osobní tréninky</a>
+          <a href="{% url 'shop:product_list' %}" class="home-hero-chip">Vodítka a vybavení</a>
+        </nav>
       </div>
     </div>
+
+    <a href="#sluzby" class="home-hero-scroll" aria-label="Přejít na služby">
+      <span class="home-hero-scroll-mouse" aria-hidden="true">
+        <span class="home-hero-scroll-dot"></span>
+      </span>
+      <span class="home-hero-scroll-label">Prozkoumat</span>
+    </a>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hero = document.querySelector(".home-hero-shell");
+  const copy = document.querySelector(".home-hero-copy");
+  const motionBands = document.querySelectorAll(".motion-band");
+  const motionFloats = document.querySelectorAll(".motion-float");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!hero || !copy || reduceMotion) return;
+
+  let pointerX = 0;
+  let pointerY = 0;
+  let pointerFrame = null;
+
+  const updateHeroParallax = () => {
+    const rect = hero.getBoundingClientRect();
+    const progress = Math.min(Math.max((0 - rect.top) / (rect.height || 1), 0), 1);
+    const mediaShift = progress * 68;
+    const copyShift = progress * -34;
+    const copyOpacity = 1 - progress * 0.34;
+
+    hero.style.setProperty("--hero-media-shift", mediaShift.toFixed(2) + "px");
+    hero.style.setProperty("--hero-copy-shift", copyShift.toFixed(2) + "px");
+    hero.style.setProperty("--hero-copy-opacity", copyOpacity.toFixed(3));
+  };
+
+  const updateSectionMotion = () => {
+    const viewportHeight = window.innerHeight || 1;
+
+    motionBands.forEach((band) => {
+      const rect = band.getBoundingClientRect();
+      const distanceFromCenter = rect.top + (rect.height / 2) - (viewportHeight / 2);
+      const normalized = Math.min(Math.max(distanceFromCenter / viewportHeight, -1), 1);
+      const shift = normalized * -26;
+      band.style.setProperty("--band-shift", shift.toFixed(2) + "px");
+    });
+
+    motionFloats.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const distanceFromCenter = rect.top + (rect.height / 2) - (viewportHeight / 2);
+      const normalized = Math.min(Math.max(distanceFromCenter / viewportHeight, -1), 1);
+      const shift = normalized * -16;
+      item.style.setProperty("--float-shift", shift.toFixed(2) + "px");
+    });
+  };
+
+  const commitPointer = () => {
+    hero.style.setProperty("--hero-pointer-x", pointerX.toFixed(3));
+    hero.style.setProperty("--hero-pointer-y", pointerY.toFixed(3));
+    pointerFrame = null;
+  };
+
+  const schedulePointerUpdate = () => {
+    if (pointerFrame !== null) return;
+    pointerFrame = window.requestAnimationFrame(commitPointer);
+  };
+
+  const updatePointerPosition = (event) => {
+    if (event.pointerType === "touch") return;
+    const rect = hero.getBoundingClientRect();
+    const relativeY = (event.clientY - rect.top) / (rect.height || 1);
+
+    pointerX = 0;
+    pointerY = Math.min(Math.max(relativeY * 2 - 1, -1), 1);
+    schedulePointerUpdate();
+  };
+
+  const resetPointer = () => {
+    pointerX = 0;
+    pointerY = 0;
+    schedulePointerUpdate();
+  };
+
+  let ticking = false;
+
+  const onScroll = () => {
+    if (ticking) return;
+    window.requestAnimationFrame(() => {
+      updateHeroParallax();
+      updateSectionMotion();
+      ticking = false;
+    });
+    ticking = true;
+  };
+
+  updateHeroParallax();
+  updateSectionMotion();
+  resetPointer();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  hero.addEventListener("pointermove", updatePointerPosition);
+  hero.addEventListener("pointerleave", resetPointer);
+});
+</script>
 {% endblock %}
 
 {% block content %}
 <section class="home-intro section-space">
   <div class="container">
-    <div class="section-head section-head-split">
+    <div class="section-head section-head-split reveal">
       <div>
         <span class="section-kicker">Kdo jsme a co děláme</span>
         <h2 class="section-title">Propojujeme vzdělávání, praxi a vybavení pro každodenní život se psem.</h2>
@@ -76,7 +165,7 @@
     </div>
 
     <div class="intro-grid">
-      <article class="intro-panel intro-panel-strong">
+      <article class="intro-panel intro-panel-sage reveal reveal-lift reveal-delay-1">
         <span class="panel-number">01</span>
         <h3>Pomáháme majitelům lépe číst chování psa</h3>
         <p>
@@ -85,7 +174,7 @@
         </p>
       </article>
 
-      <article class="intro-panel">
+      <article class="intro-panel intro-panel-orange reveal reveal-lift reveal-delay-2">
         <span class="panel-number">02</span>
         <h3>Učíme přenositelné principy, ne rychlé triky</h3>
         <p>
@@ -94,7 +183,7 @@
         </p>
       </article>
 
-      <article class="intro-panel">
+      <article class="intro-panel intro-panel-dark reveal reveal-lift reveal-delay-3">
         <span class="panel-number">03</span>
         <h3>Vybíráme i tvoříme věci, které dávají smysl v praxi</h3>
         <p>
@@ -106,15 +195,19 @@
   </div>
 </section>
 
+<section class="home-image-band motion-band reveal reveal-band" aria-label="Detail psího oka">
+  <img src="{% static 'img/hero_pes_oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
+</section>
+
 <section id="sluzby" class="services-section section-space">
   <div class="container">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="section-kicker">Služby</span>
       <h2 class="section-title">Jedno místo pro trénink, vzdělávání i výbavu.</h2>
     </div>
 
     <div class="services-grid">
-      <article class="service-card service-card-trainings">
+      <article class="service-card service-card-trainings reveal reveal-lift reveal-delay-1">
         <div class="service-icon">01</div>
         <h3>Osobní tréninky</h3>
         <p>
@@ -124,7 +217,7 @@
         <a href="{% url 'courses:trainings' %}" class="service-link">Zobrazit tréninky</a>
       </article>
 
-      <article class="service-card service-card-courses">
+      <article class="service-card service-card-courses reveal reveal-lift reveal-delay-2">
         <div class="service-icon">02</div>
         <h3>Online kurzy</h3>
         <p>
@@ -134,14 +227,14 @@
         <a href="{% url 'payments:course_list' %}" class="service-link">Prohlédnout kurzy</a>
       </article>
 
-      <article class="service-card service-card-products">
+      <article class="service-card service-card-products reveal reveal-lift reveal-delay-3">
         <div class="service-icon">03</div>
         <h3>Vodítka a vybavení</h3>
         <p>
-          Produkty vybíráme s důrazem na funkčnost, pohodlí a každodenní použitelnost.
-          Nejde jen o vzhled, ale o to, aby vybavení dobře sloužilo vám oběma.
+          Promyšlené produkty pro každodenní použití. Vodítka, které umožňují svobodu
+          a zároveň bezpečnost při procházkách.
         </p>
-        <a href="{% url 'shop:product_list' %}" class="service-link">Prohlédnout vodítka</a>
+        <a href="{% url 'shop:product_list' %}" class="service-link">Chci vodítko</a>
       </article>
     </div>
   </div>
@@ -149,41 +242,47 @@
 
 <section class="approach-section section-space">
   <div class="container">
-    <div class="approach-shell">
-      <div class="approach-copy">
-        <span class="section-kicker">Jak pracujeme</span>
-        <h2 class="section-title">Klid, kontext a řešení, která fungují i doma.</h2>
-        <p class="section-text">
-          Neslibujeme zázraky přes noc. Díváme se na příčiny chování, na prostředí psa
-          i na to, co je realistické a bezpečné pro každodenní život.
-        </p>
-      </div>
+    <div class="approach-copy reveal">
+      <span class="section-kicker">Jak pracujeme</span>
+      <h2 class="section-title">
+        Klid, kontext a řešení, která
+        <span>fungují i doma.</span>
+      </h2>
+      <p class="section-text">
+        Neslibujeme zázraky přes noc. Díváme se na příčiny chování, na prostředí psa
+        i na to, co je realistické a bezpečné pro každodenní život.
+      </p>
+    </div>
 
-      <div class="approach-steps">
-        <article class="approach-step">
-          <strong>1. Porozumění situaci</strong>
-          <p>Nejdřív potřebujeme vědět, co pes prožívá a v jakém kontextu reaguje.</p>
-        </article>
-        <article class="approach-step">
-          <strong>2. Návrh vhodného postupu</strong>
-          <p>Volíme cestu, která je etická, srozumitelná a dlouhodobě udržitelná.</p>
-        </article>
-        <article class="approach-step">
-          <strong>3. Přenos do běžného života</strong>
-          <p>Neřešíme jen jednu lekci, ale i to, jak změny fungují doma, venku a v praxi.</p>
-        </article>
-      </div>
+    <div class="approach-steps">
+      <article class="approach-step reveal reveal-lift reveal-delay-1">
+        <span class="approach-step-number">1</span>
+        <strong>Porozumění situaci</strong>
+        <p>Nejdřív potřebujeme vědět, co pes prožívá a v jakém kontextu reaguje.</p>
+      </article>
+      <article class="approach-step reveal reveal-lift reveal-delay-2">
+        <span class="approach-step-number">2</span>
+        <strong>Návrh vhodného postupu</strong>
+        <p>Volíme cestu, která je etická, srozumitelná a dlouhodobě udržitelná.</p>
+      </article>
+      <article class="approach-step reveal reveal-lift reveal-delay-3">
+        <span class="approach-step-number">3</span>
+        <strong>Přenos do běžného života</strong>
+        <p>Neřešíme jen jednu lekci, ale i to, jak změny fungují doma, venku a v praxi.</p>
+      </article>
     </div>
   </div>
 </section>
 
+<section class="home-image-band home-image-band-forest motion-band reveal reveal-band" aria-label="Lesní hero">
+  <img src="{% static 'img/obrazek_les_hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
+</section>
+
 <section class="course-preview-section section-space">
   <div class="container">
-    <div class="section-head section-head-split">
-      <div>
-        <span class="section-kicker">Online kurzy</span>
-        <h2 class="section-title">Obsah, který jde do hloubky a zůstává praktický.</h2>
-      </div>
+    <div class="course-preview-head reveal">
+      <span class="section-kicker">Online kurzy</span>
+      <h2 class="section-title">Obsah, který jde do hloubky a zůstává praktický.</h2>
       <p class="section-text">
         Kurzy stavíme tak, aby byly srozumitelné i použitelné. Teorie je vždy propojená
         s reálnými ukázkami a každodenní prací se psem.
@@ -192,41 +291,68 @@
 
     <div class="course-preview-grid">
       {% for course in courses %}
-        <article class="course-preview-card">
-          <span class="course-preview-tag">Online kurz</span>
-          <h3>{{ course.title }}</h3>
-          <p>{{ course.public_intro|default:course.about_text|truncatewords:28 }}</p>
-          <div class="course-preview-footer">
-            <span>{{ course.plans.count }} variant{{ course.plans.count|pluralize:"a,y" }}</span>
-            <a href="{% url 'payments:course_detail' course.slug %}">Detail kurzu</a>
+        <article class="course-preview-card course-preview-card-rich reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}">
+          <a href="{% url 'payments:course_detail' course.slug %}" class="course-preview-image-link" aria-label="{{ course.title }}">
+            {% if course.image %}
+              <img src="{{ course.image.url }}" alt="{{ course.title }}" class="course-preview-image">
+            {% else %}
+              <img src="{% static 'img/hero-dog.jpg' %}" alt="{{ course.title }}" class="course-preview-image">
+            {% endif %}
+          </a>
+
+          <div class="course-preview-body">
+            <div class="course-preview-meta-top">
+              <span class="course-preview-tag">Online kurz</span>
+              {% if course.active_plan_count %}
+                <span class="course-preview-variants">{{ course.active_plan_count }} variant{{ course.active_plan_count|pluralize:"a,y" }}</span>
+              {% endif %}
+            </div>
+
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.public_intro|default:course.about_text|truncatewords:20 }}</p>
+
+            <div class="course-preview-footer">
+              <a href="{% url 'payments:course_detail' course.slug %}">Detail kurzu →</a>
+              {% if course.min_price %}
+                <strong>{{ course.min_price|floatformat:0|intcomma }} Kč</strong>
+              {% endif %}
+            </div>
           </div>
         </article>
       {% empty %}
-        <article class="course-preview-card course-preview-card-empty">
-          <span class="course-preview-tag">Online kurzy</span>
-          <h3>Nové kurzy se připravují</h3>
-          <p>Aktuální nabídku brzy doplníme. Pokud chceš vědět mezi prvními, napiš nám.</p>
-          <div class="course-preview-footer">
-            <span>Brzy více</span>
-            <a href="{% url 'courses:contact' %}">Napsat nám</a>
+        <article class="course-preview-card course-preview-card-empty reveal reveal-lift reveal-delay-1">
+          <div class="course-preview-body">
+            <span class="course-preview-tag">Online kurzy</span>
+            <h3>Nové kurzy se připravují</h3>
+            <p>Aktuální nabídku brzy doplníme. Pokud chceš vědět mezi prvními, napiš nám.</p>
+            <div class="course-preview-footer">
+              <a href="{% url 'courses:contact' %}">Napsat nám →</a>
+            </div>
           </div>
         </article>
       {% endfor %}
+    </div>
+
+    <div class="course-preview-cta reveal reveal-delay-2">
+      <a href="{% url 'payments:course_list' %}" class="btn btn-sage home-hero-btn">
+        <span>Zobrazit všechny kurzy</span>
+        <span class="hero-btn-arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>
 
 <section class="home-cta section-space">
   <div class="container">
-    <div class="home-cta-shell">
-      <div>
-        <span class="section-kicker">Kam dál</span>
-        <h2 class="section-title">Vyber si cestu, která teď dává největší smysl.</h2>
-      </div>
+    <div class="home-cta-shell reveal">
+      <h2 class="section-title">
+        Vyber si cestu, která teď dává
+        <span>největší smysl.</span>
+      </h2>
       <div class="home-cta-actions">
-        <a href="{% url 'courses:trainings' %}" class="btn btn-sage">Chci osobní trénink</a>
-        <a href="{% url 'payments:course_list' %}" class="btn btn-outline-sage">Chci online kurz</a>
-        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-sage">Chci vodítko</a>
+        <a href="{% url 'courses:trainings' %}" class="btn btn-sage home-cta-btn-primary">Chci osobní trénink</a>
+        <a href="{% url 'payments:course_list' %}" class="btn home-cta-btn-outline">Chci online kurz</a>
+        <a href="{% url 'shop:product_list' %}" class="btn home-cta-btn-outline">Chci vodítko</a>
       </div>
     </div>
   </div>
@@ -234,7 +360,7 @@
 
 <section class="lecturer-section">
   <div class="container lecturer-grid">
-    <div class="lecturer-content">
+    <div class="lecturer-content reveal reveal-left">
       <span class="lecturer-badge">
         ● VAŠE LEKTORKA
       </span>
@@ -263,7 +389,7 @@
       </div>
     </div>
 
-    <div class="lecturer-visual">
+    <div class="lecturer-visual motion-float reveal reveal-right reveal-delay-2">
       <div class="lecturer-photo-wrap">
         <img
           src="{% static 'img/lecturer-portrait.png' %}"

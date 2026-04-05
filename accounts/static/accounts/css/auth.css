@@ -71,11 +71,11 @@
   width: 100%;
   margin-top: 1.5rem;
 
-  background: #5f766b;
+  background: #6f8780;
   color: #ffffff;
   border: none;
   border-radius: 999px;
-  padding: 1rem 1.6rem;
+  padding: 0.95rem 1.9rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -84,7 +84,7 @@
 }
 
 .auth-btn:hover {
-  background: #7f968c;
+  background: #5f766f;
   transform: translateY(-1px);
 }
 
@@ -130,4 +130,3 @@
     font-size: 1.9rem;
   }
 }
-

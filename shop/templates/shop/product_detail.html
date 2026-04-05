@@ -13,7 +13,7 @@
         <div class="product-visual card card-soft border-0 reveal">
           <div class="card-body p-3 p-md-4">
             {% if product.image %}
-              <img src="{{ product.image.url }}" class="product-detail-image" alt="{{ product.name }}">
+              <img src="{{ product.image.url }}" id="product-main-image" class="product-detail-image" alt="{{ product.name }}">
             {% else %}
               <div class="product-detail-placeholder">CalmDog</div>
             {% endif %}
@@ -43,7 +43,8 @@
                 id="add-to-cart-form"
                 class="product-detail-form"
                 data-show-type-summary="{% if has_types %}1{% else %}0{% endif %}"
-                data-url-template="{% url 'payments:add_variant_to_cart' 0 %}">
+                data-url-template="{% url 'payments:add_variant_to_cart' 0 %}"
+                {% if bundle_offer %}data-bundle-url-template="{% url 'payments:add_bundle_to_cart' 0 %}"{% endif %}>
             {% csrf_token %}
 
             {% if has_lengths %}
@@ -91,9 +92,34 @@
               <p class="product-stock-note mb-0">Dostupnost se aktualizuje podle vybrané varianty.</p>
             </div>
 
-            <button type="submit" class="btn btn-sage product-submit" disabled>
-              Přidat do košíku
-            </button>
+            {% if bundle_offer %}
+            <div class="product-bundle-card">
+              <span class="product-bundle-label">{{ bundle_offer.title }}</span>
+              <h3 class="product-bundle-title mb-2">Vodítko + {{ bundle_offer.companion_name }}</h3>
+              <p class="product-bundle-copy">{{ bundle_offer.copy }}</p>
+              <p id="bundle-summary" class="product-bundle-summary mb-0">
+                Vyber variantu a zobrazí se i cena kompletu.
+              </p>
+              <input type="hidden" name="bundle_variant_id" id="bundle-variant-id">
+            </div>
+            {% endif %}
+
+            <div class="product-action-row">
+              <button type="submit" class="btn btn-sage product-submit" disabled>
+                Přidat do košíku
+              </button>
+              {% if bundle_offer %}
+              <button
+                type="submit"
+                id="bundle-submit"
+                class="btn btn-outline-sage product-submit-alt"
+                formaction=""
+                disabled
+              >
+                Přidat očko + vodítko
+              </button>
+              {% endif %}
+            </div>
           </form>
         </div>
       </div>
@@ -106,6 +132,7 @@ const variants = {{ variants_json|safe }};
 
 const form = document.getElementById("add-to-cart-form");
 const baseUrl = form.dataset.urlTemplate;
+const bundleUrl = form.dataset.bundleUrlTemplate || "";
 const showTypeSummary = form.dataset.showTypeSummary === "1";
 
 const lengthSelect = document.getElementById("length-select");
@@ -116,6 +143,11 @@ const stockElement = document.getElementById("stock-status");
 const variantSummaryElement = document.getElementById("variant-summary");
 const colorPreview = document.getElementById("color-preview");
 const submitButton = document.querySelector(".product-submit");
+const bundleSubmitButton = document.getElementById("bundle-submit");
+const bundleSummaryElement = document.getElementById("bundle-summary");
+const bundleVariantInput = document.getElementById("bundle-variant-id");
+const productImage = document.getElementById("product-main-image");
+const defaultProductImage = productImage ? productImage.getAttribute("src") : "";
 
 function updateVariant() {
   const selectedLength = lengthSelect ? lengthSelect.value : null;
@@ -147,6 +179,10 @@ function updateVariant() {
       ? summaryParts.join(" • ")
       : "Zvolená varianta";
 
+    if (productImage) {
+      productImage.src = match.image_url || defaultProductImage;
+    }
+
     if (match.stock > 0) {
       stockElement.innerText = "Skladem: " + match.stock + " ks";
       stockElement.classList.remove("text-danger");
@@ -156,6 +192,19 @@ function updateVariant() {
       stockElement.classList.remove("text-success");
       stockElement.classList.add("text-danger");
     }
+
+    if (bundleSubmitButton && bundleVariantInput) {
+      const bundleAvailable = Boolean(match.bundle_variant_id) && match.bundle_stock > 0 && match.stock > 0;
+      bundleVariantInput.value = match.bundle_variant_id || "";
+      bundleSubmitButton.formAction = match.bundle_variant_id ? bundleUrl.replace("0", match.id) : "";
+      bundleSubmitButton.disabled = !bundleAvailable;
+
+      if (bundleSummaryElement) {
+        bundleSummaryElement.innerText = bundleAvailable
+          ? "Komplet: " + match.color_name + " • " + match.bundle_price.toLocaleString("cs-CZ") + " Kč"
+          : "Odpovídající očko přes rameno teď pro tuto variantu není skladem.";
+      }
+    }
   } else {
     priceElement.innerText = "Varianta není dostupná";
     stockElement.innerText = "Tato kombinace momentálně není dostupná.";
@@ -164,6 +213,20 @@ function updateVariant() {
     variantSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
     form.action = "";
     submitButton.disabled = true;
+
+    if (productImage) {
+      productImage.src = defaultProductImage;
+    }
+
+    if (bundleSubmitButton && bundleVariantInput) {
+      bundleVariantInput.value = "";
+      bundleSubmitButton.formAction = "";
+      bundleSubmitButton.disabled = true;
+    }
+
+    if (bundleSummaryElement) {
+      bundleSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
+    }
   }
 }
 

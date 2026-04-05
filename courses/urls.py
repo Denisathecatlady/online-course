@@ -40,6 +40,12 @@ urlpatterns = [
     ),
 
     path(
+        "kurz/<slug:course_slug>/modul/<slug:slug>/test/<int:step>/",
+        views.submit_module_quiz,
+        name="submit_module_quiz",
+    ),
+
+    path(
         "kurz/<slug:course_slug>/modul/<int:module_id>/hotovo/",
         views.toggle_module_completion,
         name="toggle_module_completion",

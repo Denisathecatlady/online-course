@@ -12,6 +12,11 @@
     align-items: start;
 }
 
+.account-shell-no-sidebar {
+    max-width: 960px;
+    grid-template-columns: minmax(0, 1fr);
+}
+
 .account-sidebar-card,
 .account-content-card {
     border-radius: 28px;

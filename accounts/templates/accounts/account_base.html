@@ -8,7 +8,8 @@
 {% block content %}
 <section class="account-page py-6">
   <div class="container">
-    <div class="account-shell">
+    <div class="account-shell{% if hide_account_sidebar %} account-shell-no-sidebar{% endif %}">
+      {% if not hide_account_sidebar %}
       <aside class="account-sidebar reveal">
         <div class="account-sidebar-card">
           <span class="badge badge-soft mb-3">Můj účet</span>
@@ -30,6 +31,7 @@
           </nav>
         </div>
       </aside>
+      {% endif %}
 
       <div class="account-content reveal">
         {% block account_content %}{% endblock %}

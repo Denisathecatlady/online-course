@@ -118,18 +118,18 @@
     display: inline-block;
     width: 100%;
     text-align: center;
-    background: #5F766B;
+    background: #6f8780;
     color: #ffffff;
-    padding: 13px;
+    padding: 15px 18px;
     border-radius: 999px;
     text-decoration: none;
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 500;
     transition: background 0.25s ease, transform 0.15s ease;
 }
 
 .course-list-section .btn-sage:hover {
-    background: #435f55;
+    background: #5f766f;
     transform: translateY(-1px);
 }
 

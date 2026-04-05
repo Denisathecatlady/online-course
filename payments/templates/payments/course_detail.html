@@ -7,12 +7,212 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/course-detail-offer.css' %}">
-{% if course.slug == "konejsive-signaly-v-praxi" %}
-<link rel="stylesheet" href="{% static 'css/about.css' %}">
-{% endif %}
 {% endblock %}
 
 {% block content %}
+{% if course_marketing %}
+<section class="course-showcase">
+  <div class="container">
+    <nav class="course-breadcrumbs" aria-label="Drobečková navigace">
+      <a href="{% url 'courses:home' %}">Domů</a>
+      <span>›</span>
+      <a href="{% url 'payments:course_list' %}">Kurzy</a>
+      <span>›</span>
+      <span>Online kurz</span>
+    </nav>
+
+    <div class="course-showcase-grid">
+      <div class="course-showcase-main">
+        <span class="course-detail-pill">Online kurz</span>
+        <h1 class="course-showcase-title">{{ course.title }}</h1>
+        <p class="course-showcase-lead">{{ course_marketing.hero_lead }}</p>
+        <p class="course-showcase-support">{{ course_marketing.hero_support }}</p>
+
+        <div class="course-showcase-metrics">
+          {% for metric in course_marketing.metrics %}
+          <div class="course-showcase-metric">
+            <strong>{{ metric.value }}</strong>
+            <span>{{ metric.label }}</span>
+          </div>
+          {% endfor %}
+        </div>
+
+        <article class="course-mentor-card">
+          <div class="course-mentor-avatar">
+            <img src="{% static 'img/lecturer-portrait.png' %}" alt="Ing. Andrea Zoulová">
+          </div>
+          <div class="course-mentor-copy">
+            <span>Instruktor</span>
+            <h2>Ing. Andrea Zoulová</h2>
+            <p>Calming Signals Specialist • Dog Behavior Specialist</p>
+          </div>
+        </article>
+      </div>
+
+      <aside class="course-purchase-card">
+        <a href="#obsah-kurzu" class="course-purchase-media">
+          {% if course.image %}
+          <img src="{{ course.image.url }}" alt="{{ course.title }}">
+          {% else %}
+          <img src="{% static 'img/psi-rec-konejsive-signaly-agrese-stekani.png' %}" alt="{{ course.title }}">
+          {% endif %}
+          <span class="course-purchase-play" aria-hidden="true">▶</span>
+        </a>
+
+        <div class="course-purchase-body">
+          <div class="course-purchase-price">
+            {% if featured_plan %}
+            <strong>od {{ featured_plan.price|intcomma }} Kč</strong>
+            <span>Jednorázová platba • přístup {{ featured_plan.access_duration_days }} dní</span>
+            {% else %}
+            <strong>Cena na dotaz</strong>
+            <span>Ozvi se a vybereme vhodnou variantu</span>
+            {% endif %}
+          </div>
+
+          <div class="course-purchase-actions">
+            <a href="#varianty" class="btn btn-sage">Vybrat variantu</a>
+            <a href="{% url 'courses:contact' %}" class="btn btn-outline-sage">Domluvit konzultaci</a>
+          </div>
+
+          <div class="course-purchase-note">
+            <strong>100% etický přístup</strong>
+            <span>Bez nátlaku, dominance a rychlých triků.</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="obsah-kurzu" class="course-structure">
+  <div class="container">
+    <div class="course-structure-grid">
+      <div class="course-structure-main">
+        <div class="course-section-heading">
+          <h2>Co se naučíte</h2>
+        </div>
+
+        <div class="course-learn-grid">
+          {% for item in course_marketing.learn_items %}
+          <div class="course-learn-item">
+            <span class="course-learn-icon">✓</span>
+            <p>{{ item }}</p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="course-section-heading course-section-heading-content">
+          <h2>Obsah kurzu</h2>
+        </div>
+
+        <div class="course-curriculum-list">
+          {% for item in course_marketing.curriculum %}
+          <article class="course-curriculum-item">
+            <div class="course-curriculum-index">{{ item.order }}</div>
+            <div class="course-curriculum-copy">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.meta }}</p>
+            </div>
+            <span class="course-curriculum-arrow" aria-hidden="true">›</span>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <aside class="course-structure-side">
+        <div class="course-include-card">
+          <h3>Tento kurz zahrnuje:</h3>
+          <ul class="course-include-list">
+            {% for item in course_marketing.includes %}
+            <li class="course-include-item">
+              <span class="course-include-icon" aria-hidden="true">{{ item.icon }}</span>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <span>{{ item.text }}</span>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="course-cert-card">
+          <span class="course-cert-eyebrow">{{ course_marketing.certification.eyebrow }}</span>
+          <h3>{{ course_marketing.certification.title }}</h3>
+          <p>{{ course_marketing.certification.subtitle }}</p>
+          <div class="course-cert-divider"></div>
+          <strong>{{ course_marketing.certification.note }}</strong>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="course-copy-section">
+  <div class="container">
+    <div class="course-copy-shell">
+      <div class="course-copy-block">
+        <h2>O kurzu</h2>
+        {% for paragraph in course_marketing.about_paragraphs %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="course-copy-block">
+        <h2>Pro koho je kurz vhodný</h2>
+        <ul class="course-copy-list">
+          {% for item in course_marketing.audience_items %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="varianty" class="course-variants-section">
+  <div class="container">
+    <div class="course-variants-head">
+      <div>
+        <span class="course-offer-kicker">Varianty kurzu</span>
+        <h2>Vyber si způsob studia, který ti bude sedět.</h2>
+      </div>
+      <p>
+        Online kurz je nabízen ve dvou variantách. Liší se rozsahem podpory,
+        vedením lektora a možností získání certifikátu.
+      </p>
+    </div>
+
+    <div class="course-variants-grid">
+      {% for card in plan_cards %}
+      <article class="course-variant-card{% if card.plan.code == 'premium' %} course-variant-card-featured{% endif %}">
+        <span class="course-variant-eyebrow">{{ card.eyebrow }}</span>
+        <h3>{{ card.plan.name }}</h3>
+        <p class="course-variant-subtitle">{{ card.subtitle }}</p>
+
+        <div class="course-variant-price">
+          <strong>{{ card.plan.price|intcomma }} Kč</strong>
+          <span>Přístup na {{ card.plan.access_duration_days }} dní</span>
+        </div>
+
+        <ul class="course-variant-list">
+          {% for item in card.highlights %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+
+        <p class="course-variant-footnote">{{ card.footnote }}</p>
+
+        <form method="post" action="{% url 'payments:add_course_to_cart' card.plan.id %}">
+          {% csrf_token %}
+          <button class="btn btn-sage w-100">Přidat do košíku</button>
+        </form>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
 <section class="course-offer-hero">
   <div class="container">
     <div class="course-offer-shell">
@@ -40,9 +240,6 @@
 
         <div class="course-offer-actions">
           <a href="#varianty" class="btn btn-sage">Vybrat variantu</a>
-          {% if course.slug == "konejsive-signaly-v-praxi" %}
-          <a href="#obsah-kurzu" class="btn btn-outline-sage">Zjistit víc o kurzu</a>
-          {% endif %}
         </div>
       </div>
 
@@ -64,25 +261,6 @@
           </ul>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="course-benefits-band">
-  <div class="container">
-    <div class="course-benefits-grid">
-      <article class="benefit-tile benefit-tile-sage">
-        <span>Co získáš</span>
-        <strong>Jasnější čtení psí komunikace</strong>
-      </article>
-      <article class="benefit-tile benefit-tile-sand">
-        <span>Jak studuješ</span>
-        <strong>Vlastním tempem a s praktickými ukázkami</strong>
-      </article>
-      <article class="benefit-tile benefit-tile-blue">
-        <span>Výsledek</span>
-        <strong>Lepší rozhodování v běžných i náročných situacích</strong>
-      </article>
     </div>
   </div>
 </section>
@@ -146,11 +324,5 @@
     </div>
   </div>
 </section>
-
-{% if course.slug == "konejsive-signaly-v-praxi" %}
-<div id="obsah-kurzu">
-  {% include "courses/about.html" %}
-</div>
 {% endif %}
-
 {% endblock %}

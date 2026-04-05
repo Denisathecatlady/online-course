@@ -213,6 +213,7 @@ class CourseAccess(models.Model):
     expires_at = models.DateTimeField(blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
+    bypass_module_sequencing = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("user", "course")

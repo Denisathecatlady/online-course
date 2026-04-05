@@ -2,77 +2,265 @@
 {% load humanize %}
 {% load static %}
 
+{% block title %}Vodítka | CalmDog{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/product-list.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="product-list-page py-6">
+<section class="shop-hero">
     <div class="container">
-        <div class="product-list-shell">
-            <div class="product-list-intro reveal">
-                <span class="badge badge-soft mb-3">Vodítka</span>
-                <h1 class="section-title mb-3">Ručně laděná vodítka pro klidnější procházky</h1>
-                <p class="product-list-lead mb-0">
-                    Vyber si střih, délku i barvu, která bude sedět tobě i tvému psovi.
-                    Každý kus je navržený tak, aby byl funkční, odolný a vizuálně čistý.
-                </p>
-            </div>
+        <div class="shop-shell">
+            <div class="shop-hero-grid">
+                <div class="shop-hero-copy reveal">
+                    <span class="shop-hero-pill">
+                        <span aria-hidden="true">★</span>
+                        Ručně vyráběné v Česku
+                    </span>
 
-            {% if products %}
-                <div class="product-grid reveal">
-                    {% for product in products %}
-                        <article class="product-card">
-                            <a href="{% url 'shop:product_detail' product.slug %}" class="product-card-media">
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card-image">
-                                {% else %}
-                                    <div class="product-card-placeholder">CalmDog</div>
-                                {% endif %}
-                            </a>
+                    <h1 class="shop-hero-title">
+                        Vodítka, která
+                        <span>dávají smysl</span>
+                    </h1>
 
-                            <div class="product-card-body">
-                                <div class="product-card-top">
-                                    <span class="product-card-kicker">Vodítko</span>
-                                    <h2 class="product-card-title">
-                                        <a href="{% url 'shop:product_detail' product.slug %}">
-                                            {{ product.name }}
-                                        </a>
-                                    </h2>
-                                    <p class="product-card-text">
-                                        {{ product.description|truncatewords:24 }}
-                                    </p>
-                                </div>
+                    <p class="shop-hero-lead">
+                        Každý kus navrhujeme tak, aby byl funkční, odolný a hezký.
+                        Vyber si střih, délku i barvu a užijte si procházky víc.
+                    </p>
 
-                                <div class="product-card-bottom">
-                                    {% if product.variants.all %}
-                                        {% with product.variants.all|first as first_variant %}
-                                            <div class="product-price-wrap">
-                                                <span class="product-price-label">Cena od</span>
-                                                <strong class="product-price">{{ first_variant.price|intcomma }} Kč</strong>
-                                            </div>
-                                        {% endwith %}
-                                    {% endif %}
+                    <div class="shop-hero-actions">
+                        <a href="#produkty" class="shop-btn shop-btn--sage">
+                            Zobrazit vodítka
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
 
-                                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-sage w-100">
-                                        Zobrazit detail
-                                    </a>
-                                </div>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="product-empty card card-soft border-0 reveal">
-                    <div class="card-body p-4 p-md-5 text-center">
-                        <span class="product-empty-badge">Momentálně prázdné</span>
-                        <h2 class="product-empty-title mt-3">Žádná vodítka nejsou právě dostupná</h2>
-                        <p class="product-empty-copy">
-                            Jakmile budou znovu skladem, objeví se tady.
-                        </p>
+                    <div class="shop-rating-row" aria-label="Hodnocení zákazníků">
+                        <span class="shop-stars" aria-hidden="true">★★★★★</span>
+                        <span>4.9 / 5 — 120+ spokojených</span>
                     </div>
                 </div>
-            {% endif %}
+
+                <div class="shop-hero-media reveal">
+                    <div class="shop-hero-image-card">
+                        <img src="{{ hero_image_url }}" alt="Pes s vodítkem CalmDog" class="shop-hero-image">
+                    </div>
+
+                    <div class="shop-delivery-card">
+                        <span class="shop-delivery-label">Dodání do</span>
+                        <strong>5–7 pracovních dnů</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-stats-grid reveal">
+                {% for stat in hero_stats %}
+                    <article class="shop-stat-card">
+                        <strong class="shop-stat-value">{{ stat.value }}</strong>
+                        <span class="shop-stat-label">{{ stat.label }}</span>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shop-products" id="produkty">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-product-grid reveal">
+                {% for card in product_cards %}
+                    <article class="shop-product-card">
+                        <div class="shop-product-visual">
+                            {% if card.badge %}
+                                <span class="shop-card-badge">{{ card.badge }}</span>
+                            {% endif %}
+
+                            <div class="shop-product-photo-frame">
+                                <img src="{{ card.image_url }}" alt="{{ card.product.name }}" class="shop-product-photo">
+                            </div>
+                        </div>
+
+                        <div class="shop-product-body">
+                            <h2 class="shop-product-title">{{ card.product.name }}</h2>
+                            <p class="shop-product-teaser">{{ card.teaser }}</p>
+                            <p class="shop-product-description">{{ card.description }}</p>
+
+                            {% if card.available_colors %}
+                                <div class="shop-color-row" aria-label="Dostupné barvy">
+                                    <span class="shop-color-label">Barvy</span>
+                                    <div class="shop-color-dots">
+                                        {% for color in card.available_colors %}
+                                            <span
+                                                class="shop-color-dot"
+                                                style="--swatch-color: {{ color.hex_code }};"
+                                                title="{{ color.name }}"
+                                                aria-label="{{ color.name }}"
+                                            ></span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <ul class="shop-feature-list">
+                                {% for feature in card.features %}
+                                    <li>{{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="shop-product-footer">
+                                <div class="shop-price-block">
+                                    <span class="shop-price-label">od</span>
+                                    <strong class="shop-price-value">{{ card.price_from|floatformat:0|intcomma }} Kč</strong>
+                                </div>
+
+                                <a
+                                    href="{% url 'shop:product_detail' card.product.slug %}"
+                                    class="shop-btn {% if card.button_theme == 'accent' %}shop-btn--accent{% elif card.button_theme == 'dark' %}shop-btn--dark{% else %}shop-btn--sage{% endif %}"
+                                >
+                                    Chci toto
+                                    <span aria-hidden="true">→</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shop-materials">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-section-head reveal">
+                <span class="shop-section-kicker">Materiály</span>
+                <h2 class="shop-section-title">Odolné zpracování pro běžný život i trénink</h2>
+            </div>
+
+            <div class="shop-materials-grid reveal">
+                <article class="shop-info-card">
+                    <h3>Vodítko</h3>
+                    <p>
+                        Hexa voděodolný popruh (polyvinyl chlorid), barva šedá,
+                        šíře 16 mm, zatížení při přetržení 180 kg.
+                    </p>
+                </article>
+
+                <article class="shop-info-card">
+                    <h3>Očko přes rameno</h3>
+                    <p>
+                        Hexa voděodolný popruh (polyvinyl chlorid), barva šedá,
+                        šíře 16 mm, zatížení při přetržení 180 kg.
+                        Délka očka 114 mm.
+                    </p>
+                </article>
+
+                <article class="shop-info-card">
+                    <h3>Karabina pro vodítko</h3>
+                    <p>
+                        Délka karabiny 76 mm, barva černá, zinkoslitina,
+                        váha 27 g, zatížení až 197 kg.
+                    </p>
+                </article>
+
+                <article class="shop-info-card">
+                    <h3>Karabina pro očko přes rameno</h3>
+                    <p>
+                        Délka karabiny 66 mm, barva černá, zinkoslitina,
+                        váha 20 g, zatížení až 166 kg.
+                    </p>
+                </article>
+            </div>
+
+            <div class="shop-support-grid reveal">
+                <article class="shop-support-card">
+                    <span class="shop-section-kicker">Kontakt</span>
+                    <h3>Zaujala tě naše vodítka?</h3>
+                    <p>
+                        V případě zájmu o naše vodítka nás prosím kontaktujte na e-mail:
+                        <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>.
+                    </p>
+                </article>
+
+                <article class="shop-support-card">
+                    <span class="shop-section-kicker">Tahá váš pes na vodítku?</span>
+                    <h3>Navazující tréninkové lekce</h3>
+                    <p>
+                        Můžeme vám nabídnout naše tréninkové lekce Chůze na volném vodítku.
+                        Naučíme vás techniku vedení psa, při které pes na vodítku netahá,
+                        a současně si může uspokojit svoje přirozené potřeby.
+                    </p>
+                    <p>
+                        Vodítku můžeme dát i další rozměr v podobě různých aktivit,
+                        které obohatí život vašeho psa. Inspirovat se můžete našimi
+                        tréninkovými lekcemi:
+                        <a href="{% url 'courses:trainings' %}">Tréninky</a>.
+                        Klientům tréninkového centra CalmDog poskytujeme slevu na zakoupená vodítka.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shop-proof">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-gallery-grid reveal">
+                {% for image in gallery_images %}
+                    <figure class="shop-gallery-item">
+                        <img src="{{ image.image_url }}" alt="{{ image.alt }}" class="shop-gallery-photo">
+                    </figure>
+                {% endfor %}
+            </div>
+
+            <div class="shop-proof-head reveal">
+                <span class="shop-section-kicker">Co říkají zákazníci</span>
+                <h2 class="shop-proof-title">Spokojení lidé, spokojení psi</h2>
+            </div>
+
+            <div class="shop-testimonial-grid reveal">
+                {% for testimonial in testimonials %}
+                    <article class="shop-testimonial-card">
+                        <div class="shop-stars" aria-hidden="true">★★★★★</div>
+                        <p class="shop-testimonial-quote">{{ testimonial.quote }}</p>
+                        <p class="shop-testimonial-author">— {{ testimonial.author }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shop-cta">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-cta-card reveal">
+                <div class="shop-cta-copy">
+                    <span class="shop-section-kicker shop-section-kicker--light">Na míru</span>
+                    <h2 class="shop-cta-title">Vlastní barva, délka nebo provedení?</h2>
+                    <p class="shop-cta-text">
+                        Každé vodítko vyrábíme na zakázku. Napiš nám, co potřebuješ,
+                        rádi to vyřešíme přesně podle tvých představ.
+                    </p>
+
+                    <div class="shop-cta-actions">
+                        <a href="mailto:info@calmdog.cz" class="shop-btn shop-btn--accent">
+                            Napsat na info@calmdog.cz
+                            <span aria-hidden="true">→</span>
+                        </a>
+                        <a href="tel:+420608163824" class="shop-btn shop-btn--ghost">
+                            +420 608 163 824
+                        </a>
+                    </div>
+                </div>
+
+                <div class="shop-cta-media">
+                    <img src="{{ cta_image_url }}" alt="Pes CalmDog v exteriéru" class="shop-cta-image">
+                </div>
+            </div>
         </div>
     </div>
 </section>

@@ -23,6 +23,198 @@ from payments.services.invoice import generate_invoice_pdf, assign_invoice_numbe
 logger = logging.getLogger(__name__)
 
 
+COURSE_MARKETING_CONTENT = {
+    "konejsive-signaly-v-praxi": {
+        "hero_lead": (
+            "Jak nahlížet na konejšivé signály v celkových souvislostech, "
+            "správně je interpretovat a adekvátně na ně reagovat."
+        ),
+        "hero_support": (
+            "Kurz je zaměřený na čtení signálů, prevenci konfliktů a budování "
+            "zdravého vztahu se psem."
+        ),
+        "learn_items": [
+            "Rozlišit pozdrav, zdvořilou komunikaci od signálů zastavujících konflikt",
+            "Vyhodnotit souvislosti s přesměrovaným chováním, stresem a agresí",
+            "Umět signály využít v tréninku reaktivních a bázlivých psů",
+            "Vyvarovat se chybných interpretací konejšivých signálů",
+            "Umět se psem komunikovat v běžném životě",
+            "Lépe reagovat na náročné situace s klidem a kontextem",
+        ],
+        "curriculum": [
+            {
+                "order": "1",
+                "title": "Úvod do konejšivých signálů",
+                "meta": "Význam signálů, jejich síla a kontext, ve kterém je psi používají.",
+            },
+            {
+                "order": "2",
+                "title": "Konejšivé signály v širších souvislostech",
+                "meta": "Propojení se stresem, emocemi a přesměrovaným chováním.",
+            },
+            {
+                "order": "3",
+                "title": "Komentované videoukázky z praxe",
+                "meta": "Interpretace několika signálů v reálných situacích krok po kroku.",
+            },
+            {
+                "order": "4",
+                "title": "Použití v běžném životě i v tréninku",
+                "meta": "Jak na signály reagovat a kdy je můžeme využít i my lidé.",
+            },
+        ],
+        "includes": [
+            {
+                "icon": "▶",
+                "title": "Video lekce",
+                "text": "4 moduly s výkladem a komentovanými videoukázkami.",
+            },
+            {
+                "icon": "↓",
+                "title": "Ke stažení",
+                "text": "Podpůrné materiály a návazné podklady ke studiu.",
+            },
+            {
+                "icon": "◎",
+                "title": "Certifikace",
+                "text": "Premium varianta vede po splnění podmínek k certifikátu.",
+            },
+            {
+                "icon": "◌",
+                "title": "Přístup",
+                "text": "180 dní od nákupu, s možností vracet se k obsahu vlastním tempem.",
+            },
+            {
+                "icon": "↗",
+                "title": "Podpora",
+                "text": "Ve variantě Premium navíc online setkání a mentoring.",
+            },
+        ],
+        "about_paragraphs": [
+            (
+                "Kurz je rozdělen do 4 modulů. V úvodu jsou představeny jednotlivé "
+                "konejšivé signály a podrobně vysvětlen jejich význam, síla a vždy i "
+                "kontext, ve kterém je psi používají."
+            ),
+            (
+                "V dalších modulech jsou konejšivé signály zasazeny do širších "
+                "souvislostí, propojeny s přesměrovaným chováním a se signály stresu. "
+                "Výuka je doplněna o praktické videoukázky, které pomáhají porozumění "
+                "i správné interpretaci signálů v reálných situacích."
+            ),
+            (
+                "Každý signál je interpretován na několika komentovaných videích v "
+                "celém kontextu situace. U každého signálu je vysvětleno, zda je možné "
+                "ho využít člověkem a jak, nebo jak reagovat na ty, které my lidé "
+                "napodobit nemůžeme."
+            ),
+        ],
+        "audience_items": [
+            "Pro ty, kteří chtějí rozumět psí komunikaci",
+            "Pro ty, kteří chtějí umět komunikovat se svým psem",
+            "Pro ty, kteří chtějí řešit problémové chování psa",
+            "Pro ty, kteří chtějí žít se svým psem v souladu",
+        ],
+        "certification": {
+            "eyebrow": "CALMING SIGNALS SPECIALIST",
+            "title": "Certifikace",
+            "subtitle": "pod vedením Turid Rugaas",
+            "note": "100% etický přístup",
+        },
+    }
+}
+
+
+PLAN_MARKETING_CONTENT = {
+    "standard": {
+        "eyebrow": "Samostudium",
+        "subtitle": (
+            "Jedná se o samostudium bez opory lektora. Učební materiály jsou "
+            "zpracovány tak, aby vedly k jistější interpretaci signálů i jejich "
+            "využití v běžném životě."
+        ),
+        "highlights": [
+            "Správná interpretace konejšivých signálů v celkovém kontextu",
+            "Schopnost vyhodnotit závažnost situace a správně reagovat",
+            "Použití principů v běžném soužití i v tréninku reaktivních a bázlivých psů",
+        ],
+        "footnote": (
+            "Přístup ke všem materiálům kurzu je po dobu 6 měsíců. "
+            "Tato varianta nevede k získání certifikátu."
+        ),
+    },
+    "premium": {
+        "eyebrow": "Mentoring a certifikace",
+        "subtitle": (
+            "Kompletní vzdělávání pro ty, kteří chtějí jít do hloubky a získat "
+            "nejen znalosti, ale i podporu lektora."
+        ),
+        "highlights": [
+            "5x online setkání pro rozbor videí a konzultace úkolů",
+            "Podpůrná FB skupina a malé pracovní skupiny",
+            "Možnost získání certifikátu po úspěšném vypracování všech úkolů",
+        ],
+        "footnote": (
+            "Ideální volba pro ty, kteří chtějí mít jistotu, že konejšivým "
+            "signálům opravdu rozumí a umí je správně aplikovat v praxi."
+        ),
+    },
+}
+
+
+def build_course_marketing_content(course, plans):
+    content = COURSE_MARKETING_CONTENT.get(course.slug)
+    if not content:
+        return None
+
+    access_days = min((plan.access_duration_days for plan in plans), default=180)
+    module_count = course.modules.count()
+    plan_count = len(plans)
+
+    return {
+        **content,
+        "metrics": [
+            {
+                "value": f"{module_count} moduly",
+                "label": "strukturovaný obsah a jasný postup",
+            },
+            {
+                "value": f"{plan_count} varianty",
+                "label": "samostudium nebo mentoring podle toho, co potřebuješ",
+            },
+            {
+                "value": f"{access_days} dní",
+                "label": "přístup ke kurzu a možnost vracet se k obsahu",
+            },
+        ],
+    }
+
+
+def build_plan_cards(plans):
+    cards = []
+
+    for plan in plans:
+        content = PLAN_MARKETING_CONTENT.get(
+            (plan.code or plan.name or "").strip().lower(),
+            {
+                "eyebrow": "Online kurz",
+                "subtitle": "Praktický online obsah zaměřený na porozumění, kontext a přenos do běžného života.",
+                "highlights": [
+                    "Přístup ke kompletnímu obsahu kurzu",
+                    "Studium vlastním tempem",
+                    "Praktické ukázky a etický přístup",
+                ],
+                "footnote": "Varianta kurzu s přístupem ke kompletním materiálům.",
+            },
+        )
+        cards.append({
+            "plan": plan,
+            **content,
+        })
+
+    return cards
+
+
 def get_stripe_secret_key():
     return settings.STRIPE_SECRET_KEY.strip()
 
@@ -34,6 +226,32 @@ def get_stripe_webhook_secret():
 def build_site_url(path):
     base_url = settings.SITE_URL.rstrip("/")
     return f"{base_url}{path}"
+
+
+def add_product_variant_to_order(cart, variant, quantity):
+    if variant.stock <= 0:
+        raise ValueError("Produkt není skladem.")
+
+    if quantity > variant.stock:
+        raise ValueError("Není dostatek kusů skladem.")
+
+    order_item, created = OrderItem.objects.get_or_create(
+        order=cart,
+        product_variant=variant,
+        defaults={
+            "quantity": quantity,
+            "price_at_purchase": variant.price,
+        }
+    )
+
+    if not created:
+        new_quantity = order_item.quantity + quantity
+
+        if new_quantity > variant.stock:
+            raise ValueError("Překročen dostupný sklad.")
+
+        order_item.quantity = new_quantity
+        order_item.save(update_fields=["quantity"])
 
 
 # =====================================================
@@ -77,33 +295,50 @@ def add_variant_to_cart(request, variant_id):
     cart = get_or_create_cart(request)
 
     quantity = int(request.POST.get("quantity", 1))
+    try:
+        add_product_variant_to_order(cart, variant, quantity)
+    except ValueError as exc:
+        return HttpResponseBadRequest(str(exc))
 
-    # 🔒 OCHRANA 1 – není skladem
-    if variant.stock <= 0:
-        return HttpResponseBadRequest("Produkt není skladem.")
+    return redirect("payments:cart_detail")
 
-    # 🔒 OCHRANA 2 – víc než je skladem
-    if quantity > variant.stock:
-        return HttpResponseBadRequest("Není dostatek kusů skladem.")
 
-    # Pokud už položka v košíku existuje
-    order_item, created = OrderItem.objects.get_or_create(
-        order=cart,
-        product_variant=variant,
-        defaults={
-            "quantity": quantity,
-            "price_at_purchase": variant.price
-        }
+@require_POST
+def add_bundle_to_cart(request, variant_id):
+    primary_variant = get_object_or_404(
+        ProductVariant,
+        id=variant_id,
+        is_active=True,
     )
 
-    if not created:
-        new_quantity = order_item.quantity + quantity
+    bundle_variant_id = request.POST.get("bundle_variant_id")
+    if not bundle_variant_id:
+        return HttpResponseBadRequest("Chybí doplňková varianta pro bundle.")
 
-        if new_quantity > variant.stock:
-            return HttpResponseBadRequest("Překročen dostupný sklad.")
+    bundle_variant = get_object_or_404(
+        ProductVariant,
+        id=bundle_variant_id,
+        is_active=True,
+    )
 
-        order_item.quantity = new_quantity
-        order_item.save(update_fields=["quantity"])
+    if primary_variant.product.slug != "voditko-bez-ocka":
+        return HttpResponseBadRequest("Bundle lze vytvořit jen k vodítku bez očka.")
+
+    if bundle_variant.product.slug != "samostatne-ocko":
+        return HttpResponseBadRequest("Neplatná doplňková varianta.")
+
+    if primary_variant.color_id != bundle_variant.color_id:
+        return HttpResponseBadRequest("Bundle musí mít shodnou barvu obou částí.")
+
+    quantity = int(request.POST.get("quantity", 1))
+    cart = get_or_create_cart(request)
+
+    try:
+        with transaction.atomic():
+            add_product_variant_to_order(cart, primary_variant, quantity)
+            add_product_variant_to_order(cart, bundle_variant, quantity)
+    except ValueError as exc:
+        return HttpResponseBadRequest(str(exc))
 
     return redirect("payments:cart_detail")
 
@@ -469,11 +704,21 @@ def course_detail(request, slug):
         slug=slug
     )
 
-    plans = course.plans.filter(is_active=True)
+    plans = list(
+        course.plans
+        .filter(is_active=True)
+        .order_by("price", "id")
+    )
+    featured_plan = plans[0] if plans else None
+    course_marketing = build_course_marketing_content(course, plans)
+    plan_cards = build_plan_cards(plans)
 
     return render(request, "payments/course_detail.html", {
         "course": course,
-        "plans": plans
+        "plans": plans,
+        "featured_plan": featured_plan,
+        "course_marketing": course_marketing,
+        "plan_cards": plan_cards,
     })
 
 # =====================================================

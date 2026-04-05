@@ -69,4 +69,5 @@ def my_courses(request):
     return render(request, "accounts/my_courses.html", {
         "accesses": accesses,
         "account_section": "courses",
+        "hide_account_sidebar": True,
     })

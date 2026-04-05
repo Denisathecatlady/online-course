@@ -202,6 +202,69 @@ class CheckoutFlowTests(TestCase):
         self.assertContains(response, "Z-BOX Praha Andel")
 
 
+class BundleCartTests(TestCase):
+    def setUp(self):
+        self.leash = Product.objects.create(
+            name="Vodítko bez očka",
+            slug="voditko-bez-ocka",
+            is_active=True,
+        )
+        self.loop = Product.objects.create(
+            name="Samostatné očko",
+            slug="samostatne-ocko",
+            is_active=True,
+        )
+        self.gray = Color.objects.create(name="Šedá")
+        self.pink = Color.objects.create(name="Pastelově růžová")
+        self.leash_variant = ProductVariant.objects.create(
+            product=self.leash,
+            color=self.gray,
+            length="7",
+            type="no_loop",
+            price="1490.00",
+            stock=2,
+            is_active=True,
+        )
+        self.loop_variant = ProductVariant.objects.create(
+            product=self.loop,
+            color=self.gray,
+            type="shoulder",
+            price="700.00",
+            stock=1,
+            is_active=True,
+        )
+        self.loop_variant_other_color = ProductVariant.objects.create(
+            product=self.loop,
+            color=self.pink,
+            type="shoulder",
+            price="800.00",
+            stock=1,
+            is_active=True,
+        )
+
+    def test_bundle_adds_both_matching_items_to_cart(self):
+        response = self.client.post(
+            reverse("payments:add_bundle_to_cart", args=[self.leash_variant.id]),
+            {"bundle_variant_id": self.loop_variant.id},
+        )
+
+        self.assertRedirects(response, reverse("payments:cart_detail"))
+        cart = Order.objects.get(status=Order.Status.CART)
+        self.assertEqual(cart.items.count(), 2)
+        self.assertTrue(cart.items.filter(product_variant=self.leash_variant).exists())
+        self.assertTrue(cart.items.filter(product_variant=self.loop_variant).exists())
+
+    def test_bundle_rejects_mismatched_color(self):
+        response = self.client.post(
+            reverse("payments:add_bundle_to_cart", args=[self.leash_variant.id]),
+            {"bundle_variant_id": self.loop_variant_other_color.id},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Bundle musí mít shodnou barvu", response.content.decode())
+        self.assertFalse(Order.objects.filter(status=Order.Status.CART).exists())
+
+
 class CourseCartTests(TestCase):
     def setUp(self):
         self.course_one = Course.objects.create(title="Kurz 1", slug="kurz-1")

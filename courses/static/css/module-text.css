@@ -1,170 +1,85 @@
-/* =========================
-   MODULE TEXT – CALMDOG
-   ========================= */
-
 .module-content {
-  max-width: 820px;
-  margin: 0 auto;
+  color: #364240;
   font-size: 1rem;
-  line-height: 1.75;
-  color: #2f2f2f;
+  line-height: 1.62;
 }
 
-/* Úvodní odstavec */
-.module-content .intro {
+.module-content > h2:first-child {
+  display: none;
+}
+
+.module-content > p:first-of-type {
+  margin: 0 0 1.6rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(95, 118, 107, 0.24);
+  color: #364240;
+  font-size: 0.98rem;
+}
+
+.module-content h3,
+.module-content h4 {
+  margin: 1.8rem 0 0.8rem;
+  color: #5f766b;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 1.1rem;
-  margin-bottom: 2rem;
-  color: #2a2a2a;
+  line-height: 1.2;
 }
 
-/* HLAVNÍ NADPISY */
-.module-content h2 {
-  font-size: 1.4rem;
-  margin: 3rem 0 1.2rem;
-  font-weight: 600;
-  color: #2b4a3f;
-}
-
-/* PODTÉMATA */
-.module-content h3 {
-  font-size: 1.15rem;
-  margin: 2.4rem 0 1rem;
-  font-weight: 600;
-  color: #3b6b5b;
-}
-
-/* PRAKTICKÉ ČÁSTI */
 .module-content h4 {
   font-size: 1rem;
-  margin: 2rem 0 0.8rem;
-  font-weight: 600;
-  color: #4a7f6d;
 }
 
-/* ODSTAVCE */
 .module-content p {
-  margin-bottom: 1.2rem;
+  margin: 0 0 0.95rem;
 }
 
-/* CITACE / VÝPOVĚĎ PSA */
 .module-content .quote {
-  margin: 1.5rem 0;
-  padding-left: 1.2rem;
-  border-left: 3px solid #9fc5b3;
-  font-style: italic;
-  color: #444;
+  margin: 1.2rem 0 0.95rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid rgba(243, 154, 82, 0.42);
+  color: #575553;
+  font-style: normal;
 }
-
-/* VAROVNÉ NADPISY */
-.module-content .warning-title {
-  color: #7a3b3b;
-}
-
-/* POMOC / DŮLEŽITÉ */
-.module-content .help-title {
-  color: #2f5f5a;
-}
-
-/* =========================
-   SEZNAMY – VLASTNÍ BULLETY
-   ========================= */
 
 .module-content .bullet-list {
   list-style: none;
-  padding-left: 0;
-  margin: 1rem 0 1.8rem;
+  margin: 0.45rem 0 1rem;
+  padding: 0;
 }
 
 .module-content .bullet-list li {
   position: relative;
-  padding-left: 1.6rem;
-  margin-bottom: 0.6rem;
+  padding-left: 1.1rem;
+  margin-bottom: 0.45rem;
 }
 
-/* jemný tečkový bullet */
 .module-content .bullet-list li::before {
-  content: "•";
+  content: "";
   position: absolute;
   left: 0;
-  top: 0;
-  color: #7fae9b;
-  font-size: 1.2rem;
-  line-height: 1.2;
+  top: 0.68rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c7d1cc;
 }
 
-/* =========================
-   RESPONSIVE
-   ========================= */
+.module-content strong {
+  color: #2c3437;
+}
 
-@media (max-width: 768px) {
+.module-content .warning-title,
+.module-content .help-title {
+  color: #5f766b;
+}
+
+@media (max-width: 640px) {
   .module-content {
-    font-size: 0.95rem;
+    font-size: 0.96rem;
   }
 
-  .module-content h2 {
-    font-size: 1.25rem;
-  }
-
-  .module-content h3 {
-    font-size: 1.05rem;
-  }
-}
-
-/* =========================
-   MOBILE LAYOUT – VIDEA
-   ========================= */
-
-@media (max-width: 1024px) {
-
-  /* celý grid pod sebe */
-  .module-grid {
-    display: block;
-  }
-
-  /* text – zrušíme pevnou výšku a scroll */
-  .module-text-scroll {
-    max-height: none;
-    overflow: visible;
-    padding: 1.5rem 1.2rem;
-    margin-bottom: 2.5rem;
-  }
-
-  /* videa – plná šířka */
-  .module-videos {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .video-item {
-    padding: 1.2rem;
-    border-radius: 22px;
-  }
-
-  /* iframe správně škálované */
-  .video-frame {
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 */
-  }
-
-  .video-frame iframe {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-/* extra malé mobily */
-@media (max-width: 480px) {
-
-  .module-header h1 {
-    font-size: 1.4rem;
-  }
-
-  .video-header strong {
-    font-size: 0.95rem;
-  }
-
-  .video-author {
-    font-size: 0.75rem;
+  .module-content h3,
+  .module-content h4 {
+    font-size: 1rem;
   }
 }

@@ -110,9 +110,10 @@ class CourseAccessAdmin(admin.ModelAdmin):
         "course",
         "plan",
         "is_active",
+        "bypass_module_sequencing",
         "granted_at",
     )
-    list_filter = ("is_active", "plan")
+    list_filter = ("is_active", "bypass_module_sequencing", "plan")
     search_fields = (
         "user__email",
         "user__username",
