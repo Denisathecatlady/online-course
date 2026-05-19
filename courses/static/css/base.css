@@ -113,15 +113,31 @@ background: linear-gradient(180deg, var(--sage-strong), var(--sage-deep));
 text-decoration: none;
 }
 
+/* ── svislý oddělovač mezi skupinami ── */
+.nav-sep {
+width: 1px;
+height: 18px;
+background: rgba(95, 118, 107, 0.22);
+align-self: center;
+margin: 0 0.3rem;
+pointer-events: none;
+}
+
+
 /* ===== CTA BUTTONS ===== */
 
 .navbar .btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
 border-radius: 999px;
 padding: 0.65rem 1.45rem;
 font-size: 0.78rem;
 letter-spacing: 0.12em;
 font-weight: 600;
 text-transform: uppercase;
+min-height: unset;
+line-height: 1;
 }
 
 /* primární */

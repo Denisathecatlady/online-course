@@ -1039,34 +1039,40 @@ def submit_module_quiz(request, course_slug, slug, step):
             course_access=course_access,
         )
 
+        next_step = next(
+            (
+                step_data for step_data in refreshed_flow["steps"]
+                if step_data["number"] == step + 1 and step_data["is_unlocked"]
+            ),
+            None,
+        )
+
         if synced_progress and synced_progress.completed:
             messages.success(
                 request,
-                "Test je splněný. Máte hotový celý modul a další modul se právě odemkl.",
+                "✓ Test splněn! Celý modul máte hotový — další modul se právě odemkl.",
+            )
+        elif next_step:
+            messages.success(
+                request,
+                f"✓ Test splněn! Odemkla se {next_step['title'].lower()}.",
             )
         else:
-            next_step = next(
-                (
-                    step_data for step_data in refreshed_flow["steps"]
-                    if step_data["number"] == step + 1 and step_data["is_unlocked"]
-                ),
-                None,
-            )
-            if next_step:
-                messages.success(
-                    request,
-                    f"Test je splněný. Odemkla se {next_step['title'].lower()}.",
-                )
-            else:
-                messages.success(request, "Test je splněný.")
+            messages.success(request, "✓ Test splněn!")
+
+        # Po úspěchu scrolluj na DALŠÍ krok (video), ne zpět na test
+        next_anchor = f"step-{step + 1}" if next_step else f"step-{step}"
+        return redirect(
+            f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#{next_anchor}"
+        )
     else:
         if quiz_progress.passed:
             quiz_progress.save(update_fields=["attempts_count"])
             messages.success(request, "Tento test už máte splněný.")
         else:
             quiz_progress.save(update_fields=["attempts_count"])
-            messages.error(request, "Tentokrát to nevyšlo. Zkuste test znovu, počet pokusů není omezený.")
+            messages.error(request, "Tentokrát to nevyšlo. Zkuste to znovu — počet pokusů není omezený.")
 
-    return redirect(
-        f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#step-{step}"
-    )
+        return redirect(
+            f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#step-{step}"
+        )

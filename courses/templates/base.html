@@ -84,14 +84,17 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'payments:course_list' %}">
-                        Kurzy
+                    <a class="nav-link" href="{% url 'courses:trainings' %}">
+                        Tréninky
                     </a>
                 </li>
 
+                {# ── oddělovač ── #}
+                <li class="nav-item nav-sep" aria-hidden="true"></li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'courses:trainings' %}">
-                        Tréninky
+                    <a class="nav-link" href="{% url 'payments:course_list' %}">
+                        Kurzy
                     </a>
                 </li>
 
@@ -107,16 +110,14 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'courses:contact' %}">
-                        Kontakt
-                    </a>
-                </li>
-
             </ul>
 
             <!-- PRAVÁ ČÁST -->
             <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'courses:contact' %}">Kontakt</a>
+                </li>
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">

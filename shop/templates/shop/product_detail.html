@@ -1,142 +1,152 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="product-detail-page py-6">
+<div class="pd-page">
   <div class="container">
-    <div class="product-detail-shell">
-      <div class="product-detail-grid">
-        <div class="product-visual card card-soft border-0 reveal">
-          <div class="card-body p-3 p-md-4">
-            {% if product_image_url %}
-              <img src="{{ product_image_url }}" id="product-main-image" class="product-detail-image" alt="{{ product.name }}">
-            {% else %}
-              <div class="product-detail-placeholder">CalmDog</div>
-            {% endif %}
-          </div>
-        </div>
 
-        <div class="product-info reveal">
-          <span class="badge badge-soft mb-3">{{ detail_badge }}</span>
-          <h1 class="product-detail-title">{{ product.name }}</h1>
-          <p class="product-detail-copy">{{ detail_copy }}</p>
+    {# ── Breadcrumb ── #}
+    <nav class="pd-breadcrumb" aria-label="Navigace">
+      <a href="{% url 'courses:home' %}">Domů</a>
+      <span aria-hidden="true">›</span>
+      <a href="{% url 'shop:product_list' %}">Vodítka</a>
+      <span aria-hidden="true">›</span>
+      <span>{{ product.name }}</span>
+    </nav>
 
-          <div class="product-detail-highlights">
-            {% for highlight in detail_highlights %}
-              <div class="product-highlight-chip">{{ highlight }}</div>
-            {% endfor %}
-          </div>
+    {# ── Hlavní grid ── #}
+    <div class="pd-grid">
 
-          <div class="product-detail-price-card">
-            <span class="product-detail-price-label">Aktuální cena</span>
-            <h2 id="product-price" class="mb-0">Vyberte variantu</h2>
-            <p id="variant-summary" class="product-variant-summary mb-0">
-              Zvolte parametry níže a zobrazí se přesná kombinace.
-            </p>
-          </div>
-
-          <form method="post"
-                id="add-to-cart-form"
-                class="product-detail-form"
-                data-show-type-summary="{% if has_types %}1{% else %}0{% endif %}"
-                data-url-template="{% url 'payments:add_variant_to_cart' 0 %}"
-                {% if bundle_offer %}data-bundle-url-template="{% url 'payments:add_bundle_to_cart' 0 %}"{% endif %}>
-            {% csrf_token %}
-
-            {% if has_lengths %}
-            <div class="product-form-card">
-              <label class="form-label">Délka</label>
-              <select id="length-select" class="form-select" required>
-                {% for length in lengths %}
-                  <option value="{{ length.value }}">
-                    {{ length.label }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            {% endif %}
-
-            {% if has_types %}
-            <div class="product-form-card">
-              <label class="form-label">Typ</label>
-              <select id="type-select" class="form-select" required>
-                {% for type in types %}
-                  <option value="{{ type.value }}">
-                    {{ type.label }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            {% endif %}
-
-            <div class="product-form-card">
-              <label class="form-label">Barva</label>
-              <div class="product-color-row">
-                <select id="color-select" class="form-select" required>
-                  {% for color in colors %}
-                    <option value="{{ color.id }}" data-hex="{{ color.hex_code }}">
-                      {{ color.name }}
-                    </option>
-                  {% endfor %}
-                </select>
-                <div id="color-preview" class="color-preview"></div>
-              </div>
-            </div>
-
-            <div class="product-stock-row">
-              <p id="stock-status" class="fw-semibold mb-0"></p>
-              <p class="product-stock-note mb-0">Dostupnost se aktualizuje podle vybrané varianty.</p>
-            </div>
-
-            {% if bundle_offer %}
-            <div class="product-bundle-card">
-              <span class="product-bundle-label">{{ bundle_offer.title }}</span>
-              <h3 class="product-bundle-title mb-2">{{ bundle_offer.heading }}</h3>
-              <p class="product-bundle-copy">{{ bundle_offer.copy }}</p>
-              <p id="bundle-summary" class="product-bundle-summary mb-0">
-                Vyberte variantu a zobrazí se i cena kompletu.
-              </p>
-              <input type="hidden" name="bundle_variant_id" id="bundle-variant-id">
-            </div>
-            {% endif %}
-
-            <div class="product-action-row">
-              <button type="submit" class="btn btn-sage product-submit" disabled>
-                Přidat do košíku
-              </button>
-              {% if bundle_offer %}
-              <button
-                type="submit"
-                id="bundle-submit"
-                class="btn btn-outline-sage product-submit-alt"
-                formaction=""
-                disabled
-              >
-                Přidat očko + vodítko
-              </button>
-              {% endif %}
-            </div>
-          </form>
-        </div>
+      {# ── Fotka ── #}
+      <div class="pd-media reveal">
+        {% if product_image_url %}
+          <img src="{{ product_image_url }}" id="product-main-image" class="pd-image" alt="{{ product.name }}">
+        {% else %}
+          <div class="pd-image-placeholder">CalmDog</div>
+        {% endif %}
       </div>
 
-      {% if detail_info_cards %}
-        <div class="product-detail-info-grid reveal">
-          {% for card in detail_info_cards %}
-            <article class="product-detail-info-card">
-              <h2>{{ card.title }}</h2>
-              <p>{{ card.copy }}</p>
-            </article>
+      {# ── Info panel ── #}
+      <div class="pd-panel reveal">
+
+        <span class="pd-kicker">{{ detail_badge }}</span>
+        <h1 class="pd-title">{{ product.name }}</h1>
+        <p class="pd-lead">{{ detail_copy }}</p>
+
+        <div class="pd-chips">
+          {% for highlight in detail_highlights %}
+            <span class="pd-chip">{{ highlight }}</span>
           {% endfor %}
         </div>
-      {% endif %}
+
+        {# Cena #}
+        <div class="pd-price-block">
+          <span class="pd-price-label">Cena</span>
+          <strong id="product-price" class="pd-price">Vyberte variantu</strong>
+          <p id="variant-summary" class="pd-variant-summary">Zvolte parametry níže.</p>
+        </div>
+
+        {# Formulář #}
+        <form method="post"
+              id="add-to-cart-form"
+              class="pd-form"
+              data-show-type-summary="{% if has_types %}1{% else %}0{% endif %}"
+              data-url-template="{% url 'payments:add_variant_to_cart' 0 %}"
+              {% if bundle_offer %}data-bundle-url-template="{% url 'payments:add_bundle_to_cart' 0 %}"{% endif %}>
+          {% csrf_token %}
+
+          {% if has_lengths %}
+          <div class="pd-field">
+            <label class="pd-field-label" for="length-select">Délka</label>
+            <select id="length-select" class="pd-select" required>
+              {% for length in lengths %}
+                <option value="{{ length.value }}">{{ length.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          {% if has_types %}
+          <div class="pd-field">
+            <label class="pd-field-label" for="type-select">Typ</label>
+            <select id="type-select" class="pd-select" required>
+              {% for type in types %}
+                <option value="{{ type.value }}">{{ type.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          <div class="pd-field">
+            <label class="pd-field-label" for="color-select">Barva</label>
+            <div class="pd-color-row">
+              <select id="color-select" class="pd-select" required>
+                {% for color in colors %}
+                  <option value="{{ color.id }}" data-hex="{{ color.hex_code }}">{{ color.name }}</option>
+                {% endfor %}
+              </select>
+              <div id="color-preview" class="pd-color-swatch"></div>
+            </div>
+          </div>
+
+          <div class="pd-stock-row">
+            <p id="stock-status" class="pd-stock-status"></p>
+            <p class="pd-stock-note">Dostupnost se aktualizuje podle vybrané varianty.</p>
+          </div>
+
+          {% if bundle_offer %}
+          <div class="pd-bundle-card">
+            <span class="pd-bundle-eyebrow">{{ bundle_offer.title }}</span>
+            <h3 class="pd-bundle-title">{{ bundle_offer.heading }}</h3>
+            <p class="pd-bundle-copy">{{ bundle_offer.copy }}</p>
+            <p id="bundle-summary" class="pd-bundle-summary">Vyberte variantu a zobrazí se i cena kompletu.</p>
+            <input type="hidden" name="bundle_variant_id" id="bundle-variant-id">
+          </div>
+          {% endif %}
+
+          <div class="pd-actions">
+            <button type="submit" class="btn btn-sage pd-submit" disabled>
+              Přidat do košíku
+            </button>
+            {% if bundle_offer %}
+            <button
+              type="submit"
+              id="bundle-submit"
+              class="btn btn-outline-sage pd-submit-alt"
+              formaction=""
+              disabled
+            >
+              Přidat očko + vodítko
+            </button>
+            {% endif %}
+          </div>
+        </form>
+
+      </div>{# /pd-panel #}
+    </div>{# /pd-grid #}
+
+    {# ── Info karty ── #}
+    {% if detail_info_cards %}
+    <div class="pd-info-grid reveal">
+      {% for card in detail_info_cards %}
+        <article class="pd-info-card">
+          <h2>{{ card.title }}</h2>
+          <p>{{ card.copy }}</p>
+        </article>
+      {% endfor %}
     </div>
+    {% endif %}
+
   </div>
-</section>
+</div>
 
 <script>
 const variants = {{ variants_json|safe }};
@@ -153,7 +163,7 @@ const priceElement = document.getElementById("product-price");
 const stockElement = document.getElementById("stock-status");
 const variantSummaryElement = document.getElementById("variant-summary");
 const colorPreview = document.getElementById("color-preview");
-const submitButton = document.querySelector(".product-submit");
+const submitButton = document.querySelector(".pd-submit");
 const bundleSubmitButton = document.getElementById("bundle-submit");
 const bundleSummaryElement = document.getElementById("bundle-summary");
 const bundleVariantInput = document.getElementById("bundle-variant-id");
@@ -177,31 +187,19 @@ function updateVariant() {
     submitButton.disabled = match.stock < 1;
 
     const summaryParts = [];
-    if (match.length_label) {
-      summaryParts.push(match.length_label);
-    }
-    if (showTypeSummary && match.type_label) {
-      summaryParts.push(match.type_label);
-    }
-    if (match.color_name) {
-      summaryParts.push(match.color_name);
-    }
-    variantSummaryElement.innerText = summaryParts.length
-      ? summaryParts.join(" • ")
-      : "Zvolená varianta";
+    if (match.length_label) summaryParts.push(match.length_label);
+    if (showTypeSummary && match.type_label) summaryParts.push(match.type_label);
+    if (match.color_name) summaryParts.push(match.color_name);
+    variantSummaryElement.innerText = summaryParts.length ? summaryParts.join(" · ") : "Zvolená varianta";
 
-    if (productImage) {
-      productImage.src = match.image_url || defaultProductImage;
-    }
+    if (productImage) productImage.src = match.image_url || defaultProductImage;
 
     if (match.stock > 0) {
-      stockElement.innerText = "Skladem: " + match.stock + " ks";
-      stockElement.classList.remove("text-danger");
-      stockElement.classList.add("text-success");
+      stockElement.innerText = "✓ Skladem: " + match.stock + " ks";
+      stockElement.className = "pd-stock-status pd-stock-ok";
     } else {
       stockElement.innerText = "Vyprodáno";
-      stockElement.classList.remove("text-success");
-      stockElement.classList.add("text-danger");
+      stockElement.className = "pd-stock-status pd-stock-out";
     }
 
     if (bundleSubmitButton && bundleVariantInput) {
@@ -211,32 +209,25 @@ function updateVariant() {
         ? bundleUrl.replace("0", match.bundle_primary_variant_id || match.id)
         : "";
       bundleSubmitButton.disabled = !bundleAvailable;
-
       if (bundleSummaryElement) {
         bundleSummaryElement.innerText = bundleAvailable
-          ? "Komplet: " + match.color_name + " • " + match.bundle_price.toLocaleString("cs-CZ") + " Kč"
+          ? "Komplet: " + match.color_name + " · " + match.bundle_price.toLocaleString("cs-CZ") + " Kč"
           : "Odpovídající očko přes rameno teď pro tuto variantu není skladem.";
       }
     }
   } else {
     priceElement.innerText = "Varianta není dostupná";
     stockElement.innerText = "Tato kombinace momentálně není dostupná.";
-    stockElement.classList.remove("text-success");
-    stockElement.classList.add("text-danger");
+    stockElement.className = "pd-stock-status pd-stock-out";
     variantSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
     form.action = "";
     submitButton.disabled = true;
-
-    if (productImage) {
-      productImage.src = defaultProductImage;
-    }
-
+    if (productImage) productImage.src = defaultProductImage;
     if (bundleSubmitButton && bundleVariantInput) {
       bundleVariantInput.value = "";
       bundleSubmitButton.formAction = "";
       bundleSubmitButton.disabled = true;
     }
-
     if (bundleSummaryElement) {
       bundleSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
     }
@@ -258,52 +249,31 @@ function syncSelectAvailability() {
 
   if (lengthSelect) {
     Array.from(lengthSelect.options).forEach(option => {
-      option.disabled = !hasCompatibleVariant({
-        length: option.value,
-        type: selectedType,
-        color: selectedColor,
-      });
+      option.disabled = !hasCompatibleVariant({ length: option.value, type: selectedType, color: selectedColor });
     });
-
     if (lengthSelect.selectedOptions[0]?.disabled) {
-      const firstEnabled = Array.from(lengthSelect.options).find(option => !option.disabled);
-      if (firstEnabled) {
-        lengthSelect.value = firstEnabled.value;
-      }
+      const first = Array.from(lengthSelect.options).find(o => !o.disabled);
+      if (first) lengthSelect.value = first.value;
     }
   }
 
   if (typeSelect) {
     Array.from(typeSelect.options).forEach(option => {
-      option.disabled = !hasCompatibleVariant({
-        length: lengthSelect ? lengthSelect.value : null,
-        type: option.value,
-        color: selectedColor,
-      });
+      option.disabled = !hasCompatibleVariant({ length: lengthSelect ? lengthSelect.value : null, type: option.value, color: selectedColor });
     });
-
     if (typeSelect.selectedOptions[0]?.disabled) {
-      const firstEnabled = Array.from(typeSelect.options).find(option => !option.disabled);
-      if (firstEnabled) {
-        typeSelect.value = firstEnabled.value;
-      }
+      const first = Array.from(typeSelect.options).find(o => !o.disabled);
+      if (first) typeSelect.value = first.value;
     }
   }
 
   if (colorSelect) {
     Array.from(colorSelect.options).forEach(option => {
-      option.disabled = !hasCompatibleVariant({
-        length: lengthSelect ? lengthSelect.value : null,
-        type: typeSelect ? typeSelect.value : null,
-        color: parseInt(option.value),
-      });
+      option.disabled = !hasCompatibleVariant({ length: lengthSelect ? lengthSelect.value : null, type: typeSelect ? typeSelect.value : null, color: parseInt(option.value) });
     });
-
     if (colorSelect.selectedOptions[0]?.disabled) {
-      const firstEnabled = Array.from(colorSelect.options).find(option => !option.disabled);
-      if (firstEnabled) {
-        colorSelect.value = firstEnabled.value;
-      }
+      const first = Array.from(colorSelect.options).find(o => !o.disabled);
+      if (first) colorSelect.value = first.value;
     }
   }
 }
@@ -314,27 +284,9 @@ function updateColorPreview() {
   colorPreview.style.backgroundColor = hex || "#e8ece9";
 }
 
-if (lengthSelect) {
-  lengthSelect.addEventListener("change", function () {
-    syncSelectAvailability();
-    updateVariant();
-  });
-}
-
-if (typeSelect) {
-  typeSelect.addEventListener("change", function () {
-    syncSelectAvailability();
-    updateVariant();
-  });
-}
-
-if (colorSelect) {
-  colorSelect.addEventListener("change", function () {
-    syncSelectAvailability();
-    updateVariant();
-    updateColorPreview();
-  });
-}
+if (lengthSelect) lengthSelect.addEventListener("change", () => { syncSelectAvailability(); updateVariant(); });
+if (typeSelect)   typeSelect.addEventListener("change",   () => { syncSelectAvailability(); updateVariant(); });
+if (colorSelect)  colorSelect.addEventListener("change",  () => { syncSelectAvailability(); updateVariant(); updateColorPreview(); });
 
 syncSelectAvailability();
 updateVariant();

@@ -47,7 +47,7 @@
 .what-we-do-title {
     max-width: 14ch;
     margin: 0 0 2rem;
-    color: #2d2d2d;
+    color: #2f3e3a;
     font-family: "Playfair Display", serif;
     font-size: clamp(3.4rem, 7vw, 6rem);
     font-weight: 600;
@@ -56,7 +56,7 @@
 }
 
 .what-we-do-title span {
-    color: #6a857c;
+    color: #2f3e3a;
 }
 
 .what-we-do-copy-grid {

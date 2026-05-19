@@ -538,6 +538,100 @@
   min-width: 150px;
 }
 
+/* ── SPLNĚNÝ TEST – success karta ── */
+.module-quiz-success {
+  border-radius: 28px;
+  background: #f0f7f4;
+  border: 1.5px solid rgba(95, 118, 107, 0.28);
+  box-shadow: 0 4px 20px rgba(95, 118, 107, 0.08);
+  overflow: hidden;
+  animation: quizSuccessIn 0.35s ease both;
+}
+
+@keyframes quizSuccessIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.module-quiz-success-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.3rem 1.45rem;
+}
+
+.module-quiz-success-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #5f766b;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.module-quiz-success-copy h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b3834;
+}
+
+.module-quiz-success-copy p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5a7268;
+  font-weight: 500;
+}
+
+/* Skrytý toggle pro správné odpovědi */
+.module-quiz-answers-toggle {
+  border-top: 1px solid rgba(95, 118, 107, 0.14);
+}
+
+.module-quiz-answers-toggle summary {
+  list-style: none;
+  padding: 0.75rem 1.45rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #5f766b;
+  cursor: pointer;
+  user-select: none;
+}
+
+.module-quiz-answers-toggle summary::-webkit-details-marker {
+  display: none;
+}
+
+.module-quiz-answers-toggle summary::before {
+  content: "↓ ";
+  font-size: 0.8rem;
+}
+
+.module-quiz-answers-toggle[open] summary::before {
+  content: "↑ ";
+}
+
+.module-quiz-answers-body {
+  padding: 0.75rem 1.45rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Nesplněný test – odstraníme <details> skeleton, použijeme prostý div */
+.module-quiz-card {
+  overflow: visible; /* bylo hidden, způsobovalo problémy */
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(95, 118, 107, 0.09);
+  box-shadow: 0 18px 44px rgba(35, 46, 41, 0.07);
+}
+
 .module-pdf-card {
   display: flex;
   align-items: center;

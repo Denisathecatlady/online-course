@@ -178,47 +178,54 @@
 
                 {% elif item.kind == "quiz" %}
                   {% if item.is_unlocked %}
-                    <details id="step-{{ item.step_number }}" class="module-quiz-card{% if item.quiz_passed %} is-complete{% endif %}" {% if item.quiz_passed and item.step_number == 1 or not item.quiz_passed %}open{% endif %}>
-                      <summary class="module-quiz-summary">
-                        <div class="module-quiz-summary-main">
-                          <span class="module-quiz-summary-icon">✓</span>
-                          <div>
+                    {% if item.quiz_passed %}
+                      {# ── SPLNĚNÝ TEST – success karta ── #}
+                      <div id="step-{{ item.step_number }}" class="module-quiz-success">
+                        <div class="module-quiz-success-main">
+                          <span class="module-quiz-success-icon" aria-hidden="true">✓</span>
+                          <div class="module-quiz-success-copy">
                             <h3>{{ item.title }}</h3>
-                            <p>
-                              Pokusy: {{ item.attempts_count }}
-                              {% if item.quiz_passed %}
-                                <span>Test máte správně. Můžete pokračovat dál.</span>
-                              {% else %}
-                                <span>Počet pokusů není omezený.</span>
-                              {% endif %}
-                            </p>
+                            <p>Test úspěšně splněn · {{ item.attempts_count }} {{ item.attempts_count|pluralize:"pokus,pokusy,pokusů" }}</p>
                           </div>
                         </div>
-                        <span class="module-quiz-summary-arrow" aria-hidden="true">⌃</span>
-                      </summary>
 
-                      <div class="module-quiz-body">
-                        {% if item.quiz_passed %}
-                          {% for question in item.quiz.questions %}
-                            <fieldset class="module-quiz-question module-quiz-question-static">
-                              <legend>{{ forloop.counter }}. {{ question.prompt }}</legend>
+                        <details class="module-quiz-answers-toggle">
+                          <summary>Zobrazit správné odpovědi</summary>
+                          <div class="module-quiz-answers-body">
+                            {% for question in item.quiz.questions %}
+                              <fieldset class="module-quiz-question module-quiz-question-static">
+                                <legend>{{ forloop.counter }}. {{ question.prompt }}</legend>
+                                {% for option in question.options %}
+                                  <label class="module-quiz-option{% if option.value == question.correct %} is-selected is-correct{% endif %}">
+                                    <input type="radio" disabled {% if option.value == question.correct %}checked{% endif %}>
+                                    <span>{{ option.label }}</span>
+                                  </label>
+                                {% endfor %}
+                              </fieldset>
+                            {% endfor %}
+                          </div>
+                        </details>
+                      </div>
+                    {% else %}
+                      {# ── NESPLNĚNÝ TEST – formulář ── #}
+                      <div id="step-{{ item.step_number }}" class="module-quiz-card">
+                        <div class="module-quiz-summary">
+                          <div class="module-quiz-summary-main">
+                            <span class="module-quiz-summary-icon">?</span>
+                            <div>
+                              <h3>{{ item.title }}</h3>
+                              <p>Počet pokusů není omezený. <span>Pokusy: {{ item.attempts_count }}</span></p>
+                            </div>
+                          </div>
+                        </div>
 
-                              {% for option in question.options %}
-                                <label class="module-quiz-option{% if option.value == question.correct %} is-selected is-correct{% endif %}">
-                                  <input type="radio" disabled {% if option.value == question.correct %}checked{% endif %}>
-                                  <span>{{ option.label }}</span>
-                                </label>
-                              {% endfor %}
-                            </fieldset>
-                          {% endfor %}
-                        {% else %}
+                        <div class="module-quiz-body">
                           <form method="post" action="{% url 'courses:submit_module_quiz' course.slug module.slug item.step_number %}" class="module-quiz-form">
                             {% csrf_token %}
 
                             {% for question in item.quiz.questions %}
                               <fieldset class="module-quiz-question">
                                 <legend>{{ forloop.counter }}. {{ question.prompt }}</legend>
-
                                 {% for option in question.options %}
                                   <label class="module-quiz-option">
                                     <input type="radio" name="question_{{ question.id }}" value="{{ option.value }}">
@@ -232,9 +239,9 @@
                               Odevzdat test
                             </button>
                           </form>
-                        {% endif %}
+                        </div>
                       </div>
-                    </details>
+                    {% endif %}
                   {% else %}
                     <article id="step-{{ item.step_number }}" class="module-locked-card">
                       <div class="module-locked-card-copy">
@@ -299,6 +306,17 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  // ── Po splnění testu scrolluj na další odemčený krok ──────────────────
+  const hash = window.location.hash;
+  if (hash && hash.startsWith("#step-")) {
+    const target = document.querySelector(hash);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
+    }
+  }
+
   const studyContent = document.querySelector("[data-module-study-content]");
   const studyToggle = document.querySelector("[data-module-study-toggle]");
 
