@@ -2,132 +2,137 @@
 {% load static %}
 {% block title %}Kurz{% endblock %}
 
+{% block body_class %}page-course-dashboard{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="py-3 py-md-4">
-  <div class="container">
+<section class="course-dashboard-page">
+  <header class="course-dashboard-hero">
+    <div class="course-dashboard-shell">
+      <a href="{% url 'accounts:my_courses' %}" class="course-dashboard-back">Moje kurzy</a>
 
-    <!-- HEADER -->
-    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-5">
-      <div>
-        <h1 class="section-title-sm mb-1">Kurz</h1>
-        <p class="page-subtitle mb-0">Vyber si modul a pokračuj.</p>
-
-      </div>
-    </div>
-
-    <!-- INTRO KURZU -->
-    <div class="course-intro mb-5">
-      <div class="card-body p-4 p-md-5">
-        <div class="course-intro-content">
-
-          <h2 class="course-intro-title">
-            🌿 Vítáme vás v kurzu <span>KONEJŠIVÉ SIGNÁLY V PRAXI</span>
-          </h2>
-
-          <p class="course-intro-lead">
-            Jednotlivé moduly je možné studovat vlastním tempem 🎓 a kdykoliv se k nim vracet.
-            Komentovaná videa 🎥 je možné shlédnout opakovaně.
+      <div class="course-dashboard-hero-grid">
+        <div class="course-dashboard-hero-main">
+          <p class="course-dashboard-kicker">
+            Online kurz{% if duration_weeks %} • {{ duration_weeks }} týdnů{% endif %}
           </p>
+          <h1 class="course-dashboard-title">{{ course.title }}</h1>
+          <p class="course-dashboard-author">Ing. Andrea Zoulová</p>
+        </div>
 
-          <p>
-            Ke každému z modulů jsou vypracovány úkoly k procvičení, které směřují ke
-            <strong>skutečné dovednosti konejšivé signály zachytit, vyhodnotit a správně na ně reagovat</strong>
-            ze strany člověka.
-          </p>
-
-          <div class="course-intro-note">
-            Pro variantu <strong>PREMIUM</strong> najdete více informací v e-mailu
-            a v příslušné FB skupině.
+        <div class="course-dashboard-progress-side">
+          <div class="course-dashboard-progress-ring" style="--progress: {{ progress_percent }};">
+            <div>
+              <strong>{{ progress_percent }}</strong>
+              <span>%</span>
+            </div>
           </div>
+          <p>{{ completed_modules }} z {{ total_modules }} modulů</p>
+        </div>
+      </div>
 
+      <div class="course-dashboard-module-track" aria-label="Postup moduly">
+        {% for m in modules %}
+          <div class="course-dashboard-track-item{% if current_module and m.id == current_module.id %} is-current{% elif m.is_completed %} is-complete{% endif %}">
+            <span class="course-dashboard-track-line"></span>
+            <span class="course-dashboard-track-label">M{{ m.order }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if current_module %}
+        <div class="course-dashboard-hero-number">
+          {{ current_module.order|stringformat:"02d" }}
+        </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="course-dashboard-intro-section">
+    <div class="course-dashboard-shell">
+      <div class="course-dashboard-intro-copy">
+        <p>
+          Jednotlivé moduly je možné studovat vlastním tempem a kdykoliv se k nim vracet.
+          Komentovaná videa je možné shlédnout opakovaně.
+        </p>
+
+        <p>
+          Ke každému z modulů jsou vypracovány úkoly k procvičení, které směřují ke
+          <strong>skutečné dovednosti konejšivé signály zachytit, vyhodnotit a správně na ně reagovat</strong>
+          ze strany člověka.
+        </p>
+
+        <div class="course-dashboard-intro-note">
+          Pro variantu <strong>PREMIUM</strong> najdete více informací v e-mailu
+          a v příslušné FB skupině.
         </div>
       </div>
     </div>
-    
-    <div class="course-progress mb-4">
-      <div class="progress-label">
-        Dokončeno {{ completed_modules }} z {{ total_modules }} modulů
+  </section>
+
+  <section class="course-dashboard-modules-section">
+    <div class="course-dashboard-shell">
+      <div class="course-dashboard-modules-head">
+        <h2>Moduly</h2>
+        <span>{{ modules|length }} / {{ total_modules }}</span>
       </div>
 
-      <div class="progress-track">
-        <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
-      </div>
-    </div>
+      <div class="course-dashboard-module-list">
+        {% for m in modules %}
+          <article class="course-dashboard-module-item module-order-{{ m.order }}{% if m.is_unlocked %} is-unlocked{% endif %}{% if m.is_completed %} is-complete{% endif %}{% if current_module and m.id == current_module.id %} is-current{% endif %}{% if not m.is_unlocked %} is-locked{% endif %}">
+            <div class="course-dashboard-module-index">{{ m.order|stringformat:"02d" }}</div>
 
-
-    <!-- MODULY HEADER -->
-    <div class="d-flex align-items-center justify-content-between mb-4">
-      <h2 class="h5 fw-semibold mb-0">Moduly</h2>
-      <span class="text-muted small">{{ modules|length }} / 4</span>
-    </div>
-
-    <!-- MODULY -->
-    <div class="row g-4 course-modules">
-      {% for m in modules %}
-        <div class="col-12 col-md-6">
-
-          <div class="module-card">
-
-            <!-- horní badge -->
-            <div class="module-badge">
-              Modul {{ m.order }}
-            </div>
-
-            <!-- typ obsahu -->
-            <div class="module-types">
-              <span class="type-pill video">🎥 Video</span>
-              <span class="type-pill pdf">📄 PDF</span>
-              {% if m.requires_quiz_flow %}
-                <span class="type-pill quiz">🧠 {{ m.quiz_total_steps }} testy</span>
-              {% endif %}
-            </div>
-
-            <!-- obsah -->
-            <h3 class="module-title">{{ m.title }}</h3>
-
-            {% if m.intro_text %}
-              <p class="module-desc">
-                {{ m.intro_text|truncatechars:140 }}
+            <div class="course-dashboard-module-copy">
+              <p class="course-dashboard-module-eyebrow">
+                {% if m.is_completed %}
+                  Dokončeno
+                {% elif current_module and m.id == current_module.id %}
+                  Právě studujete
+                {% elif m.is_unlocked %}
+                  Připraveno
+                {% else %}
+                  Zamčeno
+                {% endif %}
               </p>
-            {% endif %}
 
-            <!-- footer -->
-            <div class="module-footer">
+              <h3 class="course-dashboard-module-title">{{ m.title }}</h3>
+
+              {% if m.intro_text %}
+                <p class="course-dashboard-module-desc">{{ m.intro_text|truncatechars:90 }}</p>
+              {% endif %}
+
+              <div class="course-dashboard-module-meta">
+                <span>Video</span>
+                <span>{% if m.pdf_file %}PDF{% else %}PDF (připravujeme){% endif %}</span>
+                {% if m.requires_quiz_flow %}
+                  <span{% if current_module and m.id == current_module.id %} class="is-accent"{% endif %}>
+                    {{ m.quiz_passed_steps }} / {{ m.quiz_total_steps }} testů
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="course-dashboard-module-action">
               {% if m.is_unlocked %}
-                <a href="{% url 'courses:module_detail' course.slug m.slug %}" class="btn btn-sage">
-                  Otevřít modul →
+                <a href="{% url 'courses:module_detail' course.slug m.slug %}" class="course-dashboard-module-link" aria-label="Otevřít modul {{ m.order }}">
+                  <span aria-hidden="true">→</span>
                 </a>
               {% else %}
-                <span class="btn btn-outline-sage module-locked-btn" aria-disabled="true">
-                  Modul je zamčený
+                <span class="course-dashboard-module-lock" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="6.5" y="10.5" width="11" height="8" rx="2" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M9 10.5V8.6a3 3 0 1 1 6 0v1.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                  </svg>
                 </span>
               {% endif %}
-
-              {% if not m.is_unlocked %}
-                <span class="module-status locked">{{ m.locked_reason }}</span>
-              {% elif m.is_completed %}
-                <span class="module-status success">✓ Modul splněn</span>
-              {% elif m.requires_quiz_flow %}
-                <span class="module-status pending">{{ m.quiz_passed_steps }} / {{ m.quiz_total_steps }} testů splněno</span>
-              {% elif m.pdf_file %}
-                <span class="module-status success">✓ PDF připraveno</span>
-              {% else %}
-                <span class="module-status missing">PDF chybí</span>
-              {% endif %}
             </div>
-
-          </div>
-
-        </div>
-      {% endfor %}
+          </article>
+        {% endfor %}
+      </div>
     </div>
-
-
-
-  </div>
+  </section>
 </section>
 {% endblock %}

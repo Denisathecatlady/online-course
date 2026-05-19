@@ -1107,3 +1107,42 @@
     margin-top: 3rem;
   }
 }
+
+/* ── COMING SOON BANNER ─────────────────────────────── */
+
+.course-coming-soon-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #f4f8f4;
+  border: 1px solid rgba(95, 118, 107, 0.25);
+  border-left: 4px solid #5f766b;
+  border-radius: 0 10px 10px 0;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.course-coming-soon-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.course-coming-soon-banner strong {
+  display: block;
+  color: #2d2d2d;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.course-coming-soon-banner p {
+  margin: 0;
+  color: rgba(47, 62, 58, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.btn-sage:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

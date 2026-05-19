@@ -219,7 +219,10 @@ class CourseAccess(models.Model):
         unique_together = ("user", "course")
 
     def save(self, *args, **kwargs):
-        if not self.expires_at and self.plan_id:
+        # expires_at nastavujeme POUZE při vytvoření nového záznamu,
+        # nikoli při editaci existujícího – jinak bychom retroaktivně
+        # přepsali přístup stávajícím zákazníkům.
+        if self.pk is None and not self.expires_at and self.plan_id:
             self.expires_at = self.granted_at + timedelta(
                 days=self.plan.access_duration_days
             )

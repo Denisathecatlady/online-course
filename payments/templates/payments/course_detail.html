@@ -66,12 +66,14 @@
             <span>Jednorázová platba • přístup {{ featured_plan.access_duration_days }} dní</span>
             {% else %}
             <strong>Cena na dotaz</strong>
-            <span>Ozvi se a vybereme vhodnou variantu</span>
+            <span>Ozvěte se a vybereme vhodnou variantu</span>
             {% endif %}
           </div>
 
           <div class="course-purchase-actions">
+            {% if not course.coming_soon %}
             <a href="#varianty" class="btn btn-sage">Vybrat variantu</a>
+            {% endif %}
             <a href="{% url 'courses:contact' %}" class="btn btn-outline-sage">Domluvit konzultaci</a>
           </div>
 
@@ -175,13 +177,23 @@
     <div class="course-variants-head">
       <div>
         <span class="course-offer-kicker">Varianty kurzu</span>
-        <h2>Vyber si způsob studia, který ti bude sedět.</h2>
+        <h2>Vyberte si způsob studia, který vám bude sedět.</h2>
       </div>
       <p>
         Online kurz je nabízen ve dvou variantách. Liší se rozsahem podpory,
         vedením lektora a možností získání certifikátu.
       </p>
     </div>
+
+    {% if course.coming_soon %}
+    <div class="course-coming-soon-banner">
+      <span class="course-coming-soon-icon">🐾</span>
+      <div>
+        <strong>Připravujeme pro vás</strong>
+        <p>Tento kurz aktuálně připravujeme. Brzy bude k dispozici – sledujte nás!</p>
+      </div>
+    </div>
+    {% endif %}
 
     <div class="course-variants-grid">
       {% for card in plan_cards %}
@@ -203,10 +215,14 @@
 
         <p class="course-variant-footnote">{{ card.footnote }}</p>
 
+        {% if course.coming_soon %}
+        <button class="btn btn-sage w-100" disabled>Připravujeme pro vás</button>
+        {% else %}
         <form method="post" action="{% url 'payments:add_course_to_cart' card.plan.id %}">
           {% csrf_token %}
           <button class="btn btn-sage w-100">Přidat do košíku</button>
         </form>
+        {% endif %}
       </article>
       {% endfor %}
     </div>
@@ -270,13 +286,23 @@
     <div class="course-plan-head">
       <div>
         <span class="course-offer-kicker">Varianty kurzu</span>
-        <h2>Vyber si způsob studia, který ti bude sedět.</h2>
+        <h2>Vyberte si způsob studia, který vám bude sedět.</h2>
       </div>
       <p>
-        Každá varianta ti otevře přístup ke kurzu. Liší se rozsahem podpory,
-        hloubkou vedení a tím, jestli chceš studovat samostatně nebo s větší oporou.
+        Každá varianta vám otevře přístup ke kurzu. Liší se rozsahem podpory,
+        hloubkou vedení a tím, jestli chcete studovat samostatně nebo s větší oporou.
       </p>
     </div>
+
+    {% if course.coming_soon %}
+    <div class="course-coming-soon-banner">
+      <span class="course-coming-soon-icon">🐾</span>
+      <div>
+        <strong>Připravujeme pro vás</strong>
+        <p>Tento kurz aktuálně připravujeme. Brzy bude k dispozici – sledujte nás!</p>
+      </div>
+    </div>
+    {% endif %}
 
     <div class="course-plan-grid">
       {% for plan in plans %}
@@ -288,9 +314,9 @@
           <h3>{{ plan.name }}</h3>
           <p class="course-plan-subtitle">
             {% if plan.includes_consultation %}
-              Vhodné, pokud chceš jít víc do hloubky a mít vedení navíc.
+              Vhodné, pokud chcete jít víc do hloubky a mít vedení navíc.
             {% else %}
-              Vhodné, pokud chceš studovat vlastním tempem a vracet se k obsahu kdykoliv potřebuješ.
+              Vhodné, pokud chcete studovat vlastním tempem a vracet se k obsahu kdykoliv potřebujete.
             {% endif %}
           </p>
         </div>
@@ -315,10 +341,14 @@
           {% endif %}
         </ul>
 
+        {% if course.coming_soon %}
+        <button class="btn btn-sage w-100" disabled>Připravujeme pro vás</button>
+        {% else %}
         <form method="post" action="{% url 'payments:add_course_to_cart' plan.id %}">
           {% csrf_token %}
           <button class="btn btn-sage w-100">Přidat do košíku</button>
         </form>
+        {% endif %}
       </article>
       {% endfor %}
     </div>

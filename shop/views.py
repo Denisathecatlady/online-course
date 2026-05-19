@@ -1,6 +1,9 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 from django.db.models import Min
 from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.text import slugify
 
 from .models import Product, ProductVariant
@@ -71,6 +74,99 @@ PRODUCT_CARD_CONTENT = {
     },
 }
 
+BUNDLE_DISCOUNT_RATE = Decimal("0.10")
+
+PRODUCT_DETAIL_CONTENT = {
+    "samostatne-ocko": {
+        "badge": "Očko přes rameno",
+        "copy": (
+            "Samostatné očko přes rameno je praktický doplněk k vodítku bez očka. "
+            "Hodí se, když chcete mít vodítko rychle po ruce, pohodlně ho přehodit "
+            "přes rameno nebo si vytvořit jistější úchop při kratším vedení psa."
+        ),
+        "highlights": [
+            "Lehké a skladné",
+            "Rychlé připnutí ke karabině",
+            "Ručně vyráběné v Česku",
+        ],
+        "info_cards": [
+            {
+                "title": "K čemu slouží",
+                "copy": (
+                    "Očko doplní vodítko bez poutka a umožní pohodlnější nošení "
+                    "nebo jistější držení v situacích, kdy potřebujete psa vést blíž u sebe."
+                ),
+            },
+            {
+                "title": "Materiál",
+                "copy": (
+                    "Voděodolný Hexa popruh se snadno čistí a drží tvar i při běžném "
+                    "každodenním používání."
+                ),
+            },
+            {
+                "title": "Jak vybrat",
+                "copy": (
+                    "Vyberte stejnou barvu jako u vodítka. Pokud kupujete komplet, "
+                    "výhodnější je sada vodítka bez očka a samostatného očka."
+                ),
+            },
+        ],
+    },
+    "voditko-bez-ocka": {
+        "badge": "Vodítko bez očka",
+        "copy": (
+            "Minimalistické vodítko bez poutka pro ty, kteří chtějí jednoduché, "
+            "odolné a čistě zpracované vedení psa s možností doplnit samostatné očko."
+        ),
+        "highlights": [
+            "Volba délky a barvy",
+            "Odolný voděodolný popruh",
+            "Možnost výhodné sady s očkem",
+        ],
+        "info_cards": [
+            {
+                "title": "Pro koho je",
+                "copy": "Pro majitele, kteří preferují přímé držení nebo chtějí očko řešit samostatně.",
+            },
+            {
+                "title": "Materiál",
+                "copy": "Hexa popruh je pevný, voděodolný a dobře se udržuje po procházkách v terénu.",
+            },
+            {
+                "title": "Tip",
+                "copy": "Ke stejné barvě můžete přidat samostatné očko a vytvořit zvýhodněný komplet.",
+            },
+        ],
+    },
+    "voditko-s-poutkem": {
+        "badge": "Vodítko s poutkem",
+        "copy": (
+            "Vodítko s pevným poutkem na ruku pro každodenní procházky, kdy chcete "
+            "mít pohodlný úchop a jistější kontrolu bez dalších doplňků."
+        ),
+        "highlights": [
+            "Pevné poutko na ruku",
+            "Volba délky a barvy",
+            "Ruční výroba",
+        ],
+        "info_cards": [
+            {
+                "title": "Pro koho je",
+                "copy": "Pro běžné venčení a situace, kdy chcete mít vodítko pevně v ruce.",
+            },
+            {
+                "title": "Materiál",
+                "copy": "Pevný voděodolný popruh doplněný odolnou karabinou pro každodenní používání.",
+            },
+            {
+                "title": "Údržba",
+                "copy": "Po zašpinění stačí otřít vlhkým hadříkem a nechat volně uschnout.",
+            },
+        ],
+    },
+}
+
 SHOP_TESTIMONIALS = [
     {
         "quote": "„Vodítko drží perfektně, pes si zvykl hned. Konečně něco, co vypadá hezky a funguje.\"",
@@ -125,6 +221,90 @@ def get_variant_image_url(product, color):
     return get_default_product_image_url(product)
 
 
+def apply_bundle_discount(price):
+    return (price * (Decimal("1.00") - BUNDLE_DISCOUNT_RATE)).quantize(
+        Decimal("1"),
+        rounding=ROUND_HALF_UP,
+    )
+
+
+def build_bundle_card(products_by_slug):
+    leash_product = products_by_slug.get("voditko-bez-ocka")
+    loop_product = products_by_slug.get("samostatne-ocko")
+    if not leash_product or not loop_product:
+        return None
+
+    length_labels = dict(ProductVariant.LENGTH_CHOICES)
+    loop_variants_by_color = {}
+    for variant in loop_product.variants.filter(
+        is_active=True,
+        stock__gt=0,
+    ).select_related("color").order_by("price", "id"):
+        loop_variants_by_color.setdefault(variant.color_id, variant)
+
+    options = []
+    seen_color_ids = set()
+    leash_variants = leash_product.variants.filter(
+        is_active=True,
+        stock__gt=0,
+    ).select_related("color").order_by("color__name", "price", "id")
+
+    for leash_variant in leash_variants:
+        if leash_variant.color_id in seen_color_ids:
+            continue
+
+        loop_variant = loop_variants_by_color.get(leash_variant.color_id)
+        if not loop_variant:
+            continue
+
+        seen_color_ids.add(leash_variant.color_id)
+        original_price = leash_variant.price + loop_variant.price
+        length_label = (
+            length_labels.get(leash_variant.length, f"{leash_variant.length} m")
+            if leash_variant.length
+            else ""
+        )
+        summary_parts = [leash_variant.color.name]
+        if length_label:
+            summary_parts.append(length_label)
+
+        options.append({
+            "color_name": leash_variant.color.name,
+            "color_hex": leash_variant.color.hex_code or "#d9d9d9",
+            "length_label": length_label,
+            "summary": " - ".join(summary_parts),
+            "primary_variant_id": leash_variant.id,
+            "bundle_variant_id": loop_variant.id,
+            "action_url": reverse("payments:add_bundle_to_cart", args=[leash_variant.id]),
+            "original_price": original_price,
+            "price": apply_bundle_discount(original_price),
+        })
+
+    if not options:
+        return None
+
+    default_option = options[0]
+
+    return {
+        "title": "Výhodná sada",
+        "badge": "Sleva 10 %",
+        "teaser": "Vodítko bez očka + samostatné očko",
+        "description": (
+            "Vyberte barvu a přidejte rovnou obě části do košíku. "
+            "Sada má shodnou barvu a zvýhodněnou cenu."
+        ),
+        "features": [
+            "Vodítko bez očka",
+            "Samostatné očko přes rameno",
+            "O 10 % výhodnější komplet",
+        ],
+        "image_url": get_default_product_image_url(leash_product),
+        "image_alt": "Výhodná sada vodítka bez očka a samostatného očka",
+        "default_option": default_option,
+        "options": options,
+    }
+
+
 def product_list(request):
     products = (
         Product.objects
@@ -134,6 +314,7 @@ def product_list(request):
     )
     products_by_slug = {product.slug: product for product in products}
 
+    bundle_card = build_bundle_card(products_by_slug)
     product_cards = []
     for slug in ["samostatne-ocko", "voditko-bez-ocka", "voditko-s-poutkem"]:
         product = products_by_slug.get(slug)
@@ -164,6 +345,7 @@ def product_list(request):
 
     return render(request, "shop/product_list.html", {
         "products": products,
+        "bundle_card": bundle_card,
         "product_cards": product_cards,
         "hero_image_url": build_static_image_url("img/shop/pes_voditko_1.png"),
         "cta_image_url": build_static_image_url("img/shop/pes_voditko_2.png"),
@@ -184,26 +366,31 @@ def product_detail(request, slug):
     variants = list(product.variants.filter(is_active=True).select_related("color"))
     length_labels = dict(ProductVariant.LENGTH_CHOICES)
     type_labels = dict(ProductVariant.TYPE_CHOICES)
+    detail_content = PRODUCT_DETAIL_CONTENT.get(product.slug, {})
     bundle_companions = {}
     bundle_offer = None
+    bundle_companion_is_primary = False
 
-    if product.slug == "voditko-bez-ocka":
-        companion_product = Product.objects.filter(
-            slug="samostatne-ocko",
-            is_active=True,
-        ).first()
+    if product.slug in {"voditko-bez-ocka", "samostatne-ocko"}:
+        companion_slug = (
+            "samostatne-ocko"
+            if product.slug == "voditko-bez-ocka"
+            else "voditko-bez-ocka"
+        )
+        companion_product = Product.objects.filter(slug=companion_slug, is_active=True).first()
         if companion_product:
-            bundle_companions = {
-                variant.color_id: variant
-                for variant in companion_product.variants.filter(is_active=True).select_related("color")
-            }
+            for variant in companion_product.variants.filter(
+                is_active=True,
+            ).select_related("color").order_by("price", "id"):
+                bundle_companions.setdefault(variant.color_id, variant)
+            bundle_companion_is_primary = product.slug == "samostatne-ocko"
             bundle_offer = {
-                "title": "Výhodná varianta",
+                "title": "Výhodná sada - sleva 10 %",
+                "heading": "Vodítko + Samostatné očko",
                 "copy": (
-                    "Chceš mít vodítko bez očka a současně i očko přes rameno? "
-                    "Přidej obě varianty do košíku jedním kliknutím."
+                    "Chcete mít vodítko bez očka a současně i očko přes rameno? "
+                    "Přidejte obě varianty do košíku jedním kliknutím se slevou 10 %."
                 ),
-                "companion_name": companion_product.name,
             }
 
     unique_lengths = []
@@ -249,13 +436,26 @@ def product_detail(request, slug):
             "image_url": get_variant_image_url(product, v.color),
             "price": float(v.price),
             "stock": v.stock,
-            "bundle_variant_id": bundle_companions.get(v.color_id).id if bundle_companions.get(v.color_id) else None,
+            "bundle_primary_variant_id": (
+                bundle_companions.get(v.color_id).id
+                if bundle_companion_is_primary and bundle_companions.get(v.color_id)
+                else v.id
+            ),
+            "bundle_variant_id": (
+                v.id
+                if bundle_companion_is_primary and bundle_companions.get(v.color_id)
+                else (
+                    bundle_companions.get(v.color_id).id
+                    if bundle_companions.get(v.color_id)
+                    else None
+                )
+            ),
             "bundle_variant_name": (
                 bundle_companions.get(v.color_id).product.name
                 if bundle_companions.get(v.color_id) else ""
             ),
             "bundle_price": (
-                float(v.price + bundle_companions.get(v.color_id).price)
+                float(apply_bundle_discount(v.price + bundle_companions.get(v.color_id).price))
                 if bundle_companions.get(v.color_id) else None
             ),
             "bundle_stock": (
@@ -268,6 +468,14 @@ def product_detail(request, slug):
 
     return render(request, "shop/product_detail.html", {
         "product": product,
+        "detail_badge": detail_content.get("badge", "Vodítko"),
+        "detail_copy": product.description or detail_content.get("copy", ""),
+        "detail_highlights": detail_content.get("highlights", [
+            "Ručně vyráběné",
+            "Výběr variant na míru",
+            "Bezpečné dokončení přes Stripe",
+        ]),
+        "detail_info_cards": detail_content.get("info_cards", []),
         "product_image_url": get_default_product_image_url(product),
         "lengths": lengths,
         "types": types,

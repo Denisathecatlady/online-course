@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rezervace | CalmDog Hotel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="{% static 'hotel/css/hotel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <h1 class="section-heading mb-1">Rezervace pobytu</h1>
+            <p class="text-muted mb-4">
+                Vyplňte formulář a my Vás co nejdříve kontaktujeme s potvrzením.
+            </p>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p class="mb-0">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- KONTAKTNÍ ÚDAJE -->
+                <div class="reservation-section mb-4">
+                    <h2 class="h5 fw-semibold mb-3">Kontaktní údaje</h2>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                {{ form.first_name.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                {{ form.last_name.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                {{ form.email.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                {{ form.phone.label }}
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TERMÍN POBYTU -->
+                <div class="reservation-section mb-4">
+                    <h2 class="h5 fw-semibold mb-3">Termín pobytu</h2>
+                    {% if has_calendar %}
+                    <p class="text-muted small mb-3">
+                        Vybírat lze pouze z volných termínů zobrazených v kalendáři.
+                    </p>
+                    {% endif %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="{{ form.date_from.id_for_label }}" class="form-label">
+                                {{ form.date_from.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.date_from }}
+                            {% if form.date_from.errors %}
+                                <div class="invalid-feedback d-block">{{ form.date_from.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.date_to.id_for_label }}" class="form-label">
+                                {{ form.date_to.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.date_to }}
+                            {% if form.date_to.errors %}
+                                <div class="invalid-feedback d-block">{{ form.date_to.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFORMACE O ZVÍŘETI -->
+                <div class="reservation-section mb-4">
+                    <h2 class="h5 fw-semibold mb-3">Informace o zvířeti</h2>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="{{ form.pet_type.id_for_label }}" class="form-label">
+                                {{ form.pet_type.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.pet_type }}
+                            {% if form.pet_type.errors %}
+                                <div class="invalid-feedback d-block">{{ form.pet_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.pet_count.id_for_label }}" class="form-label">
+                                {{ form.pet_count.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.pet_count }}
+                            {% if form.pet_count.errors %}
+                                <div class="invalid-feedback d-block">{{ form.pet_count.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.pet_name.id_for_label }}" class="form-label">
+                                {{ form.pet_name.label }}
+                            </label>
+                            {{ form.pet_name }}
+                            {% if form.pet_name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.pet_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.pet_breed.id_for_label }}" class="form-label">
+                                {{ form.pet_breed.label }}
+                            </label>
+                            {{ form.pet_breed }}
+                            {% if form.pet_breed.errors %}
+                                <div class="invalid-feedback d-block">{{ form.pet_breed.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Agresivita -->
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form.is_aggressive }}
+                                <label class="form-check-label" for="{{ form.is_aggressive.id_for_label }}">
+                                    {{ form.is_aggressive.label }}
+                                </label>
+                            </div>
+                            {% if form.is_aggressive.errors %}
+                                <div class="invalid-feedback d-block">{{ form.is_aggressive.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12 aggression-notes" id="aggression-notes-wrapper">
+                            <label for="{{ form.aggression_notes.id_for_label }}" class="form-label">
+                                {{ form.aggression_notes.label }}
+                            </label>
+                            {{ form.aggression_notes }}
+                            <div class="form-text text-muted">
+                                Popište, v jakých situacích se agresivita projevuje a vůči komu.
+                            </div>
+                            {% if form.aggression_notes.errors %}
+                                <div class="invalid-feedback d-block">{{ form.aggression_notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POZNÁMKY -->
+                <div class="reservation-section mb-4">
+                    <h2 class="h5 fw-semibold mb-3">Poznámky</h2>
+                    <div>
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">
+                            {{ form.notes.label }}
+                        </label>
+                        {{ form.notes }}
+                        <div class="form-text text-muted">
+                            Speciální dieta, oblíbené hračky, zdravotní omezení nebo cokoliv, co bychom měli vědět.
+                        </div>
+                        {% if form.notes.errors %}
+                            <div class="invalid-feedback d-block">{{ form.notes.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- SOUHLAS S PODMÍNKAMI -->
+                <div class="mb-4">
+                    <div class="form-check">
+                        {{ form.terms }}
+                        <label class="form-check-label" for="{{ form.terms.id_for_label }}">
+                            {{ form.terms.label }}
+                        </label>
+                    </div>
+                    {% if form.terms.errors %}
+                        <div class="invalid-feedback d-block">{{ form.terms.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    <button type="submit" class="btn btn-sage btn-lg">
+                        Odeslat rezervaci
+                    </button>
+                    <a href="{% url 'hotel:home' %}" class="btn btn-outline-sage btn-lg">
+                        Zpět
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ── Agresivita toggle ─────────────────────────────────────
+    const aggressiveCheckbox = document.getElementById("{{ form.is_aggressive.id_for_label }}");
+    const aggressionWrapper = document.getElementById("aggression-notes-wrapper");
+
+    function toggleAggressionNotes() {
+        if (aggressiveCheckbox && aggressiveCheckbox.checked) {
+            aggressionWrapper.style.display = "block";
+        } else {
+            aggressionWrapper.style.display = "none";
+        }
+    }
+
+    if (aggressiveCheckbox) {
+        aggressiveCheckbox.addEventListener("change", toggleAggressionNotes);
+        toggleAggressionNotes(); // init on page load
+    }
+
+    // ── Flatpickr date pickers ────────────────────────────────
+    {% if has_calendar %}
+
+    fetch("/hotel/api/volne-terminy/")
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+            var availableDates = data.available_dates || [];
+
+            var commonConfig = {
+                locale: "cs",
+                dateFormat: "Y-m-d",
+                disableMobile: false,
+            };
+
+            if (data.calendar_configured && availableDates.length > 0) {
+                commonConfig.enable = availableDates;
+            }
+
+            var fpFrom = flatpickr("#{{ form.date_from.id_for_label }}", Object.assign({}, commonConfig, {
+                onChange: function (selectedDates) {
+                    if (selectedDates.length > 0) {
+                        fpTo.set("minDate", selectedDates[0]);
+                    }
+                }
+            }));
+
+            var fpTo = flatpickr("#{{ form.date_to.id_for_label }}", Object.assign({}, commonConfig, {
+                onChange: function (selectedDates) {
+                    if (selectedDates.length > 0) {
+                        fpFrom.set("maxDate", selectedDates[0]);
+                    }
+                }
+            }));
+        })
+        .catch(function (err) {
+            console.warn("Nepodařilo se načíst volné termíny:", err);
+            // Fallback – plain flatpickr bez omezení
+            flatpickr("#{{ form.date_from.id_for_label }}", { locale: "cs", dateFormat: "Y-m-d" });
+            flatpickr("#{{ form.date_to.id_for_label }}", { locale: "cs", dateFormat: "Y-m-d" });
+        });
+
+    {% else %}
+
+    // Kalendář není nakonfigurován – plain flatpickr
+    flatpickr("#{{ form.date_from.id_for_label }}", {
+        locale: "cs",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+    });
+    flatpickr("#{{ form.date_to.id_for_label }}", {
+        locale: "cs",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+    });
+
+    {% endif %}
+
+    // ── Bootstrap form styling ────────────────────────────────
+    document.querySelectorAll(
+        ".reservation-section input:not([type=checkbox]), " +
+        ".reservation-section select, " +
+        ".reservation-section textarea"
+    ).forEach(function (el) {
+        el.classList.add("form-control");
+    });
+
+    document.querySelectorAll(".reservation-section select").forEach(function (el) {
+        el.classList.remove("form-control");
+        el.classList.add("form-select");
+    });
+});
+</script>
+{% endblock %}

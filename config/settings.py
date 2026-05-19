@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "accounts",
     "courses",
     "payments",
+    "hotel",
     "shop",
     "django.contrib.humanize",
     "django.contrib.sites",
@@ -151,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = "courses:course_dashboard"
+LOGIN_REDIRECT_URL = "accounts:my_courses"
 LOGOUT_REDIRECT_URL = "courses:home"
 
 # ======================================================
@@ -273,12 +274,20 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 PACKETA_API_PASSWORD = os.environ.get("PACKETA_API_PASSWORD")
 PACKETA_WIDGET_API_KEY = os.environ.get("PACKETA_WIDGET_API_KEY", "")
 PACKETA_MODE = os.environ.get("PACKETA_MODE", "live").strip().lower() or "live"
-PACKETA_API_URL = os.environ.get(
-    "PACKETA_API_URL",
-    "https://api.packeta.com/v1/createPacket",
-)
+
+# Výchozí hmotnost zásilky v kg (pokud není u produktu jinak)
+PACKETA_DEFAULT_WEIGHT = float(os.environ.get("PACKETA_DEFAULT_WEIGHT", "0.5"))
+
+# Název e-shopu zobrazený v Packeta systému
+PACKETA_ESHOP_NAME = os.environ.get("PACKETA_ESHOP_NAME", "CalmDog")
+
 PACKETA_MOCK_POINT_ID = os.environ.get("PACKETA_MOCK_POINT_ID", "mock-point-prague-1")
 PACKETA_MOCK_POINT_NAME = os.environ.get(
     "PACKETA_MOCK_POINT_NAME",
     "TEST Zasilkovna, Praha 1",
 )
+
+# ======================================================
+# HOTEL – GOOGLE CALENDAR (iCal)
+# ======================================================
+HOTEL_ICAL_URL = os.environ.get("HOTEL_ICAL_URL", "")

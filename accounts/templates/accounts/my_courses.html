@@ -1,31 +1,71 @@
 {% extends "accounts/account_base.html" %}
 
 {% block account_content %}
-<div class="account-content-card">
-  <div class="account-content-head">
-    <div>
-      <p class="account-eyebrow mb-2">Moje kurzy</p>
-      <h2 class="account-title mb-1">Zakoupené přístupy</h2>
-      <p class="account-copy mb-0">
-        Tady najdeš všechny kurzy, ke kterým máš aktuálně přístup.
-      </p>
-    </div>
-  </div>
+<section class="account-courses-page">
+  <header class="account-courses-head">
+    <a href="{% url 'courses:home' %}" class="account-portal-back">Zpět na web CalmDog</a>
+    <p class="account-eyebrow">Moje kurzy</p>
+    <h1 class="account-courses-title">Zakoupené přístupy</h1>
+    <p class="account-courses-copy">
+      Tady najdete všechny kurzy, ke kterým máte aktuálně přístup.
+    </p>
+  </header>
 
   {% if accesses %}
-    <div class="account-course-grid">
+    <div class="account-courses-panel">
       {% for access in accesses %}
-        <article class="account-course-card">
-          <h3>{{ access.course.title }}</h3>
-          <p>Varianta: {% if access.plan %}{{ access.plan.name }}{% else %}Původní přístup{% endif %}</p>
-          <a href="{% url 'courses:course_dashboard' access.course.slug %}" class="btn btn-sage">
-            Pokračovat
-          </a>
+        <article class="account-access-row">
+          <div class="account-access-main">
+            <div class="account-access-title-row">
+              <h2>{{ access.course.title }}</h2>
+              {% if access.plan %}
+                <span class="account-access-badge">{{ access.plan.name }}</span>
+              {% endif %}
+            </div>
+
+            {% if access.is_started %}
+              <div class="account-access-progress-row">
+                <span>Pokrok: {{ access.completed_modules }} / {{ access.total_modules }} lekcí</span>
+                <strong>{{ access.progress_percent }}%</strong>
+              </div>
+              <div class="account-access-progress-bar" aria-hidden="true">
+                <span style="width: {{ access.progress_percent }}%;"></span>
+              </div>
+            {% else %}
+              <p class="account-access-variant">Varianta: {{ access.plan_label }}</p>
+            {% endif %}
+
+            <p class="account-access-status{% if not access.is_started %} is-idle{% endif %}">
+              {{ access.status_text }}
+            </p>
+
+            <div class="account-access-meta">
+              {% if access.total_modules %}
+                <span>{{ access.total_modules }} lekcí</span>
+              {% endif %}
+              {% if access.duration_weeks %}
+                <span>{{ access.duration_weeks }} týdnů</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="account-access-action">
+            <a href="{% url 'courses:course_dashboard' access.course.slug %}" class="account-access-btn">
+              <span>{{ access.cta_label }}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="account-empty">Zatím nemáš žádné zakoupené kurzy.</p>
+    <div class="account-courses-panel account-courses-panel-empty">
+      <p class="account-empty">Zatím nemáte žádné zakoupené kurzy.</p>
+    </div>
   {% endif %}
-</div>
+
+  <p class="account-courses-footer-link">
+    Hledáte další kurzy? <a href="{% url 'payments:course_list' %}">Prohlédněte si nabídku</a>
+  </p>
+</section>
 {% endblock %}

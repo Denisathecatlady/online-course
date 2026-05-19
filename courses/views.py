@@ -10,9 +10,11 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.utils.timezone import now
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count, Min, Prefetch, Q
 
 import os
+from types import SimpleNamespace
 
 from .models import Course, Module, ModuleProgress, ModuleQuizProgress, CoursePlan
 from payments.models import CourseAccess
@@ -22,7 +24,36 @@ from payments.models import CourseAccess
 # ACCESS HELPER
 # ======================================
 
+def has_course_admin_access(user):
+    try:
+        profile_role = user.profile.role
+    except (AttributeError, ObjectDoesNotExist):
+        profile_role = None
+
+    return bool(
+        user
+        and user.is_authenticated
+        and (user.is_staff or user.is_superuser or profile_role == "admin")
+    )
+
+
+def get_admin_course_access():
+    return SimpleNamespace(
+        bypass_module_sequencing=True,
+        is_admin_access=True,
+        plan=None,
+        plan_id=None,
+    )
+
+
+def is_admin_course_access(course_access):
+    return bool(getattr(course_access, "is_admin_access", False))
+
+
 def require_course_access(user, course):
+    if has_course_admin_access(user):
+        return get_admin_course_access()
+
     access = CourseAccess.objects.filter(
         user=user,
         course=course,
@@ -341,6 +372,28 @@ def get_public_course_image_url(course):
         return course.image.url
     return static("img/shared/hero-dog.jpg")
 
+
+def get_course_listing_image_url(course, index):
+    image_path = f"img/courses/online_kurz_{index}.png"
+    static_file = settings.BASE_DIR / "courses" / "static" / image_path
+    if static_file.exists():
+        return static(image_path)
+    return get_public_course_image_url(course)
+
+
+def _format_czech_count(value, singular, paucal, plural):
+    if value % 100 in {11, 12, 13, 14}:
+        form = plural
+    else:
+        last_digit = value % 10
+        if last_digit == 1:
+            form = singular
+        elif last_digit in {2, 3, 4}:
+            form = paucal
+        else:
+            form = plural
+    return f"{value} {form}"
+
 @require_GET
 def home(request):
     featured_courses = list(
@@ -354,12 +407,39 @@ def home(request):
             Prefetch(
                 "plans",
                 queryset=CoursePlan.objects.filter(is_active=True).order_by("price"),
-            )
+            ),
+            "modules",
         )[:2]
     )
 
-    for course in featured_courses:
+    for index, course in enumerate(featured_courses, start=1):
         course.public_image_url = get_public_course_image_url(course)
+        course.listing_image_url = get_course_listing_image_url(course, index)
+        course.listing_description = (
+            course.public_intro
+            or course.about_text
+            or course.private_intro
+            or "Praktický online kurz zaměřený na klidnější soužití se psem."
+        )
+        active_plans = list(course.plans.all())
+        course.active_plan_count = len(active_plans)
+        course.access_days = min((plan.access_duration_days for plan in active_plans), default=None)
+        course.module_count = course.modules.count()
+        course.meta_access = (
+            _format_czech_count(course.access_days, "den", "dny", "dní")
+            if course.access_days
+            else None
+        )
+        course.meta_modules = (
+            _format_czech_count(course.module_count, "modul", "moduly", "modulů")
+            if course.module_count
+            else None
+        )
+        course.meta_variants = (
+            _format_czech_count(course.active_plan_count, "varianta", "varianty", "variant")
+            if course.active_plan_count
+            else None
+        )
 
     plans = (
         CoursePlan.objects
@@ -396,11 +476,11 @@ def about(request):
 
 
 def about_us(request):
-    return redirect("courses:cemu_se_venujeme")
+    return redirect("courses:trainings")
 
 
 def cemu_se_venujeme(request):
-    return render(request, "courses/cemu_se_venujeme.html")
+    return redirect("courses:trainings")
 
 
 def nase_filozofie(request):
@@ -412,7 +492,9 @@ def moje_vzdelani(request):
 
 
 def muj_pribeh(request):
-    return render(request, "courses/muj_pribeh.html")
+    return render(request, "courses/muj_pribeh.html", {
+        "hide_site_footer": True,
+    })
 
 
 def contact(request):
@@ -475,7 +557,7 @@ def contact(request):
         message = request.POST.get("message", "").strip()
 
         if not all([name, email, subject, message]):
-            messages.error(request, "Vyplň prosím všechna pole.")
+            messages.error(request, "Vyplňte prosím všechna pole.")
         else:
             recipient = "info@calmdog.cz"
             body = (
@@ -494,10 +576,10 @@ def contact(request):
                     reply_to=[email],
                 )
                 email_message.send(fail_silently=False)
-                messages.success(request, "Zprava byla odeslana.")
+                messages.success(request, "Zpráva byla odeslána.")
                 return redirect("courses:contact")
             except Exception:
-                messages.error(request, "Zpravu se nepodarilo odeslat. Zkus prosim e-mail nebo telefon.")
+                messages.error(request, "Zprávu se nepodařilo odeslat. Zkuste prosím e-mail nebo telefon.")
 
     return render(request, "courses/contact.html", {
         "contact_cards": contact_cards,
@@ -506,7 +588,15 @@ def contact(request):
 
 
 def trainings(request):
-    trainings_data = [
+    trainings_data = get_trainings_data()
+
+    return render(request, "courses/trainings.html", {
+        "trainings": trainings_data,
+    })
+
+
+def get_trainings_data():
+    return [
         {
             "title": "Individuální konzultace problémového chování psa",
             "summary": "Porozumění příčině problémového chování a návrh vhodného řešení na míru.",
@@ -587,10 +677,6 @@ def trainings(request):
         },
     ]
 
-    return render(request, "courses/trainings.html", {
-        "trainings": trainings_data,
-    })
-
 
 def gdpr(request):
     return render(request, "courses/gdpr.html")
@@ -662,11 +748,15 @@ def course_dashboard(request, slug):
                 .first()
             )
             module.locked_reason = (
-                f"Nejdřív dokonči modul {previous_module.order}."
+                f"Nejdříve dokončete modul {previous_module.order}."
                 if previous_module else "Modul je zatím zamčený."
             )
-        elif has_module_sequence_bypass(course_access) and module.requires_quiz_flow:
-            module.locked_reason = "Máš zachované odemčení z původního průchodu kurzem. Testy si můžeš doplnit postupně."
+        elif (
+            has_module_sequence_bypass(course_access)
+            and not is_admin_course_access(course_access)
+            and module.requires_quiz_flow
+        ):
+            module.locked_reason = "Máte zachované odemčení z původního průchodu kurzem. Testy si můžete doplnit postupně."
         elif module.requires_quiz_flow:
             module.locked_reason = f"{module.quiz_passed_steps} / {module.quiz_total_steps} testů splněno"
         else:
@@ -674,18 +764,32 @@ def course_dashboard(request, slug):
 
     total_modules = len(modules)
     completed_modules = sum(1 for module in modules if module.is_completed)
+    current_module = next(
+        (module for module in modules if module.is_unlocked and not module.is_completed),
+        None,
+    )
+    if current_module is None and modules:
+        current_module = modules[-1]
 
     progress_percent = (
         int((completed_modules / total_modules) * 100)
         if total_modules else 0
     )
+    duration_weeks = None
+    if course_access.plan_id and course_access.plan and course_access.plan.access_duration_days:
+        duration_weeks = max(1, course_access.plan.access_duration_days // 7)
 
     return render(request, "courses/course_dashboard.html", {
         "course": course,
+        "course_access": course_access,
         "modules": modules,
         "completed_modules": completed_modules,
         "total_modules": total_modules,
         "progress_percent": progress_percent,
+        "current_module": current_module,
+        "duration_weeks": duration_weeks,
+        "hide_site_navbar": True,
+        "hide_site_footer": True,
     })
 
 
@@ -773,6 +877,8 @@ def module_detail(request, course_slug, slug):
         "quiz_total_steps": learning_flow["quiz_total_steps"],
         "quiz_passed_steps": learning_flow["quiz_passed_steps"],
         "has_module_sequence_bypass": sequence_bypass,
+        "hide_site_navbar": True,
+        "hide_site_footer": True,
     })
 
 
@@ -798,17 +904,16 @@ def download_module_pdf(request, course_slug, slug):
     if not module.pdf_file:
         raise Http404("PDF není k dispozici.")
 
-    pdf_path = module.pdf_file.path
-
-    if not os.path.exists(pdf_path):
+    try:
+        file_name = module.pdf_file.name.split("/")[-1]
+        return FileResponse(
+            module.pdf_file.open("rb"),
+            as_attachment=True,
+            filename=file_name,
+            content_type="application/pdf",
+        )
+    except (FileNotFoundError, OSError):
         raise Http404("Soubor nebyl nalezen.")
-
-    return FileResponse(
-        open(pdf_path, "rb"),
-        as_attachment=True,
-        filename=os.path.basename(pdf_path),
-        content_type="application/pdf",
-    )
 
 
 # ======================================
@@ -901,7 +1006,7 @@ def submit_module_quiz(request, course_slug, slug, step):
         raise Http404("Test pro tento krok neexistuje.")
 
     if not selected_step["is_unlocked"]:
-        messages.error(request, "Nejdřív dokonči test z předchozí části modulu.")
+        messages.error(request, "Nejdříve dokončete test z předchozí části modulu.")
         return redirect(
             f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#step-{step}"
         )
@@ -909,7 +1014,7 @@ def submit_module_quiz(request, course_slug, slug, step):
     answers_complete, is_correct = evaluate_step_quiz(selected_step["quiz"], request.POST)
 
     if not answers_complete:
-        messages.error(request, "Odpověz prosím na všechny otázky v testu.")
+        messages.error(request, "Odpovězte prosím na všechny otázky v testu.")
         return redirect(
             f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#step-{step}"
         )
@@ -937,7 +1042,7 @@ def submit_module_quiz(request, course_slug, slug, step):
         if synced_progress and synced_progress.completed:
             messages.success(
                 request,
-                "Test je splněný. Máš hotový celý modul a další modul se právě odemkl.",
+                "Test je splněný. Máte hotový celý modul a další modul se právě odemkl.",
             )
         else:
             next_step = next(
@@ -957,10 +1062,10 @@ def submit_module_quiz(request, course_slug, slug, step):
     else:
         if quiz_progress.passed:
             quiz_progress.save(update_fields=["attempts_count"])
-            messages.success(request, "Tento test už máš splněný.")
+            messages.success(request, "Tento test už máte splněný.")
         else:
             quiz_progress.save(update_fields=["attempts_count"])
-            messages.error(request, "Tentokrát to nevyšlo. Zkus test znovu, počet pokusů není omezený.")
+            messages.error(request, "Tentokrát to nevyšlo. Zkuste test znovu, počet pokusů není omezený.")
 
     return redirect(
         f"{reverse('courses:module_detail', kwargs={'course_slug': course.slug, 'slug': module.slug})}#step-{step}"

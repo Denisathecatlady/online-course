@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rezervace přijata | CalmDog Hotel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hotel/css/hotel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 text-center">
+            <div class="reservation-success-icon mb-4">✅</div>
+            <h1 class="section-heading">Rezervace přijata!</h1>
+            <p class="lead text-muted">
+                Děkujeme za Vaši poptávku. Potvrzení jsme odeslali na Váš e-mail.
+            </p>
+            <p class="text-muted">
+                Co nejdříve Vás kontaktujeme a rezervaci potvrdíme nebo se domluvíme
+                na podrobnostech. Pokud máte jakékoliv dotazy, napište nám na
+                <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>
+                nebo zavolejte na
+                <a href="tel:+420608163824">+420 608 163 824</a>.
+            </p>
+            <div class="mt-5 d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{% url 'hotel:home' %}" class="btn btn-outline-sage">
+                    Zpět na Hotel
+                </a>
+                <a href="{% url 'courses:home' %}" class="btn btn-sage">
+                    Zpět na hlavní stránku
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

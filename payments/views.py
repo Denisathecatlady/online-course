@@ -1,16 +1,22 @@
 import os
 import stripe
 import logging
-from payments.services.packeta import create_packeta_shipment
+from decimal import Decimal, ROUND_HALF_UP
+from payments.services.packeta import create_packet, get_packet_label_pdf, PacketaError
 from django.utils import timezone
 
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from django.db import transaction
 
 from shop.models import Product, ProductVariant
@@ -22,6 +28,8 @@ from payments.services.invoice import generate_invoice_pdf, assign_invoice_numbe
 
 
 logger = logging.getLogger(__name__)
+
+BUNDLE_DISCOUNT_RATE = Decimal("0.10")
 
 
 PUBLIC_COURSE_IMAGE_PATHS = {
@@ -37,6 +45,28 @@ def get_public_course_image_url(course):
     if course.image:
         return course.image.url
     return static("img/shared/hero-dog.jpg")
+
+
+def get_course_listing_image_url(course, index):
+    image_path = f"img/courses/online_kurz_{index}.png"
+    static_file = settings.BASE_DIR / "courses" / "static" / image_path
+    if static_file.exists():
+        return static(image_path)
+    return get_public_course_image_url(course)
+
+
+def _format_czech_count(value, singular, paucal, plural):
+    if value % 100 in {11, 12, 13, 14}:
+        form = plural
+    else:
+        last_digit = value % 10
+        if last_digit == 1:
+            form = singular
+        elif last_digit in {2, 3, 4}:
+            form = paucal
+        else:
+            form = plural
+    return f"{value} {form}"
 
 
 COURSE_MARKETING_CONTENT = {
@@ -196,7 +226,7 @@ def build_course_marketing_content(course, plans):
             },
             {
                 "value": f"{plan_count} varianty",
-                "label": "samostudium nebo mentoring podle toho, co potřebuješ",
+                "label": "samostudium nebo mentoring podle toho, co potřebujete",
             },
             {
                 "value": f"{access_days} dní",
@@ -244,19 +274,28 @@ def build_site_url(path):
     return f"{base_url}{path}"
 
 
-def add_product_variant_to_order(cart, variant, quantity):
+def get_bundle_item_price(price):
+    return (price * (Decimal("1.00") - BUNDLE_DISCOUNT_RATE)).quantize(
+        Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
+
+
+def add_product_variant_to_order(cart, variant, quantity, price_at_purchase=None):
     if variant.stock <= 0:
         raise ValueError("Produkt není skladem.")
 
     if quantity > variant.stock:
         raise ValueError("Není dostatek kusů skladem.")
 
+    item_price = price_at_purchase if price_at_purchase is not None else variant.price
+
     order_item, created = OrderItem.objects.get_or_create(
         order=cart,
         product_variant=variant,
         defaults={
             "quantity": quantity,
-            "price_at_purchase": variant.price,
+            "price_at_purchase": item_price,
         }
     )
 
@@ -266,8 +305,14 @@ def add_product_variant_to_order(cart, variant, quantity):
         if new_quantity > variant.stock:
             raise ValueError("Překročen dostupný sklad.")
 
+        current_total = order_item.price_at_purchase * order_item.quantity
+        added_total = item_price * quantity
         order_item.quantity = new_quantity
-        order_item.save(update_fields=["quantity"])
+        order_item.price_at_purchase = ((current_total + added_total) / new_quantity).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP,
+        )
+        order_item.save(update_fields=["quantity", "price_at_purchase"])
 
 
 # =====================================================
@@ -351,8 +396,18 @@ def add_bundle_to_cart(request, variant_id):
 
     try:
         with transaction.atomic():
-            add_product_variant_to_order(cart, primary_variant, quantity)
-            add_product_variant_to_order(cart, bundle_variant, quantity)
+            add_product_variant_to_order(
+                cart,
+                primary_variant,
+                quantity,
+                price_at_purchase=get_bundle_item_price(primary_variant.price),
+            )
+            add_product_variant_to_order(
+                cart,
+                bundle_variant,
+                quantity,
+                price_at_purchase=get_bundle_item_price(bundle_variant.price),
+            )
     except ValueError as exc:
         return HttpResponseBadRequest(str(exc))
 
@@ -635,7 +690,7 @@ def stripe_webhook(request):
         and not order.packeta_packet_id
     ):
         try:
-            shipment = create_packeta_shipment(order)
+            shipment = create_packet(order)
 
             order.packeta_packet_id = shipment["packet_id"]
             order.packeta_tracking_number = shipment["tracking_number"]
@@ -644,11 +699,38 @@ def stripe_webhook(request):
             order.save(update_fields=[
                 "packeta_packet_id",
                 "packeta_tracking_number",
-                "packeta_created_at"
+                "packeta_created_at",
             ])
 
+            # ── stažení štítku jako PDF ─────────────────────
+            try:
+                label_pdf_bytes = get_packet_label_pdf(order.packeta_packet_id)
+                label_filename = f"label_packeta_{order.id}.pdf"
+                from django.core.files.base import ContentFile
+                order.packeta_label_pdf.save(
+                    label_filename,
+                    ContentFile(label_pdf_bytes),
+                    save=True,
+                )
+                logger.info(
+                    f"[Packeta] Štítek uložen pro objednávku #{order.id}"
+                )
+            except Exception as label_err:
+                logger.error(
+                    f"[Packeta] Nepodařilo se stáhnout štítek pro objednávku "
+                    f"#{order.id}: {label_err}"
+                )
+
+        except PacketaError as e:
+            logger.error(
+                f"[Packeta] API chyba při vytváření zásilky "
+                f"(objednávka #{order.id}): [{e.code}] {e.message}"
+            )
         except Exception as e:
-            logger.error(f"Packeta creation failed for order {order.id}: {e}")
+            logger.error(
+                f"[Packeta] Neočekávaná chyba při vytváření zásilky "
+                f"(objednávka #{order.id}): {e}"
+            )
 
     # ======================================
     # 4️⃣ VYTVOŘENÍ / NAPOJENÍ UŽIVATELE
@@ -686,7 +768,81 @@ def stripe_webhook(request):
                 },
             )
 
+    # ======================================
+    # 6️⃣ EMAIL ZÁKAZNÍKOVI
+    # ======================================
+
+    _send_order_confirmation_email(order, user, created, request)
+
     return HttpResponse(status=200)
+
+
+def _send_order_confirmation_email(order, user, user_was_created, request):
+    """
+    Pošle zákazníkovi potvrzovací email s fakturou a (pokud je nový uživatel)
+    odkazem pro nastavení hesla.
+    """
+    try:
+        # --- odkaz na nastavení hesla (jen nový uživatel) ---
+        reset_section = ""
+        if user_was_created:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            reset_url = request.build_absolute_uri(
+                reverse("password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+            )
+            reset_section = (
+                f"\nPro nastavení hesla a přístup ke kurzu klikněte zde:\n{reset_url}\n"
+            )
+
+        # --- sestavení položek ---
+        items_text = ""
+        for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+            if item.course_plan:
+                items_text += f"  • Online kurz: {item.course_plan.course.title} – varianta {item.course_plan.name} ({item.price_at_purchase:.0f} Kč)\n"
+            elif item.product_variant:
+                items_text += f"  • {item.product_variant.product.name} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+
+        if order.shipping_price:
+            items_text += f"  • Doprava – {order.get_shipping_method_display()}: {order.shipping_price:.0f} Kč\n"
+
+        body = f"""Dobrý den, {order.first_name} {order.last_name},
+
+děkujeme za Váš nákup v CalmDog!
+
+Přehled objednávky č. {order.id}:
+{items_text}
+Celkem: {order.total_price:.0f} Kč
+{reset_section}
+V příloze najdete fakturu č. {order.invoice_number}.
+
+S pozdravem,
+CalmDog
+info@calmdog.cz
++420 608 163 824
+"""
+
+        email = EmailMessage(
+            subject=f"CalmDog – potvrzení objednávky č. {order.id}",
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.buyer_email],
+        )
+
+        # --- faktura v příloze (kompatibilní s R2 i lokálním úložištěm) ---
+        if order.invoice_pdf:
+            order.invoice_pdf.open("rb")
+            email.attach(
+                f"faktura_{order.invoice_number}.pdf",
+                order.invoice_pdf.read(),
+                "application/pdf",
+            )
+            order.invoice_pdf.close()
+
+        email.send()
+
+    except Exception as e:
+        logger.error(f"Failed to send order confirmation email for order {order.id}: {e}")
 # =====================================================
 # ODEBRÁNÍ Z KOŠÍKU
 # =====================================================
@@ -708,10 +864,37 @@ def remove_from_cart(request, item_id):
 # =====================================================
 
 def course_list(request):
-    courses = list(Course.objects.all())
+    courses = list(Course.objects.all().prefetch_related("plans", "modules"))
 
-    for course in courses:
+    for index, course in enumerate(courses, start=1):
+        active_plans = [plan for plan in course.plans.all() if plan.is_active]
         course.public_image_url = get_public_course_image_url(course)
+        course.listing_image_url = get_course_listing_image_url(course, index)
+        course.listing_description = (
+            course.public_intro
+            or course.about_text
+            or course.private_intro
+            or "Praktický online kurz zaměřený na klidnější soužití se psem."
+        )
+        course.active_plan_count = len(active_plans)
+        course.min_price = min((plan.price for plan in active_plans), default=None)
+        course.access_days = min((plan.access_duration_days for plan in active_plans), default=None)
+        course.module_count = len(course.modules.all())
+        course.meta_access = (
+            _format_czech_count(course.access_days, "den", "dny", "dní")
+            if course.access_days
+            else None
+        )
+        course.meta_modules = (
+            _format_czech_count(course.module_count, "modul", "moduly", "modulů")
+            if course.module_count
+            else None
+        )
+        course.meta_variants = (
+            _format_czech_count(course.active_plan_count, "varianta", "varianty", "variant")
+            if course.active_plan_count
+            else None
+        )
 
     return render(request, "payments/course_list.html", {
         "courses": courses
@@ -766,7 +949,7 @@ def shipping(request):
         if method == Order.ShippingMethod.ZASILKOVNA and not packeta_point_id:
             return render(request, "payments/shipping.html", {
                 "order": cart,
-                "error": "Pro Zásilkovnu vyber výdejní místo.",
+                "error": "Pro Zásilkovnu vyberte výdejní místo.",
                 "selected_method": method,
                 "packeta_point_id": packeta_point_id,
                 "packeta_point_name": packeta_point_name,

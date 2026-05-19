@@ -1,114 +1,152 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}story-design-body{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about-us.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="about-page py-6">
-  <div class="container">
-    <div class="about-shell">
-      <section class="about-section about-banner-card card card-soft border-0 reveal">
-        <div class="about-banner-media">
-          <img src="{% static 'img/about/foto_pribeh-3_banner.webp' %}" alt="Můj příběh CalmDog" class="about-banner-image">
+<article class="story-design-page">
+  <section class="story-design-hero">
+    <img src="{% static 'img/muj_pribeh_1.png' %}" alt="Amy zblízka" class="story-design-hero-image">
+    <div class="story-design-hero-shade"></div>
+
+    <div class="story-design-hero-inner">
+      <p class="story-design-topline"><span></span>CalmDog - Můj příběh</p>
+
+      <div class="story-design-hero-content">
+        <div class="story-design-hero-heading">
+          <p class="story-design-kicker story-design-kicker--orange">Příběh, ve kterém Amy změnila všechno</p>
+          <h1>
+            Můj příběh.
+            <span>Příběh Amy.</span>
+          </h1>
         </div>
-        <div class="card-body p-4 p-md-5 story-hero-body">
-          <div class="story-kicker">Osobní cesta ke CalmDog</div>
-          <p class="about-eyebrow mb-2">Můj příběh</p>
-          <h1 class="about-title mb-3">Příběh, ve kterém Amy změnila všechno</h1>
-          <blockquote class="about-hero-quote mb-0">
-            „CalmDog nevznikl jako podnikatelský nápad. Vznikl z potřeby porozumět psovi,
-            který volal o pomoc jinak, než jsem tehdy uměla číst.“
-          </blockquote>
-        </div>
-      </section>
 
-      <section class="story-timeline reveal">
-        <article class="story-chapter story-chapter-left">
-          <div class="story-marker">01</div>
-          <div class="story-card">
-            <div class="story-card-copy">
-              <p class="about-eyebrow mb-2">Jak to začalo</p>
-              <h2 class="about-subtitle mb-3">Amy a první velké vystřízlivění</h2>
-              <p class="about-copy">
-                Na začátku byla krásná myšlenka: dát domov pejskovi z útulku. V chladném listopadu
-                jsem se skrze mříže dívala na Amy a ještě netušila, jak moc nám vstoupí do života.
-              </p>
-              <p class="about-copy">
-                Ještě před jejím příchodem domů jsem si načetla vše, co pro mě tehdy bylo dostupné.
-                Chtěla jsem být připravená. Jenže krátce po příjezdu přišlo první pokousání, pak další,
-                a do toho ničení domu, strach při venčení i při návratu domů.
-              </p>
-              <p class="about-copy mb-0">
-                Bylo jasné, že potřebujeme pomoc. Jen ještě nebylo jasné, jaká pomoc je pro Amy skutečně správná.
-              </p>
-            </div>
-            <div class="story-card-media">
-              <img src="{% static 'img/about/foto_pribeh-1.webp' %}" alt="Začátek příběhu s Amy" class="about-side-image">
-            </div>
-          </div>
-        </article>
+        <p class="story-design-hero-copy">
+          CalmDog nevznikl jako podnikatelský nápad. Vznikl z potřeby porozumět psovi,
+          který volal o pomoc jinak, než jsem tehdy uměla číst.
+        </p>
+      </div>
 
-        <article class="story-chapter story-chapter-right">
-          <div class="story-marker">02</div>
-          <div class="story-card">
-            <div class="story-card-media">
-              <img src="{% static 'img/about/foto_pribeh-2.webp' %}" alt="Hledání cesty ke psovi bez nátlaku" class="about-side-image">
-            </div>
-            <div class="story-card-copy">
-              <p class="about-eyebrow mb-2">Hledání správné cesty</p>
-              <h2 class="about-subtitle mb-3">Od dominance k opravdovému porozumění</h2>
-              <p class="about-copy">
-                Dostávala jsem rady o dominanci, alfě a tom, že musím Amy ukázat, kdo je pán. Přesto
-                jsem cítila, že přede mnou nestojí zlý pes, ale nešťastná psí duše, která potřebuje bezpečí a pomoc.
-              </p>
-              <p class="about-copy">
-                Mojí jasnou volbou byl pozitivní přístup bez trestů a nátlaku. Jenže i to, co se tvářilo
-                jako pozitivní trénink, Amy někdy vnímala jako tlak. Tehdy jsem pochopila, že nestačí jen
-                „nepoužívat tresty“, ale že je potřeba hledat opravdu citlivou, respektující cestu.
-              </p>
-              <p class="about-copy mb-0">
-                To mě přivedlo ke studiu psí komunikace, konejšivých signálů a přístupu, který stojí na welfare psa.
-              </p>
-            </div>
-          </div>
-        </article>
+      <div class="story-design-scroll" aria-hidden="true"><span></span>Scroll</div>
+    </div>
+  </section>
 
-        <article class="story-chapter story-chapter-left">
-          <div class="story-marker">03</div>
-          <div class="story-card story-card-text">
-            <div class="story-card-copy">
-              <p class="about-eyebrow mb-2">Zlomový moment</p>
-              <h2 class="about-subtitle mb-3">Skandinávský přístup, který změnil můj pohled</h2>
-              <p class="about-copy">
-                Zásadní obrat přišel ve chvíli, kdy jsem poznala Turid Rugaas, autorku knihy
-                <em>Konejšivé signály</em>, a následně měla možnost studovat v Norsku školu postavenou
-                právě na jejím pohledu na soužití člověka se psem.
-              </p>
-              <p class="about-copy">
-                Tento přístup mě naučil vidět Amy jako jemnou a citlivou bytost plnou emocí.
-                Naučil mě rozpoznávat její potřeby, chápat její komunikaci a dívat se za samotný projev chování.
-              </p>
-              <p class="about-copy mb-0">
-                Amy už dávno není tou přetíženou a horkou hlavou, kterou bývala. A právě díky ní vznikl CalmDog:
-                prostor pro hlubší porozumění psům, jejich komunikaci a vztahu, který stojí na důvěře.
-              </p>
-            </div>
-          </div>
-        </article>
-      </section>
+  <section class="story-design-section story-design-section--intro">
+    <div class="story-design-split story-design-split--first">
+      <div class="story-design-copy-block">
+        <div class="story-design-number">01</div>
+        <p class="story-design-kicker">Jak to začalo</p>
+        <h2>Amy a první velké <span>vystřízlivění</span></h2>
+        <p>
+          Na začátku byla krásná myšlenka: dát domov pejskovi z útulku. V chladném listopadu
+          jsem se skrze mříže dívala na Amy a ještě netušila, jak moc nám vstoupí do života.
+        </p>
+        <p>
+          Ještě před jejím příchodem domů jsem si načetla vše, co pro mě tehdy bylo dostupné.
+          Chtěla jsem být připravená. Jenže krátce po příjezdu přišlo první pokousání, pak další,
+          a do toho ničení domu, strach při venčení i při návratu domů.
+        </p>
+        <p>
+          Bylo jasné, že potřebujeme pomoc. Jen ještě nebylo jasné, jaká pomoc je pro Amy skutečně správná.
+        </p>
+      </div>
 
-      <section class="about-contrast-box story-final-box reveal">
-        <p class="about-eyebrow mb-2">Proč CalmDog existuje</p>
-        <h2 class="about-contrast-title">Pomáhat lidem vidět za chování skutečný příběh psa.</h2>
-        <p class="about-contrast-copy mb-0">
+      <figure class="story-design-photo story-design-photo--tall">
+        <img src="{% static 'img/muj_pribeh_2.png' %}" alt="Cesta podzimním lesem">
+      </figure>
+    </div>
+  </section>
+
+  <section class="story-design-section">
+    <div class="story-design-split story-design-split--second">
+      <figure class="story-design-photo story-design-photo--fjord">
+        <img src="{% static 'img/muj_pribeh_3.png' %}" alt="Norská krajina a fjord">
+        <figcaption><span></span>Hledání cesty ke psovi bez nátlaku</figcaption>
+      </figure>
+
+      <div class="story-design-copy-block story-design-copy-block--right">
+        <div class="story-design-number">02</div>
+        <p class="story-design-kicker">Hledání správné cesty</p>
+        <h2>Od dominance k opravdovému <span>porozumění</span></h2>
+        <p>
+          Dostávala jsem rady o dominanci, alfě a tom, že musím Amy ukázat, kdo je pán.
+          Přesto jsem cítila, že přede mnou nestojí zlý pes, ale nešťastná psí duše,
+          která potřebuje bezpečí a pomoc.
+        </p>
+        <p>
+          Mojí jasnou volbou byl pozitivní přístup bez trestů a nátlaku. Jenže i to, co se tvářilo
+          jako pozitivní trénink, Amy někdy vnímala jako tlak. Tehdy jsem pochopila, že nestačí jen
+          „nepoužívat tresty“, ale že je potřeba hledat opravdu citlivou, respektující cestu.
+        </p>
+        <blockquote>
+          To mě přivedlo ke studiu psí komunikace, konejšivých signálů a přístupu,
+          který stojí na welfare psa.
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-design-wide-image">
+    <img src="{% static 'img/muj_pribeh_4.png' %}" alt="Andrea se psem při západu slunce">
+    <div class="story-design-wide-shade"></div>
+    <div class="story-design-wide-content">
+      <p class="story-design-kicker story-design-kicker--orange">03 - Zlomový moment</p>
+      <h2>Skandinávský přístup,<br>který změnil <span>můj pohled.</span></h2>
+    </div>
+  </section>
+
+  <section class="story-design-dark">
+    <div class="story-design-dark-grid">
+      <div class="story-design-dark-copy">
+        <p>
+          Zásadní obrat přišel ve chvíli, kdy jsem poznala <strong>Turid Rugaas</strong>, autorku
+          knihy Konejšivé signály, a následně měla možnost studovat v Norsku školu postavenou
+          právě na jejím pohledu na soužití člověka se psem.
+        </p>
+        <p>
+          Tento přístup mě naučil vidět Amy jako jemnou a citlivou bytost plnou emocí.
+          Naučil mě rozpoznávat její potřeby, chápat její komunikaci a dívat se za samotný projev chování.
+        </p>
+      </div>
+
+      <aside class="story-design-dark-quote">
+        <blockquote>„Amy už dávno není tou přetíženou a horkou hlavou, kterou bývala.“</blockquote>
+        <p>
+          A právě díky ní vznikl CalmDog: prostor pro hlubší porozumění psům,
+          jejich komunikaci a vztahu, který stojí na důvěře.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="story-design-final">
+    <div class="story-design-final-grid">
+      <div class="story-design-final-title">
+        <p class="story-design-kicker">Proč CalmDog existuje</p>
+        <h2>Pomáhat lidem vidět za chování <span>skutečný příběh psa.</span></h2>
+      </div>
+
+      <div class="story-design-final-copy">
+        <p>
           Můj příběh mě dovedl k přesvědčení, že pes nepotřebuje být zlomený, ale pochopený.
           CalmDog je proto místem, kde hledáme příčiny, čteme komunikaci a podporujeme soužití,
           které je bezpečné, citlivé a dlouhodobě funkční.
         </p>
-      </section>
+        <p class="story-design-signature"><span></span>Ing. Andrea Zoulová</p>
+      </div>
     </div>
-  </div>
-</section>
+
+    <div class="story-design-final-footer">
+      <p><span></span>Ing. Andrea Zoulová - CalmDog</p>
+      <nav aria-label="Navazující stránky">
+        <a href="{% url 'courses:moje_vzdelani' %}">Moje vzdělání <span aria-hidden="true">→</span></a>
+        <a href="{% url 'courses:nase_filozofie' %}">Naše filozofie <span aria-hidden="true">→</span></a>
+      </nav>
+    </div>
+  </section>
+</article>
 {% endblock %}

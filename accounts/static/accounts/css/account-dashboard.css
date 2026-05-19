@@ -17,6 +17,12 @@
     grid-template-columns: minmax(0, 1fr);
 }
 
+.account-shell-no-sidebar .account-content {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
 .account-sidebar-card,
 .account-content-card {
     border-radius: 28px;
@@ -209,6 +215,252 @@
     color: var(--text-dark);
 }
 
+.account-courses-page {
+    position: relative;
+    padding: 0.25rem 0 1.2rem;
+}
+
+.account-courses-page::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0.2rem;
+    width: 18rem;
+    height: 5.5rem;
+    transform: translateX(-50%);
+    border-radius: 999px 999px 0 0;
+    background:
+        radial-gradient(circle at 12% 100%, rgba(239, 236, 228, 0.65) 0, rgba(239, 236, 228, 0.65) 1.45rem, transparent 1.45rem),
+        radial-gradient(circle at 35% 100%, rgba(239, 236, 228, 0.65) 0, rgba(239, 236, 228, 0.65) 1.9rem, transparent 1.9rem),
+        radial-gradient(circle at 70% 100%, rgba(239, 236, 228, 0.65) 0, rgba(239, 236, 228, 0.65) 2.1rem, transparent 2.1rem),
+        radial-gradient(circle at 92% 100%, rgba(239, 236, 228, 0.65) 0, rgba(239, 236, 228, 0.65) 1.65rem, transparent 1.65rem);
+    pointer-events: none;
+}
+
+.account-courses-head,
+.account-courses-panel,
+.account-courses-footer-link {
+    position: relative;
+    z-index: 1;
+}
+
+.account-courses-head {
+    margin-bottom: 2rem;
+}
+
+.account-portal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    color: #5f766b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.account-portal-back::before {
+    content: "‹";
+    font-size: 1.15rem;
+}
+
+.account-portal-back:hover {
+    color: #4b6259;
+}
+
+.account-courses-title {
+    margin: 0 0 0.55rem;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.65rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.account-courses-copy {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    line-height: 1.55;
+}
+
+.account-courses-panel {
+    overflow: hidden;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(95, 118, 107, 0.1);
+    box-shadow: 0 22px 60px rgba(35, 46, 41, 0.08);
+}
+
+.account-courses-panel-empty {
+    padding: 1.5rem;
+}
+
+.account-access-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.8rem;
+    align-items: center;
+    padding: 1.9rem 2rem;
+    border-bottom: 1px solid rgba(95, 118, 107, 0.1);
+}
+
+.account-access-row:last-child {
+    border-bottom: 0;
+}
+
+.account-access-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.account-access-title-row h2 {
+    margin: 0;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.8rem, 2.8vw, 2.35rem);
+    font-weight: 600;
+    line-height: 1.02;
+}
+
+.account-access-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.8rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(240, 154, 92, 0.12);
+    color: #ef9d58;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.account-access-progress-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.45rem;
+    color: #5f6a68;
+    font-size: 0.98rem;
+}
+
+.account-access-progress-row strong {
+    color: #5f766b;
+    font-weight: 600;
+}
+
+.account-access-progress-bar {
+    height: 6px;
+    margin-bottom: 0.55rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e6e8e7;
+}
+
+.account-access-progress-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #6a857c;
+}
+
+.account-access-variant {
+    margin: 0 0 0.55rem;
+    color: #5f6a68;
+    font-size: 1rem;
+}
+
+.account-access-status {
+    position: relative;
+    margin: 0 0 0.65rem;
+    padding-left: 1.15rem;
+    color: #5f6a68;
+    font-size: 0.98rem;
+}
+
+.account-access-status::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.45rem;
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 50%;
+    background: #6a857c;
+}
+
+.account-access-status.is-idle::before {
+    background: #ef9d58;
+}
+
+.account-access-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: #8a9391;
+    font-size: 0.95rem;
+}
+
+.account-access-meta span {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.account-access-meta span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.42rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+}
+
+.account-access-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-width: 9rem;
+    min-height: 2.9rem;
+    padding: 0.8rem 1.45rem;
+    border-radius: 999px;
+    background: #6a857c;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.account-access-btn:hover {
+    transform: translateY(-1px);
+    background: #5f766b;
+    color: #ffffff;
+}
+
+.account-courses-footer-link {
+    margin: 1.8rem 0 0;
+    color: #8a9391;
+    font-size: 0.98rem;
+    text-align: center;
+}
+
+.account-courses-footer-link a {
+    color: #5f766b;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.account-courses-footer-link a:hover {
+    color: #4c645c;
+}
+
 @media (max-width: 991px) {
     .account-shell {
         grid-template-columns: 1fr;
@@ -221,6 +473,11 @@
     .account-course-grid {
         grid-template-columns: 1fr;
     }
+
+    .account-access-row {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+    }
 }
 
 @media (max-width: 640px) {
@@ -232,5 +489,26 @@
     .account-list-item {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .account-courses-title {
+        font-size: clamp(2.2rem, 12vw, 3rem);
+    }
+
+    .account-access-row {
+        padding: 1.4rem 1.2rem;
+        gap: 1rem;
+    }
+
+    .account-access-title-row h2 {
+        font-size: clamp(1.55rem, 8vw, 2rem);
+    }
+
+    .account-access-progress-row {
+        font-size: 0.92rem;
+    }
+
+    .account-access-btn {
+        width: 100%;
     }
 }

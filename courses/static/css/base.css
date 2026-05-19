@@ -541,6 +541,10 @@ FOOTER
     text-decoration: none;
 }
 
+.site-footer-contact a {
+    color: #ffffff;
+}
+
 .site-footer-links a:hover,
 .site-footer-contact a:hover {
     color: #ffffff;

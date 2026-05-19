@@ -14,23 +14,28 @@ class PublicPagesTests(TestCase):
         response = self.client.get(reverse("courses:trainings"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Praktické tréninky pro klidnější soužití se psem")
+        self.assertContains(response, "Klidnější komunikace")
+        self.assertContains(response, "Formy spolupráce")
         self.assertContains(response, "Individuální konzultace problémového chování psa")
 
     def test_about_us_page_renders(self):
         response = self.client.get(reverse("courses:about_us"))
 
-        self.assertRedirects(response, reverse("courses:cemu_se_venujeme"))
+        self.assertRedirects(response, reverse("courses:trainings"))
 
     def test_about_subpages_render(self):
         for route_name in [
-            "courses:cemu_se_venujeme",
             "courses:nase_filozofie",
             "courses:moje_vzdelani",
             "courses:muj_pribeh",
         ]:
             response = self.client.get(reverse(route_name))
             self.assertEqual(response.status_code, 200)
+
+    def test_cemu_se_venujeme_redirects_to_trainings(self):
+        response = self.client.get(reverse("courses:cemu_se_venujeme"))
+
+        self.assertRedirects(response, reverse("courses:trainings"))
 
 
 class ModuleQuizFlowTests(TestCase):
@@ -102,7 +107,7 @@ class ModuleQuizFlowTests(TestCase):
                 follow=True,
             )
 
-        self.assertContains(response, "Nejdřív dokonči test z předchozí části modulu.")
+        self.assertContains(response, "Nejdříve dokončete test z předchozí části modulu.")
         self.assertFalse(
             ModuleQuizProgress.objects.filter(
                 user=self.user,
@@ -161,3 +166,61 @@ class ModuleQuizFlowTests(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+
+    def test_staff_user_can_open_all_modules_without_course_access(self):
+        self.user.is_staff = True
+        self.user.save(update_fields=["is_staff"])
+
+        response = self.client.get(
+            reverse("courses:course_dashboard", kwargs={"slug": self.course.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(all(module.is_unlocked for module in response.context["modules"]))
+
+        module_response = self.client.get(
+            reverse(
+                "courses:module_detail",
+                kwargs={"course_slug": self.course.slug, "slug": self.module_two.slug},
+            )
+        )
+
+        self.assertEqual(module_response.status_code, 200)
+
+    def test_admin_role_can_open_all_modules_without_course_access(self):
+        self.user.profile.role = "admin"
+        self.user.profile.save()
+
+        response = self.client.get(
+            reverse("courses:course_dashboard", kwargs={"slug": self.course.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(all(module.is_unlocked for module in response.context["modules"]))
+
+    def test_staff_user_can_submit_later_step_quiz_without_previous_step(self):
+        self.user.is_staff = True
+        self.user.save(update_fields=["is_staff"])
+
+        response = self.client.post(
+            reverse(
+                "courses:submit_module_quiz",
+                kwargs={
+                    "course_slug": self.course.slug,
+                    "slug": self.module_one.slug,
+                    "step": 2,
+                },
+            ),
+            data=self._quiz_payload(2),
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            ModuleQuizProgress.objects.filter(
+                user=self.user,
+                module=self.module_one,
+                step=2,
+                passed=True,
+            ).exists()
+        )

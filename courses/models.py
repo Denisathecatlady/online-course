@@ -36,6 +36,11 @@ class Course(models.Model):
 
     is_active = models.BooleanField(default=True)
 
+    coming_soon = models.BooleanField(
+        default=False,
+        help_text="Kurz se připravuje – zobrazí se informace a tlačítko Přidat do košíku bude skryté.",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

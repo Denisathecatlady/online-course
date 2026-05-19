@@ -24,6 +24,9 @@ urlpatterns = [
         include(("payments.urls", "payments"), namespace="payments")
     ),
 
+    # Hotel pro psy a kočky
+    path("hotel/", include(("hotel.urls", "hotel"), namespace="hotel")),
+
     # Shop (vodítka)
     path("voditka/", include("shop.urls")),
 

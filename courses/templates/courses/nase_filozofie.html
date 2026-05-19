@@ -1,95 +1,301 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}Naše filozofie | CalmDog{% endblock %}
+{% block body_class %}philosophy-page-body{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about-us.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="about-page py-6">
+<section class="about-page philosophy-page py-6">
   <div class="container">
-    <div class="about-shell">
-      <section class="about-section about-banner-card card card-soft border-0 reveal">
-        <div class="about-banner-media">
-          <img src="{% static 'img/about/folozofie_banner.png' %}" alt="Naše filozofie tréninku" class="about-banner-image">
+    <div class="about-shell philosophy-shell">
+      <section class="philosophy-hero reveal">
+        <div class="philosophy-hero-media" aria-hidden="true">
+          <img src="{% static 'img/folozofie-banner.png' %}" alt="">
         </div>
-        <div class="card-body p-4 p-md-5">
-          <p class="about-eyebrow mb-2">Naše filozofie</p>
-          <h1 class="about-title mb-3">Bez nátlaku. S respektem. S důvěrou.</h1>
-          <p class="about-copy mb-0">
-            Náš přístup ke psu stojí na spolupráci, porozumění, respektu a důvěře.
-            Nehledáme rychlé potlačení projevu, ale skutečné příčiny chování a cesty,
-            jak psovi pomoci fungovat jistěji, bezpečněji a s větší lehkostí.
+        <div class="philosophy-hero-overlay" aria-hidden="true"></div>
+
+        <div class="philosophy-hero-topline">
+          <span class="philosophy-hero-topline-bar" aria-hidden="true"></span>
+          <p class="philosophy-hero-topline-text mb-0">CalmDog — naše filozofie</p>
+        </div>
+
+        <div class="philosophy-hero-rail" aria-hidden="true"></div>
+
+        <div class="philosophy-hero-inner">
+          <div class="philosophy-hero-layout">
+            <div class="philosophy-hero-copy">
+              <p class="philosophy-hero-kicker mb-0">Skandinávský přístup k výcviku</p>
+              <h1 class="philosophy-hero-title mb-0">
+                <span>Pes není problém.</span>
+                <span class="philosophy-hero-title-soft">Je to zpráva.</span>
+              </h1>
+            </div>
+            <aside class="philosophy-hero-aside">
+              <p class="mb-0">
+                Stojíme na čtyřech pilířích: spolupráci, porozumění, respektu a důvěře.
+                Nehledáme rychlé potlačení projevu, ale skutečné příčiny.
+              </p>
+            </aside>
+          </div>
+
+          <div class="philosophy-hero-scroll" aria-hidden="true">
+            <span class="philosophy-hero-scroll-line"></span>
+            <span class="philosophy-hero-scroll-text">Scroll</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="philosophy-divider reveal" aria-hidden="true"></div>
+
+      <section class="philosophy-editorial reveal">
+        <div class="philosophy-editorial-reference">
+          <div class="philosophy-editorial-visual">
+            <figure class="philosophy-editorial-photo mb-0">
+              <img
+                src="{% static 'img/hero_pes_oko.png' %}"
+                alt="Detail psí tváře"
+              >
+            </figure>
+            <div class="philosophy-editorial-caption">
+              <span class="philosophy-editorial-caption-line" aria-hidden="true"></span>
+              <span class="philosophy-editorial-caption-text">Řeč těla</span>
+            </div>
+          </div>
+
+          <div class="philosophy-editorial-content">
+            <h2 class="philosophy-editorial-title mb-0">
+              <span class="philosophy-editorial-title-inline">Emoce,</span>
+              <span class="philosophy-editorial-title-inline philosophy-editorial-accent">komunikace</span>
+              <span class="philosophy-editorial-title-break" aria-hidden="true"></span>
+              <span class="philosophy-editorial-title-inline philosophy-editorial-line-end">a&nbsp;porozumění.</span>
+            </h2>
+
+            <div class="philosophy-editorial-copy">
+              <p class="philosophy-editorial-paragraph mb-0">
+                Náš přístup ke psu má kořeny ve skandinávské kultuře. Stojí na pilířích
+                spolupráce, porozumění, respektu a důvěry.
+              </p>
+              <p class="philosophy-editorial-paragraph mb-0">
+                Stejně jako my lidé prožíváme v různých situacích různé emoce, totéž se děje
+                u psů. Může to být radost, obava, ale i strach. Podle toho reagujeme, komunikujeme
+                se světem. Už jako novorozené děti jsme komunikovali pláčem. Naši rodiče se snažili
+                pochopit, co nás k pláči přivádí. Zdali to je hlad, zima, teplo, či se něčeho bojíme.
+              </p>
+              <p class="philosophy-editorial-paragraph mb-0">
+                Poté jsme se naučili mluvit a dokážeme svoje pocity sdělovat. Stejně tak to umí
+                i pes. Psi mají velmi dobře rozvinutou řeč těla. Používají tzv. konejšivé signály.
+                Pokud se psem dokážeme komunikovat, pak dokážeme psa nejen učit, ale i budovat
+                vzájemný vztah na základě porozumění, respektu, důvěry a spolupráce.
+              </p>
+            </div>
+
+            <blockquote class="philosophy-editorial-quote mb-0">
+              <span class="philosophy-editorial-quote-line" aria-hidden="true"></span>
+              <p class="mb-0">„Pes nám umí říct, jak se cítí. Psi používají psí řeč i při zvládání obtížných situací."</p>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section class="philosophy-context reveal">
+        <div class="philosophy-context-stats">
+          <div class="philosophy-context-stats-inner">
+            <article class="philosophy-stat-card">
+              <p class="philosophy-stat-value mb-0">7</p>
+              <p class="philosophy-stat-label mb-0">
+                úhlů pohledu zohledňujeme
+                <br>
+                při analýze chování
+              </p>
+            </article>
+            <article class="philosophy-stat-card philosophy-stat-card-centered">
+              <p class="philosophy-stat-value mb-0">
+                <span class="philosophy-countup" data-countup="100">0</span><span>%</span>
+              </p>
+              <p class="philosophy-stat-label mb-0">
+                bez nátlaku, punishment-
+                <br>
+                free přístup
+              </p>
+            </article>
+            <article class="philosophy-stat-card">
+              <p class="philosophy-stat-value mb-0">4</p>
+              <p class="philosophy-stat-label mb-0">
+                pilíře — spolupráce,
+                <br>
+                porozumění, respekt,
+                <br>
+                důvěra
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <div class="philosophy-context-hero">
+          <div class="philosophy-context-media" aria-hidden="true">
+            <img src="{% static 'img/nase-filosofie1.png' %}" alt="">
+          </div>
+          <div class="philosophy-context-overlay" aria-hidden="true"></div>
+
+          <div class="philosophy-context-inner">
+            <div class="philosophy-kicker-wrap philosophy-kicker-wrap-dark philosophy-context-kicker">
+              <span class="philosophy-kicker-line" aria-hidden="true"></span>
+              <p class="philosophy-kicker mb-0">Na čem stavíme řešení</p>
+            </div>
+            <h2 class="philosophy-context-title">
+              Chování je vždy
+              <br>
+              reakcí na <span class="philosophy-context-accent">prostředí.</span>
+            </h2>
+          </div>
+        </div>
+
+        <div class="philosophy-context-inner philosophy-context-inner-content">
+          <div class="philosophy-context-copy">
+            <p class="philosophy-context-lead mb-0">
+              Chování našeho psa je vždy reakcí na prostředí, na to, co na něj v dané chvíli působí.
+              Chování psa můžeme vnímat jako správné, nebo naopak nežádoucí — problémové. Abychom
+              mohli porozumět příčinám problémového chování, musíme se na danou situaci podívat
+              hned z několika úhlů pohledu.
+            </p>
+            <p class="philosophy-context-lead mb-0">
+              Budeme psa vnímat jako šelmu se všemi jejími potřebami a analyzovat spoustu informací,
+              abychom byli schopni toho nejlepšího vhledu. Z pohledu psa budeme zohledňovat hned sedm
+              oblastí: základní potřeby, zdraví, řeč těla, etogram, stres, životní prostředí a genetiku.
+            </p>
+          </div>
+          <div class="philosophy-context-grid">
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">01</span>
+              <h3>Základní potřeby</h3>
+              <p class="mb-0">Naplnění základních potřeb psa tvoří základ pro jakoukoliv práci.</p>
+            </article>
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">02</span>
+              <h3>Zdraví</h3>
+              <p class="mb-0">Zdravotní stav a nepohodlí přímo ovlivňují chování psa.</p>
+            </article>
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">03</span>
+              <h3>Řeč těla</h3>
+              <p class="mb-0">Konejšivé signály a neverbální komunikace jsou klíčem k porozumění.</p>
+            </article>
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">04</span>
+              <h3>Etogram</h3>
+              <p class="mb-0">Přirozené vzorce chování druhu jsou výchozím bodem každé analýzy.</p>
+            </article>
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">05</span>
+              <h3>Stres</h3>
+              <p class="mb-0">Míra stresu a celková pohoda rozhodují o schopnosti učit se.</p>
+            </article>
+            <article class="philosophy-context-card philosophy-context-card-highlight">
+              <span class="philosophy-context-card-index">06</span>
+              <h3>Prostředí</h3>
+              <p class="mb-0">Každodenní podmínky a životní prostředí formují chování psa.</p>
+            </article>
+            <article class="philosophy-context-card">
+              <span class="philosophy-context-card-index">07</span>
+              <h3>Genetika</h3>
+              <p class="mb-0">Individuální nastavení a predispozice nelze při řešení přehlédnout.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="philosophy-closing reveal">
+        <div class="philosophy-closing-top">
+          <div class="philosophy-closing-main">
+            <h2 class="philosophy-closing-title mb-0">
+              Pomůžeme psovi vyrovnat se
+              <br>
+              s <span class="philosophy-closing-accent">příčinou</span> problémového chování
+              <br>
+              a pomůžeme mu, aby situace
+              <br>
+              dokázal zvládnout <span class="philosophy-closing-fade">sám.</span>
+            </h2>
+          </div>
+          <div class="philosophy-closing-side">
+            <div class="philosophy-closing-copy">
+              <div class="philosophy-closing-bar" aria-hidden="true"></div>
+              <p class="mb-0">
+                Porozumění chování psa stojí na základech znalostí jeho přirozeného chování. Znalost
+                psí komunikace, konejšivých signálů, dovednost lidské neverbální komunikace se psem
+                a respektování přirozeného chování psa nám otevírají cestu k řešení problémového chování.
+              </p>
+            </div>
+            <div class="philosophy-signature">
+              <span class="philosophy-kicker-line" aria-hidden="true"></span>
+              <span class="philosophy-signature-name">Ing. Andrea Zoulová</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="philosophy-closing-divider" aria-hidden="true"></div>
+
+        <blockquote class="philosophy-closing-quote mb-0">
+          <span class="philosophy-closing-quote-line" aria-hidden="true"></span>
+          <p class="mb-0">
+            „Budeme s vámi sdílet naše vědomosti a nabídneme vám možnosti řešení problémů s vašimi psy
+            na základě vědecky podložených znalostí, které vedou k <span class="philosophy-closing-quote-accent">welfare psa.</span>"
           </p>
-        </div>
-      </section>
-
-      <section class="about-section card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <div class="about-two-column">
-            <div>
-              <p class="about-eyebrow mb-2">Jak se na psa díváme</p>
-              <h2 class="about-subtitle mb-3">Chování není zlobení, ale informace</h2>
-              <p class="about-copy">
-                Stejně jako lidé i psi prožívají v různých situacích různé emoce. Radost, obavu,
-                nejistotu i strach. A stejně jako my komunikují se světem tím, co zrovna cítí.
-                Pes nám velmi přesně ukazuje svůj stav řečí těla a konejšivými signály.
-              </p>
-              <p class="about-copy mb-0">
-                Když této komunikaci rozumíme, dokážeme psa nejen učit, ale především s ním budovat
-                vztah založený na bezpečí, spolupráci a skutečném porozumění.
-              </p>
-            </div>
-            <div class="about-side-media">
-              <img src="{% static 'img/about/Nase-filosofie-treninku-1-.png' %}" alt="Pes v přirozené komunikaci" class="about-side-image">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="about-section card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <p class="about-eyebrow mb-2">Na čem stavíme řešení</p>
-          <h2 class="about-subtitle mb-4">Problémové chování vždy čteme v širším kontextu</h2>
-          <div class="about-topic-grid about-topic-grid-wide">
-            <article class="about-topic-card">
-              <h3>Emoce a komunikace</h3>
-              <ul>
-                <li>řeč těla a konejšivé signály</li>
-                <li>schopnost psa zvládat obtížné situace</li>
-                <li>vzájemná komunikace mezi člověkem a psem</li>
-              </ul>
-            </article>
-            <article class="about-topic-card">
-              <h3>Potřeby a zdraví</h3>
-              <ul>
-                <li>základní potřeby psa a jejich naplnění</li>
-                <li>vliv zdravotního stavu a nepohodlí</li>
-                <li>míra stresu a celková životní pohoda</li>
-              </ul>
-            </article>
-            <article class="about-topic-card">
-              <h3>Prostředí a predispozice</h3>
-              <ul>
-                <li>životní prostředí a každodenní podmínky</li>
-                <li>etogram a přirozené chování psa</li>
-                <li>genetika a individuální nastavení</li>
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="about-contrast-box about-quote-box reveal">
-        <p class="about-eyebrow mb-2">CalmDog přístup</p>
-        <h2 class="about-contrast-title">Pomáháme psovi zvládnout příčinu, ne jen umlčet projev.</h2>
-        <p class="about-contrast-copy">
-          Porozumění chování psa stojí na znalosti jeho přirozeného chování, psí komunikace,
-          konejšivých signálů a respektování toho, co pes skutečně potřebuje. Cílem je takové
-          řešení, které vede k welfare psa a k dlouhodobě funkčnému soužití.
-        </p>
+        </blockquote>
       </section>
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const counters = document.querySelectorAll(".philosophy-countup");
+
+  if (!counters.length) {
+    return;
+  }
+
+  const animateCounter = (element) => {
+    if (element.dataset.animated === "true") {
+      return;
+    }
+
+    element.dataset.animated = "true";
+    const target = Number(element.dataset.countup || 0);
+    const duration = 1600;
+    const start = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      element.textContent = String(Math.round(target * eased));
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      }
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.6,
+  });
+
+  counters.forEach((counter) => observer.observe(counter));
+});
+</script>
 {% endblock %}

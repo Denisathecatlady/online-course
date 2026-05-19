@@ -804,6 +804,234 @@
   gap: 2rem;
 }
 
+.home-course-card {
+  position: relative;
+  min-height: 41rem;
+  overflow: hidden;
+  border-radius: 1.85rem;
+  background: #d9ded9;
+}
+
+.home-course-card-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.home-course-card-media,
+.home-course-card-image,
+.home-course-card-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.home-course-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-course-card-overlay {
+  background:
+    linear-gradient(180deg, rgba(21, 26, 24, 0.12) 0%, rgba(21, 26, 24, 0.04) 20%, rgba(21, 26, 24, 0.4) 66%, rgba(17, 20, 19, 0.84) 100%);
+}
+
+.home-course-card:hover .home-course-card-image {
+  transform: scale(1.05);
+}
+
+.home-course-card-top,
+.home-course-card-body,
+.home-course-card-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.home-course-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.6rem 1.55rem 0;
+}
+
+.home-course-card-pill,
+.home-course-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+.home-course-card-pill {
+  padding: 0.55rem 1rem;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home-course-card-badge {
+  min-width: 3rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(46, 58, 53, 0.78);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.home-course-card-body {
+  margin-top: auto;
+  padding: 0 2rem 1.35rem;
+}
+
+.home-course-card-kicker {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #f1ad65;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home-course-card-title {
+  max-width: 12ch;
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.5rem, 4vw, 3.35rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.home-course-card-description {
+  max-width: 34rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.home-course-card-footer {
+  padding: 0 2rem 2rem;
+}
+
+.home-course-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.95rem 1.1rem;
+  margin-bottom: 1.35rem;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.94rem;
+}
+
+.home-course-card-meta span {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.home-course-card-meta span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.42rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 50%;
+}
+
+.home-course-card-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-course-card-price {
+  color: #ffffff;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(1.95rem, 3vw, 2.45rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.home-course-card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.3rem;
+  height: 3.3rem;
+  border-radius: 50%;
+  background: rgba(209, 143, 75, 0.84);
+  color: #ffffff;
+  font-size: 1.45rem;
+  transition:
+    transform 220ms ease,
+    background-color 220ms ease;
+}
+
+.home-course-card:hover .home-course-card-arrow {
+  transform: translateX(3px);
+  background: rgba(209, 143, 75, 0.96);
+}
+
+.home-course-card-empty {
+  min-height: 24rem;
+  background: #ffffff;
+  border: 1px solid rgba(106, 133, 124, 0.12);
+}
+
+.home-course-card-empty-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 100%;
+  padding: 2rem;
+  color: #2f3e3a;
+}
+
+.home-course-card-empty-body .home-course-card-pill {
+  width: fit-content;
+  border-color: rgba(106, 133, 124, 0.16);
+  background: #f4f6f3;
+  color: #5e7770;
+}
+
+.home-course-card-empty-body h3 {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1;
+}
+
+.home-course-card-empty-body p {
+  max-width: 32rem;
+  margin: 0;
+  color: rgba(47, 62, 58, 0.74);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.home-course-card-empty-body a {
+  color: #5f766b;
+  text-decoration: none;
+  font-weight: 600;
+}
+
 .course-preview-card {
   overflow: hidden;
   border-radius: 24px;
@@ -1324,18 +1552,45 @@
     font-size: clamp(2.8rem, 12vw, 4.3rem);
   }
 
-  .course-preview-body {
-    padding: 1.25rem 1.2rem 1.2rem;
+  .home-course-card {
+    min-height: 33rem;
+    border-radius: 1.5rem;
   }
 
-  .course-preview-meta-top,
-  .course-preview-footer {
-    align-items: flex-start;
-    flex-direction: column;
+  .home-course-card-top {
+    padding: 1rem 1rem 0;
   }
 
-  .course-preview-footer strong {
-    font-size: 1.7rem;
+  .home-course-card-body {
+    padding: 0 1.2rem 1rem;
+  }
+
+  .home-course-card-title {
+    max-width: none;
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .home-course-card-description {
+    font-size: 0.95rem;
+  }
+
+  .home-course-card-footer {
+    padding: 0 1.2rem 1.2rem;
+  }
+
+  .home-course-card-meta {
+    gap: 0.7rem 0.9rem;
+    font-size: 0.88rem;
+  }
+
+  .home-course-card-price {
+    font-size: clamp(1.65rem, 8vw, 2.2rem);
+  }
+
+  .home-course-card-arrow {
+    width: 2.9rem;
+    height: 2.9rem;
+    font-size: 1.2rem;
   }
 
   .home-cta-shell .section-title {
@@ -1348,11 +1603,10 @@
 
   .intro-panel,
   .service-card,
-  .course-preview-card {
+  .home-course-card {
     border-radius: 22px;
   }
 
-  .course-preview-footer,
   .home-cta-actions,
   .lecturer-stats {
     flex-direction: column;

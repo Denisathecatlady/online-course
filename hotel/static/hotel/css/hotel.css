@@ -1,0 +1,526 @@
+/* ============================================================
+   CalmDog Hotel
+   Navazuje na design systém projektu (base.css, what-we-do.css)
+   ============================================================ */
+
+/* ── page wrapper ── */
+.page-hotel .page-wrapper {
+    padding-top: 0 !important;
+    background: #f5f5f0;
+}
+
+/* ============================================================
+   KICKER  (stejný vzor jako .what-we-do-kicker)
+   ============================================================ */
+
+.hotel-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 0 1.15rem;
+    color: #5f766b;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.hotel-kicker::before {
+    content: "";
+    width: 1.55rem;
+    height: 1px;
+    background: currentColor;
+}
+
+.hotel-kicker-accent {
+    color: #ef9d58;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hotel-hero {
+    padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(3rem, 6vw, 5rem);
+    border-bottom: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.hotel-hero-shell {
+    max-width: 1100px;
+}
+
+.hotel-hero-title {
+    max-width: 14ch;
+    margin: 0 0 2rem;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3rem, 6.5vw, 5.2rem);
+    font-weight: 600;
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+}
+
+.hotel-hero-title span {
+    color: #6a857c;
+}
+
+.hotel-hero-copy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    max-width: 860px;
+    margin-bottom: 2.5rem;
+}
+
+.hotel-hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.hotel-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* ============================================================
+   SECTION – obecná sekce
+   ============================================================ */
+
+.hotel-section {
+    padding: clamp(3rem, 7vw, 5.5rem) 0;
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.hotel-section-tinted {
+    background: rgba(95, 118, 107, 0.04);
+}
+
+.hotel-section-sm {
+    padding: 2rem 0;
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+/* ============================================================
+   SPLIT LAYOUT (kicker+title vlevo, text vpravo)
+   ============================================================ */
+
+.hotel-split {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.3fr);
+    gap: 3rem;
+    align-items: start;
+    margin-bottom: 2.5rem;
+}
+
+.hotel-title {
+    max-width: 12ch;
+    margin: 0;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.hotel-title-narrow {
+    max-width: 16ch;
+}
+
+.hotel-title span {
+    color: #6a857c;
+}
+
+/* ── body text ── */
+.hotel-copy {
+    margin: 0 0 1rem;
+    color: rgba(47, 62, 58, 0.74);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.hotel-copy:last-child {
+    margin-bottom: 0;
+}
+
+/* ── list ── */
+.hotel-list {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hotel-list li {
+    position: relative;
+    padding-left: 1rem;
+    margin-bottom: 0.7rem;
+    color: rgba(47, 62, 58, 0.74);
+    font-size: 0.96rem;
+    line-height: 1.55;
+}
+
+.hotel-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #6a857c;
+}
+
+/* ============================================================
+   QUOTE – Turid Rugaas
+   ============================================================ */
+
+.hotel-quote {
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+    margin: 0;
+    padding: 2.5rem 0 0;
+}
+
+.hotel-quote-text {
+    margin: 0 0 0.75rem;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    font-weight: 500;
+    color: #2d2d2d;
+    line-height: 1.5;
+    max-width: 720px;
+    font-style: italic;
+}
+
+.hotel-quote-cite {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6a857c;
+    font-style: normal;
+}
+
+/* ============================================================
+   TMAVÁ KONTRASTNÍ SEKCE  (vzor: what-we-do-contrast)
+   ============================================================ */
+
+.hotel-contrast {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+    background: #2f2e2c;
+    padding: 0;
+}
+
+.hotel-contrast-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.3fr);
+    gap: 3.2rem;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2.8rem);
+    align-items: start;
+}
+
+.hotel-contrast-title {
+    max-width: 8ch;
+    margin: 0;
+    color: #ffffff;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.hotel-contrast-title span {
+    color: #ef9d58;
+}
+
+.hotel-contrast-copy {
+    margin: 0 0 1.1rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.hotel-contrast-copy:last-child {
+    margin-bottom: 0;
+}
+
+/* velké NE na pozadí */
+.hotel-contrast-mark {
+    position: absolute;
+    right: -0.04em;
+    bottom: -0.22em;
+    z-index: 0;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(10rem, 22vw, 18rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.04em;
+}
+
+/* ============================================================
+   TÉMATA / TOPICS  (3 sloupcový grid se čísly)
+   ============================================================ */
+
+.hotel-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+    margin-top: 3rem;
+}
+
+.hotel-topic {
+    padding: 2rem 1.4rem 2.2rem 0;
+    border-right: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.hotel-topic:nth-child(2) {
+    padding-left: 1.4rem;
+}
+
+.hotel-topic:nth-child(3) {
+    padding-left: 1.4rem;
+    padding-right: 0;
+    border-right: none;
+}
+
+.hotel-topic-index {
+    display: block;
+    margin-bottom: 1rem;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.5rem, 4.5vw, 3.8rem);
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: rgba(95, 118, 107, 0.18);
+}
+
+.hotel-topic h3 {
+    margin: 0 0 0.85rem;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.hotel-topic p {
+    margin: 0;
+    color: rgba(47, 62, 58, 0.74);
+    font-size: 0.96rem;
+    line-height: 1.65;
+}
+
+/* ============================================================
+   UPOZORNĚNÍ – agresivní zvířata
+   ============================================================ */
+
+.hotel-warning {
+    border-left: 3px solid #d97706;
+    padding: 1rem 1.25rem;
+    background: #fffbeb;
+    border-radius: 0 6px 6px 0;
+    color: #92400e;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-width: 860px;
+}
+
+/* ============================================================
+   KONTAKTNÍ CTA  (vzor: what-we-do-contact)
+   ============================================================ */
+
+.hotel-contact {
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+    padding: clamp(3rem, 7vw, 5rem) 0;
+}
+
+.hotel-contact-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1100px;
+}
+
+.hotel-contact-copy h2 {
+    margin: 0.5rem 0 0.75rem;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: #2d2d2d;
+    line-height: 1.1;
+}
+
+.hotel-contact-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.hotel-contact-btn-primary,
+.hotel-contact-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.hotel-contact-btn-primary {
+    background: #6f8780;
+    color: #fff;
+    border: 2px solid #6f8780;
+}
+
+.hotel-contact-btn-primary:hover {
+    background: #5f766f;
+    border-color: #5f766f;
+    color: #fff;
+}
+
+.hotel-contact-btn-outline {
+    background: transparent;
+    color: #2d2d2d;
+    border: 2px solid #2d2d2d;
+}
+
+.hotel-contact-btn-outline:hover {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+/* ============================================================
+   REZERVAČNÍ FORMULÁŘ
+   ============================================================ */
+
+.reservation-section {
+    background: #fff;
+    border: 1px solid rgba(95, 118, 107, 0.18);
+    border-radius: 12px;
+    padding: 1.75rem 1.5rem;
+    box-shadow: 0 1px 8px rgba(95, 118, 107, 0.07);
+    margin-bottom: 1.5rem;
+}
+
+.reservation-section h2 {
+    color: #2d2d2d;
+    border-bottom: 1px solid rgba(95, 118, 107, 0.15);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.25rem !important;
+    font-family: "Playfair Display", serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+/* ── JS toggle – agresivita ── */
+.aggression-notes {
+    display: none;
+    animation: hotelFadeIn 0.2s ease;
+}
+
+@keyframes hotelFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   FLATPICKR – sage green override
+   ============================================================ */
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: #6f8780 !important;
+    border-color: #6f8780 !important;
+}
+
+.flatpickr-day:hover {
+    background: #e6ece9 !important;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: #5f766b !important;
+    color: #fff !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    color: #fff !important;
+}
+
+.flatpickr-weekday {
+    color: #3e6a57 !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+    .hotel-split {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .hotel-topics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hotel-topic,
+    .hotel-topic:nth-child(2),
+    .hotel-topic:nth-child(3) {
+        padding: 1.75rem 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(95, 118, 107, 0.12);
+    }
+
+    .hotel-topic:last-child {
+        border-bottom: none;
+    }
+
+    .hotel-contrast-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .hotel-contact-body {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .hotel-contact-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .hotel-hero-copy-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .hotel-contrast-mark {
+        font-size: 30vw;
+    }
+
+    .reservation-section {
+        padding: 1.25rem 1rem;
+    }
+}

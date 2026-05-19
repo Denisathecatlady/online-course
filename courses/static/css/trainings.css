@@ -14,7 +14,7 @@
 }
 
 .trainings-intro {
-    max-width: 860px;
+    max-width: 940px;
     margin-bottom: 4.6rem;
 }
 
@@ -23,7 +23,7 @@
     display: inline-block;
     margin: 0 0 1.15rem;
     color: #5f766b;
-    font-size: 0.84rem;
+    font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -31,12 +31,12 @@
 
 .trainings-title {
     margin: 0 0 1.5rem;
-    max-width: 11.2ch;
+    max-width: 14.5ch;
     color: #2d2d2d;
     font-family: "Playfair Display", serif;
-    font-size: clamp(2.75rem, 4.8vw, 4.5rem);
+    font-size: clamp(2.35rem, 4vw, 3.95rem);
     font-weight: 600;
-    line-height: 1.02;
+    line-height: 1.05;
     letter-spacing: -0.04em;
     text-wrap: balance;
 }
@@ -47,7 +47,7 @@
     margin: 0;
     max-width: 860px;
     color: rgba(47, 62, 58, 0.74);
-    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    font-size: clamp(0.95rem, 1.08vw, 1.02rem);
     line-height: 1.65;
 }
 
@@ -99,7 +99,7 @@
     margin: 0;
     color: #2d2d2d;
     font-family: "Playfair Display", serif;
-    font-size: clamp(1.7rem, 2.35vw, 2.35rem);
+    font-size: clamp(1.5rem, 2.05vw, 2.05rem);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.04em;
@@ -148,7 +148,7 @@
 }
 
 .training-card-summary {
-    font-size: 0.96rem;
+    font-size: 0.91rem;
     line-height: 1.6;
 }
 
@@ -163,7 +163,7 @@
     margin-bottom: 0.8rem;
     padding-left: 1.25rem;
     color: #3e4c48;
-    font-size: 0.94rem;
+    font-size: 0.89rem;
     line-height: 1.5;
 }
 
@@ -201,7 +201,7 @@
     border-radius: 999px;
     background: #f7f4ee;
     color: rgba(47, 62, 58, 0.72);
-    font-size: 0.88rem;
+    font-size: 0.83rem;
     line-height: 1;
 }
 
@@ -254,7 +254,7 @@
     margin: 0 0 0.7rem;
     color: #2d2d2d;
     font-family: "Playfair Display", serif;
-    font-size: clamp(1.95rem, 3vw, 3rem);
+    font-size: clamp(1.7rem, 2.55vw, 2.45rem);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.04em;
@@ -263,7 +263,7 @@
 
 .trainings-contact-copy {
     max-width: 620px;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .trainings-contact-actions {
@@ -318,7 +318,7 @@
     }
 
     .trainings-title {
-        font-size: clamp(2.7rem, 11vw, 4rem);
+        font-size: clamp(2.15rem, 9vw, 3.3rem);
         max-width: none;
     }
 
@@ -328,7 +328,7 @@
     }
 
     .training-card-title {
-        font-size: clamp(1.8rem, 8vw, 2.45rem);
+        font-size: clamp(1.55rem, 7vw, 2.1rem);
     }
 
     .training-card-media {

@@ -1,102 +1,161 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block body_class %}page-trainings{% endblock %}
+{% block body_class %}page-what-we-do page-trainings{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/trainings.css' %}">
+<link rel="stylesheet" href="{% static 'css/what-we-do.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="trainings-page pb-6">
+<section class="what-we-do-page pb-6">
   <div class="container">
-    <div class="trainings-shell">
-      <div class="trainings-intro reveal">
-        <span class="trainings-kicker">Tréninky</span>
-        <h1 class="trainings-title">Praktické tréninky pro klidnější soužití se psem</h1>
-        <p class="trainings-lead">
-          Vycházíme z porozumění psí komunikaci, respektu k potřebám psa a hledání skutečných příčin chování.
-          Vyber si formu podpory, která nejlépe sedí vám oběma.
-        </p>
-      </div>
+    <div class="what-we-do-shell">
+      <section class="what-we-do-hero reveal">
+        <span class="what-we-do-kicker">Čemu se věnujeme</span>
+        <h1 class="what-we-do-title">
+          Klidnější komunikace
+          <span>mezi člověkem a psem.</span>
+        </h1>
 
-      <div class="trainings-grid">
-        {% for training in trainings %}
-          <article class="training-card reveal {% if forloop.counter == 1 or forloop.counter == 2 %}training-card-delay-1{% elif forloop.counter == 3 or forloop.counter == 4 %}training-card-delay-2{% else %}training-card-delay-3{% endif %}">
-            <div class="training-card-head">
-              <p class="trainings-eyebrow">Trénink</p>
-              <h2 class="training-card-title">{{ training.title }}</h2>
+        <div class="what-we-do-copy-grid">
+          <p class="what-we-do-copy">
+            CalmDog staví na porozumění psí řeči, respektu k potřebám psa a etickém přístupu bez nátlaku.
+          </p>
+          <p class="what-we-do-copy">
+            Specializujeme se na lidsko-psí komunikaci, konejšivé signály a uspokojování přirozených potřeb psa.
+            Cílem není jen zvládnout konkrétní problém, ale porozumět psovi v širších souvislostech.
+          </p>
+        </div>
+      </section>
+
+      <section class="what-we-do-topics reveal">
+        <div class="what-we-do-topics-grid">
+          <article class="what-we-do-topic">
+            <div class="what-we-do-topic-media">
+              <span class="what-we-do-topic-index">01</span>
+              <img src="{% static 'img/about/Cemu-se-venujeme-1.png' %}" alt="Komunikace a chování" class="what-we-do-topic-image">
             </div>
-
-            <div class="training-card-media">
-              {% if training.image %}
-                <img src="{% static training.image %}" alt="{{ training.title }}" class="training-card-image">
-              {% else %}
-                <div class="training-card-placeholder">CalmDog</div>
-              {% endif %}
-            </div>
-
-            <div class="training-card-body">
-              <p class="training-card-summary">{{ training.summary }}</p>
-
-              <ul class="training-card-list">
-                {% for item in training.highlights %}
-                  <li>{{ item }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-
-            <div class="training-meta">
-              <div class="training-meta-item">
-                <span class="training-meta-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M12 7.8V12l2.8 2.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  </svg>
-                </span>
-                <span>{{ training.duration }}</span>
-              </div>
-              <div class="training-meta-item">
-                <span class="training-meta-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M7.8 15.8c-1.4 0-2.5-1.1-2.5-2.5V11c0-.6.5-1.1 1.1-1.1h1.2l1.3-2.2c.3-.6.9-.9 1.6-.9h1.7c.5 0 1 .2 1.4.6l1.7 1.7h1.3c.9 0 1.7.7 1.7 1.7v2.5c0 1.4-1.1 2.5-2.5 2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9.4 9.8h2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="8.6" cy="15.8" r="1.1" fill="currentColor"/>
-                    <circle cx="16.3" cy="15.8" r="1.1" fill="currentColor"/>
-                  </svg>
-                </span>
-                <span>{{ training.capacity }}</span>
-              </div>
-              <div class="training-meta-item training-meta-item-price">
-                <span class="training-meta-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <rect x="4" y="7" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                    <circle cx="12" cy="12" r="1.8" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M7 10.2h.01M17 13.8h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                  </svg>
-                </span>
-                <strong>{{ training.price }}</strong>
-              </div>
-            </div>
+            <h2>Komunikace a chování</h2>
+            <ul>
+              <li>Psí řeč: konejšivé signály, signály agrese a žádosti o vzdálenost, štěkání a jeho funkce</li>
+              <li>Komunikace mezi psy, psa směrem ke člověku i k prostředí a řeč lidského těla vůči psu.</li>
+              <li>Přirozené chování a instinkty psa</li>
+              <li>Agresivita, strach a úzkost</li>
+              <li>Řešení problémového chování</li>
+            </ul>
           </article>
-        {% endfor %}
-      </div>
 
-      <div class="trainings-contact reveal">
-        <div class="trainings-contact-body">
-          <div class="trainings-contact-copy-wrap">
-            <p class="trainings-eyebrow">Nevíš, co vybrat?</p>
-            <h2 class="trainings-contact-title">Ozvi se a zvolíme vhodný typ tréninku spolu</h2>
-            <p class="trainings-contact-copy">
-              Pokud si nejsi jistá, jaký typ tréninku zvolit, napiš nebo zavolej. Pomůžeme ti vybrat nejvhodnější variantu.
+          <article class="what-we-do-topic">
+            <div class="what-we-do-topic-media">
+              <span class="what-we-do-topic-index">02</span>
+              <img src="{% static 'img/about/Cemu-se-venujeme-2.png' %}" alt="Každodenní fungování" class="what-we-do-topic-image">
+            </div>
+            <h2>Každodenní fungování</h2>
+            <ul>
+              <li>Stres a aktivity, které ho snižují</li>
+              <li>Práce s reaktivním a bázlivým psem</li>
+              <li>Zdraví a bolest ve vztahu k problémovému chování</li>
+              <li>Chůze na vodítku a používání postroje</li>
+              <li>Kvalita procházek a aktivit se psem</li>
+              <li>Socializační a komunikační procházky</li>
+            </ul>
+          </article>
+
+          <article class="what-we-do-topic">
+            <div class="what-we-do-topic-media">
+              <span class="what-we-do-topic-index">03</span>
+              <img src="{% static 'img/about/Cemu-se-venujeme-3.png' %}" alt="Další oblasti" class="what-we-do-topic-image">
+            </div>
+            <h2>Další oblasti</h2>
+            <ul>
+              <li>Mentální aktivity, obohacené prostředí a nosework jako nesoutěžní disciplína</li>
+              <li>Odměňování a pozitivní interakce</li>
+              <li>Výživové poradenství</li>
+              <li>Péče o psychické i fyzické zdraví psa</li>
+              <li>Specifika soužití se štěnětem, dospívajícím a stárnoucím psem</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="what-we-do-contrast reveal">
+        <div class="what-we-do-contrast-grid">
+          <div class="what-we-do-contrast-main">
+            <p class="what-we-do-contrast-kicker">Co u nás nenajdete</p>
+            <h2 class="what-we-do-contrast-title">
+              Nepracujeme
+              <span>přes nátlak a tresty.</span>
+            </h2>
+          </div>
+
+          <div class="what-we-do-contrast-side">
+            <ul class="what-we-do-contrast-list">
+              <li>Stres jako nástroj tréninku</li>
+              <li>Nátlak</li>
+              <li>Klikr trénink jako univerzální řešení všeho</li>
+              <li>Tradiční povely jako hlavní odpověď na problémové chování</li>
+              <li>Tresty</li>
+            </ul>
+
+            <p class="what-we-do-contrast-copy">
+              Často se setkáváme s tím, že problémové chování psa bývá řešeno povely nebo tresty.
+              To ale nemusí vést k tomu, aby se pes dokázal vyrovnat s příčinou svého chování.
+              Pomáháme psu, aby náročné situace zvládal sám a s větší jistotou.
             </p>
           </div>
-          <div class="trainings-contact-actions">
-            <a href="mailto:info@calmdog.cz" class="btn btn-sage">info@calmdog.cz</a>
-            <a href="tel:+420608163824" class="btn btn-outline-sage">+420 608 163 824</a>
+        </div>
+        <div class="what-we-do-contrast-mark" aria-hidden="true">NE.</div>
+      </section>
+
+      <section class="what-we-do-offers reveal">
+        <div class="what-we-do-offers-head">
+          <div>
+            <span class="what-we-do-kicker what-we-do-kicker-accent">Jak pracujeme</span>
+            <h2 class="what-we-do-offers-title">Jaké tréninky nabízíme</h2>
+          </div>
+          <div class="what-we-do-offers-aside">
+            <p class="what-we-do-offers-price-note">Jednotná cena 1 500 Kč</p>
+            <p class="what-we-do-copy what-we-do-offers-copy">
+              Vycházíme z porozumění psí komunikaci, respektu k potřebám psa a hledání skutečných příčin chování.
+              Vyberte si formu podpory, která nejlépe sedí vám oběma.
+            </p>
           </div>
         </div>
-      </div>
+
+        <div class="what-we-do-offers-list">
+          {% for training in trainings %}
+            <article class="what-we-do-offer-row {% cycle 'what-we-do-offer-sage' 'what-we-do-offer-accent' 'what-we-do-offer-earth' %}">
+              <div class="what-we-do-offer-main">
+                <div class="what-we-do-offer-title-row">
+                  <h3>{{ training.title }}</h3>
+                  <span class="what-we-do-offer-chip">{{ training.capacity }} · {{ training.duration }}</span>
+                </div>
+                <p>{{ training.summary }}</p>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="what-we-do-contact reveal">
+        <div class="what-we-do-contact-body">
+          <div class="what-we-do-contact-copy">
+            <p class="what-we-do-contact-kicker">Nevíte, co vybrat?</p>
+            <h2>Ozvěte se — zvolíme vhodný typ tréninku spolu.</h2>
+          </div>
+
+          <div class="what-we-do-contact-actions">
+            <a href="mailto:info@calmdog.cz" class="what-we-do-contact-btn what-we-do-contact-btn-primary">
+              <span>info@calmdog.cz</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="tel:+420608163824" class="what-we-do-contact-btn what-we-do-contact-btn-outline">
+              <span>+420 608 163 824</span>
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </section>

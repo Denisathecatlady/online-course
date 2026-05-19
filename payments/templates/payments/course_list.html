@@ -2,67 +2,228 @@
 {% load static %}
 {% load humanize %}
 
-{% block body_class %}bg-hero{% endblock %}
+{% block body_class %}page-course-list{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course-list.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="course-list-section">
-
-    <div class="course-list-container">
-
-        <h1 class="course-list-title">
-            Online kurzy
+<section class="course-list-page">
+  <div class="course-list-shell">
+    <header class="course-list-hero">
+      <div class="course-list-hero-main">
+        <span class="course-list-kicker">CalmDog — Online vzdělávání</span>
+        <h1 class="course-list-hero-title">
+          <span>Naše</span>
+          <span class="course-list-hero-title-accent">kurzy.</span>
         </h1>
+      </div>
 
-        <div class="course-grid">
-
-            {% for course in courses %}
-            <div class="course-card">
-
-                {% if course.public_image_url %}
-                <div class="course-image-wrapper">
-                    <img src="{{ course.public_image_url }}"
-                         alt="{{ course.title }}">
-                </div>
-                {% endif %}
-
-                <div class="course-card-body">
-
-                    <h5 class="course-title">
-                        {{ course.title }}
-                    </h5>
-
-                    <p class="course-description">
-                        {{ course.short_description|truncatewords:20 }}
-                    </p>
-
-                    <div class="course-footer">
-
-                        {% with course.plans.all|first as first_plan %}
-                        <p class="course-price">
-                            od {{ first_plan.price|intcomma }} Kč
-                        </p>
-                        {% endwith %}
-
-                        <a href="{% url 'payments:course_detail' course.slug %}"
-                           class="btn-sage">
-                            Zobrazit detail
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-            {% endfor %}
-
+      <div class="course-list-hero-side">
+        <span class="course-list-hero-count">{{ courses|length }}</span>
+        <p class="course-list-hero-copy">
+          online kurzy připravené s láskou ke psům i lidem
+        </p>
+        <div class="course-list-hero-tags" aria-label="Hodnoty kurzů">
+          <span>Etický výcvik</span>
+          <span>Vlastní tempo</span>
         </div>
+      </div>
+    </header>
 
+    <div class="course-list-divider" aria-hidden="true"></div>
+
+    <div class="course-list-summary">
+      <span>{{ courses|length }} dostupné kurzy</span>
+      <span>Ing. Andrea Zoulová</span>
     </div>
 
-</section>
+    <div class="course-grid">
+      {% for course in courses %}
+        <article class="course-card">
+          <a href="{% url 'payments:course_detail' course.slug %}" class="course-card-link" aria-label="{{ course.title }}">
+            <div class="course-card-media">
+              <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="course-card-image">
+            </div>
 
+            <div class="course-card-overlay"></div>
+
+            <div class="course-card-top">
+              <span class="course-card-pill">Online kurz</span>
+              {% if course.active_plan_count %}
+                <span class="course-card-badge">{{ course.active_plan_count }}</span>
+              {% endif %}
+            </div>
+
+            <div class="course-card-body">
+              <span class="course-card-kicker">
+                {% if forloop.first %}
+                  Praktický online kurz
+                {% else %}
+                  Studium vlastním tempem
+                {% endif %}
+              </span>
+
+              <h2 class="course-card-title">{{ course.title }}</h2>
+              <p class="course-card-description">{{ course.listing_description|truncatewords:24 }}</p>
+            </div>
+
+            <div class="course-card-footer">
+              <div class="course-card-meta">
+                {% if course.meta_access %}
+                  <span>{{ course.meta_access }}</span>
+                {% endif %}
+                {% if course.meta_modules %}
+                  <span>{{ course.meta_modules }}</span>
+                {% endif %}
+                {% if course.meta_variants %}
+                  <span>{{ course.meta_variants }}</span>
+                {% endif %}
+              </div>
+
+              <div class="course-card-bottom-row">
+                <div class="course-card-price">
+                  {% if course.min_price %}
+                    {{ course.min_price|floatformat:0|intcomma }} Kč
+                  {% else %}
+                    Na dotaz
+                  {% endif %}
+                </div>
+                <span class="course-card-arrow" aria-hidden="true">→</span>
+              </div>
+            </div>
+          </a>
+        </article>
+      {% empty %}
+        <article class="course-card course-card-empty">
+          <div class="course-card-empty-body">
+            <span class="course-card-pill">Online kurzy</span>
+            <h2>Nové kurzy připravujeme</h2>
+            <p>Aktuální nabídku brzy rozšíříme. Pokud chcete vědět mezi prvními, napište nám.</p>
+            <a href="{% url 'courses:contact' %}" class="btn btn-sage">Napsat nám</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    <section class="course-value-section">
+      <div class="course-value-head">
+        <div>
+          <span class="course-value-kicker">Proč CalmDog</span>
+          <h2 class="course-value-title">
+            V čem jsou naše kurzy
+            <span>jiné.</span>
+          </h2>
+        </div>
+        <p class="course-value-intro">
+          Ne jen další online kurz. Přístup, který vám dává smysl a vede ke změnám v běžném životě.
+        </p>
+      </div>
+
+      <div class="course-value-grid">
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3.8 18 6v5.5c0 3.5-2.2 6.6-6 8.7-3.8-2.1-6-5.2-6-8.7V6l6-2.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="m9.4 12 1.7 1.7 3.5-3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Žádné zastrašování, jen porozumění</h3>
+          <p>Výcvik bez nátlaku, trápení a trestu. Každý kurz je postaven na etickém přístupu, který respektuje přirozenost psa i jeho tempo.</p>
+        </article>
+
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4.5 10.2 12 6l7.5 4.2L12 14.4 4.5 10.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M7.8 12.5v3.1c0 .8 1.9 1.9 4.2 1.9s4.2-1.1 4.2-1.9v-3.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Certifikovaná odbornice za každým slovem</h3>
+          <p>Ing. Andrea Zoulová vystudovala etologii a má za sebou stovky hodin práce se psy. Obsah kurzů vychází z vědy, ne z tradičních mýtů.</p>
+        </article>
+
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 7H5.5v2.5M16 17h2.5v-2.5M18.5 9.5A6.5 6.5 0 0 0 7.4 6.6M5.5 14.5A6.5 6.5 0 0 0 16.6 17.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Přístup bez zbytečného tlaku</h3>
+          <p>Ke konkrétním lekcím i videím se můžete vracet podle potřeby. Kurz není sprint, ale opora, kterou využijete v okamžiku, kdy ji opravdu potřebujete.</p>
+        </article>
+
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8.7 8.5a2.4 2.4 0 0 1 3.3 0l.5.5.5-.5a2.4 2.4 0 1 1 3.4 3.4l-3.9 4-3.8-4a2.4 2.4 0 0 1 0-3.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M5 18c1.4-1.2 3-1.8 4.8-1.8 1.2 0 2.2.4 3.2 1.1 1 .7 2 1.1 3.2 1.1 1 0 2.2-.3 3.8-1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Výsledky, které se přenášejí do života</h3>
+          <p>Nepracujeme s trikem v kapse. Cílem je vztah, kde vám pes rozumí a vy jemu, v parku, doma i ve vypjatých situacích.</p>
+        </article>
+
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 18c3.9 0 7-2.7 7-6s-3.1-6-7-6-7 2.7-7 6c0 1.4.6 2.8 1.6 3.8L6 19l3.2-1.6c.9.4 1.8.6 2.8.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Komunita a podpora</h3>
+          <p>Nejste v tom sami. Ke každému kurzu patří prostor pro sdílení, otázky a průběžnou oporu, ať se v praxi nezaseknete hned po první lekci.</p>
+        </article>
+
+        <article class="course-value-card">
+          <span class="course-value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M13 3 6.5 12h4l-1 9L17.5 11h-4L13 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Okamžitý start, žádné čekání</h3>
+          <p>Po zakoupení máte přístup hned. Stačí otevřít první modul a začít dnes, teď, bez instalace čehokoliv a bez zbytečných odkladů.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="course-quote-section">
+      <div class="course-quote-panel">
+        <div class="course-quote-main">
+          <span class="course-quote-line" aria-hidden="true"></span>
+          <blockquote>
+            „Kurzy stavíme tak, aby teorie měla vždy reálný kontext. Ne přednáška, ale průvodce do praxe.“
+          </blockquote>
+          <p>Ing. Andrea Zoulová, certifikovaná trenérka</p>
+        </div>
+
+        <div class="course-quote-points">
+          <article class="course-quote-point">
+            <span class="course-quote-dot" aria-hidden="true"></span>
+            <div>
+              <h3>Videa + kvízy + PDF</h3>
+              <p>Každý modul kombinuje video, doprovodné materiály a praktické návaznosti pro běžný život se psem.</p>
+            </div>
+          </article>
+
+          <article class="course-quote-point">
+            <span class="course-quote-dot" aria-hidden="true"></span>
+            <div>
+              <h3>Vlastní tempo</h3>
+              <p>Studujete, kdy chcete. Obsah je přístupný bez tlaku na výkon a bez zahlcení jedním tempem pro všechny.</p>
+            </div>
+          </article>
+
+          <article class="course-quote-point">
+            <span class="course-quote-dot" aria-hidden="true"></span>
+            <div>
+              <h3>Etický výcvik</h3>
+              <p>Žádné triky bez základu. Pracujeme s porozuměním, kontextem a respektem k psovi i člověku.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
 {% endblock %}

@@ -12,9 +12,9 @@
           <h1 class="section-title-sm mb-1">Kontaktní a adresní údaje</h1>
           <p class="text-muted">
             {% if has_physical_products %}
-              Po výběru dopravy doplň údaje pro doručení a fakturaci.
+              Po výběru dopravy doplňte údaje pro doručení a fakturaci.
             {% else %}
-              Doplň údaje a pokračuj bezpečně k platbě.
+              Doplňte údaje a pokračujte bezpečně k platbě.
             {% endif %}
           </p>
         </div>
@@ -36,7 +36,7 @@
                   {% if is_packeta_delivery %}
                     Objednávku odešleme na vybrané výdejní místo Zásilkovny.
                   {% else %}
-                    Objednávku doručíme na adresu, kterou vyplníš níže.
+                    Objednávku doručíme na adresu, kterou vyplníte níže.
                   {% endif %}
                 </p>
               </div>
@@ -84,7 +84,7 @@
 
               {% if is_packeta_delivery %}
                 <p class="text-muted mb-4">
-                  Výdejní místo už máš zvolené. Tady doplň kontaktní adresu kvůli objednávce a fakturaci.
+                  Výdejní místo už máte zvolené. Tady doplňte kontaktní adresu kvůli objednávce a fakturaci.
                 </p>
               {% endif %}
 
@@ -186,7 +186,7 @@
                       id="newsletter"
                       {% if cart.newsletter_opt_in %}checked{% endif %}>
                 <label class="form-check-label" for="newsletter">
-                  Chci dostávat e-mailový newsletter (tipy, novinky)
+                  Souhlasím se zasíláním e-mailového newsletteru (tipy, novinky)
                 </label>
               </div>
 

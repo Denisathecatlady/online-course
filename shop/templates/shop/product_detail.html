@@ -21,14 +21,14 @@
         </div>
 
         <div class="product-info reveal">
-          <span class="badge badge-soft mb-3">Vodítko</span>
+          <span class="badge badge-soft mb-3">{{ detail_badge }}</span>
           <h1 class="product-detail-title">{{ product.name }}</h1>
-          <p class="product-detail-copy">{{ product.description }}</p>
+          <p class="product-detail-copy">{{ detail_copy }}</p>
 
           <div class="product-detail-highlights">
-            <div class="product-highlight-chip">Ručně vyráběné</div>
-            <div class="product-highlight-chip">Výběr variant na míru</div>
-            <div class="product-highlight-chip">Bezpečné dokončení přes Stripe</div>
+            {% for highlight in detail_highlights %}
+              <div class="product-highlight-chip">{{ highlight }}</div>
+            {% endfor %}
           </div>
 
           <div class="product-detail-price-card">
@@ -95,10 +95,10 @@
             {% if bundle_offer %}
             <div class="product-bundle-card">
               <span class="product-bundle-label">{{ bundle_offer.title }}</span>
-              <h3 class="product-bundle-title mb-2">Vodítko + {{ bundle_offer.companion_name }}</h3>
+              <h3 class="product-bundle-title mb-2">{{ bundle_offer.heading }}</h3>
               <p class="product-bundle-copy">{{ bundle_offer.copy }}</p>
               <p id="bundle-summary" class="product-bundle-summary mb-0">
-                Vyber variantu a zobrazí se i cena kompletu.
+                Vyberte variantu a zobrazí se i cena kompletu.
               </p>
               <input type="hidden" name="bundle_variant_id" id="bundle-variant-id">
             </div>
@@ -123,6 +123,17 @@
           </form>
         </div>
       </div>
+
+      {% if detail_info_cards %}
+        <div class="product-detail-info-grid reveal">
+          {% for card in detail_info_cards %}
+            <article class="product-detail-info-card">
+              <h2>{{ card.title }}</h2>
+              <p>{{ card.copy }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -196,7 +207,9 @@ function updateVariant() {
     if (bundleSubmitButton && bundleVariantInput) {
       const bundleAvailable = Boolean(match.bundle_variant_id) && match.bundle_stock > 0 && match.stock > 0;
       bundleVariantInput.value = match.bundle_variant_id || "";
-      bundleSubmitButton.formAction = match.bundle_variant_id ? bundleUrl.replace("0", match.id) : "";
+      bundleSubmitButton.formAction = match.bundle_variant_id
+        ? bundleUrl.replace("0", match.bundle_primary_variant_id || match.id)
+        : "";
       bundleSubmitButton.disabled = !bundleAvailable;
 
       if (bundleSummaryElement) {

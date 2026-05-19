@@ -31,6 +31,7 @@
 
 <body class="{% block body_class %}{% endblock %}">
 
+{% if not hide_site_navbar %}
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
     <div class="container">
@@ -64,11 +65,6 @@
                     </a>
 
                     <ul class="nav-submenu-menu">
-                        <li>
-                            <a class="nav-submenu-item" href="{% url 'courses:cemu_se_venujeme' %}">
-                                Čemu se věnujeme
-                            </a>
-                        </li>
                         <li>
                             <a class="nav-submenu-item" href="{% url 'courses:nase_filozofie' %}">
                                 Naše filozofie
@@ -106,6 +102,12 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hotel:home' %}">
+                        Hotel
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'courses:contact' %}">
                         Kontakt
                     </a>
@@ -120,7 +122,7 @@
                     <li class="nav-item">
                         <a class="nav-link navbar-utility-link {% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'my_courses' %}active{% endif %}"
                            href="{% url 'accounts:my_courses' %}">
-                            Moje kurzy
+                            Přejít do e-learning portálu
                         </a>
                     </li>
                 {% endif %}
@@ -195,6 +197,7 @@
         </div>
     </div>
 </nav>
+{% endif %}
 <!-- HERO (POUZE STRÁNKY, KTERÉ HO DEFINUJÍ) -->
 {% block hero %}{% endblock %}
 
@@ -203,6 +206,7 @@
     {% block content %}{% endblock %}
 </main>
 
+{% if not hide_site_footer %}
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container site-footer-grid">
@@ -224,6 +228,7 @@
         <a href="{% url 'payments:course_list' %}">Online kurzy</a>
         <a href="{% url 'courses:trainings' %}">Osobní trénink</a>
         <a href="{% url 'shop:product_list' %}">Vodítka a vybavení</a>
+        <a href="{% url 'hotel:home' %}">Hotel pro psy a kočky</a>
         <a href="{% url 'courses:contact' %}">Konzultace</a>
       </nav>
     </div>
@@ -243,6 +248,7 @@
     </div>
   </div>
 </footer>
+{% endif %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

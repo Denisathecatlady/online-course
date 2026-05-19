@@ -53,7 +53,7 @@ class ShippingViewTests(TestCase):
         cart.refresh_from_db()
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Pro Zásilkovnu vyber výdejní místo.")
+        self.assertContains(response, "Pro Zásilkovnu vyberte výdejní místo.")
         self.assertIsNone(cart.shipping_method)
         self.assertFalse(cart.packeta_point_id)
 

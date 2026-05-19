@@ -26,7 +26,7 @@
 
                     <p class="shop-hero-lead">
                         Každý kus navrhujeme tak, aby byl funkční, odolný a hezký.
-                        Vyber si střih, délku i barvu a užijte si procházky víc.
+                        Vyberte si střih, délku i barvu a užijte si procházky víc.
                     </p>
 
                     <div class="shop-hero-actions">
@@ -36,10 +36,6 @@
                         </a>
                     </div>
 
-                    <div class="shop-rating-row" aria-label="Hodnocení zákazníků">
-                        <span class="shop-stars" aria-hidden="true">★★★★★</span>
-                        <span>4.9 / 5 — 120+ spokojených</span>
-                    </div>
                 </div>
 
                 <div class="shop-hero-media reveal">
@@ -54,14 +50,6 @@
                 </div>
             </div>
 
-            <div class="shop-stats-grid reveal">
-                {% for stat in hero_stats %}
-                    <article class="shop-stat-card">
-                        <strong class="shop-stat-value">{{ stat.value }}</strong>
-                        <span class="shop-stat-label">{{ stat.label }}</span>
-                    </article>
-                {% endfor %}
-            </div>
         </div>
     </div>
 </section>
@@ -69,6 +57,93 @@
 <section class="shop-products" id="produkty">
     <div class="container">
         <div class="shop-shell">
+            {% if bundle_card %}
+                <article class="shop-product-card shop-product-card--featured shop-bundle-card">
+                    <div class="shop-product-visual">
+                        <span class="shop-card-badge">{{ bundle_card.badge }}</span>
+
+                        <div class="shop-product-photo-frame">
+                            <img src="{{ bundle_card.image_url }}" alt="{{ bundle_card.image_alt }}" class="shop-product-photo">
+                        </div>
+                    </div>
+
+                    <div class="shop-product-body">
+                        <h2 class="shop-product-title">{{ bundle_card.title }}</h2>
+                        <p class="shop-product-teaser">{{ bundle_card.teaser }}</p>
+                        <p class="shop-product-description">{{ bundle_card.description }}</p>
+
+                        <ul class="shop-feature-list">
+                            {% for feature in bundle_card.features %}
+                                <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <form
+                            method="post"
+                            action="{{ bundle_card.default_option.action_url }}"
+                            class="shop-bundle-form"
+                            data-bundle-form
+                        >
+                            {% csrf_token %}
+                            <input
+                                type="hidden"
+                                name="bundle_variant_id"
+                                value="{{ bundle_card.default_option.bundle_variant_id }}"
+                                data-bundle-variant-input
+                            >
+                            <input type="hidden" name="quantity" value="1">
+
+                            <div class="shop-bundle-controls">
+                                <label for="bundle-color-select" class="shop-bundle-label">Barva sady</label>
+                                <div class="shop-bundle-select-row">
+                                    <span
+                                        class="shop-bundle-swatch"
+                                        style="--swatch-color: {{ bundle_card.default_option.color_hex }};"
+                                        aria-hidden="true"
+                                        data-bundle-swatch
+                                    ></span>
+                                    <select id="bundle-color-select" class="shop-bundle-select" data-bundle-select>
+                                        {% for option in bundle_card.options %}
+                                            <option
+                                                value="{{ option.primary_variant_id }}"
+                                                data-action-url="{{ option.action_url }}"
+                                                data-bundle-variant-id="{{ option.bundle_variant_id }}"
+                                                data-summary="{{ option.summary }}"
+                                                data-price-label="{{ option.price|floatformat:0|intcomma }} Kč"
+                                                data-original-price-label="{{ option.original_price|floatformat:0|intcomma }} Kč"
+                                                data-color-hex="{{ option.color_hex }}"
+                                            >
+                                                {{ option.color_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <p class="shop-bundle-summary" data-bundle-summary>
+                                    {{ bundle_card.default_option.summary }}
+                                </p>
+                            </div>
+
+                            <div class="shop-product-footer shop-bundle-footer">
+                                <div class="shop-price-block">
+                                    <span class="shop-price-label">sada od</span>
+                                    <span class="shop-price-original" data-bundle-original-price>
+                                        {{ bundle_card.default_option.original_price|floatformat:0|intcomma }} Kč
+                                    </span>
+                                    <strong class="shop-price-value" data-bundle-price>
+                                        {{ bundle_card.default_option.price|floatformat:0|intcomma }} Kč
+                                    </strong>
+                                </div>
+
+                                <button type="submit" class="shop-btn shop-btn--accent shop-bundle-submit">
+                                    Přidat sadu do košíku
+                                    <span aria-hidden="true">→</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </article>
+            {% endif %}
+
             <div class="shop-product-grid reveal">
                 {% for card in product_cards %}
                     <article class="shop-product-card">
@@ -119,7 +194,7 @@
                                     href="{% url 'shop:product_detail' card.product.slug %}"
                                     class="shop-btn {% if card.button_theme == 'accent' %}shop-btn--accent{% elif card.button_theme == 'dark' %}shop-btn--dark{% else %}shop-btn--sage{% endif %}"
                                 >
-                                    Chci toto
+                                    Vybrat
                                     <span aria-hidden="true">→</span>
                                 </a>
                             </div>
@@ -177,7 +252,7 @@
             <div class="shop-support-grid reveal">
                 <article class="shop-support-card">
                     <span class="shop-section-kicker">Kontakt</span>
-                    <h3>Zaujala tě naše vodítka?</h3>
+                    <h3>Zaujala vás naše vodítka?</h3>
                     <p>
                         V případě zájmu o naše vodítka nás prosím kontaktujte na e-mail:
                         <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>.
@@ -230,6 +305,7 @@
                     </article>
                 {% endfor %}
             </div>
+
         </div>
     </div>
 </section>
@@ -242,8 +318,8 @@
                     <span class="shop-section-kicker shop-section-kicker--light">Na míru</span>
                     <h2 class="shop-cta-title">Vlastní barva, délka nebo provedení?</h2>
                     <p class="shop-cta-text">
-                        Každé vodítko vyrábíme na zakázku. Napiš nám, co potřebuješ,
-                        rádi to vyřešíme přesně podle tvých představ.
+                        Každé vodítko vyrábíme na zakázku. Napište nám, co potřebujete,
+                        rádi to vyřešíme přesně podle vašich představ.
                     </p>
 
                     <div class="shop-cta-actions">
@@ -264,4 +340,38 @@
         </div>
     </div>
 </section>
+<script>
+document.querySelectorAll("[data-bundle-form]").forEach((form) => {
+    const select = form.querySelector("[data-bundle-select]");
+    const variantInput = form.querySelector("[data-bundle-variant-input]");
+    const summary = form.querySelector("[data-bundle-summary]");
+    const price = form.querySelector("[data-bundle-price]");
+    const originalPrice = form.querySelector("[data-bundle-original-price]");
+    const swatch = form.querySelector("[data-bundle-swatch]");
+
+    function syncBundleSelection() {
+        const option = select.options[select.selectedIndex];
+        form.action = option.dataset.actionUrl;
+        variantInput.value = option.dataset.bundleVariantId;
+
+        if (summary) {
+            summary.innerText = option.dataset.summary;
+        }
+        if (price) {
+            price.innerText = option.dataset.priceLabel;
+        }
+        if (originalPrice) {
+            originalPrice.innerText = option.dataset.originalPriceLabel;
+        }
+        if (swatch) {
+            swatch.style.setProperty("--swatch-color", option.dataset.colorHex || "#d9d9d9");
+        }
+    }
+
+    if (select) {
+        select.addEventListener("change", syncBundleSelection);
+        syncBundleSelection();
+    }
+});
+</script>
 {% endblock %}

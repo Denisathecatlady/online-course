@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Hotel pro psy a kočky | CalmDog – Žatec{% endblock %}
+
+{% block body_class %}page-hotel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hotel/css/hotel.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ════════════════════════════════════════════════
+     BANNER – V REKONSTRUKCI
+════════════════════════════════════════════════ -->
+<div class="preview-banner">
+    🏗️ &nbsp;Právě pracujeme na rekonstrukci — hotel otevíráme v roce <strong>2027</strong>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hotel-hero">
+    <div class="container">
+        <div class="hotel-hero-shell">
+            <span class="hotel-kicker">Hotel pro psy a kočky · Žatec</span>
+            <h1 class="hotel-hero-title">
+                Jiný přístup
+                <span>k hlídání zvířat.</span>
+            </h1>
+            <div class="hotel-hero-copy-grid">
+                <p class="hotel-copy">
+                    Žádné kotce. Žádné klece. Každý pes a každá kočka má svůj vlastní pokoj —
+                    prostor, kde se může cítit bezpečně a v klidu.
+                </p>
+                <p class="hotel-copy">
+                    Hotel CalmDog stojí na filozofii Turid Rugaas a na přesvědčení,
+                    že zvíře v pohodě a bez stresu je základ všeho ostatního.
+                    Otevíráme v roce 2027 v Žatci.
+                </p>
+            </div>
+            <div class="hotel-hero-actions">
+                <a href="{% url 'hotel:reservation_form' %}" class="btn btn-sage hotel-hero-btn">
+                    <span>Zanechat kontakt</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     FILOZOFIE – TURID RUGAAS
+════════════════════════════════════════════════ -->
+<section class="hotel-section reveal">
+    <div class="container">
+        <div class="hotel-split">
+            <div class="hotel-split-main">
+                <span class="hotel-kicker">Naše filozofie</span>
+                <h2 class="hotel-title">
+                    Inspirováni
+                    <span>Turid Rugaas.</span>
+                </h2>
+            </div>
+            <div class="hotel-split-side">
+                <p class="hotel-copy">
+                    Turid Rugaas je norská kynologka, která celý svůj profesní život zasvětila
+                    porozumění psí komunikaci. Její práce ukázala, jak citlivě psi komunikují
+                    a jak snadno je můžeme nepochopením vystavit zbytečnému stresu.
+                </p>
+                <p class="hotel-copy">
+                    Na těchto základech stojí i náš hotel. Každé rozhodnutí — od dispozice pokojů
+                    po denní program — vychází z potřeb zvířat, ne z lidské představy o pohodlí.
+                    Klid, bezpečí a respekt nejsou u nás bonusy. Jsou to základní standardy.
+                </p>
+            </div>
+        </div>
+
+        <blockquote class="hotel-quote reveal">
+            <p class="hotel-quote-text">
+                „Psi komunikují celým tělem. Pokud je posloucháme,
+                dají nám vědět, co potřebují — musíme se jen naučit naslouchat."
+            </p>
+            <cite class="hotel-quote-cite">— Turid Rugaas</cite>
+        </blockquote>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     ŽÁDNÉ KOTCE – TMAVÁ SEKCE
+════════════════════════════════════════════════ -->
+<section class="hotel-contrast reveal">
+    <div class="hotel-contrast-grid">
+        <div class="hotel-contrast-main">
+            <p class="hotel-kicker hotel-kicker-accent">Náš hlavní princip</p>
+            <h2 class="hotel-contrast-title">
+                Žádné kotce.
+                <span>Žádné klece.</span>
+            </h2>
+        </div>
+        <div class="hotel-contrast-side">
+            <p class="hotel-contrast-copy">
+                Tradiční psí hotely chápou „ubytování" jako zavření zvířete do kotce nebo klece.
+                My to vidíme jinak. Kotec zvíře nestresuje jen fyzickým omezením —
+                stresuje ho neschopnost volby, absence úniku a ztráta kontroly nad vlastním prostorem.
+            </p>
+            <p class="hotel-contrast-copy">
+                U nás každý host spí, jí a odpočívá ve svém vlastním pokoji.
+                Má prostor, má soukromí a může se pohybovat podle vlastního rytmu.
+            </p>
+        </div>
+    </div>
+    <div class="hotel-contrast-mark" aria-hidden="true">NE.</div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     PRO PSY – 3 SEKCE (pokoj / zahrádka / procházky)
+════════════════════════════════════════════════ -->
+<section class="hotel-section reveal">
+    <div class="container">
+        <span class="hotel-kicker">Pro psy</span>
+        <h2 class="hotel-title hotel-title-narrow">
+            Pokoj, zahrádka
+            <span>a každodenní procházky.</span>
+        </h2>
+
+        <div class="hotel-topics-grid">
+            <article class="hotel-topic reveal reveal-lift reveal-delay-1">
+                <span class="hotel-topic-index">01</span>
+                <h3>Vlastní pokoj</h3>
+                <p>
+                    Každý pes má svůj pokoj s pohodlným místem na spaní, miskou a prostorem
+                    na odpočinek. Nikdo ho neruší, nikdo na něj netlačí. Je to jeho teritorium
+                    po celou dobu pobytu.
+                </p>
+            </article>
+
+            <article class="hotel-topic reveal reveal-lift reveal-delay-2">
+                <span class="hotel-topic-index">02</span>
+                <h3>Vlastní zahrádka&nbsp;/ výběh</h3>
+                <p>
+                    Ke každému pokoji přísluší přímý přístup na soukromou zahrádku nebo výběh.
+                    Pes může volně vycházet, čmuchat a relaxovat na čerstvém vzduchu —
+                    bez kontaktu s jinými psy, pokud si to nepřeje.
+                </p>
+            </article>
+
+            <article class="hotel-topic reveal reveal-lift reveal-delay-3">
+                <span class="hotel-topic-index">03</span>
+                <h3>Procházky každý den</h3>
+                <p>
+                    Každý pes dostane každý den individuální procházku. Tempo, délka i trasa
+                    přizpůsobena konkrétnímu psovi — ne skupinovému výběhu, kde si psi
+                    navzájem přidávají stres.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     PRO KOČKY
+════════════════════════════════════════════════ -->
+<section class="hotel-section hotel-section-tinted reveal">
+    <div class="container">
+        <div class="hotel-split">
+            <div class="hotel-split-main">
+                <span class="hotel-kicker">Pro kočky</span>
+                <h2 class="hotel-title">
+                    Klid a soukromí
+                    <span>především.</span>
+                </h2>
+            </div>
+            <div class="hotel-split-side">
+                <p class="hotel-copy">
+                    Kočky jsou tvorové zvyku a teritoria. Přesun do nového prostředí je pro ně
+                    přirozeně náročný — proto jim zajišťujeme maximální klid, soukromí
+                    a prostor, který jim pomáhá se zorientovat vlastním tempem.
+                </p>
+                <ul class="hotel-list">
+                    <li>Vlastní pokoj v oddělené, tiché části hotelu</li>
+                    <li>Žádný přímý kontakt se psy</li>
+                    <li>Respekt k přirozenému rytmu kočky</li>
+                    <li>Přivítáme oblíbenou přikrývku nebo hračku z domova</li>
+                    <li>Žádný nátlak, žádné nucené mazlení</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     ŽATEC
+════════════════════════════════════════════════ -->
+<section class="hotel-section reveal">
+    <div class="container">
+        <div class="hotel-split">
+            <div class="hotel-split-main">
+                <span class="hotel-kicker">Kde nás najdete</span>
+                <h2 class="hotel-title">
+                    Žatec.
+                    <span>Ústecký kraj.</span>
+                </h2>
+            </div>
+            <div class="hotel-split-side">
+                <p class="hotel-copy">
+                    Hotel CalmDog se bude nacházet v Žatci — klidném městě v Ústeckém kraji,
+                    obklopeném přírodou, poli a chmelnicemi. Ideální prostředí pro zvířata,
+                    která potřebují klid, prostor a čerstvý vzduch.
+                </p>
+                <p class="hotel-copy">
+                    Přesná adresa, mapa a informace o příjezdu budou zveřejněny
+                    před otevřením v roce 2027.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     UPOZORNĚNÍ – AGRESIVNÍ ZVÍŘATA
+════════════════════════════════════════════════ -->
+<section class="hotel-section-sm reveal">
+    <div class="container">
+        <div class="hotel-warning">
+            <strong>Agresivní chování.</strong>
+            Pokud vaše zvíře projevuje agresivní chování vůči lidem nebo jiným zvířatům,
+            uveďte to prosím při registraci zájmu. Každý případ řešíme individuálně —
+            bezpečí všech hostů je pro nás na prvním místě.
+            Vyhrazujeme si právo pobyt odmítnout nebo upravit jeho podmínky.
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     CTA – zanechat kontakt
+════════════════════════════════════════════════ -->
+<section class="hotel-contact reveal">
+    <div class="container">
+        <div class="hotel-contact-body">
+            <div class="hotel-contact-copy">
+                <p class="hotel-kicker">Otevíráme 2027</p>
+                <h2>Chcete být mezi prvními?</h2>
+                <p class="hotel-copy">
+                    Zanechte nám kontakt a jakmile spustíme rezervace,
+                    dáme vám vědět jako prvním.
+                </p>
+            </div>
+            <div class="hotel-contact-actions">
+                <a href="{% url 'hotel:reservation_form' %}" class="hotel-contact-btn-primary">
+                    <span>Zanechat kontakt</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+                <a href="{% url 'courses:contact' %}" class="hotel-contact-btn-outline">
+                    <span>Napsat nám</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

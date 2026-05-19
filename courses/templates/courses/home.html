@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="panel-number">02</span>
         <h3>Učíme přenositelné principy, ne rychlé triky</h3>
         <p>
-          Cílem není krátkodobý efekt, ale dlouhodobé porozumění tomu, co pes říká,
+          Cílem není krátkodobý efekt, ale dlouhodobé porozumění tomu, co pes prožívá,
           proč reaguje a jak mu můžeme skutečně pomoci.
         </p>
       </article>
@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
           Promyšlené produkty pro každodenní použití. Vodítka, které umožňují svobodu
           a zároveň bezpečnost při procházkách.
         </p>
-        <a href="{% url 'shop:product_list' %}" class="service-link">Chci vodítko</a>
+        <a href="{% url 'shop:product_list' %}" class="service-link">Vodítka</a>
       </article>
     </div>
   </div>
@@ -291,43 +291,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="course-preview-grid">
       {% for course in courses %}
-        <article class="course-preview-card course-preview-card-rich reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}">
-          <a href="{% url 'payments:course_detail' course.slug %}" class="course-preview-image-link" aria-label="{{ course.title }}">
-            {% if course.public_image_url %}
-              <img src="{{ course.public_image_url }}" alt="{{ course.title }}" class="course-preview-image">
-            {% else %}
-              <img src="{% static 'img/shared/hero-dog.jpg' %}" alt="{{ course.title }}" class="course-preview-image">
-            {% endif %}
-          </a>
+        <article class="home-course-card reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}">
+          <a href="{% url 'payments:course_detail' course.slug %}" class="home-course-card-link" aria-label="{{ course.title }}">
+            <div class="home-course-card-media">
+              <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="home-course-card-image">
+            </div>
 
-          <div class="course-preview-body">
-            <div class="course-preview-meta-top">
-              <span class="course-preview-tag">Online kurz</span>
+            <div class="home-course-card-overlay"></div>
+
+            <div class="home-course-card-top">
+              <span class="home-course-card-pill">Online kurz</span>
               {% if course.active_plan_count %}
-                <span class="course-preview-variants">{{ course.active_plan_count }} variant{{ course.active_plan_count|pluralize:"a,y" }}</span>
+                <span class="home-course-card-badge">{{ course.active_plan_count }}</span>
               {% endif %}
             </div>
 
-            <h3>{{ course.title }}</h3>
-            <p>{{ course.public_intro|default:course.about_text|truncatewords:20 }}</p>
+            <div class="home-course-card-body">
+              <span class="home-course-card-kicker">
+                {% if forloop.first %}
+                  Praktický online kurz
+                {% else %}
+                  Studium vlastním tempem
+                {% endif %}
+              </span>
 
-            <div class="course-preview-footer">
-              <a href="{% url 'payments:course_detail' course.slug %}">Detail kurzu →</a>
-              {% if course.min_price %}
-                <strong>{{ course.min_price|floatformat:0|intcomma }} Kč</strong>
-              {% endif %}
+              <h3 class="home-course-card-title">{{ course.title }}</h3>
+              <p class="home-course-card-description">{{ course.listing_description|truncatewords:20 }}</p>
             </div>
-          </div>
+
+            <div class="home-course-card-footer">
+              <div class="home-course-card-meta">
+                {% if course.meta_access %}
+                  <span>{{ course.meta_access }}</span>
+                {% endif %}
+                {% if course.meta_modules %}
+                  <span>{{ course.meta_modules }}</span>
+                {% endif %}
+                {% if course.meta_variants %}
+                  <span>{{ course.meta_variants }}</span>
+                {% endif %}
+              </div>
+
+              <div class="home-course-card-bottom-row">
+                <div class="home-course-card-price">
+                  {% if course.min_price %}
+                    {{ course.min_price|floatformat:0|intcomma }} Kč
+                  {% else %}
+                    Na dotaz
+                  {% endif %}
+                </div>
+                <span class="home-course-card-arrow" aria-hidden="true">→</span>
+              </div>
+            </div>
+          </a>
         </article>
       {% empty %}
-        <article class="course-preview-card course-preview-card-empty reveal reveal-lift reveal-delay-1">
-          <div class="course-preview-body">
-            <span class="course-preview-tag">Online kurzy</span>
+        <article class="home-course-card home-course-card-empty reveal reveal-lift reveal-delay-1">
+          <div class="home-course-card-empty-body">
+            <span class="home-course-card-pill">Online kurzy</span>
             <h3>Nové kurzy se připravují</h3>
-            <p>Aktuální nabídku brzy doplníme. Pokud chceš vědět mezi prvními, napiš nám.</p>
-            <div class="course-preview-footer">
-              <a href="{% url 'courses:contact' %}">Napsat nám →</a>
-            </div>
+            <p>Aktuální nabídku brzy doplníme. Pokud chcete vědět mezi prvními, napište nám.</p>
+            <a href="{% url 'courses:contact' %}">Napsat nám →</a>
           </div>
         </article>
       {% endfor %}
@@ -346,13 +370,13 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="container">
     <div class="home-cta-shell reveal">
       <h2 class="section-title">
-        Vyber si cestu, která teď dává
+        Vyberte si cestu, která teď dává
         <span>největší smysl.</span>
       </h2>
       <div class="home-cta-actions">
-        <a href="{% url 'courses:trainings' %}" class="btn btn-sage home-cta-btn-primary">Chci osobní trénink</a>
-        <a href="{% url 'payments:course_list' %}" class="btn home-cta-btn-outline">Chci online kurz</a>
-        <a href="{% url 'shop:product_list' %}" class="btn home-cta-btn-outline">Chci vodítko</a>
+        <a href="{% url 'courses:trainings' %}" class="btn btn-sage home-cta-btn-primary">Osobní trénink</a>
+        <a href="{% url 'payments:course_list' %}" class="btn home-cta-btn-outline">Online kurz</a>
+        <a href="{% url 'shop:product_list' %}" class="btn home-cta-btn-outline">Vodítka</a>
       </div>
     </div>
   </div>

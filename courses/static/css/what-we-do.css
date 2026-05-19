@@ -1,0 +1,509 @@
+.page-what-we-do .page-wrapper {
+    padding-top: 0 !important;
+}
+
+.what-we-do-page {
+    background: #f5f5f0;
+}
+
+.what-we-do-shell {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0.25rem 0 0;
+}
+
+.what-we-do-kicker,
+.what-we-do-contact-kicker,
+.what-we-do-contrast-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 0 1.15rem;
+    color: #5f766b;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.what-we-do-kicker::before,
+.what-we-do-contact-kicker::before,
+.what-we-do-contrast-kicker::before {
+    content: "";
+    width: 1.55rem;
+    height: 1px;
+    background: currentColor;
+}
+
+.what-we-do-kicker-accent,
+.what-we-do-contrast-kicker {
+    color: #ef9d58;
+}
+
+.what-we-do-hero {
+    margin-bottom: 5rem;
+}
+
+.what-we-do-title {
+    max-width: 14ch;
+    margin: 0 0 2rem;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3.4rem, 7vw, 6rem);
+    font-weight: 600;
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+}
+
+.what-we-do-title span {
+    color: #6a857c;
+}
+
+.what-we-do-copy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    max-width: 980px;
+}
+
+.what-we-do-copy,
+.what-we-do-contrast-copy {
+    margin: 0;
+    color: rgba(47, 62, 58, 0.74);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.what-we-do-topics {
+    margin-bottom: 2.4rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.what-we-do-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+}
+
+.what-we-do-topic {
+    padding: 2rem 1.4rem 2.2rem 0;
+    border-right: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.what-we-do-topic:nth-child(2) {
+    padding-left: 1.4rem;
+}
+
+.what-we-do-topic:nth-child(3) {
+    padding-left: 1.4rem;
+    padding-right: 0;
+    border-right: 0;
+}
+
+.what-we-do-topic-media {
+    position: relative;
+    aspect-ratio: 1.3 / 1;
+    margin-bottom: 1.4rem;
+    overflow: hidden;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #edf3ef, #dfe7e1);
+}
+
+.what-we-do-topic-index {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3.2rem, 5vw, 4.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+}
+
+.what-we-do-topic-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.what-we-do-topic h2 {
+    margin: 0 0 0.95rem;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.65rem, 2.4vw, 2.2rem);
+    font-weight: 600;
+    line-height: 1.08;
+}
+
+.what-we-do-topic ul,
+.what-we-do-contrast-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.what-we-do-topic li {
+    position: relative;
+    margin-bottom: 0.85rem;
+    padding-left: 1rem;
+    color: #5d6764;
+    font-size: 0.96rem;
+    line-height: 1.55;
+}
+
+.what-we-do-topic li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #6a857c;
+}
+
+.what-we-do-contrast {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-bottom: 4.5rem;
+    overflow: hidden;
+    border-radius: 0;
+    background: #2f2e2c;
+}
+
+.what-we-do-contrast-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.35fr);
+    gap: 3.2rem;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 3rem 2.8rem;
+}
+
+.what-we-do-contrast-title {
+    max-width: 7ch;
+    margin: 0;
+    color: #ffffff;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.6rem, 5.2vw, 4.2rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.what-we-do-contrast-title span {
+    color: #ef9d58;
+}
+
+.what-we-do-contrast-list {
+    margin-bottom: 2rem;
+}
+
+.what-we-do-contrast-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.05rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.98rem;
+    line-height: 1.45;
+    text-decoration: line-through;
+    text-decoration-color: rgba(239, 157, 88, 0.5);
+    text-decoration-thickness: 1px;
+    text-decoration-skip-ink: auto;
+}
+
+.what-we-do-contrast-list li::before {
+    content: "×";
+    color: #ef9d58;
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.what-we-do-contrast-copy {
+    max-width: 42rem;
+    color: rgba(255, 255, 255, 0.62);
+}
+
+.what-we-do-contrast-mark {
+    position: absolute;
+    right: max(-3.5rem, calc((100vw - 1160px) / 2 - 3.5rem));
+    bottom: -0.4rem;
+    color: rgba(255, 255, 255, 0.04);
+    font-family: "Playfair Display", serif;
+    font-size: clamp(8rem, 20vw, 14rem);
+    line-height: 0.9;
+    pointer-events: none;
+}
+
+.what-we-do-offers {
+    margin-bottom: 3rem;
+}
+
+.what-we-do-offers-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 25rem;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2.4rem;
+}
+
+.what-we-do-offers-title {
+    margin: 0;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3rem, 6vw, 4.8rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.what-we-do-offers-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.what-we-do-offers-price-note {
+    margin: 0 0 0.9rem;
+    color: #6a857c;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 600;
+    line-height: 1;
+}
+
+.what-we-do-offers-copy {
+    max-width: 25rem;
+    padding-top: 0.8rem;
+    text-align: right;
+}
+
+.what-we-do-offers-list {
+    border-top: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.what-we-do-offer-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    padding: 1.7rem 0;
+    border-bottom: 1px solid rgba(95, 118, 107, 0.12);
+}
+
+.what-we-do-offer-sage {
+    --offer-accent: #6a857c;
+    --offer-accent-soft: rgba(106, 133, 124, 0.12);
+}
+
+.what-we-do-offer-accent {
+    --offer-accent: #ef9d58;
+    --offer-accent-soft: rgba(239, 157, 88, 0.12);
+}
+
+.what-we-do-offer-earth {
+    --offer-accent: #9c7c64;
+    --offer-accent-soft: rgba(156, 124, 100, 0.12);
+}
+
+.what-we-do-offer-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.what-we-do-offer-title-row h3 {
+    margin: 0;
+    color: #2d2d2d;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.65rem, 2.5vw, 2.3rem);
+    font-weight: 600;
+    line-height: 1.06;
+}
+
+.what-we-do-offer-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.85rem;
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--offer-accent-soft, rgba(95, 118, 107, 0.16));
+    border-radius: 999px;
+    background: var(--offer-accent-soft, rgba(95, 118, 107, 0.08));
+    color: var(--offer-accent, #5f766b);
+    font-size: 0.88rem;
+}
+
+.what-we-do-offer-main p {
+    max-width: 42rem;
+    margin: 0;
+    color: rgba(47, 62, 58, 0.72);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+.what-we-do-contact {
+    margin-top: 1.8rem;
+    overflow: hidden;
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08) 0, rgba(255, 255, 255, 0.08) 6.2rem, transparent 6.2rem),
+        radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 8rem, transparent 8rem),
+        #70877e;
+}
+
+.what-we-do-contact-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: center;
+    padding: 2.8rem 3rem;
+}
+
+.what-we-do-contact-copy h2 {
+    max-width: 11ch;
+    margin: 0;
+    color: #ffffff;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.03;
+    letter-spacing: -0.04em;
+}
+
+.what-we-do-contact-actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.what-we-do-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3.2rem;
+    padding: 0.9rem 1.7rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 1.02rem;
+    font-weight: 600;
+}
+
+.what-we-do-contact-btn-primary {
+    background: #ffffff;
+    color: #5f766b;
+}
+
+.what-we-do-contact-btn-outline {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+}
+
+@media (max-width: 1100px) {
+    .what-we-do-copy-grid,
+    .what-we-do-topics-grid,
+    .what-we-do-contrast-grid,
+    .what-we-do-offers-head,
+    .what-we-do-contact-body {
+        grid-template-columns: 1fr;
+    }
+
+    .what-we-do-topic,
+    .what-we-do-topic:nth-child(2),
+    .what-we-do-topic:nth-child(3) {
+        padding: 1.5rem 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba(95, 118, 107, 0.12);
+    }
+
+    .what-we-do-topic:last-child {
+        border-bottom: 0;
+    }
+
+    .what-we-do-offers-copy {
+        max-width: 40rem;
+        padding-top: 0;
+        text-align: left;
+    }
+
+    .what-we-do-offers-aside {
+        align-items: flex-start;
+    }
+
+    .what-we-do-offer-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .what-we-do-contact-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 767px) {
+    .what-we-do-shell {
+        padding-top: 0.4rem;
+    }
+
+    .what-we-do-hero {
+        margin-bottom: 3.2rem;
+    }
+
+    .what-we-do-title,
+    .what-we-do-offers-title {
+        max-width: none;
+        font-size: clamp(2.45rem, 12vw, 3.5rem);
+    }
+
+    .what-we-do-copy,
+    .what-we-do-offer-main p,
+    .what-we-do-topic li,
+    .what-we-do-contrast-copy {
+        font-size: 0.95rem;
+    }
+
+    .what-we-do-contrast-grid {
+        gap: 2rem;
+        padding: 2rem 1.3rem;
+    }
+
+    .what-we-do-contrast-title {
+        font-size: clamp(2.1rem, 10vw, 3rem);
+    }
+
+    .what-we-do-contrast-mark {
+        right: 0.6rem;
+        font-size: clamp(5rem, 26vw, 7rem);
+    }
+
+    .what-we-do-offer-row {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+        padding: 1.25rem 0;
+    }
+
+    .what-we-do-contact-body {
+        gap: 1.5rem;
+        padding: 2rem 1.3rem;
+    }
+
+    .what-we-do-contact-copy h2 {
+        max-width: none;
+        font-size: clamp(1.9rem, 9vw, 2.8rem);
+    }
+
+    .what-we-do-contact-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .what-we-do-contact-btn {
+        width: 100%;
+    }
+}

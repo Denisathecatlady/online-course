@@ -1,88 +1,141 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}education-page-body{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about-us.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="about-page py-6">
-  <div class="container">
-    <div class="about-shell">
-      <section class="about-section about-banner-card card card-soft border-0 reveal">
-        <div class="about-banner-media">
-          <img src="{% static 'img/about/Foto_vzdelani-1.webp' %}" alt="Moje vzdělání" class="about-banner-image">
-        </div>
-        <div class="card-body p-4 p-md-5 education-hero-body">
-          <div class="story-kicker">Etický přístup a hlubší porozumění psovi</div>
-          <p class="about-eyebrow mb-2">Moje vzdělání</p>
-          <h1 class="about-title mb-3">Odbornost postavená na praxi i dalším studiu</h1>
-          <div class="education-hero-grid">
-            <div>
-              <p class="about-copy mb-3">
-                Za CalmDog stojí Ing. Andrea Zoulová.
-              </p>
-              <blockquote class="about-hero-quote mb-0">
-                „Vzdělávání stavím na etickém přístupu ke psu, znalosti psí komunikace, respektu
-                k přirozenému chování a práci, která vede k welfare psa.“
-              </blockquote>
-            </div>
-            <div class="education-hero-note">
-              <span class="education-note-label">Směr, který mě vede</span>
-              <p class="mb-0">
-                Vzdělání pro mě není sbírka certifikátů. Je to způsob, jak psům rozumět citlivěji,
-                odborněji a s větším respektem k jejich emocím a potřebám.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+<section class="education-redesign">
+  <section class="education-r-hero reveal">
+    <div class="education-r-hero-media">
+      <img src="{% static 'img/moje-vzdelani-1.png' %}" alt="Horská krajina" class="education-r-hero-image">
+      <div class="education-r-hero-overlay"></div>
+    </div>
 
-      <section class="about-section education-intro-card card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <div class="education-editorial-grid">
-            <div class="education-editorial-copy">
-              <p class="about-eyebrow mb-2">Základ odbornosti</p>
-              <h2 class="about-subtitle mb-3">Nordic Education Centre for Dog Trainers</h2>
-              <p class="about-copy">
-                Diplom <strong>Ethical Dog Trainer and Dog Behavior Specialist, Level 4</strong>
-                jsem získala v Nordic Education Centre for Dog Trainers v Norsku.
-              </p>
-              <p class="about-copy">
-                Tato škola stojí na znalosti psí komunikace, dovednosti lidské neverbální komunikace
-                se psem a respektování vědecky podloženého přirozeného chování psa.
-              </p>
-              <p class="about-copy mb-0">
-                Jsem první absolventkou této školy v České republice. Cílem tohoto směru je soužití,
-                které podporuje jistotu, bezpečí a celkový welfare psa.
-              </p>
-            </div>
-            <div class="education-editorial-side">
-              <div class="education-editorial-photo">
-                <img src="{% static 'img/about/Foto_vzdelani-2.png' %}" alt="Andrea a vzdělávání CalmDog" class="about-side-image">
-              </div>
-              <div class="education-editorial-fact">
-                <span class="education-note-label">Důležitý moment</span>
-                <p class="mb-0">
-                  První absolventka této školy v Česku a přístup, který staví na welfare psa
-                  místo tlaku a potlačování chování.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div class="education-r-shell education-r-hero-shell">
+      <div class="education-r-hero-topline">
+        <span class="education-r-topline-mark"></span>
+        <span>CalmDog — vzdělání</span>
+      </div>
 
-      <section class="education-feature-section reveal">
-        <div class="education-feature-heading">
-          <p class="about-eyebrow mb-2">Nejvyšší dosažené vzdělání</p>
-          <h2 class="about-title mb-2">Hlavní odborný pilíř</h2>
-          <p class="about-copy mb-0">
-            Hlavní diplom je základem celé mé práce. Po najetí myší nebo fokusu se zobrazí zadní strana.
+      <div class="education-r-hero-grid">
+        <div class="education-r-hero-copy">
+          <p class="education-r-kicker">Moje vzdělání</p>
+          <h1 class="education-r-hero-title">
+            Etický přístup<br>
+            a hlubší <span>porozumění.</span>
+          </h1>
+        </div>
+
+        <div class="education-r-hero-note">
+          <p>
+            Odbornost postavená na praxi i dalším studiu. Za CalmDog stojí Ing. Andrea
+            Zoulová.
           </p>
         </div>
-        <div class="education-feature-frame">
-          <article class="education-flip-card education-feature-card" tabindex="0">
+      </div>
+    </div>
+  </section>
+
+  <section class="education-r-shell education-r-profile reveal">
+    <div class="education-r-profile-grid">
+      <div class="education-r-profile-copy">
+        <p class="education-r-label">Za CalmDog stojí</p>
+        <h2 class="education-r-profile-title">
+          Ing. Andrea<br>
+          <span>Zoulová</span>
+        </h2>
+
+        <blockquote class="education-r-quote">
+          „Vzdělávání stavím na etickém přístupu ke psu, znalosti psí komunikace,
+          respektu k přirozenému chování a práci, která vede k welfare psa."
+        </blockquote>
+
+        <div class="education-r-profile-text">
+          <p class="education-r-subnote">Směr, který mě vede</p>
+          <p>
+            Vzdělání pro mě není sbírka certifikátů. Je to způsob, jak psům rozumět
+            citlivěji, odborněji a s větším respektem k jejich emocím a potřebám.
+          </p>
+        </div>
+      </div>
+
+      <div class="education-r-profile-media">
+        <div class="education-r-profile-photo">
+          <img src="{% static 'img/moje-vzdelani-2.png' %}" alt="Andrea Zoulová">
+        </div>
+        <div class="education-r-photo-caption">
+          <span class="education-r-caption-line"></span>
+          <span>Certified dog trainer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="education-r-nordic reveal">
+    <div class="education-r-nordic-hero">
+      <img src="{% static 'img/moje-vzdelani-3.png' %}" alt="Nordic Education Centre for Dog Trainers">
+      <div class="education-r-nordic-overlay"></div>
+      <div class="education-r-shell education-r-nordic-heading">
+        <p class="education-r-label education-r-label-on-dark">Základ odbornosti</p>
+        <h2 class="education-r-nordic-title">
+          Nordic Education Centre<br>
+          <span>for Dog Trainers</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="education-r-nordic-body">
+      <div class="education-r-shell education-r-nordic-grid">
+        <div class="education-r-nordic-copy">
+          <p>
+            Diplom <strong>Ethical Dog Trainer and Dog Behavior Specialist, Level 4</strong>
+            jsem získala v Nordic Education Centre for Dog Trainers v Norsku.
+          </p>
+          <p>
+            Tato škola stojí na znalosti psí komunikace, dovednosti lidské neverbální
+            komunikace se psem a respektování vědecky podloženého přirozeného chování psa.
+          </p>
+        </div>
+
+        <aside class="education-r-nordic-card">
+          <p class="education-r-kicker">Důležitý moment</p>
+          <h3>Jsem první absolventkou této školy v České republice.</h3>
+          <p class="education-r-nordic-card-copy">
+            Cílem tohoto směru je soužití, které podporuje jistotu, bezpečí a celkový
+            welfare psa. Přístup, který staví na welfare psa místo tlaku a potlačování
+            chování.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="education-r-shell education-r-certificates reveal">
+    <div class="education-r-cert-head">
+      <div>
+        <p class="education-r-label">Andrea a vzdělávání CalmDog</p>
+        <h2 class="education-r-cert-title">
+          Certifikáty<br>
+          <span>a kurzy</span>
+        </h2>
+      </div>
+
+      <div class="education-r-cert-note">
+        <p>Kliknutím na certifikát jej otočíte. Níže najdete i další navazující certifikace.</p>
+      </div>
+    </div>
+
+    <div class="education-r-cert-stack">
+      <div class="education-r-cert-group">
+        <div class="education-r-cert-group-head">
+          <p class="education-r-group-label">Nejvyšší dosažené vzdělání</p>
+        </div>
+        <div class="education-r-certificate-grid education-r-certificate-grid-single">
+          <article class="education-flip-card education-r-certificate-card education-r-certificate-card-main" tabindex="0">
             <div class="education-flip-inner">
               <div class="education-flip-face education-flip-front">
                 <img src="{% static 'img/about/nejvyssi-dosazene-vzdelani-1.png' %}" alt="Nejvyšší dosažené vzdělání - přední strana" class="education-certificate-image">
@@ -93,133 +146,92 @@
             </div>
           </article>
         </div>
-      </section>
+      </div>
 
-      <section class="about-section education-specialization-section card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <div class="education-section-head education-section-head-stacked">
-            <div>
-              <p class="about-eyebrow mb-2">Specializace</p>
-              <h2 class="about-subtitle mb-3">Další odborné zaměření</h2>
-            </div>
-            <p class="education-helper mb-0">
+      <div class="education-r-cert-group">
+        <div class="education-r-cert-group-head">
+          <div class="education-r-cert-group-copy">
+            <p class="education-r-group-label">Specializace</p>
+            <p class="education-r-group-text">
               Specializace navazují na hlavní vzdělání a prohlubují práci s psí komunikací,
-              calming signals a citlivým vedením psa v běžných i náročnějších situacích.
+              konejšivými signály a citlivým vedením psa v běžných i náročnějších situacích.
             </p>
           </div>
-          <div class="education-flip-grid education-flip-grid-featured">
-            <article class="education-flip-card education-specialization-card" tabindex="0">
-              <div class="education-flip-inner">
-                <div class="education-flip-face education-flip-front">
-                  <img src="{% static 'img/about/specializace-1.png' %}" alt="Specializace - přední strana 1" class="education-certificate-image">
-                </div>
-                <div class="education-flip-face education-flip-back">
-                  <img src="{% static 'img/about/specializace-2.png' %}" alt="Specializace - zadní strana 1" class="education-certificate-image">
-                </div>
+        </div>
+        <div class="education-r-certificate-grid education-r-certificate-grid-specializations">
+          <article class="education-flip-card education-r-certificate-card" tabindex="0">
+            <div class="education-flip-inner">
+              <div class="education-flip-face education-flip-front">
+                <img src="{% static 'img/about/specializace-1.png' %}" alt="Specializace - přední strana 1" class="education-certificate-image">
               </div>
-            </article>
-            <article class="education-flip-card education-specialization-card" tabindex="0">
-              <div class="education-flip-inner">
-                <div class="education-flip-face education-flip-front">
-                  <img src="{% static 'img/about/specializace-3.png' %}" alt="Specializace - přední strana 2" class="education-certificate-image">
-                </div>
-                <div class="education-flip-face education-flip-back">
-                  <img src="{% static 'img/about/specializace-4.png' %}" alt="Specializace - zadní strana 2" class="education-certificate-image">
-                </div>
+              <div class="education-flip-face education-flip-back">
+                <img src="{% static 'img/about/specializace-2.png' %}" alt="Specializace - zadní strana 1" class="education-certificate-image">
               </div>
-            </article>
+            </div>
+          </article>
+
+          <article class="education-flip-card education-r-certificate-card" tabindex="0">
+            <div class="education-flip-inner">
+              <div class="education-flip-face education-flip-front">
+                <img src="{% static 'img/about/specializace-3.png' %}" alt="Specializace - přední strana 2" class="education-certificate-image">
+              </div>
+              <div class="education-flip-face education-flip-back">
+                <img src="{% static 'img/about/specializace-4.png' %}" alt="Specializace - zadní strana 2" class="education-certificate-image">
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="education-r-cert-group">
+        <div class="education-r-cert-group-head">
+          <p class="education-r-group-label">Další certifikáty</p>
+        </div>
+        <div class="education-r-cert-row">
+          <div class="education-r-cert-row-track">
+            <figure class="education-marquee-item">
+              <img src="{% static 'img/about/dalsi-certifikace-1.png' %}" alt="Další certifikát 1" class="education-marquee-image">
+            </figure>
+            <figure class="education-marquee-item">
+              <img src="{% static 'img/about/dalsi-certifikace-2.png' %}" alt="Další certifikát 2" class="education-marquee-image">
+            </figure>
+            <figure class="education-marquee-item">
+              <img src="{% static 'img/about/dalsi-certifikace-3.png' %}" alt="Další certifikát 3" class="education-marquee-image">
+            </figure>
           </div>
         </div>
-      </section>
-
-      <section class="about-section card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <div class="education-section-head education-section-head-stacked">
-            <div>
-              <p class="about-eyebrow mb-2">Další certifikáty</p>
-              <h2 class="about-subtitle mb-3">Průběžné vzdělávání a navazující kurzy</h2>
-            </div>
-            <p class="education-helper mb-0">
-              Průběžně si rozšiřuji znalosti v oblastech etického tréninku, welfare psa,
-              psí komunikace a praktické práce s každodenními situacemi.
-            </p>
-          </div>
-          <div class="education-marquee education-marquee-polished">
-            <div class="education-marquee-track">
-              <figure class="education-marquee-item">
-                <img src="{% static 'img/about/dalsi-certifikace-1.png' %}" alt="Další certifikát 1" class="education-marquee-image">
-              </figure>
-              <figure class="education-marquee-item">
-                <img src="{% static 'img/about/dalsi-certifikace-2.png' %}" alt="Další certifikát 2" class="education-marquee-image">
-              </figure>
-              <figure class="education-marquee-item">
-                <img src="{% static 'img/about/dalsi-certifikace-3.png' %}" alt="Další certifikát 3" class="education-marquee-image">
-              </figure>
-              <figure class="education-marquee-item" aria-hidden="true">
-                <img src="{% static 'img/about/dalsi-certifikace-1.png' %}" alt="" class="education-marquee-image">
-              </figure>
-              <figure class="education-marquee-item" aria-hidden="true">
-                <img src="{% static 'img/about/dalsi-certifikace-2.png' %}" alt="" class="education-marquee-image">
-              </figure>
-              <figure class="education-marquee-item" aria-hidden="true">
-                <img src="{% static 'img/about/dalsi-certifikace-3.png' %}" alt="" class="education-marquee-image">
-              </figure>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="about-contrast-box education-value-box reveal">
-        <p class="about-eyebrow mb-2">Proč je to důležité</p>
-        <h2 class="about-contrast-title">Vzdělání pro mě není dekorace, ale základ každodenní praxe.</h2>
-        <p class="about-contrast-copy mb-0">
-          Každé další studium pro mě znamená hlubší porozumění psovi jako bytosti s emocemi,
-          potřebami a vlastní komunikací. Díky tomu můžu klientům předávat přístup, který je
-          odborný, etický a skutečně použitelný v běžném životě.
-        </p>
-      </section>
-
-      <section class="about-section card card-soft border-0 reveal">
-        <div class="card-body p-4 p-md-5">
-          <div class="education-section-head education-section-head-stacked">
-            <div>
-              <p class="about-eyebrow mb-2">Další odborné ukotvení</p>
-              <h2 class="about-subtitle mb-3">Evropské standardy a přístup Smiling Leash</h2>
-            </div>
-            <p class="education-helper mb-0">
-              Vzdělávání nekončí diplomem. Důležitá je i profesní komunita a přístupy,
-              které podporují welfare psa v každodenním životě.
-            </p>
-          </div>
-          <div class="about-link-blocks education-link-blocks">
-            <article class="about-link-card">
-              <div class="about-link-card-media">
-                <img src="{% static 'img/about/PDTE.png' %}" alt="PDTE - Pet Dog Trainers of Europe" class="about-link-card-image">
-              </div>
-              <h3>PDTE</h3>
-              <p class="about-copy mb-3">
-                CalmDog je členem PDTE – Pet Dog Trainers of Europe, jejíž cílem je welfare psů.
-              </p>
-              <a href="https://www.pdte.eu/" target="_blank" rel="noopener noreferrer" class="about-inline-link">
-                Přejít na pdte.eu
-              </a>
-            </article>
-            <article class="about-link-card">
-              <div class="about-link-card-media">
-                <img src="{% static 'img/about/smilling-leash.png' %}" alt="Smiling Leash" class="about-link-card-image">
-              </div>
-              <h3>Smiling Leash</h3>
-              <p class="about-copy mb-3">
-                Filozofie Smiling Leash umožňuje psu na vodítku uspokojovat svoje přirozené potřeby.
-              </p>
-              <a href="https://www.smilingleash.com/" target="_blank" rel="noopener noreferrer" class="about-inline-link">
-                Více na smilingleash.com
-              </a>
-            </article>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="education-r-shell education-r-closing reveal">
+    <p class="education-r-label">Proč je to důležité</p>
+    <div class="education-r-closing-grid">
+      <h2 class="education-r-closing-title">
+        Vzdělání pro mě není dekorace, ale základ <span>každodenní praxe.</span>
+      </h2>
+      <div class="education-r-closing-copy">
+        <p>
+          Každé další studium pro mě znamená hlubší porozumění psovi jako bytosti
+          s emocemi, potřebami a vlastní komunikací.
+        </p>
+        <p>
+          Díky tomu můžu klientům předávat přístup, který je odborný, etický a skutečně
+          použitelný v běžném životě.
+        </p>
+      </div>
+    </div>
+
+    <div class="education-r-closing-footer">
+      <div class="education-r-signoff">
+        <span class="education-r-caption-line"></span>
+        <span>Ing. Andrea Zoulová — CalmDog</span>
+      </div>
+      <a href="{% url 'courses:nase_filozofie' %}" class="education-r-footer-link">
+        Naše filozofie
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
 </section>
 {% endblock %}
