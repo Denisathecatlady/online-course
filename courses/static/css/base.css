@@ -1,29 +1,65 @@
- /* =====================================================
-DESIGN TOKENS / VARIABLES
-===================================================== */
+/* =====================================================
+   DESIGN TOKENS
+   ===================================================== */
 :root {
---cream: #FBFAF7;
---sage: #5F766B;
---sage-light: #E6ECE9;
---sage-strong: #3E6A57;
---sage-deep: #29493C;
---text-dark: #1E2A32;
---text-muted: #6F7C82;
+    /* Paleta */
+    --cream: #fbfaf7;
+    --bg-soft: #f5f5f0;
+    --bg-light: #faf9f6;
 
+    --sage-light: #e6ece9;
+    --sage-soft: #e6ece9;          /* alias pro starší šablony */
+    --sage: #5f766b;
+    --sage-mid: #6f8780;
+    --sage-strong: #3e6a57;
+    --sage-deep: #29493c;
+
+    --accent: #ef9d58;
+
+    /* Typografie */
+    --text: #2f3e3a;
+    --text-strong: #1f2f2a;
+    --text-dark: #1e2a32;
+    --text-muted: #6f7c82;
+    --text-soft: #687472;
+
+    /* Linie / oddělovače */
+    --line: rgba(95, 118, 107, 0.12);
+    --line-strong: rgba(95, 118, 107, 0.22);
+
+    /* Rádia */
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 28px;
+    --radius-pill: 999px;
+
+    /* Stíny */
+    --shadow-sm: 0 2px 8px rgba(31, 47, 42, 0.06);
+    --shadow-md: 0 12px 30px rgba(31, 47, 42, 0.08);
+    --shadow-lg: 0 24px 44px rgba(35, 46, 41, 0.12);
+
+    /* Přechody */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 
-
 /* =====================================================
-BASE / BODY
-===================================================== */
+   BASE
+   ===================================================== */
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--slate-soft);
-    color: #2f3e3a;
+    font-weight: 400;
     font-size: 16px;
     line-height: 1.65;
+    color: var(--text);
+    background-color: var(--cream);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 button,
@@ -33,157 +69,181 @@ textarea {
     font: inherit;
 }
 
+
+/* =====================================================
+   TYPOGRAFIE
+   ===================================================== */
+h1, h2, h3, h4, h5 {
+    font-family: "Playfair Display", serif;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--text-strong);
+}
+
+.display-5,
+.display-6 {
+    letter-spacing: -0.03em;
+}
+
+.section-title {
+    font-family: "Playfair Display", serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.section-lead {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 720px;
+}
+
+
+/* =====================================================
+   PREVIEW BANNER
+   ===================================================== */
 .preview-banner {
-    background: linear-gradient(90deg, #29493c, #3e6a57);
+    background: linear-gradient(90deg, var(--sage-deep), var(--sage-strong));
     color: #fff;
     text-align: center;
     padding: 0.55rem 1rem;
     font-size: 0.82rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 
 /* =====================================================
-NAVBAR – CalmDog override Bootstrap
-===================================================== */
-
+   NAVBAR
+   ===================================================== */
 .navbar {
-background: linear-gradient(180deg, rgba(250, 249, 245, 0.96), rgba(244, 247, 243, 0.92));
-border-bottom: 1px solid rgba(95, 118, 107, 0.1);
-padding: 1rem 0;
-position: relative;
-z-index: 1000;
-backdrop-filter: blur(14px);
+    padding: 1rem 0;
+    position: relative;
+    z-index: 1000;
+    background: rgba(250, 249, 245, 0.94);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 .navbar .container {
-max-width: none;
-width: 100%;
-padding: 0 2rem;
-background: transparent;
-border: none;
-border-radius: 0;
-box-shadow: none;
-backdrop-filter: none;
+    max-width: none;
+    width: 100%;
+    padding: 0 2rem;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
 }
 
-/* ===== BRAND ===== */
-
-.navbar-brand img {
-height: 36px;
+.navbar-brand img,
+.navbar-logo {
+    height: 36px;
 }
-
-/* ===== NAV LINKS ===== */
 
 .navbar-nav {
-gap: 0.45rem;
+    gap: 0.45rem;
 }
 
 .navbar-nav .nav-link {
-font-size: 0.9rem;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-font-weight: 600;
-color: #345345;
-padding: 0.7rem 0.95rem;
-border-radius: 999px;
-transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    font-size: 0.86rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #345345;
+    padding: 0.7rem 0.95rem;
+    border-radius: var(--radius-pill);
+    transition: background 0.18s var(--ease), color 0.18s var(--ease);
 }
 
 .navbar-utility-link {
-white-space: nowrap;
+    white-space: nowrap;
 }
 
 .navbar-nav .nav-link:hover {
-color: var(--sage-strong);
-background: rgba(95, 118, 107, 0.1);
-transform: translateY(-1px);
+    color: var(--sage-strong);
+    background: rgba(95, 118, 107, 0.08);
 }
 
-/* aktivní stránka */
 .navbar-nav .nav-link.active {
-color: #fff;
-background: linear-gradient(180deg, var(--sage-strong), var(--sage-deep));
+    color: #fff;
+    background: var(--sage-strong);
 }
 
-/* žádné bootstrap podtržení */
 .navbar a {
-text-decoration: none;
+    text-decoration: none;
 }
 
-/* ── svislý oddělovač mezi skupinami ── */
+/* svislý oddělovač mezi skupinami v navbar */
 .nav-sep {
-width: 1px;
-height: 18px;
-background: rgba(95, 118, 107, 0.22);
-align-self: center;
-margin: 0 0.3rem;
-pointer-events: none;
+    width: 1px;
+    height: 18px;
+    background: var(--line-strong);
+    align-self: center;
+    margin: 0 0.3rem;
+    pointer-events: none;
 }
 
 
-/* ===== CTA BUTTONS ===== */
+/* ===== NAVBAR TLAČÍTKA ===== */
 
 .navbar .btn {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-border-radius: 999px;
-padding: 0.65rem 1.45rem;
-font-size: 0.78rem;
-letter-spacing: 0.12em;
-font-weight: 600;
-text-transform: uppercase;
-min-height: unset;
-line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    padding: 0.65rem 1.45rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    text-transform: uppercase;
+    min-height: unset;
+    line-height: 1;
 }
 
-/* primární */
 .navbar .btn-sage {
-background: #6f8780;
-color: #fff;
-border: none;
-box-shadow: none;
+    background: var(--sage-mid);
+    color: #fff;
+    border: none;
+    box-shadow: none;
 }
 
 .navbar .btn-sage:hover {
-background: #5f766f;
-color: #fff;
+    background: var(--sage-strong);
+    color: #fff;
 }
 
-/* outline (odhlásit) */
 .navbar .btn-outline-sage {
-border: 2px solid #2d2d2d;
-color: #2d2d2d;
-background: #ffffff;
+    border: 1.5px solid var(--text-strong);
+    color: var(--text-strong);
+    background: #fff;
 }
 
 .navbar .btn-outline-sage:hover {
-border-color: #2d2d2d;
-color: #ffffff;
-background: #2d2d2d;
+    background: var(--text-strong);
+    color: #fff;
 }
+
 
 /* ===== TOGGLER ===== */
 
 .navbar-toggler {
-border: none;
-padding: 0.35rem 0.45rem;
-border-radius: 12px;
-background: rgba(62, 106, 87, 0.08);
+    border: none;
+    padding: 0.35rem 0.45rem;
+    border-radius: var(--radius-sm);
+    background: rgba(62, 106, 87, 0.08);
 }
 
 .navbar-toggler:focus {
-box-shadow: none;
+    box-shadow: none;
 }
 
-.navbar .nav-link {
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0.7rem 0.95rem;
-    }
+
+/* ===== SUBMENU ===== */
 
 .nav-submenu {
     position: relative;
@@ -209,10 +269,10 @@ box-shadow: none;
     list-style: none;
     margin: 0;
     padding: 0.55rem;
-    border: 1px solid rgba(95, 118, 107, 0.1);
+    border: 1px solid var(--line);
     border-radius: 22px;
-    background: linear-gradient(180deg, rgba(251,250,247,0.99), rgba(245,247,244,0.98));
-    box-shadow: 0 24px 44px rgba(35, 46, 41, 0.14);
+    background: rgba(251, 250, 247, 0.99);
+    box-shadow: var(--shadow-lg);
     z-index: 1001;
 }
 
@@ -234,16 +294,19 @@ box-shadow: none;
     display: block;
     border-radius: 14px;
     padding: 0.8rem 0.9rem;
-    color: #2f3e3a;
+    color: var(--text);
     font-size: 0.92rem;
     font-weight: 500;
 }
 
 .nav-submenu-item:hover,
 .nav-submenu-item:focus {
-    background: rgba(95, 118, 107, 0.1);
+    background: rgba(95, 118, 107, 0.08);
     color: var(--sage-strong);
 }
+
+
+/* ===== IKONOVÉ TLAČÍTKO (košík, účet) ===== */
 
 .icon-toggle {
     display: inline-flex;
@@ -252,16 +315,16 @@ box-shadow: none;
     width: 44px;
     height: 44px;
     padding: 0;
-    border-radius: 999px;
-    border: 1px solid rgba(95, 118, 107, 0.12);
-    background: linear-gradient(180deg, rgba(251,250,247,0.96), rgba(243,246,242,0.96));
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: #fff;
     position: relative;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
 }
 
 .icon-toggle:hover {
-    border-color: rgba(95, 118, 107, 0.24);
-    background: rgba(235, 240, 236, 0.95);
+    border-color: var(--line-strong);
+    background: rgba(235, 240, 236, 0.7);
 }
 
 .icon-toggle::after {
@@ -285,14 +348,17 @@ box-shadow: none;
     align-items: center;
     justify-content: center;
     padding: 0 6px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #4d8a71, #325a49);
+    border-radius: var(--radius-pill);
+    background: var(--sage-strong);
     color: #fff;
     font-size: 0.72rem;
     font-weight: 700;
     line-height: 1;
-    box-shadow: 0 8px 18px rgba(62, 106, 87, 0.24);
+    box-shadow: var(--shadow-sm);
 }
+
+
+/* ===== NAVBAR RESPONSIVE ===== */
 
 @media (max-width: 991px) {
     .navbar {
@@ -323,21 +389,18 @@ box-shadow: none;
         display: block;
     }
 
-    .site-footer-grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
+    .nav-sep {
+        display: none;
     }
 }
 
+
 /* =====================================================
-PAGE BACKGROUND / WRAPPER
-===================================================== */
+   PAGE WRAPPER
+   ===================================================== */
 .page-wrapper {
     background:
-        linear-gradient(
-            rgba(255, 255, 255, 0.95),
-            rgba(255, 255, 255, 0.9)
-        ),
+        linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)),
         url("../img/shared/hero-dog.jpg");
     background-size: cover;
     background-position: center top;
@@ -346,40 +409,14 @@ PAGE BACKGROUND / WRAPPER
 
 
 /* =====================================================
-TYPOGRAPHY
-===================================================== */
-h1, h2, h3, h4, h5 {
-    letter-spacing: -0.02em;
-}
-
-.display-5,
-.display-6 {
-    letter-spacing: -0.03em;
-}
-
-.section-title {
-    font-size: 2.4rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: #2f3e3a;
-}
-
-.section-lead {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #6b7280;
-    max-width: 720px;
-}
-
-
-/* =====================================================
-BADGES
-===================================================== */
+   BADGES
+   ===================================================== */
 .badge {
-    background-color: var(--sage-soft);
+    background-color: var(--sage-light);
     color: var(--sage);
     font-weight: 500;
     padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-pill);
 }
 
 .badge-soft {
@@ -387,53 +424,62 @@ BADGES
     color: var(--sage);
     padding: 0.45rem 0.9rem;
     font-weight: 500;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
+}
+
+.badge-muted,
+.badge-success {
+    display: inline-block;
+    padding: 0.45rem 1.2rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: rgba(79, 111, 100, 0.12);
+    color: var(--sage);
+    font-weight: 500;
 }
 
 
 /* =====================================================
-BUTTONS
-===================================================== */
+   TLAČÍTKA
+   ===================================================== */
 .btn {
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.95rem 1.9rem;
-    min-height: 60px;
+    min-height: 56px;
+    font-weight: 500;
+    transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
 }
 
 .btn-sage {
-    background-color: #6f8780;
+    background-color: var(--sage-mid);
     color: #fff;
     border: none;
-    border-radius: 999px;
-    padding: 0.95rem 1.9rem;
-    font-weight: 500;
     box-shadow: none;
 }
 
 .btn-sage:hover {
-    background-color: #5f766f;
+    background-color: var(--sage-strong);
     color: #fff;
 }
 
 .btn-outline-sage {
-    border: 2px solid #2d2d2d;
-    color: #2d2d2d;
-    background: #ffffff;
-    border-radius: 999px;
-    padding: 0.95rem 1.9rem;
-    font-weight: 500;
+    border: 1.5px solid var(--text-strong);
+    color: var(--text-strong);
+    background: #fff;
 }
 
 .btn-outline-sage:hover {
-    background-color: #2d2d2d;
-    color: #ffffff;
-    border-color: #2d2d2d;
+    background-color: var(--text-strong);
+    color: #fff;
+    border-color: var(--text-strong);
 }
 
 
 /* =====================================================
-LAYOUT / SPACING HELPERS
-===================================================== */
+   SPACING HELPERS
+   ===================================================== */
 .py-6 {
     padding-top: 4rem;
     padding-bottom: 4rem;
@@ -449,17 +495,13 @@ LAYOUT / SPACING HELPERS
 
 
 /* =====================================================
-CARDS / CONTAINERS
-===================================================== */
+   KARTY / IKONY / POMOCNÉ TŘÍDY
+   ===================================================== */
 .card-large {
-    border-radius: 28px;
+    border-radius: var(--radius-xl);
     padding: 1.5rem;
 }
 
-
-/* =====================================================
-ICON BLOCKS
-===================================================== */
 .icon-block {
     display: flex;
     gap: 1rem;
@@ -470,18 +512,14 @@ ICON BLOCKS
     line-height: 1;
 }
 
-
-/* =====================================================
-BACKGROUND HELPERS
-===================================================== */
 .bg-light {
-    background-color: #faf9f6 !important;
+    background-color: var(--bg-light) !important;
 }
 
 
 /* =====================================================
-FOOTER
-===================================================== */
+   FOOTER
+   ===================================================== */
 .site-footer {
     background: #2f2f2f;
     color: rgba(255, 255, 255, 0.88);
@@ -502,22 +540,12 @@ FOOTER
     margin-bottom: 1.6rem;
 }
 
-.site-footer-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 0.95rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.site-footer-name {
-    color: #ffffff;
-    font-size: 2rem;
-    line-height: 1;
+.site-footer-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+    filter: brightness(0) invert(1);
+    opacity: 0.92;
 }
 
 .site-footer-text,
@@ -542,9 +570,10 @@ FOOTER
 .site-footer-heading {
     margin: 0 0 1.4rem;
     color: rgba(255, 255, 255, 0.42);
-    font-size: 0.88rem;
-    letter-spacing: 0.08em;
+    font-size: 0.84rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    font-weight: 500;
 }
 
 .site-footer-links {
@@ -555,15 +584,16 @@ FOOTER
 .site-footer-links a,
 .site-footer-contact a {
     text-decoration: none;
+    transition: color 0.18s var(--ease);
 }
 
 .site-footer-contact a {
-    color: #ffffff;
+    color: #fff;
 }
 
 .site-footer-links a:hover,
 .site-footer-contact a:hover {
-    color: #ffffff;
+    color: #fff;
 }
 
 .site-footer-contact p {
@@ -590,18 +620,83 @@ FOOTER
     color: rgba(255, 255, 255, 0.76);
     text-decoration: none;
     font-size: 0.92rem;
+    transition: color 0.18s var(--ease), border-color 0.18s var(--ease), background 0.18s var(--ease);
 }
 
 .site-footer-pill:hover {
-    color: #ffffff;
+    color: #fff;
     border-color: rgba(255, 255, 255, 0.36);
     background: rgba(255, 255, 255, 0.04);
 }
 
+.footer-bottom {
+    font-size: 0.85rem;
+    color: #7f968c;
+    text-align: center;
+}
+
+.footer-author {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-author:hover {
+    text-decoration: underline;
+}
+
+.footer-links {
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 991px) {
+    .site-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-links {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+}
+
+
+/* =====================================================
+   ODKAZY V TEXTU
+   ===================================================== */
+.phone-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.phone-link:hover {
+    text-decoration: underline;
+}
+
+.social-link {
+    color: #6f8f7d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.social-link:hover {
+    opacity: 0.75;
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   REVEAL ANIMACE
+   ===================================================== */
 .reveal {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 
 .reveal.is-visible {
@@ -609,10 +704,10 @@ FOOTER
     transform: translateY(0);
 }
 
-html {
-    scroll-behavior: smooth;
-}
 
+/* =====================================================
+   COOKIE BANNER
+   ===================================================== */
 .cookie-banner {
     position: fixed;
     bottom: 1.5rem;
@@ -620,10 +715,10 @@ html {
     transform: translateX(-50%);
     max-width: 900px;
     width: calc(100% - 2rem);
-    background: #ffffff;
-    border-radius: 24px;
+    background: #fff;
+    border-radius: var(--radius-lg);
     padding: 1.4rem 1.6rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow-lg);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -634,7 +729,7 @@ html {
 .cookie-banner p {
     margin: 0;
     font-size: 0.95rem;
-    color: #4b5563;
+    color: var(--text-muted);
 }
 
 .cookie-actions {
@@ -642,224 +737,77 @@ html {
     gap: 0.6rem;
 }
 
-.navbar-logo {
-    height: 36px; 
-    }
 
 /* =====================================================
-GLOBAL TYPOGRAPHY
-===================================================== */
-
-body {
-font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-font-weight: 400;
-font-size: 16px;
-line-height: 1.65;
-color: #2f3e3a;
-}
-
-/* Nadpisy – jednotné všude */
-h1, h2, h3, h4, h5 {
-font-family: "Playfair Display", serif;
-font-weight: 500;
-letter-spacing: -0.03em;
-color: #1f2f2a;
-}
-
-/* Běžný text */
-p, li {
-font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-font-weight: 400;
-}
-
-/* Malé texty / badge */
-small,
-.hero-badge,
-.course-badge,
-.variant-badge,
-.pricing-badge {
-font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-font-weight: 500;
-letter-spacing: 0.08em;
-}
-
-button,
-.btn,
-.nav-link,
-.nav-submenu-item,
-input,
-textarea,
-select,
-label {
-font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.social-link {
-color: #6f8f7d;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.social-link:hover {
-opacity: 0.75;
-transform: translateY(-1px);
-}
-
-.footer-links {
-    flex-wrap: nowrap;
-    }
-
-@media (max-width: 576px) {
-.footer-links {
-    flex-wrap: wrap; /* na mobilu se klidně zalomí */
-    gap: 0.75rem;
-}
-}
-
-/* ===============================
-PAYMENT – CANCEL PAGE
-================================ */
-
+   PAYMENT KARTY
+   ===================================================== */
+.payment-success-card,
 .payment-cancel-card {
-max-width: 640px;
-margin: 0 auto;
+    max-width: 640px;
+    margin: 0 auto;
 }
 
-.badge-muted {
-display: inline-block;
-padding: 0.45rem 1.2rem;
-border-radius: 999px;
-font-size: 0.7rem;
-letter-spacing: 0.14em;
-text-transform: uppercase;
-background: rgba(79,111,100,0.12);
-color: var(--sage);
-font-weight: 500;
-}
 
-/* ===============================
-PAYMENT – SUCCESS PAGE
-================================ */
-
-.payment-success-card {
-max-width: 640px;
-margin: 0 auto;
-}
-
-.badge-success {
-display: inline-block;
-padding: 0.45rem 1.2rem;
-border-radius: 999px;
-font-size: 0.7rem;
-letter-spacing: 0.14em;
-text-transform: uppercase;
-background: rgba(79,111,100,0.14);
-color: var(--sage);
-font-weight: 500;
-}
-
-.footer-bottom {
-    font-size: 0.85rem;
-    color: #7f968c;
-    text-align: center;
-    }
-
-    .footer-author {
-    color: inherit;
-    text-decoration: none;
-    font-weight: 500;
-    }
-
-    .footer-author:hover {
-    text-decoration: underline;
-    }
-
-
-    .phone-link {
-        color: inherit;
-        text-decoration: none;
-        }
-
-        .phone-link:hover {
-        text-decoration: underline;
-        }
-
-
-        
-/* =========================
-COURSE PROGRESS – CALMDOG
-========================= */
-
+/* =====================================================
+   PROGRESS BAR (modul, dashboard)
+   ===================================================== */
 .course-progress {
-max-width: 520px;
-margin-bottom: 2.5rem;
+    max-width: 520px;
+    margin-bottom: 2.5rem;
 }
 
-/* Text nad linkou */
 .progress-label {
-font-size: 1rem;
-font-weight: 700;
-color: #2f4f43;
-margin-bottom: 0.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2f4f43;
+    margin-bottom: 0.8rem;
 }
 
-/* Track – pozadí linky */
 .progress-track {
-position: relative;
-width: 100%;
-height: 22px;
-background: #edf3ef;
-border-radius: 999px;
-overflow: hidden;
-border: 1px solid #c2d4cb;
+    position: relative;
+    width: 100%;
+    height: 22px;
+    background: #edf3ef;
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    border: 1px solid #c2d4cb;
 }
 
-/* Vyplněná část */
 .progress-fill {
-height: 100%;
-width: 0; /* nastavuješ inline přes style="width: XX%" */
-background: linear-gradient(
-    90deg,
-    #3f6f5b,
-    #8fc1ac
-);
-border-radius: 999px;
-transition: width 0.5s ease;
-
-box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.35),
-    0 2px 6px rgba(63,111,91,0.35);
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #3f6f5b, #8fc1ac);
+    border-radius: var(--radius-pill);
+    transition: width 0.5s var(--ease);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 2px 6px rgba(63, 111, 91, 0.3);
 }
 
-/* Procenta uvnitř linky */
 .progress-percent {
-position: absolute;
-right: 10px;
-top: 50%;
-transform: translateY(-50%);
-
-font-size: 0.8rem;
-font-weight: 800;
-letter-spacing: 0.03em;
-
-color: #ffffff;
-background: #2f4f43;
-padding: 4px 10px;
-border-radius: 999px;
-
-box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: #2f4f43;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .module-actions {
-display: flex;
-justify-content: flex-end;
-margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.2rem;
 }
 
 .module-actions .btn {
-border-radius: 999px;
-padding: 0.5rem 1.2rem;
-font-size: 0.9rem;
+    border-radius: var(--radius-pill);
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    min-height: unset;
 }

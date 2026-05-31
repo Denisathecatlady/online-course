@@ -1,14 +1,38 @@
- /* =========================
-        CONTENT PROSE (text z adminu)
-        ========================= */
-        .content-prose p {
-            margin-bottom: 1.2rem;
-        }
+/* =====================================================
+   CONTENT PROSE (text z administrace)
+   ===================================================== */
 
-        .content-prose ul {
-            padding-left: 1.2rem;
-        }
+.content-prose p {
+    margin-bottom: 1.2rem;
+    line-height: 1.75;
+    color: var(--text);
+}
 
-        .content-prose li {
-            margin-bottom: .5rem;
-        }
+.content-prose ul,
+.content-prose ol {
+    padding-left: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.content-prose li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+}
+
+.content-prose h2,
+.content-prose h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-strong);
+}
+
+.content-prose a {
+    color: var(--sage-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+
+.content-prose a:hover {
+    color: var(--sage-deep);
+}

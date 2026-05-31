@@ -124,17 +124,19 @@
 }
 
 .pillar-card {
-  background: #ffffff;
-  border-radius: 26px;
+  background: #fff;
+  border-radius: var(--radius-xl);
   padding: 1.9rem 1.6rem;
   text-align: center;
-  box-shadow: 0 26px 60px rgba(0,0,0,0.05);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
 }
 
 .pillar-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 34px 75px rgba(0,0,0,0.07);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-md);
 }
 
 .pillar-card span {

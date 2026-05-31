@@ -61,22 +61,22 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: 1.55rem;
+    padding: 1.75rem;
     overflow: hidden;
-    border-radius: 28px;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(95, 118, 107, 0.08);
-    box-shadow: 0 10px 28px rgba(35, 46, 41, 0.06);
+    border-radius: var(--radius-xl);
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
     transition:
-        transform 320ms ease,
-        box-shadow 320ms ease,
-        border-color 320ms ease;
+        transform 280ms var(--ease),
+        box-shadow 280ms var(--ease),
+        border-color 280ms var(--ease);
 }
 
 .training-card:hover {
-    transform: translateY(-10px);
-    border-color: rgba(95, 118, 107, 0.14);
-    box-shadow: 0 22px 46px rgba(35, 46, 41, 0.1);
+    transform: translateY(-6px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
 }
 
 .training-card-delay-1 {
@@ -232,10 +232,10 @@
 
 .trainings-contact {
     margin-top: 2rem;
-    border-radius: 28px;
-    background: #ffffff;
-    border: 1px solid rgba(95, 118, 107, 0.08);
-    box-shadow: 0 10px 28px rgba(35, 46, 41, 0.06);
+    border-radius: var(--radius-xl);
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
 }
 
 .trainings-contact-body {
