@@ -11,6 +11,7 @@ urlpatterns = [
     # Košík
     path("cart/", views.cart_detail, name="cart_detail"),
     path("cart/remove/<int:item_id>/", views.remove_from_cart, name="remove_from_cart"),
+    path("cart/qty/<int:item_id>/", views.update_cart_quantity, name="update_cart_quantity"),
 
     # Slevový kupón
     path("cart/apply-coupon/", views.apply_coupon, name="apply_coupon"),

@@ -13,7 +13,7 @@ def add_expires_at_column_if_missing(apps, schema_editor):
 
         if "expires_at" not in existing_columns:
             cursor.execute(
-                f'ALTER TABLE "{table_name}" ADD COLUMN "expires_at" datetime NULL'
+                f'ALTER TABLE "{table_name}" ADD COLUMN "expires_at" timestamp with time zone NULL'
             )
 
 

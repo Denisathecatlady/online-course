@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
@@ -22,6 +22,7 @@ from django.db import transaction
 from django.db.models import F
 
 from shop.models import Product, ProductVariant
+from shop.views import get_variant_image_url
 from courses.models import CoursePlan
 from courses.models import Course
 from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage
@@ -426,16 +427,74 @@ def cart_detail(request):
 
     cart = Order.objects.prefetch_related(
         "items__product_variant__product",
+        "items__product_variant__color",
         "items__course_plan__course"
     ).get(id=cart.id)
+
+    items = list(cart.items.all())
+    for item in items:
+        if item.product_variant and item.product_variant.color:
+            item.image_url = get_variant_image_url(
+                item.product_variant.product,
+                item.product_variant.color,
+            )
+        elif item.course_plan:
+            item.image_url = get_public_course_image_url(item.course_plan.course)
+        else:
+            item.image_url = None
 
     has_physical_products = cart.contains_physical_product()
 
     return render(request, "payments/cart.html", {
         "order": cart,
-        "items": cart.items.all(),
+        "items": items,
         "has_physical_products": has_physical_products,
     })
+
+
+@require_POST
+def update_cart_quantity(request, item_id):
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    cart = get_or_create_cart(request)
+    item = get_object_or_404(OrderItem, id=item_id, order=cart)
+
+    # Množství se mění pouze u fyzických produktů
+    if not item.product_variant:
+        if is_ajax:
+            return JsonResponse({"ok": False})
+        return redirect("payments:cart_detail")
+
+    action = request.POST.get("action")
+    deleted = False
+
+    if action == "increase":
+        item.quantity = F("quantity") + 1
+        item.save(update_fields=["quantity"])
+        item.refresh_from_db()
+    elif action == "decrease":
+        if item.quantity <= 1:
+            item.delete()
+            deleted = True
+        else:
+            item.quantity = F("quantity") - 1
+            item.save(update_fields=["quantity"])
+            item.refresh_from_db()
+
+    if is_ajax:
+        # items_total / total_price jsou @property — dotazují DB znovu, takže jsou aktuální
+        data = {
+            "ok": True,
+            "deleted": deleted,
+            "item_count": cart.items.count(),
+            "items_total": round(cart.items_total),
+            "total_price": round(cart.total_price),
+        }
+        if not deleted:
+            data["new_qty"] = item.quantity
+            data["new_subtotal"] = round(item.subtotal)
+        return JsonResponse(data)
+
+    return redirect("payments:cart_detail")
 
 
 # =====================================================
@@ -926,6 +985,7 @@ info@calmdog.cz
 # =====================================================
 
 def remove_from_cart(request, item_id):
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
     cart = get_or_create_cart(request)
 
     try:
@@ -933,6 +993,15 @@ def remove_from_cart(request, item_id):
         item.delete()
     except OrderItem.DoesNotExist:
         pass
+
+    if is_ajax:
+        item_count = cart.items.count()
+        data = {"ok": True, "item_count": item_count}
+        if item_count > 0:
+            data["items_total"] = round(cart.items_total)
+            data["total_price"] = round(cart.total_price)
+            data["has_physical"] = cart.contains_physical_product()
+        return JsonResponse(data)
 
     return redirect("payments:cart_detail")
 
