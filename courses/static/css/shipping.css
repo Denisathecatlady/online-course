@@ -41,7 +41,6 @@
 .shipping-side {
     border-radius: var(--radius-xl);
     background: #fff;
-    border: 1px solid var(--line);
     box-shadow: var(--shadow-sm);
     padding: 1.75rem;
 }
@@ -82,18 +81,16 @@
     display: block;
     padding: 1.3rem 1.4rem;
     border-radius: var(--radius-lg);
-    border: 1.5px solid var(--line);
     background: var(--bg-soft);
-    transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+    transition: background 0.18s var(--ease);
 }
 
 .shipping-option-card:hover .shipping-option-content {
-    border-color: var(--line-strong);
+    background: #f0f0ec;
 }
 
 .shipping-option-card input:checked + .shipping-option-content {
-    border-color: var(--sage);
-    background: #fff;
+    background: var(--sage-light);
 }
 
 .shipping-option-head {

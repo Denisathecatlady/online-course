@@ -1,0 +1,244 @@
+6	2026-01-10 13:50:01.901711+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Private intro"]}}]	7	2
+7	2026-01-10 13:52:42.558696+00	1	1. Modul 1	1	[{"added": {}}]	8	2
+8	2026-01-10 13:53:37.75764+00	2	2. Modul 2	1	[{"added": {}}]	8	2
+9	2026-01-10 13:55:24.145535+00	3	3. Mudul 3	1	[{"added": {}}]	8	2
+10	2026-01-10 13:56:07.295302+00	4	4. Modul 4	1	[{"added": {}}]	8	2
+11	2026-01-12 14:58:51.07524+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+12	2026-01-12 15:40:39.441635+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+13	2026-01-12 15:44:10.383352+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+14	2026-01-12 16:27:44.442547+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+15	2026-01-12 17:11:00.704667+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+16	2026-01-12 17:22:34.72096+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+17	2026-01-12 17:24:50.314854+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+18	2026-01-12 17:26:04.059606+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+19	2026-01-12 17:51:47.069714+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+20	2026-01-12 17:52:53.509443+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+21	2026-01-12 17:55:34.282601+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+22	2026-01-13 15:00:45.141273+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+23	2026-01-13 15:01:13.306708+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+24	2026-01-13 15:20:52.847604+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+25	2026-01-13 15:43:21.243798+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+26	2026-01-13 15:51:54.166159+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro", "About text"]}}]	7	2
+27	2026-01-13 15:54:25.948284+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+28	2026-01-13 16:03:26.727118+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+29	2026-01-13 16:04:32.041822+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+30	2026-01-13 16:10:45.764322+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+31	2026-01-13 16:24:03.99068+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+32	2026-01-13 16:27:46.06541+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+33	2026-01-13 16:29:51.402972+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+34	2026-01-13 16:32:02.373561+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+35	2026-01-13 17:04:19.640869+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro", "About text"]}}]	7	2
+36	2026-01-13 17:29:12.663004+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+37	2026-01-13 17:38:42.459676+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+38	2026-01-13 18:15:45.369937+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+39	2026-01-17 15:17:57.886035+00	2	Online kurz porozumění psovi – s konzultací a certifikátem	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+40	2026-01-17 15:26:31.96504+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+41	2026-01-17 15:27:19.165723+00	7	Order #7 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+42	2026-01-17 15:27:19.165765+00	6	Order #6 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+43	2026-01-17 15:27:19.165783+00	5	Order #5 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+44	2026-01-17 15:27:19.165802+00	4	Order #4 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+45	2026-01-17 15:27:19.165828+00	3	Order #3 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+46	2026-01-17 15:27:19.165845+00	2	Order #2 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+47	2026-01-17 15:27:19.165859+00	1	Order #1 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+48	2026-01-17 15:29:56.31115+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+49	2026-01-17 15:31:59.807698+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+50	2026-01-17 15:32:52.480707+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+51	2026-01-17 15:33:22.292064+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+52	2026-01-17 15:36:25.469661+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+53	2026-01-17 16:22:05.18263+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+54	2026-01-17 16:23:11.788033+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+55	2026-01-17 16:29:05.140539+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+56	2026-01-17 16:30:11.613787+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+57	2026-01-17 16:34:13.989928+00	11	Order #11 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - paid	3		10	2
+58	2026-01-17 16:34:15.144554+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+59	2026-01-17 16:34:23.549719+00	12	Order #12 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+124	2026-01-24 17:39:43.224582+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+125	2026-01-24 18:08:06.768511+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+126	2026-01-24 18:09:04.066+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+127	2026-01-25 12:10:43.348906+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+128	2026-01-25 12:22:03.130024+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+129	2026-01-25 12:30:07.262695+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+60	2026-01-17 16:34:23.549753+00	10	Order #10 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+61	2026-01-17 16:34:23.549777+00	9	Order #9 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+62	2026-01-17 16:34:23.549794+00	8	Order #8 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - pending	3		10	2
+63	2026-01-17 16:35:49.039676+00	1	denisazoulova356	3		4	2
+64	2026-01-17 16:36:13.719356+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+65	2026-01-17 16:37:50.470653+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+66	2026-01-17 16:38:45.36673+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+67	2026-01-17 16:54:40.629188+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+68	2026-01-17 17:12:39.99585+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+69	2026-01-17 17:16:31.637367+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro", "About text"]}}]	7	2
+70	2026-01-17 17:25:30.964357+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+71	2026-01-17 17:28:56.366043+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+72	2026-01-17 17:50:33.712975+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+73	2026-01-18 07:06:58.51618+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+74	2026-01-18 07:30:43.118172+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Private intro"]}}]	7	2
+75	2026-01-18 07:34:36.738464+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Private intro"]}}]	7	2
+76	2026-01-18 07:38:52.579942+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Private intro"]}}, {"changed": {"name": "module", "object": "3. Modul 3", "fields": ["Title"]}}]	7	2
+77	2026-01-18 16:18:13.458917+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["Public intro"]}}]	7	2
+78	2026-01-18 16:19:13.597205+00	2	Online kurz porozumění psovi – s konzultací a certifikátem	2	[{"changed": {"fields": ["Bullets"]}}]	9	2
+79	2026-01-18 16:26:36.143223+00	3	denisa.zoulova30@gmail.com	3		4	2
+80	2026-01-18 16:26:53.168461+00	15	Order #15 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - paid	3		10	2
+81	2026-01-18 16:26:53.168508+00	13	Order #13 - denisa.zoulova30@gmail.com - Online kurz porozumění psovi – s konzultací a certifikátem - paid	3		10	2
+82	2026-01-21 14:56:42.984969+00	1	Konejšivé signály v praxi	2	[{"changed": {"fields": ["About text"]}}]	7	2
+83	2026-01-24 11:51:06.015017+00	1	1. Modul 1	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+84	2026-01-24 12:39:13.336029+00	1	1. Modul 1	2	[{"changed": {"fields": ["Vimeo embed url2"]}}]	8	2
+85	2026-01-24 12:57:10.446414+00	2	1. STANDARD	2	[{"changed": {"fields": ["Name"]}}]	9	2
+86	2026-01-24 12:59:09.696746+00	2	Standard	2	[{"changed": {"fields": ["Code", "Name", "Description", "Bullets", "Includes consultation", "Includes certificate", "Is active"]}}]	9	2
+87	2026-01-24 12:59:47.235288+00	2	Standard	2	[{"changed": {"fields": ["Price czk", "Is active"]}}]	9	2
+88	2026-01-24 13:02:37.68631+00	1	Premium	2	[{"changed": {"fields": ["Name", "Subtitle", "Description", "Bullets", "Price czk", "Includes consultation", "Includes certificate"]}}]	9	2
+89	2026-01-24 13:03:15.173903+00	1	Premium	2	[{"changed": {"fields": ["Code"]}}]	9	2
+90	2026-01-24 13:03:43.260157+00	2	Standard	2	[{"changed": {"fields": ["Subtitle"]}}]	9	2
+91	2026-01-24 13:53:10.292063+00	2	2. Modul 2	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+92	2026-01-24 13:54:10.478406+00	2	2. Modul 2	2	[{"changed": {"fields": ["Vimeo embed url2"]}}]	8	2
+93	2026-01-24 13:55:13.806085+00	3	3. Modul 3	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+94	2026-01-24 13:56:39.165293+00	4	4. Modul 4	2	[{"changed": {"fields": ["Vimeo embed url1", "Vimeo embed url2"]}}]	8	2
+95	2026-01-24 13:57:44.316871+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+96	2026-01-24 13:59:00.460896+00	1	1. Modul 1	2	[]	8	2
+97	2026-01-24 14:55:13.738008+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+98	2026-01-24 14:58:19.690018+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+99	2026-01-24 16:02:00.952869+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+100	2026-01-24 16:04:48.26643+00	2	2. Modul 2	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+101	2026-01-24 16:05:07.542746+00	3	3. Modul 3	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+102	2026-01-24 16:05:30.868227+00	3	3. Modul 3	2	[]	8	2
+103	2026-01-24 16:05:51.463449+00	4	4. Modul 4	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+104	2026-01-24 16:35:56.054196+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+105	2026-01-24 16:40:03.447917+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+106	2026-01-24 16:42:00.756184+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+107	2026-01-24 16:46:27.054649+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+108	2026-01-24 16:59:59.129697+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+109	2026-01-24 17:09:50.649858+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+110	2026-01-24 17:19:00.376571+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+111	2026-01-24 17:19:48.696289+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+112	2026-01-24 17:22:03.021385+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+113	2026-01-24 17:24:05.459151+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+114	2026-01-24 17:25:40.485002+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+115	2026-01-24 17:26:55.451781+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+116	2026-01-24 17:27:18.103735+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+117	2026-01-24 17:29:08.368474+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+118	2026-01-24 17:30:24.386581+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+119	2026-01-24 17:33:12.823706+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+120	2026-01-24 17:34:27.055129+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+121	2026-01-24 17:35:41.658679+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+122	2026-01-24 17:38:11.410396+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+123	2026-01-24 17:38:45.519929+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+130	2026-01-25 12:30:49.760102+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+131	2026-01-25 12:31:09.835098+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+132	2026-01-25 12:32:12.629698+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+133	2026-01-25 12:32:57.317784+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+134	2026-01-25 12:36:10.184829+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+135	2026-01-25 12:47:50.540882+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+136	2026-01-25 13:09:39.901401+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+137	2026-01-25 13:15:16.052851+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+138	2026-01-25 13:20:48.681144+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+139	2026-01-25 13:22:37.683006+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+140	2026-01-25 13:27:27.4263+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+141	2026-01-25 13:29:39.984654+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+142	2026-01-25 13:30:29.530483+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+143	2026-01-25 13:32:25.499508+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+144	2026-01-25 16:10:14.504358+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+145	2026-01-25 16:11:49.34203+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+146	2026-01-25 16:25:56.912207+00	3	3. Modul 3	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+147	2026-01-25 16:27:45.358633+00	3	3. Modul 3	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+148	2026-01-25 16:52:58.814297+00	4	4. Modul 4	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+149	2026-01-25 16:59:19.728806+00	4	4. Modul 4	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+150	2026-01-26 13:33:51.68756+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+151	2026-01-26 13:34:06.420489+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+152	2026-01-26 13:42:32.694195+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+153	2026-01-26 13:43:16.516644+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+154	2026-01-26 13:43:24.220757+00	2	2. Modul 2	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+155	2026-01-26 13:44:27.736583+00	2	2. Modul 2	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+156	2026-01-26 13:44:41.990278+00	3	3. Modul 3	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+157	2026-01-26 13:44:50.592586+00	3	3. Modul 3	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+158	2026-01-26 13:44:56.552294+00	4	4. Modul 4	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+159	2026-01-26 13:45:05.942538+00	4	4. Modul 4	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+160	2026-01-26 16:15:35.52748+00	1	1. Modul 1	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+161	2026-01-26 16:17:49.864793+00	1	1. Modul 1	2	[{"changed": {"fields": ["Vimeo embed url2", "Vimeo embed url3"]}}]	8	2
+162	2026-01-26 16:18:34.220841+00	1	1. Modul 1	2	[]	8	2
+163	2026-01-26 16:19:29.275669+00	1	1. Modul 1	2	[]	8	2
+164	2026-01-26 16:20:26.111221+00	1	1. Modul 1	2	[]	8	2
+165	2026-01-26 17:59:56.421857+00	1	1. Modul 1	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+166	2026-01-26 18:00:08.906126+00	2	2. Modul 2	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+167	2026-01-26 18:00:27.180893+00	3	3. Modul 3	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+168	2026-01-26 18:00:48.135442+00	4	4. Modul 4	2	[{"changed": {"fields": ["Intro text"]}}]	8	2
+169	2026-01-26 18:02:08.037466+00	3	3. Modul 3	2	[{"changed": {"fields": ["Slug"]}}]	8	2
+170	2026-01-26 18:02:47.954964+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+171	2026-01-26 18:02:59.561645+00	1	1. Modul 1	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+172	2026-01-26 18:03:06.111103+00	2	2. Modul 2	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+173	2026-01-26 18:03:11.772649+00	2	2. Modul 2	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+174	2026-01-26 18:03:20.027456+00	3	3. Modul 3	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+175	2026-01-26 18:03:27.275126+00	3	3. Modul 3	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+176	2026-01-26 18:03:33.050091+00	4	4. Modul 4	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+177	2026-01-26 18:03:39.343541+00	4	4. Modul 4	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+178	2026-01-26 18:26:05.616958+00	2	2. Modul 2	2	[]	8	2
+179	2026-01-26 18:27:00.943594+00	3	3. Modul 3	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+180	2026-01-26 18:27:07.50901+00	3	3. Modul 3	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+181	2026-01-26 18:27:45.918067+00	2	2. Modul 2	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+182	2026-01-26 18:27:52.427243+00	2	2. Modul 2	2	[{"changed": {"fields": ["Vimeo embed url1"]}}]	8	2
+183	2026-01-26 18:29:39.055262+00	2	2. Modul 2	2	[]	8	2
+184	2026-01-26 18:32:10.325504+00	2	2. Modul 2	2	[]	8	2
+185	2026-01-26 18:32:35.775635+00	2	2. Modul 2	2	[]	8	2
+186	2026-01-29 14:27:09.526136+00	2	2. Modul	2	[{"changed": {"fields": ["Title"]}}]	8	2
+187	2026-01-29 14:27:17.084002+00	1	1. Modul	2	[{"changed": {"fields": ["Title"]}}]	8	2
+188	2026-01-29 14:27:26.907379+00	3	3. Modul	2	[{"changed": {"fields": ["Title"]}}]	8	2
+189	2026-01-29 14:27:37.535999+00	4	4. Modul	2	[{"changed": {"fields": ["Title"]}}]	8	2
+190	2026-01-29 16:59:39.825763+00	18	Order #18 - denisa.zoulova@protonmail.com - Premium - paid	3		10	2
+191	2026-01-29 16:59:39.825799+00	14	Order #14 - adaada1@seznam.cz - Standard - paid	3		10	2
+192	2026-01-29 16:59:55.745511+00	17	Order #17 - hoang.phimanh@seznam.cz - Standard - pending	3		10	2
+193	2026-01-29 17:00:23.965034+00	1	academy.calmdog.cz	2	[{"changed": {"fields": ["Domain name", "Display name"]}}]	13	2
+194	2026-01-29 17:00:47.324212+00	4	adaada1@seznam.cz	3		4	2
+195	2026-01-29 17:00:47.32425+00	6	denisa.zoulova@protonmail.com	3		4	2
+196	2026-01-29 17:07:19.337986+00	19	Order #19 - denisa.zoulova@protonmail.com - Premium - paid	3		10	2
+197	2026-01-29 17:07:28.531076+00	7	denisa.zoulova@protonmail.com	3		4	2
+198	2026-01-29 17:18:53.021741+00	8	denisa.zoulova30@gmail.com	3		4	2
+199	2026-01-29 17:31:17.346231+00	22	Order #22 - denisa.zoulova@protonmail.com - Premium - pending	3		10	2
+200	2026-01-29 17:31:17.346272+00	21	Order #21 - denisa.zoulova30@gmail.com - Standard - pending	3		10	2
+201	2026-01-29 17:31:17.346294+00	20	Order #20 - denisa.zoulova30@gmail.com - Standard - paid	3		10	2
+202	2026-01-29 17:42:39.693326+00	23	Order #23 - denisa.zoulova30@gmail.com - Premium - pending	3		10	2
+203	2026-01-31 10:18:59.694802+00	25	Order #25 - denisa.zoulova30@gmail.com - Standard - pending	3		10	2
+204	2026-01-31 10:18:59.694855+00	24	Order #24 - denisa.zoulova@protonmail.com - Standard - paid	3		10	2
+205	2026-01-31 10:19:12.333552+00	9	denisa.zoulova@protonmail.com	3		4	2
+206	2026-01-31 15:48:13.635261+00	2	Standard	2	[{"changed": {"fields": ["Subtitle", "Description"]}}]	9	2
+207	2026-01-31 15:58:08.408602+00	1	Premium	2	[{"changed": {"fields": ["Description"]}}]	9	2
+208	2026-01-31 16:03:56.334581+00	28	Order #28 - denisa.zoulova30@gmail.com - Standard - pending	3		10	2
+209	2026-01-31 16:03:56.334624+00	27	Order #27 - adaada1@seznam.cz - Standard - paid	3		10	2
+210	2026-01-31 16:03:56.334645+00	26	Order #26 - denisa.zoulova30@gmail.com - Premium - paid	3		10	2
+211	2026-01-31 16:03:56.33466+00	16	Order #16 - hoang.phimanh@seznam.cz - Standard - paid	3		10	2
+212	2026-01-31 16:04:15.61685+00	11	adaada1@seznam.cz	3		4	2
+213	2026-01-31 16:04:15.616883+00	10	denisa.zoulova30@gmail.com	3		4	2
+214	2026-01-31 16:04:15.616899+00	5	hoang.phimanh@seznam.cz	3		4	2
+215	2026-01-31 16:06:19.874104+00	29	Order #29 - denisa.zoulova30@gmail.com - Standard - pending	3		10	2
+216	2026-01-31 16:06:35.813879+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+217	2026-01-31 16:06:43.651852+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+218	2026-01-31 16:06:49.723888+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+219	2026-01-31 16:06:55.819169+00	2	2. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+220	2026-01-31 16:07:06.078645+00	2	2. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+221	2026-01-31 16:07:13.826052+00	3	3. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+222	2026-01-31 16:07:20.045581+00	3	3. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+223	2026-01-31 16:07:26.821266+00	4	4. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+224	2026-01-31 16:07:32.76307+00	4	4. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+225	2026-01-31 16:10:08.823425+00	2	Standard	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+226	2026-01-31 16:23:36.603499+00	30	Order #30 - denisa.zoulova30@gmail.com - Standard - pending	3		10	2
+227	2026-01-31 16:30:00.719023+00	2	Standard	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+228	2026-01-31 16:30:09.841464+00	1	Premium	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+229	2026-01-31 16:30:41.227214+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+230	2026-01-31 16:30:47.595802+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+231	2026-01-31 16:30:55.901493+00	2	2. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+232	2026-01-31 16:31:02.868819+00	2	2. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+233	2026-01-31 16:31:27.675354+00	3	3. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+234	2026-01-31 16:31:36.854696+00	3	3. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+235	2026-01-31 16:31:43.461846+00	4	4. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+236	2026-01-31 16:31:50.042524+00	4	4. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+237	2026-01-31 16:32:13.154283+00	1	Premium	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+238	2026-01-31 16:36:46.910408+00	1	Premium	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+239	2026-02-06 20:52:38.648624+00	2	Standard	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+240	2026-02-06 20:52:53.654041+00	1	Premium	2	[{"changed": {"fields": ["Price czk"]}}]	9	2
+241	2026-02-13 10:07:28.273312+00	22	radka.solcova@seznam.cz	2	[{"changed": {"fields": ["password"]}}]	4	2
+242	2026-02-21 19:17:53.764216+00	21	karkov11@seznam.cz	2	[{"changed": {"fields": ["password"]}}]	4	2
+243	2026-05-11 16:50:04.599488+00	1	1. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+244	2026-05-11 16:50:29.965888+00	2	2. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+245	2026-05-11 16:51:00.184433+00	3	3. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+246	2026-05-11 16:51:24.470433+00	4	4. Modul	2	[{"changed": {"fields": ["Pdf file"]}}]	8	2
+\.
+
+

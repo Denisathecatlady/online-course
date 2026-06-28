@@ -1,0 +1,16 @@
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	courses	course
+8	courses	module
+9	payments	courseplan
+10	payments	order
+11	payments	courseaccess
+12	courses	moduleprogress
+13	sites	site
+\.
+
+

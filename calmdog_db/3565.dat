@@ -1,0 +1,34 @@
+1	contenttypes	0001_initial	2026-01-08 16:37:13.845549+00
+2	auth	0001_initial	2026-01-08 16:37:14.02918+00
+3	admin	0001_initial	2026-01-08 16:37:14.12285+00
+4	admin	0002_logentry_remove_auto_add	2026-01-08 16:37:14.130477+00
+5	admin	0003_logentry_add_action_flag_choices	2026-01-08 16:37:14.198903+00
+6	contenttypes	0002_remove_content_type_name	2026-01-08 16:37:14.21609+00
+7	auth	0002_alter_permission_name_max_length	2026-01-08 16:37:14.227044+00
+8	auth	0003_alter_user_email_max_length	2026-01-08 16:37:14.238957+00
+9	auth	0004_alter_user_username_opts	2026-01-08 16:37:14.245689+00
+10	auth	0005_alter_user_last_login_null	2026-01-08 16:37:14.254488+00
+11	auth	0006_require_contenttypes_0002	2026-01-08 16:37:14.257676+00
+12	auth	0007_alter_validators_add_error_messages	2026-01-08 16:37:14.264667+00
+13	auth	0008_alter_user_username_max_length	2026-01-08 16:37:14.275044+00
+14	auth	0009_alter_user_last_name_max_length	2026-01-08 16:37:14.282941+00
+15	auth	0010_alter_group_name_max_length	2026-01-08 16:37:14.291801+00
+16	auth	0011_update_proxy_permissions	2026-01-08 16:37:14.317628+00
+17	auth	0012_alter_user_first_name_max_length	2026-01-08 16:37:14.326562+00
+18	courses	0001_initial	2026-01-08 16:37:14.344314+00
+19	courses	0002_rename_vimeo_embed_url_module_vimeo_embed_url1_and_more	2026-01-08 16:37:14.417125+00
+20	courses	0003_alter_module_pdf_file_alter_module_vimeo_embed_url1_and_more	2026-01-08 16:37:14.430183+00
+21	payments	0001_initial	2026-01-08 16:37:14.52687+00
+22	payments	0002_rename_coursesaccess_courseaccess	2026-01-08 16:37:14.550472+00
+23	payments	0003_courseplan_bullets_courseplan_description_and_more	2026-01-08 16:37:14.631821+00
+24	payments	0004_rename_stripe_payment_intend_id_order_stripe_payment_intent_id_and_more	2026-01-08 16:37:14.717483+00
+25	payments	0005_order_city_order_country_order_first_name_and_more	2026-01-08 16:37:15.228432+00
+26	sessions	0001_initial	2026-01-08 16:37:15.244749+00
+27	payments	0006_order_invoice_number_alter_order_created_at	2026-01-17 14:59:30.019639+00
+28	payments	0007_order_newsletter_opt_in	2026-01-21 14:40:26.847817+00
+29	courses	0004_moduleprogress	2026-01-29 16:27:52.425758+00
+30	sites	0001_initial	2026-01-29 16:57:52.431409+00
+31	sites	0002_alter_domain_unique	2026-01-29 16:57:52.440157+00
+\.
+
+
