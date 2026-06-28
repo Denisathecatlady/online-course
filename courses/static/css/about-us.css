@@ -68,12 +68,20 @@ MOJE VZDELANI - REDESIGN
 }
 
 .education-r-hero-image,
-.education-r-nordic-hero img,
-.education-r-profile-photo img {
+.education-r-nordic-hero img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.education-r-profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    display: block;
+    filter: brightness(0.85);
 }
 
 .education-r-hero-overlay {
@@ -225,9 +233,9 @@ MOJE VZDELANI - REDESIGN
 }
 
 .education-r-profile-photo {
-    aspect-ratio: 0.8 / 1;
+    aspect-ratio: 0.9 / 1;
     overflow: hidden;
-    background: #ece8de;
+    background: transparent;
 }
 
 .education-r-photo-caption,
@@ -313,7 +321,7 @@ MOJE VZDELANI - REDESIGN
 
 .education-r-nordic-copy p + p,
 .education-r-closing-copy p + p {
-    margin-top: 3rem;
+    margin-top: 0.4rem;
 }
 
 .education-r-nordic-copy p strong {
@@ -344,11 +352,9 @@ MOJE VZDELANI - REDESIGN
     line-height: 1.08;
     letter-spacing: -0.03em;
     color: #ffffff;
-    max-width: 14ch;
 }
 
 .education-r-nordic-card-copy {
-    max-width: 24ch;
     font-size: clamp(0.95rem, 1.15vw, 1.12rem) !important;
     line-height: 1.55 !important;
 }
@@ -393,6 +399,8 @@ MOJE VZDELANI - REDESIGN
 .education-r-cert-group-head {
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     width: 100%;
 }
 
@@ -548,23 +556,21 @@ MOJE VZDELANI - REDESIGN
 }
 
 .education-r-closing-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.12fr) minmax(380px, 0.76fr);
-    gap: 5rem;
-    align-items: end;
+    display: block;
     padding: 2.8rem 0 3.2rem;
     border-bottom: 1px solid rgba(38, 36, 39, 0.08);
 }
 
 .education-r-closing-title {
-    font-size: clamp(4.3rem, 6.2vw, 7.4rem);
-    max-width: 14ch;
+    font-size: clamp(2.4rem, 3.6vw, 4.2rem);
+    max-width: 24ch;
 }
 
 .education-r-closing-copy {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 2rem;
 }
 
 .education-r-closing-footer {
@@ -589,6 +595,10 @@ MOJE VZDELANI - REDESIGN
 .education-r-footer-link:hover {
     color: var(--education-ink);
     transform: translateX(4px);
+}
+
+.education-r-footer-link--back:hover {
+    transform: translateX(-4px);
 }
 
 @media (max-width: 1400px) {
@@ -1086,7 +1096,8 @@ MOJE VZDELANI - REDESIGN
 
 .philosophy-stat-card {
     min-width: 0;
-    padding: 0 2rem 0 4.8rem;
+    padding: 0 2rem;
+    text-align: center;
 }
 
 .philosophy-stat-card + .philosophy-stat-card {
@@ -1336,6 +1347,36 @@ MOJE VZDELANI - REDESIGN
 
 .philosophy-closing-quote-accent {
     color: #6f8780;
+}
+
+.philosophy-closing-nav {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2rem;
+    padding-top: 2.2rem;
+    border-top: 1px solid rgba(95, 118, 107, 0.18);
+}
+
+.philosophy-closing-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--education-sage-dark, #3f5a54);
+    text-decoration: none;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.7rem, 2.2vw, 2.4rem);
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.philosophy-closing-nav-link:hover {
+    color: var(--education-ink, #1a2e26);
+    transform: translateX(4px);
+}
+
+.philosophy-closing-nav-link--back:hover {
+    transform: translateX(-4px);
 }
 
 .contact-page-body .page-wrapper {
@@ -2769,7 +2810,7 @@ a.contact-info-value:hover {
     margin: 0;
     font-family: "Playfair Display", serif;
     font-weight: 600;
-    line-height: 0.98;
+    line-height: 1.3;
     letter-spacing: 0;
 }
 
@@ -2874,7 +2915,7 @@ a.contact-info-value:hover {
     z-index: 1;
     margin-bottom: 2.2rem;
     color: #303030;
-    font-size: 4.3rem;
+    font-size: 2.6rem;
 }
 
 .story-design-copy-block h2 span,
@@ -2889,7 +2930,7 @@ a.contact-info-value:hover {
 .story-design-final-copy p {
     color: #767676;
     font-size: 1.22rem;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1.78;
 }
 
@@ -2912,13 +2953,12 @@ a.contact-info-value:hover {
 .story-design-photo img {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
 }
 
 .story-design-photo--tall {
-    height: 52rem;
-    overflow: hidden;
+    max-width: 32rem;
+    margin: 0 auto;
 }
 
 .story-design-photo--fjord {
@@ -2927,7 +2967,7 @@ a.contact-info-value:hover {
 }
 
 .story-design-photo--fjord img {
-    height: 55rem;
+    height: auto;
 }
 
 .story-design-photo figcaption {
@@ -2952,7 +2992,7 @@ a.contact-info-value:hover {
 .story-design-wide-shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(25, 26, 22, 0.76) 0%, rgba(25, 26, 22, 0.48) 52%, rgba(25, 26, 22, 0.18) 100%);
+    background: linear-gradient(90deg, rgba(25, 26, 22, 0.9) 0%, rgba(25, 26, 22, 0.72) 52%, rgba(25, 26, 22, 0.5) 100%);
 }
 
 .story-design-wide-content {
@@ -2969,7 +3009,7 @@ a.contact-info-value:hover {
 }
 
 .story-design-wide-content h2 span {
-    color: rgba(255, 255, 255, 0.35);
+    color: #f4a15e;
 }
 
 .story-design-dark {
@@ -3036,23 +3076,12 @@ a.contact-info-value:hover {
     position: relative;
 }
 
-.story-design-final-title::before {
-    content: "„";
-    position: absolute;
-    left: -0.8rem;
-    top: 3.5rem;
-    color: #212121;
-    font-family: "Playfair Display", serif;
-    font-size: 9rem;
-    line-height: 1;
-}
-
 .story-design-final-title h2 {
     position: relative;
     z-index: 1;
     margin-top: 2.4rem;
     color: #303030;
-    font-size: 5.4rem;
+    font-size: 4.2rem;
 }
 
 .story-design-final-copy {

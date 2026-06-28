@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band motion-band reveal reveal-band" aria-label="Detail psího oka">
-  <img src="{% static 'img/home/hero_pes_oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
+  <img src="{% static 'img/home/hero-pes-oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
 </section>
 
 <section id="sluzby" class="services-section section-space">
@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band home-image-band-forest motion-band reveal reveal-band" aria-label="Lesní hero">
-  <img src="{% static 'img/home/obrazek_les_hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
+  <img src="{% static 'img/home/obrazek-les-hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
 </section>
 
 <section class="course-preview-section section-space">
@@ -291,13 +291,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="course-preview-grid">
       {% for course in courses %}
-        <article class="home-course-card reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}">
+        <article class="home-course-card reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}{% if course.coming_soon %} home-course-card-soon{% endif %}">
+          {% if course.coming_soon %}
+          <div class="home-course-card-link" aria-label="{{ course.title }}">
+          {% else %}
           <a href="{% url 'payments:course_detail' course.slug %}" class="home-course-card-link" aria-label="{{ course.title }}">
+          {% endif %}
             <div class="home-course-card-media">
               <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="home-course-card-image">
             </div>
 
             <div class="home-course-card-overlay"></div>
+
+            {% if course.coming_soon %}
+            <div class="home-course-card-coming-soon-badge">Připravujeme</div>
+            {% endif %}
 
             <div class="home-course-card-top">
               <span class="home-course-card-pill">Online kurz</span>
@@ -332,6 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 {% endif %}
               </div>
 
+              {% if not course.coming_soon %}
               <div class="home-course-card-bottom-row">
                 <div class="home-course-card-price">
                   {% if course.min_price %}
@@ -342,8 +351,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <span class="home-course-card-arrow" aria-hidden="true">→</span>
               </div>
+              {% endif %}
             </div>
+          {% if course.coming_soon %}
+          </div>
+          {% else %}
           </a>
+          {% endif %}
         </article>
       {% empty %}
         <article class="home-course-card home-course-card-empty reveal reveal-lift reveal-delay-1">
@@ -394,21 +408,20 @@ document.addEventListener("DOMContentLoaded", () => {
       </h2>
 
       <p class="lecturer-lead">
-        Jako certifikovaný
-        <strong>Ethical Dog Trainer – Calming Signals Approach and Dog Behavior Specialist</strong>
-        pomáhám majitelům psů najít cestu ke vzájemnému porozumění.
+        <strong>Ethical Dog Trainer – Calming Signals Approach and Dog Behavior Specialist.</strong>
+        Pomáhám majitelům psů najít cestu ke vzájemnému porozumění.
       </p>
 
       <div class="lecturer-stats">
+        <div class="stat stat-number">
+          <strong class="stat-value">100%</strong>
+          <span class="stat-label">Etický přístup</span>
+        </div>
+
         <div class="stat stat-text">
           <span class="stat-label">Calming Signals Specialist</span>
           <strong class="stat-value">Certifikace</strong>
           <span class="stat-note">pod vedením Turid Rugaas</span>
-        </div>
-
-        <div class="stat stat-number">
-          <strong class="stat-value">100%</strong>
-          <span class="stat-label">Etický přístup</span>
         </div>
       </div>
     </div>
@@ -416,7 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="lecturer-visual motion-float reveal reveal-right reveal-delay-2">
       <div class="lecturer-photo-wrap">
         <img
-          src="{% static 'img/courses/lecturer-portrait.png' %}"
+          src="{% static 'img/contact/image.png' %}"
           alt="Ing. Andrea Zoulová"
           class="lecturer-photo"
         >

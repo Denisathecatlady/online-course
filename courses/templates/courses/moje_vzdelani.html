@@ -11,7 +11,7 @@
 <section class="education-redesign">
   <section class="education-r-hero reveal">
     <div class="education-r-hero-media">
-      <img src="{% static 'img/moje-vzdelani-1.png' %}" alt="Horská krajina" class="education-r-hero-image">
+      <img src="{% static 'img/about/moje-vzdelani-1.png' %}" alt="Horská krajina" class="education-r-hero-image">
       <div class="education-r-hero-overlay"></div>
     </div>
 
@@ -45,8 +45,7 @@
       <div class="education-r-profile-copy">
         <p class="education-r-label">Za CalmDog stojí</p>
         <h2 class="education-r-profile-title">
-          Ing. Andrea<br>
-          <span>Zoulová</span>
+          Ing. Andrea <span>Zoulová</span>
         </h2>
 
         <blockquote class="education-r-quote">
@@ -65,11 +64,11 @@
 
       <div class="education-r-profile-media">
         <div class="education-r-profile-photo">
-          <img src="{% static 'img/moje-vzdelani-2.png' %}" alt="Andrea Zoulová">
+          <img src="{% static 'img/about/moje-vzdelani-2.png' %}" alt="Andrea Zoulová">
         </div>
         <div class="education-r-photo-caption">
           <span class="education-r-caption-line"></span>
-          <span>Certified dog trainer</span>
+          <span>Ethical Dog Trainer — Calming Signals Approach &amp; Dog Behaviour Specialist</span>
         </div>
       </div>
     </div>
@@ -77,7 +76,7 @@
 
   <section class="education-r-nordic reveal">
     <div class="education-r-nordic-hero">
-      <img src="{% static 'img/moje-vzdelani-3.png' %}" alt="Nordic Education Centre for Dog Trainers">
+      <img src="{% static 'img/about/moje-vzdelani-3.png' %}" alt="Nordic Education Centre for Dog Trainers">
       <div class="education-r-nordic-overlay"></div>
       <div class="education-r-shell education-r-nordic-heading">
         <p class="education-r-label education-r-label-on-dark">Základ odbornosti</p>
@@ -153,8 +152,9 @@
           <div class="education-r-cert-group-copy">
             <p class="education-r-group-label">Specializace</p>
             <p class="education-r-group-text">
-              Specializace navazují na hlavní vzdělání a prohlubují práci s psí komunikací,
-              konejšivými signály a citlivým vedením psa v běžných i náročnějších situacích.
+              Specializace navazují na hlavní vzdělání a dále prohlubují porozumění psí komunikaci,
+              emocím a behaviorálním potřebám psa. Zaměřují se také na práci se specifickými skupinami
+              problémového chování a na vývoj psa v běžných i náročnějších situacích.
             </p>
           </div>
         </div>
@@ -223,13 +223,11 @@
     </div>
 
     <div class="education-r-closing-footer">
-      <div class="education-r-signoff">
-        <span class="education-r-caption-line"></span>
-        <span>Ing. Andrea Zoulová — CalmDog</span>
-      </div>
-      <a href="{% url 'courses:nase_filozofie' %}" class="education-r-footer-link">
-        Naše filozofie
-        <span aria-hidden="true">→</span>
+      <a href="{% url 'courses:nase_filozofie' %}" class="education-r-footer-link education-r-footer-link--back">
+        <span aria-hidden="true">←</span> Naše filozofie
+      </a>
+      <a href="{% url 'courses:muj_pribeh' %}" class="education-r-footer-link">
+        Můj příběh <span aria-hidden="true">→</span>
       </a>
     </div>
   </section>

@@ -800,14 +800,23 @@
 }
 
 .course-include-icon {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
+  position: relative;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
   border: 1px solid rgba(95, 118, 107, 0.4);
   border-radius: 999px;
   color: var(--sage);
-  font-size: 0.95rem;
+}
+
+.course-include-icon svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  display: block;
 }
 
 .course-include-item strong,

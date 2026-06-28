@@ -25,25 +25,28 @@ def validate_pdf(file):
 # ======================================
 
 class Course(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, blank=True)
+    title = models.CharField("Název kurzu", max_length=200)
+    slug = models.SlugField("URL adresa (slug)", unique=True, blank=True)
 
-    public_intro = models.TextField(blank=True)
-    about_text = models.TextField(blank=True)
-    private_intro = models.TextField(blank=True)
+    public_intro = models.TextField("Veřejný úvod", blank=True)
+    about_text = models.TextField("O kurzu", blank=True)
+    private_intro = models.TextField("Úvod po zakoupení", blank=True)
 
-    image = models.ImageField(upload_to="courses/", blank=True)
+    image = models.ImageField("Obrázek kurzu", upload_to="courses/", blank=True)
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField("Aktivní", default=True)
 
     coming_soon = models.BooleanField(
+        "Připravujeme",
         default=False,
         help_text="Kurz se připravuje – zobrazí se informace a tlačítko Přidat do košíku bude skryté.",
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
 
     class Meta:
+        verbose_name = "Kurz"
+        verbose_name_plural = "Kurzy"
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["slug"]),
@@ -73,23 +76,29 @@ class CoursePlan(models.Model):
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
-        related_name="plans"
+        related_name="plans",
+        verbose_name="Kurz",
     )
 
-    name = models.CharField(max_length=100)  # Standard / Premium
-    code = models.SlugField(db_index=True)
+    name = models.CharField("Název varianty", max_length=100)  # Standard / Premium
+    code = models.SlugField("Kód varianty", db_index=True)
 
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField("Cena", max_digits=10, decimal_places=2)
 
-    includes_certificate = models.BooleanField(default=False)
-    includes_consultation = models.BooleanField(default=False)
+    includes_certificate = models.BooleanField("Obsahuje certifikát", default=False)
+    includes_consultation = models.BooleanField("Obsahuje konzultaci", default=False)
 
-    # 🔥 délka přístupu v dnech (default 180 = půl roku)
-    access_duration_days = models.PositiveIntegerField(default=180)
+    access_duration_days = models.PositiveIntegerField(
+        "Délka přístupu (dny)",
+        default=180,
+        help_text="Po kolika dnech od zakoupení přístup vyprší (180 = půl roku).",
+    )
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField("Aktivní", default=True)
 
     class Meta:
+        verbose_name = "Varianta kurzu"
+        verbose_name_plural = "Varianty kurzu"
         unique_together = ("course", "code")
         indexes = [
             models.Index(fields=["course"]),
@@ -108,21 +117,23 @@ class Module(models.Model):
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
-        related_name="modules"
+        related_name="modules",
+        verbose_name="Kurz",
     )
 
-    order = models.PositiveSmallIntegerField()
-    title = models.CharField(max_length=200)
+    order = models.PositiveSmallIntegerField("Pořadí")
+    title = models.CharField("Název modulu", max_length=200)
 
-    slug = models.SlugField(max_length=220, blank=True)
+    slug = models.SlugField("URL adresa (slug)", max_length=220, blank=True)
 
-    intro_text = models.TextField(blank=True)
+    intro_text = models.TextField("Úvodní text", blank=True)
 
-    vimeo_embed_url1 = models.URLField(blank=True, validators=[vimeo_validator])
-    vimeo_embed_url2 = models.URLField(blank=True, validators=[vimeo_validator])
-    vimeo_embed_url3 = models.URLField(blank=True, validators=[vimeo_validator])
+    vimeo_embed_url1 = models.URLField("Vimeo video 1", blank=True, validators=[vimeo_validator])
+    vimeo_embed_url2 = models.URLField("Vimeo video 2", blank=True, validators=[vimeo_validator])
+    vimeo_embed_url3 = models.URLField("Vimeo video 3", blank=True, validators=[vimeo_validator])
 
     pdf_file = models.FileField(
+        "PDF materiál",
         upload_to="module_pdfs/",
         blank=True,
         null=True,
@@ -130,6 +141,8 @@ class Module(models.Model):
     )
 
     class Meta:
+        verbose_name = "Modul"
+        verbose_name_plural = "Moduly"
         ordering = ["order"]
         constraints = [
             models.UniqueConstraint(fields=["course", "order"], name="unique_order_per_course"),
@@ -156,13 +169,15 @@ class Module(models.Model):
 # ======================================
 
 class ModuleProgress(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    module = models.ForeignKey("Module", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Zákazník")
+    module = models.ForeignKey("Module", on_delete=models.CASCADE, verbose_name="Modul")
 
-    completed = models.BooleanField(default=False)
-    completed_at = models.DateTimeField(null=True, blank=True)
+    completed = models.BooleanField("Dokončeno", default=False)
+    completed_at = models.DateTimeField("Dokončeno dne", null=True, blank=True)
 
     class Meta:
+        verbose_name = "Postup v modulu"
+        verbose_name_plural = "Postup v modulech"
         unique_together = ("user", "module")
         indexes = [
             models.Index(fields=["user"]),
@@ -178,15 +193,17 @@ class ModuleProgress(models.Model):
 # ======================================
 
 class ModuleQuizProgress(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    module = models.ForeignKey("Module", on_delete=models.CASCADE, related_name="quiz_progresses")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Zákazník")
+    module = models.ForeignKey("Module", on_delete=models.CASCADE, related_name="quiz_progresses", verbose_name="Modul")
 
-    step = models.PositiveSmallIntegerField()
-    attempts_count = models.PositiveIntegerField(default=0)
-    passed = models.BooleanField(default=False)
-    passed_at = models.DateTimeField(null=True, blank=True)
+    step = models.PositiveSmallIntegerField("Krok kvízu")
+    attempts_count = models.PositiveIntegerField("Počet pokusů", default=0)
+    passed = models.BooleanField("Splněno", default=False)
+    passed_at = models.DateTimeField("Splněno dne", null=True, blank=True)
 
     class Meta:
+        verbose_name = "Postup v kvízu"
+        verbose_name_plural = "Postup v kvízech"
         unique_together = ("user", "module", "step")
         indexes = [
             models.Index(fields=["user", "module"]),

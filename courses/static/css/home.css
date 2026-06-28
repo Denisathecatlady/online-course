@@ -34,7 +34,7 @@
   background:
     linear-gradient(90deg, rgba(245, 245, 240, 0.78) 0%, rgba(245, 245, 240, 0.58) 28%, rgba(245, 245, 240, 0.16) 52%, rgba(245, 245, 240, 0.08) 100%),
     linear-gradient(180deg, rgba(245, 245, 240, 0.06) 0%, rgba(245, 245, 240, 0) 36%, rgba(245, 245, 240, 0.9) 100%),
-    url("../img/home/uvodni_stranka_hero.png");
+    url("../img/home/uvodni-stranka-hero.png");
   background-size: cover;
   background-position: center top;
   transform:
@@ -411,9 +411,9 @@
 .home-image-band-photo {
   display: block;
   width: 100%;
-  height: clamp(280px, 42vw, 580px);
+  height: clamp(480px, 65vw, 780px);
   object-fit: cover;
-  object-position: center center;
+  object-position: center 25%;
   transform: translate3d(0, var(--band-shift), 0) scale(1.08);
   transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
@@ -494,7 +494,7 @@
   display: grid;
   grid-template-columns: 72px minmax(0, 1.15fr) minmax(280px, 1fr);
   gap: 2.25rem;
-  align-items: start;
+  align-items: center;
   padding: 2.8rem 2rem 2.8rem 1.7rem;
   position: relative;
   overflow: hidden;
@@ -840,6 +840,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(0.6);
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -850,6 +851,32 @@
 
 .home-course-card:hover .home-course-card-image {
   transform: scale(1.05);
+}
+
+.home-course-card-soon {
+  cursor: default;
+}
+
+.home-course-card-soon:hover .home-course-card-image {
+  transform: none;
+}
+
+.home-course-card-coming-soon-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.92);
+  color: #2f3e3a;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .home-course-card-top,
@@ -1298,7 +1325,7 @@
 .lecturer-stats {
   display: flex;
   gap: 4rem;
-  align-items: baseline;
+  align-items: flex-end;
 }
 
 .stat-text {
@@ -1378,6 +1405,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 1.5rem;
   transform: scale(1.01);
   transition: transform 700ms ease;
 }

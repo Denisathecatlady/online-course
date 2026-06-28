@@ -73,82 +73,373 @@ def has_module_sequence_bypass(course_access):
 MODULE_STEP_QUIZZES = {
     "konejsive-signaly-v-praxi": {
         1: {
-            1: {
-                "title": "Test k části 1",
-                "questions": [
-                    {
-                        "id": "step1_q1",
-                        "prompt": "Když pes odvrací hlavu, olizuje se nebo zpomaluje pohyb, nejčastěji tím:",
-                        "options": [
-                            {"value": "a", "label": "zvyšuje tlak na druhého psa nebo člověka"},
-                            {"value": "b", "label": "se snaží situaci zklidnit a snížit napětí"},
-                            {"value": "c", "label": "ukazuje, že ho situace vůbec nezajímá"},
-                        ],
-                        "correct": "b",
-                    },
-                    {
-                        "id": "step1_q2",
-                        "prompt": "Prvním cílem člověka při čtení konejšivých signálů je hlavně:",
-                        "options": [
-                            {"value": "a", "label": "rozpoznat nepohodu včas a upravit situaci"},
-                            {"value": "b", "label": "okamžitě psa opravit povelem"},
-                            {"value": "c", "label": "ověřit, že pes zlobí schválně"},
-                        ],
-                        "correct": "a",
-                    },
-                ],
-            },
-            2: {
-                "title": "Test k části 2",
-                "questions": [
-                    {
-                        "id": "step2_q1",
-                        "prompt": "Proč je důležité hodnotit psí signály v kontextu celé situace?",
-                        "options": [
-                            {"value": "a", "label": "protože jeden signál sám o sobě nemusí stačit k pochopení významu"},
-                            {"value": "b", "label": "protože jednotlivé signály nikdy nic neznamenají"},
-                            {"value": "c", "label": "protože kontext je důležitý jen u štěňat"},
-                        ],
-                        "correct": "a",
-                    },
-                    {
-                        "id": "step2_q2",
-                        "prompt": "Když pes vysílá jemné signály nepohody, vhodná reakce člověka bývá:",
-                        "options": [
-                            {"value": "a", "label": "zvýšit tlak, aby si zvykl rychleji"},
-                            {"value": "b", "label": "ubrat náročnost a dát psovi víc prostoru"},
-                            {"value": "c", "label": "signály ignorovat, dokud nezačne vrčet"},
-                        ],
-                        "correct": "b",
-                    },
-                ],
-            },
             3: {
-                "title": "Závěrečný test modulu",
+                "title": "Závěrečný test modulu 1",
                 "questions": [
                     {
-                        "id": "step3_q1",
-                        "prompt": "Který přístup nejlépe odpovídá práci s konejšivými signály v praxi?",
+                        "id": "m1_q1",
+                        "prompt": "Konejšivé signály jsou:",
                         "options": [
-                            {"value": "a", "label": "pes musí situaci vždy zvládnout bez úprav prostředí"},
-                            {"value": "b", "label": "čteme signály psa, předcházíme přetížení a pomáháme mu uspět"},
-                            {"value": "c", "label": "řešíme hlavně viditelné chování, ne příčinu"},
+                            {"value": "a", "label": "komunikační signály"},
+                            {"value": "b", "label": "s komunikací nijak nesouvisí"},
+                            {"value": "c", "label": "neexistují, psi spolu nekomunikují"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m1_q2",
+                        "prompt": "Psí komunikace:",
+                        "options": [
+                            {"value": "a", "label": "je vrozená, pes umí výborně komunikovat od narození"},
+                            {"value": "b", "label": "je vrozená, psi musejí mít možnost ji rozvinout"},
+                            {"value": "c", "label": "není vrozená, pes se ji musí učit"},
                         ],
                         "correct": "b",
                     },
                     {
-                        "id": "step3_q2",
-                        "prompt": "Po úspěšném dokončení všech tří testů v modulu 1 se má stát:",
+                        "id": "m1_q3",
+                        "prompt": "Mezi jednu z funkcí konejšivých signálů nepatří:",
                         "options": [
-                            {"value": "a", "label": "odemkne se další část kurzu"},
-                            {"value": "b", "label": "uživatel musí počkat na ruční schválení"},
-                            {"value": "c", "label": "modul se vrátí na začátek"},
+                            {"value": "a", "label": "vyjádření přátelských úmyslů"},
+                            {"value": "b", "label": "zastrašení s cílem uklidnění situace"},
+                            {"value": "c", "label": "zastavení hluku a ruchu"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m1_q4",
+                        "prompt": "Člověk v komunikaci se psem:",
+                        "options": [
+                            {"value": "a", "label": "může používat všechny konejšivé signály, pes mu bude rozumět"},
+                            {"value": "b", "label": "může používat jen některé konejšivé signály, pes mu bude rozumět"},
+                            {"value": "c", "label": "nemůže používat konejšivé signály, pes mu nebude rozumět"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m1_q5",
+                        "prompt": "Když pes ztratí schopnost používat konejšivé signály, k jejich návratu:",
+                        "options": [
+                            {"value": "a", "label": "potřebuje pouze psy, protože ti jediní ovládají konejšivé signály perfektně"},
+                            {"value": "b", "label": "může pomoci člověk a určité situace"},
+                            {"value": "c", "label": "člověk je rušivý element, nemůže pomoci"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m1_q6",
+                        "prompt": "Konejšivý signál olíznutí rtů v komunikaci se psem:",
+                        "options": [
+                            {"value": "a", "label": "můžeme využít pouze v určité situaci"},
+                            {"value": "b", "label": "nemůžeme použít, pes by nám nerozuměl"},
+                            {"value": "c", "label": "můžeme použít kdykoliv"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m1_q7",
+                        "prompt": "Konejšivé signály jsou:",
+                        "options": [
+                            {"value": "a", "label": "stresové signály"},
+                            {"value": "b", "label": "varovné signály"},
+                            {"value": "c", "label": "komunikace"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m1_q8",
+                        "prompt": "Konejšivé signály se:",
+                        "options": [
+                            {"value": "a", "label": "vyskytují vždy izolovaně"},
+                            {"value": "b", "label": "mohou vyskytovat spolu s přesměrovaným chováním, ale ne se signály stresu"},
+                            {"value": "c", "label": "mohou vyskytovat spolu s přesměrovaným chováním i se signály stresu"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m1_q9",
+                        "prompt": "Pes komunikuje:",
+                        "options": [
+                            {"value": "a", "label": "pouze s tím, co vidí"},
+                            {"value": "b", "label": "pouze s tím, co vidí nebo slyší"},
+                            {"value": "c", "label": "s čímkoli, co se okolo děje"},
+                        ],
+                        "correct": "c",
+                    },
+                ],
+            },
+        },
+        2: {
+            3: {
+                "title": "Závěrečný test modulu 2",
+                "questions": [
+                    {
+                        "id": "m2_q1",
+                        "prompt": "Pokud se psi míjí čelně:",
+                        "options": [
+                            {"value": "a", "label": "použijí vždy oblouk"},
+                            {"value": "b", "label": "v této situaci nepoužívají oblouk"},
+                            {"value": "c", "label": "oblouk není komunikace"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m2_q2",
+                        "prompt": "Pokud se pes míjí se psem, vodítko:",
+                        "options": [
+                            {"value": "a", "label": "držíme pevně napnuté kvůli bezpečnosti"},
+                            {"value": "b", "label": "držíme tak, aby nebylo napnuté"},
+                            {"value": "c", "label": "na vodítku nezáleží"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q3",
+                        "prompt": "Pokud se pes míjí se psem:",
+                        "options": [
+                            {"value": "a", "label": "použiji pamlsky na upoutání pozornosti"},
+                            {"value": "b", "label": "na psa tiše mluvím"},
+                            {"value": "c", "label": "psa neruším, nechám ho komunikovat"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m2_q4",
+                        "prompt": "Chůze na volném vodítku by měla být:",
+                        "options": [
+                            {"value": "a", "label": "naučená dovednost"},
+                            {"value": "b", "label": "odrazem klidné mysli psa"},
+                            {"value": "c", "label": "výrazem poslušnosti psa"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q5",
+                        "prompt": "Pes je šelma:",
+                        "options": [
+                            {"value": "a", "label": "nekonfliktní, pohybující se rychle"},
+                            {"value": "b", "label": "klidná, pohybující se pomalu"},
+                            {"value": "c", "label": "stále se pohybující, málokdy v klidu"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q6",
+                        "prompt": "Pokud se pes pohybuje rychle:",
+                        "options": [
+                            {"value": "a", "label": "snižuje se úroveň stresových hormonů"},
+                            {"value": "b", "label": "zvyšuje se úroveň stresových hormonů"},
+                            {"value": "c", "label": "rychlý pohyb nemá na stresové hormony vliv"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q7",
+                        "prompt": "Pokud pes běží ke komukoli rychle, jedná se o:",
+                        "options": [
+                            {"value": "a", "label": "štěně nebo nezdvořilého či vystresovaného psa"},
+                            {"value": "b", "label": "normální chování psa"},
+                            {"value": "c", "label": "sebevědomého psa, který nepotřebuje konejšit situaci"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m2_q8",
+                        "prompt": "Na konejšivý signál čichání země jako odpověď člověka nepoužijeme:",
+                        "options": [
+                            {"value": "a", "label": "zpomalení pohybu"},
+                            {"value": "b", "label": "hand signal"},
+                            {"value": "c", "label": "podívání se do boku"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q9",
+                        "prompt": "Herní pozice u dospělého psa není:",
+                        "options": [
+                            {"value": "a", "label": "vyjádření přátelství"},
+                            {"value": "b", "label": "výzva ke hře"},
+                            {"value": "c", "label": "vyjádření dobrých záměrů"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m2_q10",
+                        "prompt": "Zamrznutí nemůže nikdy znamenat:",
+                        "options": [
+                            {"value": "a", "label": "vyjádření přátelských úmyslů"},
+                            {"value": "b", "label": "výhružné chování"},
+                            {"value": "c", "label": "komunikaci"},
                         ],
                         "correct": "a",
                     },
                 ],
             },
-        }
+        },
+        3: {
+            3: {
+                "title": "Závěrečný test modulu 3",
+                "questions": [
+                    {
+                        "id": "m3_q1",
+                        "prompt": "Konejšivý signál – rozdělení – je lepší:",
+                        "options": [
+                            {"value": "a", "label": "udělat před spuštěním domácího spotřebiče"},
+                            {"value": "b", "label": "udělat po spuštění domácího spotřebiče"},
+                            {"value": "c", "label": "nedělat vůbec v kontextu s domácími spotřebiči"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m3_q2",
+                        "prompt": "Konejšivý signál – rozdělení:",
+                        "options": [
+                            {"value": "a", "label": "je možné použít v kombinaci s hand signal"},
+                            {"value": "b", "label": "není možné použít v kombinaci s hand signal"},
+                            {"value": "c", "label": "je možné použít v kombinaci s povelem \"za\""},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m3_q3",
+                        "prompt": "Konejšivý signál – rozdělení:",
+                        "options": [
+                            {"value": "a", "label": "se vyskytuje vždy ojediněle"},
+                            {"value": "b", "label": "se vyskytuje pouze v přítomnosti jiného psa"},
+                            {"value": "c", "label": "se může vyskytovat s jinými konejšivými signály"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m3_q4",
+                        "prompt": "Kombinace hand signal a rozdělení pomáhá psu:",
+                        "options": [
+                            {"value": "a", "label": "zorientovat se v situaci"},
+                            {"value": "b", "label": "připravit se k útoku"},
+                            {"value": "c", "label": "pes této kombinaci nerozumí"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m3_q5",
+                        "prompt": "Paralelní chůzi psů:",
+                        "options": [
+                            {"value": "a", "label": "můžu doplnit rozdělením člověkem"},
+                            {"value": "b", "label": "můžu podpořit pamlsky"},
+                            {"value": "c", "label": "není vhodné mezi psy chodit"},
+                        ],
+                        "correct": "a",
+                    },
+                ],
+            },
+        },
+        4: {
+            3: {
+                "title": "Závěrečný test modulu 4",
+                "questions": [
+                    {
+                        "id": "m4_q1",
+                        "prompt": "Přesměrované chování:",
+                        "options": [
+                            {"value": "a", "label": "dělají psi i lidé"},
+                            {"value": "b", "label": "dělají jenom psi"},
+                            {"value": "c", "label": "dělají jenom psi v kontaktu se psy"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m4_q2",
+                        "prompt": "Přesměrované chování lidé:",
+                        "options": [
+                            {"value": "a", "label": "dělají cíleně"},
+                            {"value": "b", "label": "dělají automaticky"},
+                            {"value": "c", "label": "nemohou nikdy ovlivnit vůlí"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m4_q3",
+                        "prompt": "Přirozeně si dospělý pes:",
+                        "options": [
+                            {"value": "a", "label": "hraje si pravidelně"},
+                            {"value": "b", "label": "nehraje"},
+                            {"value": "c", "label": "hraje v rámci přesměrovaného chování"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m4_q4",
+                        "prompt": "Stresová hormonální hladina:",
+                        "options": [
+                            {"value": "a", "label": "by měla být po celý den nízká"},
+                            {"value": "b", "label": "přiměřeně kolísá"},
+                            {"value": "c", "label": "musí mít stále stejné hodnoty"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m4_q5",
+                        "prompt": "Přesměrované chování:",
+                        "options": [
+                            {"value": "a", "label": "je způsob zvládnutí situace"},
+                            {"value": "b", "label": "je stresový signál"},
+                            {"value": "c", "label": "vždy vede k agresi"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m4_q6",
+                        "prompt": "Stresovými signály pes:",
+                        "options": [
+                            {"value": "a", "label": "komunikuje s druhým psem"},
+                            {"value": "b", "label": "nekomunikuje vůbec"},
+                            {"value": "c", "label": "komunikuje, ale pouze v určitých situacích"},
+                        ],
+                        "correct": "a",
+                    },
+                    {
+                        "id": "m4_q7",
+                        "prompt": "Konejšivé signály:",
+                        "options": [
+                            {"value": "a", "label": "jsou poddruhem stresových signálů"},
+                            {"value": "b", "label": "jsou typické stresové signály"},
+                            {"value": "c", "label": "nejsou stresové signály"},
+                        ],
+                        "correct": "c",
+                    },
+                    {
+                        "id": "m4_q8",
+                        "prompt": "Pokud se vyskytnou stresové signály:",
+                        "options": [
+                            {"value": "a", "label": "pes vždy zaútočí"},
+                            {"value": "b", "label": "pes je schopen situaci zvládnout sám, pokud situace neeskaluje"},
+                            {"value": "c", "label": "pes je schopen situaci zvládnout sám, ale pouze s naší pomocí"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m4_q9",
+                        "prompt": "Forma stresu – eustres:",
+                        "options": [
+                            {"value": "a", "label": "je škodlivá, pes ji nesmí nikdy zažívat, aby neměl negativní zkušenosti"},
+                            {"value": "b", "label": "je důležitá pro dobrý život psa, zvyšuje jeho odolnost"},
+                            {"value": "c", "label": "eustres i distres vedou vždy k negativním zkušenostem"},
+                        ],
+                        "correct": "b",
+                    },
+                    {
+                        "id": "m4_q10",
+                        "prompt": "Psi pohybem ocasu:",
+                        "options": [
+                            {"value": "a", "label": "vždy komunikují"},
+                            {"value": "b", "label": "nikdy nekomunikují"},
+                            {"value": "c", "label": "odráží úroveň stresové hormonální hladiny"},
+                        ],
+                        "correct": "c",
+                    },
+                ],
+            },
+        },
     }
 }
 
@@ -199,7 +490,7 @@ def build_module_steps(user, course, module, sequence_bypass=False):
             previous_quiz_passed = quiz_passed
 
     quiz_total_steps = sum(1 for step in steps if step["quiz"])
-    quiz_passed_steps = sum(1 for step in steps if step["quiz_passed"])
+    quiz_passed_steps = sum(1 for step in steps if step["quiz"] and step["quiz_passed"])
 
     return {
         "steps": steps,
@@ -359,8 +650,8 @@ def evaluate_step_quiz(quiz, submitted_data):
 # ======================================
 
 PUBLIC_COURSE_IMAGE_PATHS = {
-    "konejsive-signaly-v-praxi": "img/courses/psi-rec-konejsive-signaly-agrese-stekani.png",
-    "netahani-na-voditku": "img/courses/kurz_netahani_na_voditku.png",
+    "konejsive-signaly-v-praxi": "img/courses/Nepojmenované.jpg",
+    "netahani-na-voditku": "img/courses/kurz-netahani-na-voditku.png",
 }
 
 
@@ -399,6 +690,7 @@ def home(request):
     featured_courses = list(
         Course.objects
         .filter(is_active=True)
+        .order_by("coming_soon", "-created_at")
         .annotate(
             active_plan_count=Count("plans", filter=Q(plans__is_active=True), distinct=True),
             min_price=Min("plans__price", filter=Q(plans__is_active=True)),
@@ -526,26 +818,27 @@ def contact(request):
         {
             "role": "Zakladatelka & hlavní trenérka",
             "name": "Ing. Andrea Zoulová",
-            "subtitle": "Dog Behavior Specialist",
+            "subtitle": "Ethical Dog Trainer — Calming Signals Approach & Dog Behaviour Specialist",
             "description": (
                 "Andreu zajímá hlavně to, proč se pes chová tak, jak se chová. "
                 "Zaměřuje se na psí komunikaci, konejšivé signály, reaktivitu "
-                "a práci s emocemi u psů i jejich lidí. Vzdělávání staví na "
-                "etických principech a respektu k potřebám zvířat."
+                "a práci s emocemi u psů i jejich lidí. Specializuje se na problémové chování. "
+                "Vzdělávání staví na etických principech a respektu k potřebám psů."
             ),
-            "image_url": static("img/contact/andrea_zoulova_portret.png"),
+            "image_url": static("img/contact/andrea-zoulova-portret.png"),
             "accent_class": "contact-team-card-sage",
         },
         {
             "role": "Trenérka & technická podpora",
-            "name": "Bc. Denisa Zoulová",
+            "name": "Bc. Denisa Linh Phí",
             "subtitle": "Junior Dog Behavior Specialist · Technical Support",
             "description": (
                 "Denisa se stará o to, aby všechno fungovalo od online kurzů po "
-                "zákaznickou podporu. Zároveň se věnuje tréninkům pod vedením Andrey "
-                "a pomáhá s komunikačními procházkami a socializačními aktivitami."
+                "zákaznickou podporu. Zároveň se věnuje vzdělávání a tréninkům pod vedením Andrey "
+                "a pomáhá s komunikačními procházkami a socializačními aktivitami. "
+                "Vede CalmDog hotel pro psy a kočky."
             ),
-            "image_url": static("img/contact/denisa_zoulova_portret.png"),
+            "image_url": static("img/contact/denisa-zoulova-portret.png"),
             "accent_class": "contact-team-card-accent",
         },
     ]
@@ -600,7 +893,7 @@ def get_trainings_data():
         {
             "title": "Individuální konzultace problémového chování psa",
             "summary": "Porozumění příčině problémového chování a návrh vhodného řešení na míru.",
-            "image": "img/trainings/treninky_1.png",
+            "image": "img/trainings/treninky-1.png",
             "highlights": [
                 "Porozumíme příčině problémového chování a navrhneme řešení.",
                 "Naučíme se komunikovat se psem.",
@@ -613,7 +906,7 @@ def get_trainings_data():
         {
             "title": "Psí řeč: konejšivé signály, signály agrese, štěkání",
             "summary": "Trénink zaměřený na čtení psí komunikace a lepší porozumění psím potřebám.",
-            "image": "img/trainings/treninky_2.png",
+            "image": "img/trainings/treninky-2.png",
             "highlights": [
                 "Naučíme se pozorovat a rozumět psí komunikaci.",
                 "Naučíme se komunikovat se psem.",
@@ -626,7 +919,7 @@ def get_trainings_data():
         {
             "title": "Chůze na volném vodítku",
             "summary": "Klidnější a funkční procházky bez tahání na vodítku.",
-            "image": "img/trainings/treninky_3.png",
+            "image": "img/trainings/treninky-3.png",
             "highlights": [
                 "Naučíme psa netahat na vodítku.",
                 "Uspokojíme psí potřeby.",
@@ -639,7 +932,7 @@ def get_trainings_data():
         {
             "title": "Komunikační / socializační procházky",
             "summary": "Podpora psů, kteří potřebují zvládnout kontakt s jinými psy klidněji.",
-            "image": "img/trainings/treninky_4.png",
+            "image": "img/trainings/treninky-4.png",
             "highlights": [
                 "Pochopíme příčinu reaktivity na psy.",
                 "Pomůžeme psu zvládnout kontakt s ostatními psy.",
@@ -652,7 +945,7 @@ def get_trainings_data():
         {
             "title": "Socializační aktivity",
             "summary": "Bezpečné seznamování psa s prostředím, které mu dělá potíže.",
-            "image": "img/trainings/treninky_5.png",
+            "image": "img/trainings/treninky-5.png",
             "highlights": [
                 "Pochopíme příčinu reaktivity a bázlivosti vašeho psa.",
                 "Pomůžeme psu zvládnout kontakt s obtížným prostředím.",
@@ -665,7 +958,7 @@ def get_trainings_data():
         {
             "title": "Aktivity zvyšující sebevědomí psa / snižující stres",
             "summary": "Činnosti, které pomáhají psovi lépe zvládat tlak a budovat jistotu.",
-            "image": "img/trainings/treninky_6.png",
+            "image": "img/trainings/treninky-6.png",
             "highlights": [
                 "Budeme zvyšovat sebevědomí psa a snižovat stres.",
                 "Budeme pečovat o psí pohybový aparát.",

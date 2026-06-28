@@ -5,6 +5,12 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 
+# Vzhled administrace – interní systém CalmDog
+admin.site.site_header = "CalmDog – administrace"
+admin.site.site_title = "CalmDog administrace"
+admin.site.index_title = "Správa e-shopu a kurzů"
+
+
 urlpatterns = [
     # Admin
     path(settings.ADMIN_URL, admin.site.urls),

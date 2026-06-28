@@ -10,7 +10,7 @@
 {% block content %}
 <article class="story-design-page">
   <section class="story-design-hero">
-    <img src="{% static 'img/muj_pribeh_1.png' %}" alt="Amy zblízka" class="story-design-hero-image">
+    <img src="{% static 'img/about/muj-pribeh-1.png' %}" alt="Amy zblízka" class="story-design-hero-image">
     <div class="story-design-hero-shade"></div>
 
     <div class="story-design-hero-inner">
@@ -56,7 +56,7 @@
       </div>
 
       <figure class="story-design-photo story-design-photo--tall">
-        <img src="{% static 'img/muj_pribeh_2.png' %}" alt="Cesta podzimním lesem">
+        <img src="{% static 'img/about/muj-pribeh-2.png' %}" alt="Cesta podzimním lesem">
       </figure>
     </div>
   </section>
@@ -64,7 +64,7 @@
   <section class="story-design-section">
     <div class="story-design-split story-design-split--second">
       <figure class="story-design-photo story-design-photo--fjord">
-        <img src="{% static 'img/muj_pribeh_3.png' %}" alt="Norská krajina a fjord">
+        <img src="{% static 'img/about/muj-pribeh-3.png' %}" alt="Norská krajina a fjord">
         <figcaption><span></span>Hledání cesty ke psovi bez nátlaku</figcaption>
       </figure>
 
@@ -91,7 +91,7 @@
   </section>
 
   <section class="story-design-wide-image">
-    <img src="{% static 'img/muj_pribeh_4.png' %}" alt="Andrea se psem při západu slunce">
+    <img src="{% static 'img/about/muj-pribeh-4.png' %}" alt="Andrea se psem při západu slunce">
     <div class="story-design-wide-shade"></div>
     <div class="story-design-wide-content">
       <p class="story-design-kicker story-design-kicker--orange">03 - Zlomový moment</p>
@@ -127,7 +127,7 @@
     <div class="story-design-final-grid">
       <div class="story-design-final-title">
         <p class="story-design-kicker">Proč CalmDog existuje</p>
-        <h2>Pomáhat lidem vidět za chování <span>skutečný příběh psa.</span></h2>
+        <h2>Pomáhat lidem vidět za chováním <span>skutečný příběh psa.</span></h2>
       </div>
 
       <div class="story-design-final-copy">
@@ -141,11 +141,9 @@
     </div>
 
     <div class="story-design-final-footer">
-      <p><span></span>Ing. Andrea Zoulová - CalmDog</p>
-      <nav aria-label="Navazující stránky">
-        <a href="{% url 'courses:moje_vzdelani' %}">Moje vzdělání <span aria-hidden="true">→</span></a>
-        <a href="{% url 'courses:nase_filozofie' %}">Naše filozofie <span aria-hidden="true">→</span></a>
-      </nav>
+      <a href="{% url 'courses:moje_vzdelani' %}" class="education-r-footer-link education-r-footer-link--back">
+        <span aria-hidden="true">←</span> Moje vzdělání
+      </a>
     </div>
   </section>
 </article>

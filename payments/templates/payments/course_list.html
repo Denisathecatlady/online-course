@@ -16,38 +16,31 @@
         <span class="course-list-kicker">CalmDog — Online vzdělávání</span>
         <h1 class="course-list-hero-title">
           <span>Naše</span>
-          <span class="course-list-hero-title-accent">kurzy.</span>
+          <span class="course-list-hero-title-accent">kurzy</span>
         </h1>
       </div>
 
-      <div class="course-list-hero-side">
-        <span class="course-list-hero-count">{{ courses|length }}</span>
-        <p class="course-list-hero-copy">
-          online kurzy připravené s láskou ke psům i lidem
-        </p>
-        <div class="course-list-hero-tags" aria-label="Hodnoty kurzů">
-          <span>Etický výcvik</span>
-          <span>Vlastní tempo</span>
-        </div>
-      </div>
     </header>
 
     <div class="course-list-divider" aria-hidden="true"></div>
 
-    <div class="course-list-summary">
-      <span>{{ courses|length }} dostupné kurzy</span>
-      <span>Ing. Andrea Zoulová</span>
-    </div>
-
     <div class="course-grid">
       {% for course in courses %}
-        <article class="course-card">
+        <article class="course-card{% if course.coming_soon %} course-card-soon{% endif %}">
+          {% if course.coming_soon %}
+          <div class="course-card-link" aria-label="{{ course.title }}">
+          {% else %}
           <a href="{% url 'payments:course_detail' course.slug %}" class="course-card-link" aria-label="{{ course.title }}">
+          {% endif %}
             <div class="course-card-media">
               <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="course-card-image">
             </div>
 
             <div class="course-card-overlay"></div>
+
+            {% if course.coming_soon %}
+            <div class="course-card-coming-soon-badge">Připravujeme</div>
+            {% endif %}
 
             <div class="course-card-top">
               <span class="course-card-pill">Online kurz</span>
@@ -83,6 +76,7 @@
               </div>
 
               <div class="course-card-bottom-row">
+                {% if not course.coming_soon %}
                 <div class="course-card-price">
                   {% if course.min_price %}
                     {{ course.min_price|floatformat:0|intcomma }} Kč
@@ -91,9 +85,14 @@
                   {% endif %}
                 </div>
                 <span class="course-card-arrow" aria-hidden="true">→</span>
+                {% endif %}
               </div>
             </div>
+          {% if course.coming_soon %}
+          </div>
+          {% else %}
           </a>
+          {% endif %}
         </article>
       {% empty %}
         <article class="course-card course-card-empty">
@@ -129,8 +128,8 @@
               <path d="m9.4 12 1.7 1.7 3.5-3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          <h3>Žádné zastrašování, jen porozumění</h3>
-          <p>Výcvik bez nátlaku, trápení a trestu. Každý kurz je postaven na etickém přístupu, který respektuje přirozenost psa i jeho tempo.</p>
+          <h3>Žádný stres, jen porozumění</h3>
+          <p>Každý kurz je postaven na etickém přístupu, který respektuje přirozenost psa i jeho tempo. U nás nenajdete nátlak, strach a tresty.</p>
         </article>
 
         <article class="course-value-card">
@@ -140,8 +139,8 @@
               <path d="M7.8 12.5v3.1c0 .8 1.9 1.9 4.2 1.9s4.2-1.1 4.2-1.9v-3.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
             </svg>
           </span>
-          <h3>Certifikovaná odbornice za každým slovem</h3>
-          <p>Ing. Andrea Zoulová vystudovala etologii a má za sebou stovky hodin práce se psy. Obsah kurzů vychází z vědy, ne z tradičních mýtů.</p>
+          <h3>Certifikovaný odborník za každým slovem</h3>
+          <p>Ing. Andrea Zoulová je behavioralistou – specialistou na chování psů a má za sebou více než 1 000 hodin práce se psy. Obsah kurzů vychází z vědy, ne z tradičních mýtů.</p>
         </article>
 
         <article class="course-value-card">
@@ -150,7 +149,7 @@
               <path d="M8 7H5.5v2.5M16 17h2.5v-2.5M18.5 9.5A6.5 6.5 0 0 0 7.4 6.6M5.5 14.5A6.5 6.5 0 0 0 16.6 17.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          <h3>Přístup bez zbytečného tlaku</h3>
+          <h3>Přístup bez zbytečného spěchu</h3>
           <p>Ke konkrétním lekcím i videím se můžete vracet podle potřeby. Kurz není sprint, ale opora, kterou využijete v okamžiku, kdy ji opravdu potřebujete.</p>
         </article>
 
@@ -162,7 +161,7 @@
             </svg>
           </span>
           <h3>Výsledky, které se přenášejí do života</h3>
-          <p>Nepracujeme s trikem v kapse. Cílem je vztah, kde vám pes rozumí a vy jemu, v parku, doma i ve vypjatých situacích.</p>
+          <p>Nepracujeme s trikem v kapse. Cílem je vztah, kde vám pes rozumí a vy jemu, venku, doma i ve vypjatých situacích.</p>
         </article>
 
         <article class="course-value-card">
@@ -192,9 +191,9 @@
         <div class="course-quote-main">
           <span class="course-quote-line" aria-hidden="true"></span>
           <blockquote>
-            „Kurzy stavíme tak, aby teorie měla vždy reálný kontext. Ne přednáška, ale průvodce do praxe.“
+            Kurzy stavíme tak, aby teorie měla vždy reálný kontext. Ne přednáška, ale průvodce do praxe.
           </blockquote>
-          <p>Ing. Andrea Zoulová, certifikovaná trenérka</p>
+
         </div>
 
         <div class="course-quote-points">
@@ -217,7 +216,7 @@
           <article class="course-quote-point">
             <span class="course-quote-dot" aria-hidden="true"></span>
             <div>
-              <h3>Etický výcvik</h3>
+              <h3>Etický trénink</h3>
               <p>Žádné triky bez základu. Pracujeme s porozuměním, kontextem a respektem k psovi i člověku.</p>
             </div>
           </article>

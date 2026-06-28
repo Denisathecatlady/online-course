@@ -58,12 +58,21 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SITE_ID = 1
 
 INSTALLED_APPS = [
+    # Vzhled adminu – MUSÍ být před django.contrib.admin
+    "admin_interface",
+    "colorfield",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # Vylepšení adminu
+    "import_export",
+    "rangefilter",
+
     "accounts",
     "courses",
     "payments",
@@ -72,6 +81,10 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.contrib.sites",
 ]
+
+# django-admin-interface – nutné pro náhled motivu a media tlačítka
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 
 USE_S3_STORAGE = os.environ.get("USE_S3_STORAGE", "0") == "1"

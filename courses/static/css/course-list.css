@@ -16,12 +16,7 @@
 }
 
 .course-list-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 3rem;
-    align-items: start;
-    min-height: 25rem;
-    padding: 3rem 0 1.25rem;
+    padding: 3rem 0 1.5rem;
 }
 
 .course-list-kicker {
@@ -128,6 +123,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
+    margin-top: 2rem;
 }
 
 .course-card {
@@ -158,6 +154,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: brightness(0.6);
     transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -314,6 +311,36 @@
     background: rgba(209, 143, 75, 0.96);
 }
 
+.course-card-soon {
+    cursor: default;
+}
+
+.course-card-soon .course-card-image {
+    filter: grayscale(40%) brightness(0.75);
+}
+
+.course-card-soon:hover .course-card-image {
+    transform: none;
+}
+
+.course-card-coming-soon-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.92);
+    color: #2f3e3a;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.6rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 .course-card-empty {
     min-height: 24rem;
     background: #ffffff;
@@ -408,58 +435,103 @@
 .course-value-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid rgba(106, 133, 124, 0.12);
-    border-left: 1px solid rgba(106, 133, 124, 0.12);
+    gap: 1.1rem;
 }
 
 .course-value-card {
-    min-height: 14rem;
-    padding: 2rem 2rem 2.2rem;
-    border-right: 1px solid rgba(106, 133, 124, 0.12);
-    border-bottom: 1px solid rgba(106, 133, 124, 0.12);
+    display: flex;
+    flex-direction: column;
+    padding: 2.3rem 2rem 2.4rem;
+    border: 1px solid rgba(106, 133, 124, 0.16);
+    border-radius: 22px;
+    background: #ffffff;
     transition:
-        background-color 220ms ease,
-        box-shadow 220ms ease;
+        transform 240ms ease,
+        box-shadow 240ms ease,
+        border-color 240ms ease;
 }
 
 .course-value-card:hover {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    transform: translateY(-4px);
+    border-color: rgba(106, 133, 124, 0.3);
+    box-shadow: 0 24px 46px -30px rgba(47, 62, 58, 0.5);
+}
+
+.course-value-card:nth-child(3n + 2):hover {
+    border-color: rgba(239, 157, 88, 0.42);
+}
+
+.course-value-card:nth-child(3n + 3):hover {
+    border-color: rgba(197, 170, 131, 0.48);
 }
 
 .course-value-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.6rem;
-    height: 2.6rem;
-    margin-bottom: 1.4rem;
-    border-radius: 50%;
-    background: rgba(106, 133, 124, 0.08);
+    width: 3.1rem;
+    height: 3.1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    background: rgba(106, 133, 124, 0.12);
     color: #6a857c;
+    transition:
+        background-color 240ms ease,
+        color 240ms ease;
+}
+
+/* Barevná rotace ikonek napříč kartami */
+.course-value-card:nth-child(3n + 1) .course-value-icon {
+    background: rgba(95, 118, 107, 0.13);
+    color: #5f766b;
+}
+
+.course-value-card:nth-child(3n + 2) .course-value-icon {
+    background: rgba(239, 157, 88, 0.18);
+    color: #cf7e35;
+}
+
+.course-value-card:nth-child(3n + 3) .course-value-icon {
+    background: rgba(197, 170, 131, 0.24);
+    color: #a5895a;
+}
+
+.course-value-card:nth-child(3n + 1):hover .course-value-icon {
+    background: #5f766b;
+    color: #ffffff;
+}
+
+.course-value-card:nth-child(3n + 2):hover .course-value-icon {
+    background: #ef9d58;
+    color: #ffffff;
+}
+
+.course-value-card:nth-child(3n + 3):hover .course-value-icon {
+    background: #c5aa83;
+    color: #ffffff;
 }
 
 .course-value-icon svg {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.4rem;
+    height: 1.4rem;
 }
 
 .course-value-card h3 {
-    max-width: 15ch;
-    margin: 0 0 0.9rem;
+    max-width: none;
+    margin: 0 0 0.85rem;
     color: #2d2d2d;
     font-family: "Playfair Display", serif;
-    font-size: 1.08rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    line-height: 1.28;
+    line-height: 1.25;
 }
 
 .course-value-card p {
-    max-width: 23rem;
+    max-width: none;
     margin: 0;
     color: rgba(47, 62, 58, 0.76);
     font-size: 0.98rem;
-    line-height: 1.6;
+    line-height: 1.62;
 }
 
 .course-quote-section {
@@ -469,15 +541,45 @@
 .course-quote-panel {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.85fr);
-    gap: 3rem;
-    padding: 3.8rem 4rem;
+    grid-template-columns: 1fr;
+    gap: 2.8rem;
+    padding: 4.5rem 4.5rem;
     overflow: hidden;
     border-radius: 2rem;
     background:
-        radial-gradient(circle at right top, rgba(255, 255, 255, 0.08) 0, rgba(255, 255, 255, 0.08) 8rem, transparent 8rem),
-        radial-gradient(circle at 43% 100%, rgba(197, 170, 131, 0.18) 0, rgba(197, 170, 131, 0.18) 7rem, transparent 7rem),
+        linear-gradient(112deg, rgba(0, 0, 0, 0.16) 0%, transparent 44%),
+        radial-gradient(ellipse at 18% -25%, rgba(255, 255, 255, 0.22) 0%, transparent 52%),
+        radial-gradient(ellipse at 96% 112%, rgba(197, 170, 131, 0.32) 0%, transparent 46%),
+        radial-gradient(ellipse at 58% 50%, rgba(47, 62, 58, 0.1) 0%, transparent 70%),
         #6b857c;
+    box-shadow: 0 32px 72px -16px rgba(47, 62, 58, 0.38);
+}
+
+.course-quote-panel::before {
+    content: '\201C';
+    position: absolute;
+    top: -3.5rem;
+    left: 1.8rem;
+    font-family: "Playfair Display", serif;
+    font-size: 22rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+.course-quote-panel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #d9a05b 0%, rgba(217, 160, 91, 0.35) 55%, transparent 100%);
+    z-index: 2;
 }
 
 .course-quote-main,
@@ -486,23 +588,32 @@
     z-index: 1;
 }
 
+.course-quote-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
 .course-quote-line {
     display: inline-block;
-    width: 2rem;
-    height: 1px;
+    width: 3.2rem;
+    height: 2px;
     margin-bottom: 1.8rem;
-    background: #d9a05b;
+    background: linear-gradient(90deg, rgba(217, 160, 91, 0.3), #d9a05b 40%, #d9a05b 60%, rgba(217, 160, 91, 0.3));
+    border-radius: 2px;
 }
 
 .course-quote-main blockquote {
-    max-width: 18ch;
-    margin: 0 0 1.8rem;
+    max-width: 38ch;
+    margin: 0;
     color: #ffffff;
     font-family: "Playfair Display", serif;
-    font-size: clamp(1.55rem, 3.1vw, 2.25rem);
+    font-size: clamp(1.75rem, 3.4vw, 2.55rem);
     font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: -0.04em;
+    line-height: 1.22;
+    letter-spacing: -0.03em;
+    text-align: center;
 }
 
 .course-quote-main p {
@@ -514,8 +625,10 @@
 
 .course-quote-points {
     display: grid;
-    align-content: center;
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .course-quote-point {
@@ -550,7 +663,7 @@
 }
 
 .course-quote-point p {
-    max-width: 28rem;
+    max-width: none;
     margin: 0;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.98rem;
@@ -596,11 +709,13 @@
     }
 
     .course-quote-panel {
-        gap: 2.5rem;
+        padding: 3.5rem 3rem;
+        gap: 2.2rem;
     }
 
-    .course-quote-main blockquote {
-        max-width: 22ch;
+    .course-quote-points {
+        grid-template-columns: 1fr;
+        gap: 1.6rem;
     }
 }
 
@@ -680,8 +795,8 @@
 
     .course-value-card {
         min-height: auto;
-        padding: 1.5rem 1.2rem 1.6rem;
-        border-radius: 0;
+        padding: 1.6rem 1.4rem 1.7rem;
+        border-radius: 18px;
     }
 
     .course-quote-section {
@@ -690,13 +805,17 @@
 
     .course-quote-panel {
         gap: 2rem;
-        padding: 2rem 1.3rem;
+        padding: 2.2rem 1.4rem;
         border-radius: 1.5rem;
     }
 
     .course-quote-main blockquote {
         max-width: none;
         font-size: clamp(1.35rem, 6.4vw, 1.85rem);
+    }
+
+    .course-quote-points {
+        grid-template-columns: 1fr;
     }
 
     .course-quote-point {

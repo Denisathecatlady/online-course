@@ -163,6 +163,13 @@ def generate_invoice_pdf(order):
         total_amount += order.shipping_price
         line_y -= 18
 
+    if order.discount_amount and order.discount_amount > 0:
+        coupon_code = order.coupon.code if order.coupon else "sleva"
+        p.drawString(40, line_y, f"Sleva ({coupon_code})")
+        p.drawRightString(width - 40, line_y, f"-{order.discount_amount:.2f} Kč")
+        total_amount -= order.discount_amount
+        line_y -= 18
+
     # --------------------------------------------------
     # CELKEM
     # --------------------------------------------------

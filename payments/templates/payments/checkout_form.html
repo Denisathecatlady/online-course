@@ -19,6 +19,40 @@
           </p>
         </div>
 
+        <!-- SLEVOVÝ KUPÓN (samostatný formulář – nesmí být vnořený v platebním formuláři) -->
+        <div class="card card-soft mb-4">
+          <div class="card-body p-4 p-md-5">
+            <h2 class="h6 fw-semibold mb-3">Slevový kupón</h2>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} py-2 small mb-3">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            {% if cart.coupon %}
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="badge bg-success">{{ cart.coupon.code }}</span>
+                  <span class="text-muted ms-2">sleva −{{ cart.discount_amount|floatformat:0 }} Kč</span>
+                </div>
+                <form method="post" action="{% url 'payments:remove_coupon' %}" class="m-0">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">Odebrat</button>
+                </form>
+              </div>
+            {% else %}
+              <form method="post" action="{% url 'payments:apply_coupon' %}" class="d-flex gap-2 m-0">
+                {% csrf_token %}
+                <input type="text" name="coupon_code" class="form-control" placeholder="Zadejte kód kupónu" autocomplete="off">
+                <button type="submit" class="btn btn-sage flex-shrink-0">Uplatnit</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+
         <form method="post">
           {% csrf_token %}
 
@@ -196,15 +230,40 @@
 
           <!-- SOUHRN -->
           <div class="card card-soft">
-            <div class="card-body p-4 p-md-5 d-flex justify-content-between align-items-center">
-              <div>
-                <strong>Celkem</strong><br>
-                <span class="text-muted">{{ cart.total_price|floatformat:0 }} Kč</span>
+            <div class="card-body p-4 p-md-5">
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Mezisoučet zboží</span>
+                <span>{{ cart.items_total|floatformat:0 }} Kč</span>
               </div>
 
-              <button type="submit" class="btn btn-sage">
-                Pokračovat k platbě →
-              </button>
+              {% if cart.discount_amount > 0 %}
+                <div class="d-flex justify-content-between mb-2 text-success">
+                  <span>Sleva {% if cart.coupon %}({{ cart.coupon.code }}){% endif %}</span>
+                  <span>−{{ cart.discount_amount|floatformat:0 }} Kč</span>
+                </div>
+              {% endif %}
+
+              {% if cart.shipping_price > 0 %}
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Doprava</span>
+                  <span>{{ cart.shipping_price|floatformat:0 }} Kč</span>
+                </div>
+              {% endif %}
+
+              <hr>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <strong class="fs-5">Celkem</strong>
+                <strong class="fs-5">{{ cart.total_price|floatformat:0 }} Kč</strong>
+              </div>
+
+              <div class="text-end mt-4">
+                <button type="submit" class="btn btn-sage">
+                  Pokračovat k platbě →
+                </button>
+              </div>
+
             </div>
           </div>
 

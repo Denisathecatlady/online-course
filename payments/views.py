@@ -12,17 +12,19 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.db import transaction
+from django.db.models import F
 
 from shop.models import Product, ProductVariant
 from courses.models import CoursePlan
 from courses.models import Course
-from .models import Order, OrderItem, CourseAccess
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage
 from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
 
@@ -33,8 +35,8 @@ BUNDLE_DISCOUNT_RATE = Decimal("0.10")
 
 
 PUBLIC_COURSE_IMAGE_PATHS = {
-    "konejsive-signaly-v-praxi": "img/courses/psi-rec-konejsive-signaly-agrese-stekani.png",
-    "netahani-na-voditku": "img/courses/kurz_netahani_na_voditku.png",
+    "konejsive-signaly-v-praxi": "img/courses/Nepojmenované.jpg",
+    "netahani-na-voditku": "img/courses/kurz-netahani-na-voditku.png",
 }
 
 
@@ -72,12 +74,14 @@ def _format_czech_count(value, singular, paucal, plural):
 COURSE_MARKETING_CONTENT = {
     "konejsive-signaly-v-praxi": {
         "hero_lead": (
-            "Jak nahlížet na konejšivé signály v celkových souvislostech, "
-            "správně je interpretovat a adekvátně na ně reagovat."
+            "Konejšivé signály jsou komunikační nástroje, kterými psi předcházejí "
+            "konfliktům, vyjadřují zdvořilost a regulují stres v každodenních situacích."
         ),
         "hero_support": (
-            "Kurz je zaměřený na čtení signálů, prevenci konfliktů a budování "
-            "zdravého vztahu se psem."
+            "Kurz se zaměřuje na to, jak na ně nahlížet v celkových souvislostech, "
+            "správně je interpretovat a adekvátně na ně reagovat v běžném životě, i v "
+            "tréninku. Jejich porozumění a dovednost je používat přináší pohodové soužití "
+            "a prevenci problémového chování psa."
         ),
         "learn_items": [
             "Rozlišit pozdrav, zdvořilou komunikaci od signálů zastavujících konflikt",
@@ -85,7 +89,7 @@ COURSE_MARKETING_CONTENT = {
             "Umět signály využít v tréninku reaktivních a bázlivých psů",
             "Vyvarovat se chybných interpretací konejšivých signálů",
             "Umět se psem komunikovat v běžném životě",
-            "Lépe reagovat na náročné situace s klidem a kontextem",
+            "Umět pomoci psu v náročných situacích tak, aby se z nich učil",
         ],
         "curriculum": [
             {
@@ -96,12 +100,12 @@ COURSE_MARKETING_CONTENT = {
             {
                 "order": "2",
                 "title": "Konejšivé signály v širších souvislostech",
-                "meta": "Propojení se stresem, emocemi a přesměrovaným chováním.",
+                "meta": "Propojení se stresem, agresí a přesměrovaným chováním.",
             },
             {
                 "order": "3",
                 "title": "Komentované videoukázky z praxe",
-                "meta": "Interpretace několika signálů v reálných situacích krok po kroku.",
+                "meta": "Interpretace signálů v reálných situacích krok po kroku.",
             },
             {
                 "order": "4",
@@ -111,27 +115,27 @@ COURSE_MARKETING_CONTENT = {
         ],
         "includes": [
             {
-                "icon": "▶",
+                "icon": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" /></svg>',
                 "title": "Video lekce",
                 "text": "4 moduly s výkladem a komentovanými videoukázkami.",
             },
             {
-                "icon": "↓",
+                "icon": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>',
                 "title": "Ke stažení",
                 "text": "Podpůrné materiály a návazné podklady ke studiu.",
             },
             {
-                "icon": "◎",
+                "icon": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>',
                 "title": "Certifikace",
                 "text": "Premium varianta vede po splnění podmínek k certifikátu.",
             },
             {
-                "icon": "◌",
+                "icon": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
                 "title": "Přístup",
-                "text": "180 dní od nákupu, s možností vracet se k obsahu vlastním tempem.",
+                "text": "6 měsíců od nákupu, s možností vracet se k obsahu vlastním tempem.",
             },
             {
-                "icon": "↗",
+                "icon": '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg>',
                 "title": "Podpora",
                 "text": "Ve variantě Premium navíc online setkání a mentoring.",
             },
@@ -164,7 +168,7 @@ COURSE_MARKETING_CONTENT = {
         "certification": {
             "eyebrow": "CALMING SIGNALS SPECIALIST",
             "title": "Certifikace",
-            "subtitle": "pod vedením Turid Rugaas",
+            "subtitle": "udělená Turid Rugaas",
             "note": "100% etický přístup",
         },
     }
@@ -176,7 +180,7 @@ PLAN_MARKETING_CONTENT = {
         "eyebrow": "Samostudium",
         "subtitle": (
             "Jedná se o samostudium bez opory lektora. Učební materiály jsou "
-            "zpracovány tak, aby vedly k jistější interpretaci signálů i jejich "
+            "zpracovány tak, aby vedly ke správné interpretaci signálů i jejich "
             "využití v běžném životě."
         ),
         "highlights": [
@@ -196,8 +200,8 @@ PLAN_MARKETING_CONTENT = {
             "nejen znalosti, ale i podporu lektora."
         ),
         "highlights": [
-            "5x online setkání pro rozbor videí a konzultace úkolů",
-            "Podpůrná FB skupina a malé pracovní skupiny",
+            "5x online setkání s individuálním přístupem",
+            "Analýzy videí a konzultace úkolů",
             "Možnost získání certifikátu po úspěšném vypracování všech úkolů",
         ],
         "footnote": (
@@ -222,11 +226,11 @@ def build_course_marketing_content(course, plans):
         "metrics": [
             {
                 "value": f"{module_count} moduly",
-                "label": "strukturovaný obsah a jasný postup",
+                "label": "logicky strukturovaný obsah a jasný postup",
             },
             {
                 "value": f"{plan_count} varianty",
-                "label": "samostudium nebo mentoring podle toho, co potřebujete",
+                "label": "samostudium nebo mentoring podle vašich preferencí",
             },
             {
                 "value": f"{access_days} dní",
@@ -433,6 +437,46 @@ def cart_detail(request):
         "has_physical_products": has_physical_products,
     })
 
+
+# =====================================================
+# SLEVOVÝ KUPÓN
+# =====================================================
+
+@require_POST
+def apply_coupon(request):
+    cart = get_or_create_cart(request)
+
+    code = request.POST.get("coupon_code", "").strip().upper()
+    if not code:
+        messages.error(request, "Zadejte prosím kód kupónu.")
+        return redirect("payments:checkout")
+
+    try:
+        coupon = Coupon.objects.get(code=code)
+    except Coupon.DoesNotExist:
+        messages.error(request, "Tento slevový kupón neexistuje.")
+        return redirect("payments:checkout")
+
+    user = request.user if request.user.is_authenticated else None
+    ok, message = coupon.validate_for(cart, user)
+
+    if not ok:
+        messages.error(request, message)
+        return redirect("payments:checkout")
+
+    cart.apply_coupon(coupon)
+    messages.success(request, message)
+    return redirect("payments:checkout")
+
+
+@require_POST
+def remove_coupon(request):
+    cart = get_or_create_cart(request)
+    cart.clear_coupon()
+    messages.info(request, "Slevový kupón byl odebrán.")
+    return redirect("payments:checkout")
+
+
 # =====================================================
 # CHECKOUT
 # =====================================================
@@ -458,6 +502,9 @@ def checkout(request):
 
     if has_physical_products and not cart.shipping_method:
         return redirect("payments:shipping")
+
+    # Přepočítáme slevu podle aktuálního obsahu košíku (neplatný kupón se odebere).
+    cart.recalculate_discount()
 
     if request.method == "GET":
         return render(request, "payments/checkout_form.html", {
@@ -553,10 +600,25 @@ def checkout(request):
             },
         })
 
+    # ------------------------------
+    # SLEVOVÝ KUPÓN
+    # ------------------------------
+
+    discounts = []
+    if cart.coupon and cart.discount_amount and cart.discount_amount > 0:
+        stripe_coupon = stripe.Coupon.create(
+            amount_off=int(cart.discount_amount * 100),
+            currency="czk",
+            duration="once",
+            name=f"Sleva {cart.coupon.code}",
+        )
+        discounts = [{"coupon": stripe_coupon.id}]
+
     session = stripe.checkout.Session.create(
         mode="payment",
         customer_email=cart.buyer_email,
         line_items=line_items,
+        discounts=discounts,
         success_url=build_site_url("/payments/success/"),
         cancel_url=build_site_url("/payments/cancel/"),
         metadata={"order_id": str(cart.id)},
@@ -769,6 +831,22 @@ def stripe_webhook(request):
             )
 
     # ======================================
+    # 5️⃣b ZÁZNAM POUŽITÍ KUPÓNU (pouze jednou)
+    # ======================================
+
+    if order.coupon_id and order.discount_amount and order.discount_amount > 0:
+        if not CouponUsage.objects.filter(order=order).exists():
+            CouponUsage.objects.create(
+                coupon=order.coupon,
+                user=user,
+                order=order,
+                discount_amount=order.discount_amount,
+            )
+            Coupon.objects.filter(pk=order.coupon_id).update(
+                used_count=F("used_count") + 1
+            )
+
+    # ======================================
     # 6️⃣ EMAIL ZÁKAZNÍKOVI
     # ======================================
 
@@ -864,7 +942,7 @@ def remove_from_cart(request, item_id):
 # =====================================================
 
 def course_list(request):
-    courses = list(Course.objects.all().prefetch_related("plans", "modules"))
+    courses = list(Course.objects.all().order_by("coming_soon", "-created_at").prefetch_related("plans", "modules"))
 
     for index, course in enumerate(courses, start=1):
         active_plans = [plan for plan in course.plans.all() if plan.is_active]

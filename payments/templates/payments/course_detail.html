@@ -39,12 +39,12 @@
 
         <article class="course-mentor-card">
           <div class="course-mentor-avatar">
-            <img src="{% static 'img/courses/lecturer-portrait.png' %}" alt="Ing. Andrea Zoulová">
+            <img src="{% static 'img/courses/lektorka-portret.png' %}" alt="Ing. Andrea Zoulová">
           </div>
           <div class="course-mentor-copy">
-            <span>Instruktor</span>
+            <span>Lektor</span>
             <h2>Ing. Andrea Zoulová</h2>
-            <p>Calming Signals Specialist • Dog Behavior Specialist</p>
+            <p>Calming Signals Specialist<br>Ethical Dog Trainer – Calming Signals Approach and Dog Behaviour Specialist</p>
           </div>
         </article>
       </div>
@@ -54,7 +54,7 @@
           {% if course.public_image_url %}
           <img src="{{ course.public_image_url }}" alt="{{ course.title }}">
           {% else %}
-          <img src="{% static 'img/courses/psi-rec-konejsive-signaly-agrese-stekani.png' %}" alt="{{ course.title }}">
+          <img src="{% static 'img/courses/Nepojmenované.jpg' %}" alt="{{ course.title }}">
           {% endif %}
           <span class="course-purchase-play" aria-hidden="true">▶</span>
         </a>
@@ -63,7 +63,7 @@
           <div class="course-purchase-price">
             {% if featured_plan %}
             <strong>od {{ featured_plan.price|intcomma }} Kč</strong>
-            <span>Jednorázová platba • přístup {{ featured_plan.access_duration_days }} dní</span>
+            <span>Jednorázová platba • přístup 6 měsíců</span>
             {% else %}
             <strong>Cena na dotaz</strong>
             <span>Ozvěte se a vybereme vhodnou variantu</span>
@@ -79,7 +79,7 @@
 
           <div class="course-purchase-note">
             <strong>100% etický přístup</strong>
-            <span>Bez nátlaku, dominance a rychlých triků.</span>
+            <span>Bez stresu, nátlaku a dominance.</span>
           </div>
         </div>
       </aside>
@@ -116,7 +116,7 @@
               <h3>{{ item.title }}</h3>
               <p>{{ item.meta }}</p>
             </div>
-            <span class="course-curriculum-arrow" aria-hidden="true">›</span>
+
           </article>
           {% endfor %}
         </div>
@@ -128,7 +128,7 @@
           <ul class="course-include-list">
             {% for item in course_marketing.includes %}
             <li class="course-include-item">
-              <span class="course-include-icon" aria-hidden="true">{{ item.icon }}</span>
+              <span class="course-include-icon" aria-hidden="true">{{ item.icon|safe }}</span>
               <div>
                 <strong>{{ item.title }}</strong>
                 <span>{{ item.text }}</span>

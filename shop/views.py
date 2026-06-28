@@ -12,26 +12,26 @@ import json
 
 PRODUCT_COLOR_IMAGE_PATHS = {
     "samostatne-ocko": {
-        "pastelove-ruzova": "img/shop/ocko_pres_rameno_ruzove.png",
-        "seda": "img/shop/ocko_pres_rameno_sede.png",
+        "pastelove-ruzova": "img/shop/ocko-pres-rameno-ruzove.png",
+        "seda": "img/shop/ocko-pres-rameno-sede.png",
     },
     "voditko-bez-ocka": {
-        "pastelove-ruzova": "img/shop/voditko_bez_ocka_ruzove.png",
-        "seda": "img/shop/voditko_bez_ocka_sede.png",
+        "pastelove-ruzova": "img/shop/voditko-bez-ocka-ruzove.png",
+        "seda": "img/shop/voditko-bez-ocka-sede.png",
     },
     "voditko-s-poutkem": {
-        "pastelove-ruzova": "img/shop/voditko_s_ockem_na_ruku_ruzove.png",
-        "seda": "img/shop/voditko_s_ockem_na_ruku_sede.png",
+        "pastelove-ruzova": "img/shop/voditko-s-ockem-na-ruku-ruzove.png",
+        "seda": "img/shop/voditko-s-ockem-na-ruku-sede.png",
     },
 }
 
 PRODUCT_CARD_CONTENT = {
     "samostatne-ocko": {
         "eyebrow": "Základ",
-        "teaser": "Rychle, jednoduše, vždy po ruce",
+        "teaser": "Rychle, jednoduše, volné ruce",
         "description": (
-            "Jednoduché očko pro rychlé připnutí. Ideální jako doplněk "
-            "k hlavnímu vodítku nebo pro krátké vycházky."
+            "Chytré očko pro rychlé připnutí. Nezbytný doplněk k vodítku bez očka. "
+            "Ideální pro každodenní vycházky pro naplnění potřeb psa."
         ),
         "features": [
             "Lehké a kompaktní",
@@ -39,30 +39,30 @@ PRODUCT_CARD_CONTENT = {
             "Ruční výroba",
         ],
         "button_theme": "sage",
-        "image": "img/shop/ocko_pres_rameno_sede.png",
+        "image": "img/shop/ocko-pres-rameno-sede.png",
     },
     "voditko-bez-ocka": {
         "eyebrow": "Oblíbené",
         "badge": "Nejprodávanější",
-        "teaser": "Minimalistické, maximálně odolné",
+        "teaser": "Maximálně odolné, protiskluzová úprava",
         "description": (
-            "Vodítko bez poutka pro ty, kteří preferují přímé držení v ruce. "
-            "Ručně vyráběné z odolného popruhu."
+            "Vodítko, které vám nespálí ruce. Snadno se v ruce navíjí i odvíjí. "
+            "K vodítku patří očko pro pohodlné užívání. Ručně vyráběné z odolného popruhu."
         ),
         "features": [
-            "Přímé držení",
+            "Omyvatelné",
             "Odolný materiál",
             "Volba barvy i délky",
         ],
         "button_theme": "accent",
-        "image": "img/shop/voditko_bez_ocka_sede.png",
+        "image": "img/shop/voditko-bez-ocka-sede.png",
     },
     "voditko-s-poutkem": {
         "eyebrow": "Komplet",
-        "teaser": "Plný komfort, plná kontrola",
+        "teaser": "Tradiční provedení, různé barvy",
         "description": (
             "Ručně vyráběné vodítko s pevným poutkem. Funkční, odolné a "
-            "vizuálně čisté. Pro každodenní procházky."
+            "vizuálně čisté. Pro prima procházky."
         ),
         "features": [
             "Ergonomické poutko",
@@ -70,7 +70,7 @@ PRODUCT_CARD_CONTENT = {
             "Prémiové materiály",
         ],
         "button_theme": "dark",
-        "image": "img/shop/voditko_s_ockem_na_ruku_sede.png",
+        "image": "img/shop/voditko-s-ockem-na-ruku-sede.png",
     },
 }
 
@@ -81,8 +81,8 @@ PRODUCT_DETAIL_CONTENT = {
         "badge": "Očko přes rameno",
         "copy": (
             "Samostatné očko přes rameno je praktický doplněk k vodítku bez očka. "
-            "Hodí se, když chcete mít vodítko rychle po ruce, pohodlně ho přehodit "
-            "přes rameno nebo si vytvořit jistější úchop při kratším vedení psa."
+            "Hodí se, když chcete mít vodítko rychle k dispozici, pohodlně ho přehodit "
+            "přes rameno a mít volné ruce při vedení psa."
         ),
         "highlights": [
             "Lehké a skladné",
@@ -94,13 +94,13 @@ PRODUCT_DETAIL_CONTENT = {
                 "title": "K čemu slouží",
                 "copy": (
                     "Očko doplní vodítko bez poutka a umožní pohodlnější nošení "
-                    "nebo jistější držení v situacích, kdy potřebujete psa vést blíž u sebe."
+                    "nebo jistější držení v situacích, kdy potřebujete psa vést náročnější situací."
                 ),
             },
             {
                 "title": "Materiál",
                 "copy": (
-                    "Voděodolný Hexa popruh se snadno čistí a drží tvar i při běžném "
+                    "Voděodolný Hexa popruh se snadno čistí a je odolný i při běžném "
                     "každodenním používání."
                 ),
             },
@@ -116,8 +116,9 @@ PRODUCT_DETAIL_CONTENT = {
     "voditko-bez-ocka": {
         "badge": "Vodítko bez očka",
         "copy": (
-            "Minimalistické vodítko bez poutka pro ty, kteří chtějí jednoduché, "
-            "odolné a čistě zpracované vedení psa s možností doplnit samostatné očko."
+            "Vodítko ukončené z obou stran karabinou. Jednu připnete k očku, druhou k postroji psa "
+            "a máte volné ruce. Abyste se mohli těšit z vodítka co nejdéle, důležitá je správná "
+            "kompletace a používání viz video (video nahraju na vimeo). Karabiny nejsou určeny k vláčení po zemi."
         ),
         "highlights": [
             "Volba délky a barvy",
@@ -127,7 +128,7 @@ PRODUCT_DETAIL_CONTENT = {
         "info_cards": [
             {
                 "title": "Pro koho je",
-                "copy": "Pro majitele, kteří preferují přímé držení nebo chtějí očko řešit samostatně.",
+                "copy": "Pro majitele, kteří preferují vodítko na které se mohou spolehnout.",
             },
             {
                 "title": "Materiál",
@@ -142,8 +143,7 @@ PRODUCT_DETAIL_CONTENT = {
     "voditko-s-poutkem": {
         "badge": "Vodítko s poutkem",
         "copy": (
-            "Vodítko s pevným poutkem na ruku pro každodenní procházky, kdy chcete "
-            "mít pohodlný úchop a jistější kontrolu bez dalších doplňků."
+            "Klasické vodítko s pevným poutkem na ruku. Různé barvy, různé délky. Snadná údržba."
         ),
         "highlights": [
             "Pevné poutko na ruku",
@@ -157,11 +157,7 @@ PRODUCT_DETAIL_CONTENT = {
             },
             {
                 "title": "Materiál",
-                "copy": "Pevný voděodolný popruh doplněný odolnou karabinou pro každodenní používání.",
-            },
-            {
-                "title": "Údržba",
-                "copy": "Po zašpinění stačí otřít vlhkým hadříkem a nechat volně uschnout.",
+                "copy": "Voděodolný Hexa popruh se snadno čistí a je odolný i při běžném každodenním používání.",
             },
         ],
     },
@@ -191,11 +187,11 @@ SHOP_STATS = [
 
 SHOP_GALLERY = [
     {
-        "image": "img/shop/pes_voditko_2.png",
+        "image": "img/shop/pes-voditko-2.png",
         "alt": "Pes s obojkem v trávě",
     },
     {
-        "image": "img/shop/pes_voditko_3.png",
+        "image": "img/shop/pes-voditko-3.png",
         "alt": "Psovodka se psy při večerní procházce",
     },
 ]
@@ -271,6 +267,7 @@ def build_bundle_card(products_by_slug):
         options.append({
             "color_name": leash_variant.color.name,
             "color_hex": leash_variant.color.hex_code or "#d9d9d9",
+            "image_url": get_variant_image_url(leash_product, leash_variant.color),
             "length_label": length_label,
             "summary": " - ".join(summary_parts),
             "primary_variant_id": leash_variant.id,
@@ -347,8 +344,8 @@ def product_list(request):
         "products": products,
         "bundle_card": bundle_card,
         "product_cards": product_cards,
-        "hero_image_url": build_static_image_url("img/shop/pes_voditko_1.png"),
-        "cta_image_url": build_static_image_url("img/shop/pes_voditko_2.png"),
+        "hero_image_url": build_static_image_url("img/shop/pes-voditko-1.png"),
+        "cta_image_url": build_static_image_url("img/shop/pes-voditko-2.png"),
         "hero_stats": SHOP_STATS,
         "gallery_images": [
             {
@@ -359,6 +356,10 @@ def product_list(request):
         ],
         "testimonials": SHOP_TESTIMONIALS,
     })
+
+
+def postroj_na_miru(request):
+    return render(request, "shop/postroj_na_miru.html")
 
 
 def product_detail(request, slug):

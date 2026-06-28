@@ -13,29 +13,35 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="profile"
+        related_name="profile",
+        verbose_name="Uživatel",
     )
 
     role = models.CharField(
+        "Role",
         max_length=20,
         choices=Role.choices,
         default=Role.USER,
     )
 
-    phone = models.CharField(max_length=40, blank=True)
+    phone = models.CharField("Telefon", max_length=40, blank=True)
 
     # doručovací adresa
-    street = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=120, blank=True)
-    zip_code = models.CharField(max_length=20, blank=True)
-    country = models.CharField(max_length=2, default="CZ", blank=True)
+    street = models.CharField("Ulice a číslo", max_length=255, blank=True)
+    city = models.CharField("Město", max_length=120, blank=True)
+    zip_code = models.CharField("PSČ", max_length=20, blank=True)
+    country = models.CharField("Země", max_length=2, default="CZ", blank=True)
 
     # fakturační adresa
-    invoice_name = models.CharField(max_length=255, blank=True)
-    invoice_street = models.CharField(max_length=255, blank=True)
-    invoice_city = models.CharField(max_length=120, blank=True)
-    invoice_zip = models.CharField(max_length=20, blank=True)
-    invoice_country = models.CharField(max_length=2, default="CZ", blank=True)
+    invoice_name = models.CharField("Fakturační jméno / firma", max_length=255, blank=True)
+    invoice_street = models.CharField("Fakturační ulice", max_length=255, blank=True)
+    invoice_city = models.CharField("Fakturační město", max_length=120, blank=True)
+    invoice_zip = models.CharField("Fakturační PSČ", max_length=20, blank=True)
+    invoice_country = models.CharField("Fakturační země", max_length=2, default="CZ", blank=True)
+
+    class Meta:
+        verbose_name = "Profil zákazníka"
+        verbose_name_plural = "Profily zákazníků"
 
     def __str__(self):
         return f"Profil: {self.user.email}"

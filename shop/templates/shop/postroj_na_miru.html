@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Postroj na míru | CalmDog{% endblock %}
+
+{% block content %}
+<section class="hotel-coming">
+  <div class="container">
+    <div class="hotel-coming-card reveal">
+      <span class="hotel-coming-kicker">CalmDog — Vybavení</span>
+      <h1 class="hotel-coming-title">Postroj na míru</h1>
+      <p class="hotel-coming-text">
+        Tuto sekci pro vás připravujeme. Brzy zde najdete postroje
+        šité na míru vašemu psovi — pro pohodlí, bezpečí a volný pohyb.
+      </p>
+      <a href="{% url 'shop:product_list' %}" class="btn btn-sage">Zpět na vodítka</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

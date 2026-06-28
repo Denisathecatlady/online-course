@@ -13,7 +13,7 @@ class Product(models.Model):
     image = models.ImageField("Obrázek", upload_to="products/", blank=True)
     is_active = models.BooleanField("Aktivní", default=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -66,6 +66,7 @@ class ProductVariant(models.Model):
     )
 
     length = models.CharField(
+        "Délka",
         max_length=5,
         choices=LENGTH_CHOICES,
         null=True,
@@ -73,6 +74,7 @@ class ProductVariant(models.Model):
     )
 
     type = models.CharField(
+        "Typ zakončení",
         max_length=20,
         choices=TYPE_CHOICES,
         null=True,
@@ -98,7 +100,7 @@ class ProductVariant(models.Model):
 
     is_active = models.BooleanField("Aktivní", default=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
 
     class Meta:
         unique_together = ("product", "length", "type", "color")
@@ -146,25 +148,28 @@ class CartItem(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="cart_items"
+        related_name="cart_items",
+        verbose_name="Zákazník",
     )
 
     product_variant = models.ForeignKey(
         "shop.ProductVariant",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
+        blank=True,
+        verbose_name="Varianta produktu",
     )
 
     course_plan = models.ForeignKey(
-        "courses.CoursePlan",   # 🔥 OPRAVA TADY
+        "courses.CoursePlan",
         on_delete=models.CASCADE,
         null=True,
-        blank=True
+        blank=True,
+        verbose_name="Varianta kurzu",
     )
 
-    quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
+    quantity = models.PositiveIntegerField("Množství", default=1)
+    created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
 
     class Meta:
         verbose_name = "Položka košíku"

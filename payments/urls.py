@@ -12,6 +12,10 @@ urlpatterns = [
     path("cart/", views.cart_detail, name="cart_detail"),
     path("cart/remove/<int:item_id>/", views.remove_from_cart, name="remove_from_cart"),
 
+    # Slevový kupón
+    path("cart/apply-coupon/", views.apply_coupon, name="apply_coupon"),
+    path("cart/remove-coupon/", views.remove_coupon, name="remove_coupon"),
+
     # Přidání do košíku
     path(
         "add-course/<int:plan_id>/",
