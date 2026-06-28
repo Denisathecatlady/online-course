@@ -13,7 +13,7 @@ def add_bypass_column_if_missing(apps, schema_editor):
 
         if "bypass_module_sequencing" not in existing_columns:
             cursor.execute(
-                f'ALTER TABLE "{table_name}" ADD COLUMN "bypass_module_sequencing" bool NOT NULL DEFAULT 0'
+                f'ALTER TABLE "{table_name}" ADD COLUMN "bypass_module_sequencing" boolean NOT NULL DEFAULT FALSE'
             )
 
 
