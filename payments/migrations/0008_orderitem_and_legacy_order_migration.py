@@ -33,7 +33,22 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[],
+            database_operations=[
+                # Vytvoří tabulku v čisté DB (testy, nové nasazení).
+                # Na existující produkční DB tato migrace již byla aplikována
+                # a Django ji znovu nespustí.
+                migrations.CreateModel(
+                    name="OrderItem",
+                    fields=[
+                        ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                        ("quantity", models.PositiveIntegerField(default=1)),
+                        ("price_at_purchase", models.DecimalField(decimal_places=2, max_digits=10)),
+                        ("course_plan", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="payments.courseplan")),
+                        ("order", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="items", to="payments.order")),
+                        ("product_variant", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="shop.productvariant")),
+                    ],
+                ),
+            ],
             state_operations=[
                 migrations.CreateModel(
                     name="OrderItem",

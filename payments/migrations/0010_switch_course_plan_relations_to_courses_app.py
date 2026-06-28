@@ -11,7 +11,29 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[],
+            database_operations=[
+                # Přepojí FK z payments.courseplan → courses.courseplan
+                # a odstraní staré sloupce z payments_order.
+                # Na existující DB (produkce) tato migrace již byla aplikována.
+                migrations.AlterField(
+                    model_name="orderitem",
+                    name="course_plan",
+                    field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="courses.courseplan"),
+                ),
+                migrations.AlterField(
+                    model_name="courseaccess",
+                    name="plan",
+                    field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name="accesses", to="courses.courseplan"),
+                ),
+                migrations.RemoveField(
+                    model_name="order",
+                    name="course",
+                ),
+                migrations.RemoveField(
+                    model_name="order",
+                    name="plan",
+                ),
+            ],
             state_operations=[
                 migrations.AlterField(
                     model_name="courseaccess",
