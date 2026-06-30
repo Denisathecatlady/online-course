@@ -411,10 +411,8 @@
 .home-image-band-photo {
   display: block;
   width: 100%;
-  height: clamp(300px, 42vw, 520px);
-  object-fit: cover;
-  object-position: center 50%;
-  transform: translate3d(0, var(--band-shift), 0) scale(1.08);
+  height: auto;
+  transform: translate3d(0, var(--band-shift), 0) scale(1.02);
   transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
@@ -432,8 +430,7 @@
 }
 
 .home-image-band-photo-forest {
-  height: clamp(240px, 34vw, 420px);
-  object-position: center 50%;
+  height: auto;
 }
 
 .section-space {
@@ -1516,12 +1513,9 @@
     display: none;
   }
 
-  .home-image-band-photo {
-    height: clamp(180px, 50vw, 280px);
-  }
-
+  .home-image-band-photo,
   .home-image-band-photo-forest {
-    height: clamp(160px, 46vw, 260px);
+    height: auto;
   }
 
   .section-head-split {
