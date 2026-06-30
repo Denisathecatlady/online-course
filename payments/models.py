@@ -1,6 +1,6 @@
 from decimal import Decimal, ROUND_HALF_UP
 
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
@@ -45,9 +45,12 @@ class ShopSettings(models.Model):
         # Env proměnná SHOP_LOCKED=1 má vždy přednost (tvrdý override)
         if getattr(settings, "SHOP_LOCKED", False):
             return True
+        # transaction.atomic() izoluje případnou ProgrammingError (tabulka ještě neexistuje)
+        # do savePointu – PostgreSQL spojení zůstane použitelné i po chybě.
         try:
-            obj, _ = cls.objects.get_or_create(pk=1)
-            return obj.shop_locked
+            with transaction.atomic():
+                obj, _ = cls.objects.get_or_create(pk=1)
+                return obj.shop_locked
         except Exception:
             return False
 
