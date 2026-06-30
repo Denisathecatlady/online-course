@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  /* Aktivní sekce v levém menu – bílý text na zeleném pozadí */
+  #nav-sidebar .current-app > table > caption > a,
+  #nav-sidebar .current-app > table > caption,
+  #nav-sidebar .current-model > th > a,
+  #nav-sidebar .current-model > td > a {
+    color: #fff !important;
+  }
+</style>
+{% endblock %}
