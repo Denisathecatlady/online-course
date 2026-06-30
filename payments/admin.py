@@ -10,7 +10,7 @@ from import_export import resources, fields
 from import_export.admin import ExportMixin
 from rangefilter.filters import DateRangeFilter
 
-from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings
 from .services.packeta import create_packet, get_packet_label_pdf, PacketaError
 
 
@@ -619,3 +619,29 @@ class CouponUsageAdmin(ExportMixin, admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+# ======================================
+# SHOP SETTINGS – přepínač uzamčení
+# ======================================
+
+@admin.register(ShopSettings)
+class ShopSettingsAdmin(admin.ModelAdmin):
+    """
+    Singleton administrace – vždy zobrazí jediný řádek nastavení.
+    """
+    fields = ("shop_locked",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        """Přesměruj seznam rovnou na editaci singleton objektu."""
+        from django.shortcuts import redirect
+        obj = ShopSettings.objects.get_or_create(pk=1)[0]
+        return redirect(
+            reverse("admin:payments_shopsettings_change", args=[obj.pk])
+        )

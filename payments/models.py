@@ -7,6 +7,52 @@ from datetime import timedelta
 
 
 # ======================================
+# SHOP SETTINGS (singleton)
+# ======================================
+
+class ShopSettings(models.Model):
+    """
+    Singleton – vždy existuje právě jeden řádek (pk=1).
+    Přepínač shop_locked lze ovládat přímo z adminu.
+    """
+    shop_locked = models.BooleanField(
+        "Prodej uzamčen",
+        default=False,
+        help_text=(
+            "Zaškrtněte pro docasne uzamceni kosiku a tlacítek Pridat do kosiku. "
+            "Stranky kurzu a produktu zustavaji dostupne. "
+            "Existujici pristupy ke kurzum nejsou dotceny."
+        ),
+    )
+
+    class Meta:
+        verbose_name = "Nastavení obchodu"
+        verbose_name_plural = "Nastavení obchodu"
+
+    def __str__(self):
+        return "Nastavení obchodu"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass  # singleton – nelze smazat
+
+    @classmethod
+    def is_locked(cls):
+        """Vrací True pokud je prodej uzamčen (DB nebo env proměnná)."""
+        # Env proměnná SHOP_LOCKED=1 má vždy přednost (tvrdý override)
+        if getattr(settings, "SHOP_LOCKED", False):
+            return True
+        try:
+            obj, _ = cls.objects.get_or_create(pk=1)
+            return obj.shop_locked
+        except Exception:
+            return False
+
+
+# ======================================
 # ORDER
 # ======================================
 

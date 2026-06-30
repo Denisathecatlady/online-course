@@ -1,5 +1,5 @@
 from .services.cart import get_or_create_cart
-from .models import Order
+from .models import Order, ShopSettings
 from django.conf import settings
 
 
@@ -26,7 +26,7 @@ def cart_context(request):
             "cart_items_count": count,
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
-            "shop_locked": settings.SHOP_LOCKED,
+            "shop_locked": ShopSettings.is_locked(),
         }
 
     except Exception:
@@ -34,5 +34,5 @@ def cart_context(request):
             "cart_items_count": 0,
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
-            "shop_locked": settings.SHOP_LOCKED,
+            "shop_locked": getattr(settings, "SHOP_LOCKED", False),
         }
