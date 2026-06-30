@@ -329,6 +329,21 @@
   box-shadow: none;
 }
 
+/* Zamčený prodej – místo „Přidat do košíku" se zobrazí zámeček. */
+.pd-locked {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pd-lock-icon {
+  flex-shrink: 0;
+}
+
 /* ── Info karty (dolní grid) ── */
 .pd-info-grid {
   display: grid;

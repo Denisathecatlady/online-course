@@ -137,10 +137,17 @@
                                     </strong>
                                 </div>
 
+                                {% if shop_locked %}
+                                <span class="shop-btn shop-btn--locked shop-bundle-submit" aria-disabled="true">
+                                    <svg class="shop-lock-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm3 8H9V7a3 3 0 0 1 6 0v3Z"/></svg>
+                                    Prodej uzamčen
+                                </span>
+                                {% else %}
                                 <button type="submit" class="shop-btn shop-btn--accent shop-bundle-submit">
                                     Přidat sadu do košíku
                                     <span aria-hidden="true">→</span>
                                 </button>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
@@ -193,6 +200,12 @@
                                     <strong class="shop-price-value">{{ card.price_from|floatformat:0|intcomma }} Kč</strong>
                                 </div>
 
+                                {% if shop_locked %}
+                                <span class="shop-btn shop-btn--locked" aria-disabled="true">
+                                    <svg class="shop-lock-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm3 8H9V7a3 3 0 0 1 6 0v3Z"/></svg>
+                                    Prodej uzamčen
+                                </span>
+                                {% else %}
                                 <a
                                     href="{% url 'shop:product_detail' card.product.slug %}"
                                     class="shop-btn {% if card.button_theme == 'accent' %}shop-btn--accent{% elif card.button_theme == 'dark' %}shop-btn--dark{% else %}shop-btn--sage{% endif %}"
@@ -200,6 +213,7 @@
                                     Více
                                     <span aria-hidden="true">→</span>
                                 </a>
+                                {% endif %}
                             </div>
                         </div>
                     </article>

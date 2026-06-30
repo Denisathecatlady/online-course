@@ -141,6 +141,23 @@
     color: #fff;
 }
 
+/* Zamčený stav – místo tlačítka „Přidat do košíku" / „Více" se ukáže zámeček.
+   Není to odkaz ani tlačítko, takže na produkt nejde kliknout. */
+.shop-btn--locked {
+    background: #e7e3dc;
+    color: #8a8378;
+    cursor: not-allowed;
+    border-color: transparent;
+}
+
+.shop-btn--locked:hover {
+    transform: none;
+}
+
+.shop-lock-icon {
+    flex-shrink: 0;
+}
+
 .shop-rating-row {
     display: flex;
     align-items: center;
