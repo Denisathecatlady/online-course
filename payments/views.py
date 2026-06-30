@@ -36,7 +36,7 @@ BUNDLE_DISCOUNT_RATE = Decimal("0.10")
 
 
 PUBLIC_COURSE_IMAGE_PATHS = {
-    "konejsive-signaly-v-praxi": "img/courses/Nepojmenované.jpg",
+    "konejsive-signaly-v-praxi": "img/courses/konejsive-signaly-hero.jpg",
     "netahani-na-voditku": "img/courses/kurz-netahani-na-voditku.png",
 }
 

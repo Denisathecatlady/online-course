@@ -650,7 +650,7 @@ def evaluate_step_quiz(quiz, submitted_data):
 # ======================================
 
 PUBLIC_COURSE_IMAGE_PATHS = {
-    "konejsive-signaly-v-praxi": "img/courses/Nepojmenované.jpg",
+    "konejsive-signaly-v-praxi": "img/courses/konejsive-signaly-hero.jpg",
     "netahani-na-voditku": "img/courses/kurz-netahani-na-voditku.png",
 }
 
