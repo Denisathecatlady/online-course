@@ -12,13 +12,30 @@
 {% block content %}
 
 <!-- ════════════════════════════════════════════════
-     BANNER – V REKONSTRUKCI
+     REKONSTRUKCE – dočasná stránka
 ════════════════════════════════════════════════ -->
-<div class="preview-banner">
-    🏗️ &nbsp;Právě pracujeme na rekonstrukci — hotel otevíráme v roce <strong>2027</strong>
-</div>
+<section class="hotel-rekon">
+    <div class="container">
+        <div class="hotel-rekon-body">
+            <span class="hotel-kicker">Hotel pro psy a kočky · Žatec</span>
+            <h1 class="hotel-rekon-title">
+                Pracujeme na<br>
+                <span>rekonstrukci.</span>
+            </h1>
+            <p class="hotel-rekon-copy">
+                Připravujeme pro vás hotel v Žatci.<br>
+                Otevíráme v roce <strong>2027</strong> — podrobné informace dodáme později.
+            </p>
+            <a href="{% url 'hotel:reservation_form' %}" class="btn btn-sage hotel-hero-btn">
+                <span>Zanechat kontakt</span>
+                <span aria-hidden="true">→</span>
+            </a>
+        </div>
+    </div>
+</section>
 
 
+{% comment %}
 <!-- ════════════════════════════════════════════════
      HERO
 ════════════════════════════════════════════════ -->
@@ -267,5 +284,7 @@
         </div>
     </div>
 </section>
+
+{% endcomment %}
 
 {% endblock %}

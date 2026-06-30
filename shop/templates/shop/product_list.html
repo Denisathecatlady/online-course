@@ -383,8 +383,30 @@ document.querySelectorAll("[data-bundle-form]").forEach((form) => {
     }
 
     if (select) {
-        select.addEventListener("change", syncBundleSelection);
+        let autoRotateTimer = null;
+        function stopAutoRotate() {
+            if (autoRotateTimer !== null) {
+                clearInterval(autoRotateTimer);
+                autoRotateTimer = null;
+            }
+        }
+
+        select.addEventListener("change", function () {
+            stopAutoRotate();           // jakmile barvu zvolí uživatel, přepínání vypneme
+            syncBundleSelection();
+        });
         syncBundleSelection();
+
+        // Automatické přepínání barev sady – začíná šedou, pak každé 2 s další barva.
+        if (select.options.length > 1) {
+            autoRotateTimer = setInterval(function () {
+                select.selectedIndex = (select.selectedIndex + 1) % select.options.length;
+                syncBundleSelection();
+            }, 2000);
+            // při interakci uživatele (výběr barvy / klik) přepínání zastavíme
+            select.addEventListener("focus", stopAutoRotate);
+            form.addEventListener("pointerdown", stopAutoRotate);
+        }
     }
 });
 </script>

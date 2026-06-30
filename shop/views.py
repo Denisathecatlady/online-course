@@ -25,6 +25,13 @@ PRODUCT_COLOR_IMAGE_PATHS = {
     },
 }
 
+# Obrázky POUZE pro Výhodnou sadu (vodítko bez očka + samostatné očko).
+# Klíč = slug barvy (slugify názvu barvy). Nepoužívá se nikde jinde než v sadě.
+BUNDLE_COLOR_IMAGE_PATHS = {
+    "pastelove-ruzova": "img/shop/ocko_plus_voditko_bo_ruzovy.png",
+    "seda": "img/shop/ocko_plus_voditko_bo_sede.png",
+}
+
 PRODUCT_CARD_CONTENT = {
     "samostatne-ocko": {
         "eyebrow": "Základ",
@@ -217,6 +224,15 @@ def get_variant_image_url(product, color):
     return get_default_product_image_url(product)
 
 
+def get_bundle_image_url(leash_product, color):
+    """Obrázek pro Výhodnou sadu podle barvy (jen v sadě).
+    Když pro barvu nemáme fotku sady, použijeme původní fotku vodítka."""
+    image_path = BUNDLE_COLOR_IMAGE_PATHS.get(slugify(color.name))
+    if image_path:
+        return build_static_image_url(image_path)
+    return get_variant_image_url(leash_product, color)
+
+
 def apply_bundle_discount(price):
     return (price * (Decimal("1.00") - BUNDLE_DISCOUNT_RATE)).quantize(
         Decimal("1"),
@@ -267,7 +283,7 @@ def build_bundle_card(products_by_slug):
         options.append({
             "color_name": leash_variant.color.name,
             "color_hex": leash_variant.color.hex_code or "#d9d9d9",
-            "image_url": get_variant_image_url(leash_product, leash_variant.color),
+            "image_url": get_bundle_image_url(leash_product, leash_variant.color),
             "length_label": length_label,
             "summary": " - ".join(summary_parts),
             "primary_variant_id": leash_variant.id,
@@ -279,6 +295,10 @@ def build_bundle_card(products_by_slug):
 
     if not options:
         return None
+
+    # Výhodná sada se má načíst se šedou barvou; barvy se pak v šabloně
+    # automaticky přepínají. Šedou proto dáme jako první (výchozí) možnost.
+    options.sort(key=lambda o: 0 if slugify(o["color_name"]) == "seda" else 1)
 
     default_option = options[0]
 
@@ -295,7 +315,7 @@ def build_bundle_card(products_by_slug):
             "Samostatné očko přes rameno",
             "O 10 % výhodnější komplet",
         ],
-        "image_url": get_default_product_image_url(leash_product),
+        "image_url": default_option["image_url"],
         "image_alt": "Výhodná sada vodítka bez očka a samostatného očka",
         "default_option": default_option,
         "options": options,

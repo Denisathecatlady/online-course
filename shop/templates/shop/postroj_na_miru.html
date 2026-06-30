@@ -3,17 +3,29 @@
 
 {% block title %}Postroj na míru | CalmDog{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hotel/css/hotel.css' %}">
+{% endblock %}
+
+{% block body_class %}page-hotel{% endblock %}
+
 {% block content %}
-<section class="hotel-coming">
+<section class="hotel-rekon">
   <div class="container">
-    <div class="hotel-coming-card reveal">
-      <span class="hotel-coming-kicker">CalmDog — Vybavení</span>
-      <h1 class="hotel-coming-title">Postroj na míru</h1>
-      <p class="hotel-coming-text">
-        Tuto sekci pro vás připravujeme. Brzy zde najdete postroje
-        šité na míru vašemu psovi — pro pohodlí, bezpečí a volný pohyb.
+    <div class="hotel-rekon-body">
+      <span class="hotel-kicker">CalmDog — Vybavení</span>
+      <h1 class="hotel-rekon-title">
+        Postroj<br>
+        <span>na míru.</span>
+      </h1>
+      <p class="hotel-rekon-copy">
+        Tuto sekci pro vás připravujeme.<br>
+        Brzy zde najdete postroje šité na míru vašemu psovi — podrobné informace dodáme později.
       </p>
-      <a href="{% url 'shop:product_list' %}" class="btn btn-sage">Zpět na vodítka</a>
+      <a href="{% url 'shop:product_list' %}" class="btn btn-sage hotel-hero-btn">
+        <span>Zpět na vodítka</span>
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>
