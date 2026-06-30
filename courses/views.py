@@ -690,6 +690,7 @@ def home(request):
     featured_courses = list(
         Course.objects
         .filter(is_active=True)
+        .exclude(slug="")
         .order_by("coming_soon", "-created_at")
         .annotate(
             active_plan_count=Count("plans", filter=Q(plans__is_active=True), distinct=True),

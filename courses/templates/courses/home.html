@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="course-preview-grid">
       {% for course in courses %}
         <article class="home-course-card reveal reveal-lift {% if forloop.counter == 1 %}reveal-delay-1{% else %}reveal-delay-2{% endif %}{% if course.coming_soon %} home-course-card-soon{% endif %}">
-          {% if course.coming_soon %}
+          {% if course.coming_soon or not course.slug %}
           <div class="home-course-card-link" aria-label="{{ course.title }}">
           {% else %}
           <a href="{% url 'payments:course_detail' course.slug %}" class="home-course-card-link" aria-label="{{ course.title }}">
@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               {% endif %}
             </div>
-          {% if course.coming_soon %}
+          {% if course.coming_soon or not course.slug %}
           </div>
           {% else %}
           </a>
