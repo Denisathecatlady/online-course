@@ -326,6 +326,9 @@ def add_product_variant_to_order(cart, variant, quantity, price_at_purchase=None
 
 @require_POST
 def add_course_to_cart(request, plan_id):
+    if settings.SHOP_LOCKED:
+        messages.warning(request, "Prodej je momentálně pozastaven. Brzy se vrátíme!")
+        return redirect("payments:course_list")
 
     plan = get_object_or_404(
         CoursePlan,
@@ -351,6 +354,9 @@ def add_course_to_cart(request, plan_id):
 # =====================================================
 @require_POST
 def add_variant_to_cart(request, variant_id):
+    if settings.SHOP_LOCKED:
+        messages.warning(request, "Prodej je momentálně pozastaven. Brzy se vrátíme!")
+        return redirect("shop:product_list")
 
     variant = get_object_or_404(
         ProductVariant,
@@ -371,6 +377,10 @@ def add_variant_to_cart(request, variant_id):
 
 @require_POST
 def add_bundle_to_cart(request, variant_id):
+    if settings.SHOP_LOCKED:
+        messages.warning(request, "Prodej je momentálně pozastaven. Brzy se vrátíme!")
+        return redirect("shop:product_list")
+
     primary_variant = get_object_or_404(
         ProductVariant,
         id=variant_id,

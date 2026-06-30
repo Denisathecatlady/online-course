@@ -55,6 +55,11 @@
         </div>
 
         {# Formulář #}
+        {% if shop_locked %}
+        <div class="pd-actions" style="margin-top:1.5rem;">
+          <button type="button" class="btn btn-sage pd-submit" disabled>Brzy dostupné</button>
+        </div>
+        {% else %}
         <form method="post"
               id="add-to-cart-form"
               class="pd-form"
@@ -129,6 +134,7 @@
             {% endif %}
           </div>
         </form>
+        {% endif %}{# /shop_locked #}
 
       </div>{# /pd-panel #}
     </div>{# /pd-grid #}
@@ -148,6 +154,7 @@
   </div>
 </div>
 
+{% if not shop_locked %}
 <script>
 const variants = {{ variants_json|safe }};
 
@@ -292,4 +299,5 @@ syncSelectAvailability();
 updateVariant();
 updateColorPreview();
 </script>
+{% endif %}{# /shop_locked #}
 {% endblock %}

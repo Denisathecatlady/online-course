@@ -215,8 +215,8 @@
 
         <p class="course-variant-footnote">{{ card.footnote }}</p>
 
-        {% if course.coming_soon %}
-        <button class="btn btn-sage w-100" disabled>Připravujeme pro vás</button>
+        {% if course.coming_soon or shop_locked %}
+        <button class="btn btn-sage w-100" disabled>{% if shop_locked %}Brzy dostupné{% else %}Připravujeme pro vás{% endif %}</button>
         {% else %}
         <form method="post" action="{% url 'payments:add_course_to_cart' card.plan.id %}">
           {% csrf_token %}
@@ -341,8 +341,8 @@
           {% endif %}
         </ul>
 
-        {% if course.coming_soon %}
-        <button class="btn btn-sage w-100" disabled>Připravujeme pro vás</button>
+        {% if course.coming_soon or shop_locked %}
+        <button class="btn btn-sage w-100" disabled>{% if shop_locked %}Brzy dostupné{% else %}Připravujeme pro vás{% endif %}</button>
         {% else %}
         <form method="post" action="{% url 'payments:add_course_to_cart' plan.id %}">
           {% csrf_token %}

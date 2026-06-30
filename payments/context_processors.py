@@ -26,6 +26,7 @@ def cart_context(request):
             "cart_items_count": count,
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
+            "shop_locked": settings.SHOP_LOCKED,
         }
 
     except Exception:
@@ -33,4 +34,5 @@ def cart_context(request):
             "cart_items_count": 0,
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
+            "shop_locked": settings.SHOP_LOCKED,
         }

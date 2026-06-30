@@ -305,6 +305,9 @@ PACKETA_MOCK_POINT_NAME = os.environ.get(
 # ======================================================
 HOTEL_ICAL_URL = os.environ.get("HOTEL_ICAL_URL", "")
 
+# Uzamčení prodeje (bez deploye – stačí nastavit SHOP_LOCKED=1 v Render env)
+SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"
+
 # ======================================================
 # LOGGING
 # ======================================================
