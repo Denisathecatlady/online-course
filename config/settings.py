@@ -55,8 +55,6 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # APPS
 # ======================================================
 
-SITE_ID = 1
-
 INSTALLED_APPS = [
     # Vzhled adminu – MUSÍ být před django.contrib.admin
     "admin_interface",
@@ -79,7 +77,6 @@ INSTALLED_APPS = [
     "hotel",
     "shop",
     "django.contrib.humanize",
-    "django.contrib.sites",
 ]
 
 # django-admin-interface – nutné pro náhled motivu a media tlačítka
