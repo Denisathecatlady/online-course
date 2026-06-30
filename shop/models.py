@@ -12,6 +12,11 @@ class Product(models.Model):
     description = models.TextField("Popis", blank=True)
     image = models.ImageField("Obrázek", upload_to="products/", blank=True)
     is_active = models.BooleanField("Aktivní", default=True)
+    is_sale_locked = models.BooleanField(
+        "Prodej uzamčen",
+        default=False,
+        help_text="Zákazník vidí zámeček místo tlačítka. Produkt nejde rozkliknout ani koupit.",
+    )
 
     created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
 

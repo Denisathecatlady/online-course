@@ -303,6 +303,7 @@ def build_bundle_card(products_by_slug):
     default_option = options[0]
 
     return {
+        "is_locked": leash_product.is_sale_locked or loop_product.is_sale_locked,
         "title": "Výhodná sada",
         "badge": "Sleva 10 %",
         "teaser": "Vodítko bez očka + samostatné očko",

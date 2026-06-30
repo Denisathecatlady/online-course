@@ -24,8 +24,9 @@ class ProductVariantInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(ImportExportModelAdmin):
-    list_display = ("name", "variant_count", "is_active", "created_at")
-    list_filter = ("is_active", "created_at")
+    list_display = ("name", "variant_count", "is_active", "is_sale_locked", "created_at")
+    list_editable = ("is_active", "is_sale_locked")
+    list_filter = ("is_active", "is_sale_locked", "created_at")
     search_fields = ("name", "description")
     ordering = ("-created_at",)
     prepopulated_fields = {"slug": ("name",)}
@@ -33,7 +34,7 @@ class ProductAdmin(ImportExportModelAdmin):
 
     fieldsets = (
         ("Produkt", {
-            "fields": ("name", "slug", "is_active"),
+            "fields": ("name", "slug", "is_active", "is_sale_locked"),
         }),
         ("Popis a obrázek", {
             "fields": ("description", "image"),
