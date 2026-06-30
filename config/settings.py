@@ -304,3 +304,28 @@ PACKETA_MOCK_POINT_NAME = os.environ.get(
 # HOTEL – GOOGLE CALENDAR (iCal)
 # ======================================================
 HOTEL_ICAL_URL = os.environ.get("HOTEL_ICAL_URL", "")
+
+# ======================================================
+# LOGGING
+# ======================================================
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
