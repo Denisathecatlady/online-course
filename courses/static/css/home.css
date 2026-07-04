@@ -46,7 +46,7 @@
     scale(1.07);
   transition: transform 220ms ease-out, filter 220ms ease-out;
   will-change: transform;
-  filter: saturate(1.02);
+  filter: saturate(1.02) brightness(0.82);
 }
 
 .home-hero-shell::before {
