@@ -78,12 +78,15 @@
               </li>
               <li>
                 <strong>oprávněný zájem</strong> (čl. 6 odst. 1 písm. f) GDPR) –
-                zabezpečení a ochrana systému, vyřizování reklamací a uplatnění
-                právních nároků;
+                zabezpečení a ochrana systému, nezbytné technické cookies,
+                vyřizování reklamací a uplatnění právních nároků;
               </li>
               <li>
-                <strong>souhlas</strong> (čl. 6 odst. 1 písm. a) GDPR) –
-                zasílání newsletteru; souhlas lze kdykoli odvolat.
+                <strong>souhlas</strong> (čl. 6 odst. 1 písm. a) GDPR
+                a § 89 odst. 3 zákona č. 127/2005 Sb.) –
+                zasílání newsletteru a zpracování analytických cookies
+                (Google Analytics 4, Microsoft Clarity);
+                souhlas lze kdykoli odvolat.
               </li>
             </ul>
 
@@ -125,6 +128,18 @@
                 kurzů;
               </li>
               <li>
+                <strong>Google LLC</strong> (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) –
+                správa tagů prostřednictvím Google Tag Manager a měření návštěvnosti
+                prostřednictvím Google Analytics 4; <strong>pouze na základě vašeho souhlasu</strong>
+                s analytickými cookies;
+              </li>
+              <li>
+                <strong>Microsoft Corporation</strong> (One Microsoft Way, Redmond, WA 98052, USA) –
+                analýza chování návštěvníků prostřednictvím nástroje Microsoft Clarity
+                (záznamy relací, heatmapy); <strong>pouze na základě vašeho souhlasu</strong>
+                s analytickými cookies;
+              </li>
+              <li>
                 poskytovatel e-mailových služeb a technický provozovatel
                 serveru (hosting);
               </li>
@@ -135,21 +150,38 @@
 
             <h2>7. Předání do třetích zemí</h2>
             <p>
-              Někteří zpracovatelé (zejména Stripe a Vimeo) mohou zpracovávat
-              údaje i mimo Evropský hospodářský prostor. V takovém případě je
-              předání zajištěno na základě vhodných záruk podle GDPR, zejména
-              standardních smluvních doložek schválených Evropskou komisí.
+              Někteří zpracovatelé (zejména Stripe, Vimeo, Google LLC a Microsoft Corporation)
+              mohou zpracovávat údaje i mimo Evropský hospodářský prostor (zejména v USA).
+              V takovém případě je předání zajištěno na základě vhodných záruk podle GDPR,
+              zejména standardních smluvních doložek schválených Evropskou komisí
+              (čl. 46 odst. 2 písm. c) GDPR).
             </p>
 
             <h2>8. Cookies</h2>
             <p>
-              Web používá technické soubory cookies nezbytné pro fungování
-              e-shopu (zejména přihlášení a zabezpečení formulářů) a soubory
-              cookies služeb třetích stran využívaných při platbě a výběru
-              výdejního místa (Stripe, Zásilkovna). Technické cookies jsou
-              zpracovávány na základě oprávněného zájmu; jejich ukládání lze
-              omezit v nastavení prohlížeče, což ale může ovlivnit funkčnost
-              e-shopu.
+              Web používá dvě kategorie cookies:
+            </p>
+            <ul>
+              <li>
+                <strong>Nezbytné cookies</strong> – technické soubory nutné pro
+                fungování webu (přihlášení, ochrana formulářů před útoky CSRF,
+                uložení volby souhlasu). Zpracovávány na základě
+                <strong>oprávněného zájmu</strong> (čl. 6 odst. 1 písm. f) GDPR);
+                souhlas se nevyžaduje.
+              </li>
+              <li>
+                <strong>Analytické cookies</strong> – soubory třetích stran
+                (Google Analytics 4 a Microsoft Clarity) sloužící ke sledování
+                návštěvnosti a zlepšování obsahu webu. Načítají se
+                <strong>pouze na základě vašeho souhlasu</strong>
+                (čl. 6 odst. 1 písm. a) GDPR a § 89 odst. 3 zákona č. 127/2005 Sb.).
+                Souhlas lze kdykoli odvolat – viz
+                <a href="{% url 'courses:cookies' %}">Zásady cookies</a>.
+              </li>
+            </ul>
+            <p>
+              Podrobný přehled konkrétních cookies, jejich účelu a doby platnosti
+              najdete v <a href="{% url 'courses:cookies' %}">Zásadách používání cookies</a>.
             </p>
 
             <h2>9. Práva subjektu údajů</h2>
@@ -192,7 +224,9 @@
             <hr class="my-4">
 
             <p class="text-muted small text-center mb-0">
-              Platné a účinné od: 1. 1. 2026
+              Platné a účinné od: 1. 7. 2026 |
+              Správce: Ing. Andrea Zoulová, IČO 19603118 |
+              <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>
             </p>
 
           </div>

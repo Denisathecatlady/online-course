@@ -1,45 +1,205 @@
 {% extends "base.html" %}
-{% block title %}Cookies{% endblock %}
+{% block title %}Zásady cookies | CalmDog{% endblock %}
 
 {% block content %}
 <section class="py-6">
-    <div class="container" style="max-width: 760px;">
-        <h1 class="section-title mb-4">Zásady cookies</h1>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="card card-soft">
+          <div class="card-body p-4 p-md-5 content-prose">
 
-        <p>
-            Tento web používá cookies – malé textové soubory ukládané do vašeho prohlížeče.
-            Níže najdete přehled kategorií cookies, které používáme.
-        </p>
+            <h1 class="section-title-sm mb-2">Zásady používání cookies</h1>
+            <p class="text-muted small mb-4">Platné od 1. 7. 2026</p>
 
-        <h2 class="mt-5 mb-3" style="font-size: 1.25rem;">Nezbytné cookies</h2>
-        <p>
-            Tyto cookies jsou nutné pro správné fungování webu a nelze je vypnout.
-            Ukládají informace jako stav přihlášení, obsah košíku nebo CSRF ochranu formulářů.
-            Nepotřebují váš souhlas.
-        </p>
+            <p>
+              Tyto zásady popisují, jak web <strong>www.calmdog.cz</strong> používá cookies
+              a podobná technická úložiště (localStorage) v souladu s nařízením GDPR
+              a § 89 odst. 3 zákona č. 127/2005 Sb., o elektronických komunikacích.
+            </p>
 
-        <h2 class="mt-5 mb-3" style="font-size: 1.25rem;">Analytické cookies</h2>
-        <p>
-            Analytické cookies nám pomáhají pochopit, jak návštěvníci web používají –
-            které stránky jsou nejnavštěvovanější, odkud přicházíte a jak dlouho zůstáváte.
-            Tato data jsou anonymní a slouží výhradně ke zlepšování obsahu.
-        </p>
-        <p>Používáme tyto analytické nástroje:</p>
-        <ul>
-            <li><strong>Google Analytics 4</strong> – měření návštěvnosti a chování uživatelů</li>
-            <li><strong>Microsoft Clarity</strong> – heatmapy a záznamy relací (anonymizované)</li>
-        </ul>
-        <p>
-            Analytické cookies se načtou <strong>pouze pokud kliknete na „Přijmout vše"</strong>
-            v cookie liště. Pokud zvolíte „Jen nezbytné", žádné sledování neprobíhá.
-        </p>
+            <h2>1. Správce</h2>
+            <p>
+              Správcem je <strong>Ing. Andrea Zoulová</strong>, IČO 19603118,
+              e-mail <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>.
+              Podrobné informace o zpracování osobních údajů najdete v
+              <a href="{% url 'courses:gdpr' %}">Zásadách ochrany osobních údajů</a>.
+            </p>
 
-        <h2 class="mt-5 mb-3" style="font-size: 1.25rem;">Změna souhlasu</h2>
-        <p>
-            Svůj souhlas můžete kdykoli změnit vymazáním dat webu v nastavení prohlížeče
-            (Nástroje pro vývojáře → Application → Local Storage → smazat klíč
-            <code>cookieConsent</code>). Po smazání se lišta zobrazí znovu.
-        </p>
+            <h2>2. Co jsou cookies</h2>
+            <p>
+              Cookies jsou malé textové soubory ukládané vaším prohlížečem.
+              Slouží k technickému zajištění funkcí webu nebo ke sledování chování
+              návštěvníků. Podobnou roli plní i <em>localStorage</em> – úložiště
+              v prohlížeči, kde si web pamatuje vaše předvolby (včetně souhlasu
+              s cookies) i po zavření okna.
+            </p>
+
+            <h2>3. Nezbytné cookies</h2>
+            <p>
+              Tyto soubory jsou nutné pro základní funkce webu. Právním základem
+              je <strong>oprávněný zájem</strong> správce (čl. 6 odst. 1 písm. f) GDPR)
+              a plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).
+              <strong>Souhlas se nevyžaduje.</strong>
+            </p>
+
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered small">
+                <thead class="table-light">
+                  <tr>
+                    <th>Název</th>
+                    <th>Účel</th>
+                    <th>Platnost</th>
+                    <th>Poskytovatel</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>sessionid</code></td>
+                    <td>Přihlášení uživatele (Django session)</td>
+                    <td>Do zavření prohlížeče / 2 týdny</td>
+                    <td>www.calmdog.cz</td>
+                  </tr>
+                  <tr>
+                    <td><code>csrftoken</code></td>
+                    <td>Ochrana formulářů před útoky CSRF</td>
+                    <td>1 rok</td>
+                    <td>www.calmdog.cz</td>
+                  </tr>
+                  <tr>
+                    <td><code>cookieConsent</code></td>
+                    <td>Uložení vaší volby souhlasu s cookies (localStorage)</td>
+                    <td>Do vymazání / 1 rok</td>
+                    <td>www.calmdog.cz</td>
+                  </tr>
+                  <tr>
+                    <td><code>cookieConsentVersion</code></td>
+                    <td>Verze souhlasu – zajišťuje opětovné zobrazení lišty při změně nastavení</td>
+                    <td>Do vymazání / 1 rok</td>
+                    <td>www.calmdog.cz</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2>4. Analytické cookies</h2>
+            <p>
+              Tyto soubory se načtou <strong>pouze pokud kliknete na „Přijmout vše"</strong>
+              v cookie liště. Právním základem je váš <strong>souhlas</strong>
+              (čl. 6 odst. 1 písm. a) GDPR a § 89 odst. 3 zákona č. 127/2005 Sb.).
+              Souhlas lze kdykoli odvolat (viz část 6).
+            </p>
+            <p>
+              Analytická data jsou zpracovávána anonymně a slouží výhradně ke
+              zlepšování obsahu a uživatelského prostředí webu.
+            </p>
+
+            <h3 style="font-size:1rem; margin-top:1.5rem;">Google Analytics 4</h3>
+            <p class="small text-muted">Poskytovatel: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA.
+              Data mohou být přenášena do USA na základě standardních smluvních doložek EU.
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Zásady ochrany osobních údajů Google</a>.
+            </p>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered small">
+                <thead class="table-light">
+                  <tr><th>Název</th><th>Účel</th><th>Platnost</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>_ga</code></td>
+                    <td>Rozlišení unikátních uživatelů</td>
+                    <td>2 roky</td>
+                  </tr>
+                  <tr>
+                    <td><code>_ga_*</code></td>
+                    <td>Stav relace (session state)</td>
+                    <td>2 roky</td>
+                  </tr>
+                  <tr>
+                    <td><code>_gid</code></td>
+                    <td>Rozlišení unikátních uživatelů (krátkodobé)</td>
+                    <td>24 hodin</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 style="font-size:1rem; margin-top:1.5rem;">Microsoft Clarity</h3>
+            <p class="small text-muted">Poskytovatel: Microsoft Corporation, One Microsoft Way, Redmond, WA 98052, USA.
+              Data mohou být přenášena do USA na základě standardních smluvních doložek EU.
+              Záznamy relací a heatmapy jsou anonymizovány.
+              <a href="https://privacy.microsoft.com/cs-cz/privacystatement" target="_blank" rel="noopener">Zásady ochrany osobních údajů Microsoft</a>.
+            </p>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered small">
+                <thead class="table-light">
+                  <tr><th>Název</th><th>Účel</th><th>Platnost</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>_clck</code></td>
+                    <td>Trvalý identifikátor uživatele pro Clarity</td>
+                    <td>1 rok</td>
+                  </tr>
+                  <tr>
+                    <td><code>_clsk</code></td>
+                    <td>Identifikátor relace pro Clarity</td>
+                    <td>1 den</td>
+                  </tr>
+                  <tr>
+                    <td><code>MUID</code></td>
+                    <td>Unikátní identifikátor zařízení</td>
+                    <td>1 rok</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2>5. Google Tag Manager</h2>
+            <p>
+              Výše uvedené analytické nástroje jsou načítány prostřednictvím
+              <strong>Google Tag Manager</strong> (GTM-TVJ3V6PS), který slouží
+              jako technický správce tagů. GTM sám o sobě nesbírá osobní údaje;
+              načte se pouze po vašem souhlasu.
+            </p>
+
+            <h2>6. Správa a odvolání souhlasu</h2>
+            <p>
+              Souhlas s analytikou udělíte nebo odepřete v cookie liště zobrazené
+              při první návštěvě. Svou volbu lze kdykoli změnit:
+            </p>
+            <ol>
+              <li>Otevřete <strong>Nástroje pro vývojáře</strong> v prohlížeči (F12).</li>
+              <li>Přejděte na záložku <strong>Application → Local Storage → www.calmdog.cz</strong>.</li>
+              <li>Smažte klíče <code>cookieConsent</code> a <code>cookieConsentVersion</code>.</li>
+              <li>Obnovte stránku – cookie lišta se zobrazí znovu.</li>
+            </ol>
+            <p>
+              Alternativně lze zakázat ukládání cookies přímo v nastavení vašeho
+              prohlížeče, případně použít rozšíření pro správu souhlasu.
+              Omezení analytických cookies nemá vliv na funkčnost e-shopu.
+            </p>
+
+            <h2>7. Práva subjektu údajů</h2>
+            <p>
+              Ve vztahu k analytickým údajům máte zejména právo na přístup,
+              výmaz a odvolání souhlasu. Veškerá práva a kontakt pro jejich
+              uplatnění jsou uvedeny v
+              <a href="{% url 'courses:gdpr' %}">Zásadách ochrany osobních údajů</a>.
+            </p>
+
+            <hr class="my-4">
+
+            <p class="text-muted small text-center mb-0">
+              Platné a účinné od: 1. 7. 2026 |
+              Správce: Ing. Andrea Zoulová, IČO 19603118 |
+              <a href="mailto:info@calmdog.cz">info@calmdog.cz</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 {% endblock %}
