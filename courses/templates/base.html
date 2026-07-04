@@ -443,6 +443,11 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.disabled = false;
         btn.textContent = 'Získat slevu';
         localStorage.setItem(STORAGE_KEY, '1');   // už ho má – neotravovat dál
+      } else if (data.error === 'email_failed') {
+        errEl.textContent = 'E-mail se nepodařilo odeslat. Zkuste to prosím znovu za chvíli.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Získat slevu';
       } else {
         errEl.textContent = data.error || 'Něco se nepovedlo. Zkuste to znovu.';
         errEl.style.display = 'block';

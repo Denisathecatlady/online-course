@@ -1260,6 +1260,8 @@ def claim_welcome_coupon(request):
     """
     Přijme e-mail, zkontroluje unikátnost a odešle slevový kupón 10 %.
     Každý e-mail může obdržet kupón pouze jednou.
+    Claim se uloží do DB AŽ po úspěšném odeslání emailu – pokud email selže,
+    uživatel může zkusit znovu.
     """
     email_raw = request.POST.get("email", "").strip()
     if not email_raw:
@@ -1274,37 +1276,7 @@ def claim_welcome_coupon(request):
     # Vygeneruj unikátní kód (VITEJ-XXXXXX)
     code = _generate_welcome_code()
 
-    # Vytvoř Coupon záznam
-    coupon = Coupon.objects.create(
-        code=code,
-        description="Uvítací sleva 10 % – první objednávka",
-        discount_type=Coupon.DiscountType.PERCENT,
-        discount_value=Decimal("10"),
-        max_uses=1,
-        is_active=True,
-    )
-
-    # Zaznamenej nárok
-    WelcomeCouponClaim.objects.create(email=email, coupon=coupon)
-
-    # Odešli e-mail s kódem
-    _send_welcome_coupon_email(email, code)
-
-    return JsonResponse({"ok": True})
-
-
-def _generate_welcome_code():
-    """Vygeneruje unikátní kód ve tvaru VITEJ-XXXXXX."""
-    for _ in range(10):
-        code = "VITEJ-" + secrets.token_hex(3).upper()
-        if not Coupon.objects.filter(code=code).exists():
-            return code
-    # Záložní delší kód při extrémní kolizi
-    return "VITEJ-" + secrets.token_hex(5).upper()
-
-
-def _send_welcome_coupon_email(email, code):
-    """Odešle e-mail s uvítacím kupónem."""
+    # Nejdřív zkus odeslat email – claim uložíme jen při úspěchu
     try:
         body = (
             f"Dobrý den,\n\n"
@@ -1326,4 +1298,27 @@ def _send_welcome_coupon_email(email, code):
         )
         msg.send()
     except Exception as exc:
-        logger.error("Chyba pri odesilani uvitaciho kuponu na %s: %s", email, exc)
+        logger.error("Uvitaci kupon – chyba odesilani na %s: %s", email, exc)
+        return JsonResponse({"ok": False, "error": "email_failed"})
+
+    # Email doručen – teprve teď vytvoř Coupon a ulož claim
+    coupon = Coupon.objects.create(
+        code=code,
+        description="Uvítací sleva 10 % – první objednávka",
+        discount_type=Coupon.DiscountType.PERCENT,
+        discount_value=Decimal("10"),
+        max_uses=1,
+        is_active=True,
+    )
+    WelcomeCouponClaim.objects.create(email=email, coupon=coupon)
+
+    return JsonResponse({"ok": True})
+
+
+def _generate_welcome_code():
+    """Vygeneruje unikátní kód ve tvaru VITEJ-XXXXXX."""
+    for _ in range(10):
+        code = "VITEJ-" + secrets.token_hex(3).upper()
+        if not Coupon.objects.filter(code=code).exists():
+            return code
+    return "VITEJ-" + secrets.token_hex(5).upper()
