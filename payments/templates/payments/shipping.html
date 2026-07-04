@@ -186,7 +186,8 @@
     }
 
     function openPacketaWidget() {
-        if (packetaMode === "mock") {
+        // Mock režim nebo chybí widget klíč → použij mock bod
+        if (packetaMode === "mock" || !packetaWidgetApiKey) {
             handlePacketaPoint({
                 id: packetaMockPointId,
                 name: packetaMockPointName,
@@ -194,7 +195,7 @@
             return;
         }
 
-        if (!packetaWidgetApiKey || !window.Packeta || !window.Packeta.Widget) {
+        if (!window.Packeta || !window.Packeta.Widget) {
             return;
         }
 
@@ -213,10 +214,6 @@
     });
 
     packetaPickerButton.addEventListener("click", openPacketaWidget);
-
-    if (packetaMode !== "mock" && !packetaWidgetApiKey) {
-        packetaPickerButton.disabled = true;
-    }
 
     updatePacketaSummary(packetaPointName.value);
     togglePacketaFields();

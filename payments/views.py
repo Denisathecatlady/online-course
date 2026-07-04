@@ -1104,7 +1104,12 @@ def shipping(request):
         packeta_point_id = request.POST.get("packeta_point_id", "").strip()
         packeta_point_name = request.POST.get("packeta_point_name", "").strip()
 
-        if method == Order.ShippingMethod.ZASILKOVNA and settings.PACKETA_MODE == "mock":
+        # V mock režimu nebo pokud chybí widget klíč (dev/staging) → doplníme mock bod
+        _needs_mock = (
+            settings.PACKETA_MODE == "mock"
+            or not settings.PACKETA_WIDGET_API_KEY
+        )
+        if method == Order.ShippingMethod.ZASILKOVNA and _needs_mock:
             packeta_point_id = packeta_point_id or settings.PACKETA_MOCK_POINT_ID
             packeta_point_name = packeta_point_name or settings.PACKETA_MOCK_POINT_NAME
 
