@@ -244,11 +244,13 @@
 </nav>
 {% endif %}
 
-<!-- HLÁŠKA – DOČASNÉ UZAMČENÍ NÁKUPŮ -->
+{% if show_preview_banner %}
+<!-- HLÁŠKA – DOČASNÉ UZAMČENÍ NÁKUPŮ (jen na stagingu) -->
 <div class="migration-banner">
     🔒 &nbsp;Nákup kurzů a produktů je dočasně pozastaven z důvodu probíhající migrace systému.
     Děkujeme za pochopení.
 </div>
+{% endif %}
 
 <!-- HERO (POUZE STRÁNKY, KTERÉ HO DEFINUJÍ) -->
 {% block hero %}{% endblock %}
