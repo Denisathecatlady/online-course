@@ -1041,6 +1041,12 @@ info@calmdog.cz
         )
 
         # --- faktura v příloze (kompatibilní s R2 i lokálním úložištěm) ---
+        # Soubor mohl chybět (ephemeral filesystem) → regeneruj on-demand
+        from payments.services.invoice import generate_invoice_pdf as _gen_pdf
+        if order.invoice_pdf and not order.invoice_pdf.storage.exists(order.invoice_pdf.name):
+            inv = _gen_pdf(order)
+            order.invoice_pdf.save(inv.name, inv, save=True)
+
         if order.invoice_pdf:
             order.invoice_pdf.open("rb")
             email.attach(

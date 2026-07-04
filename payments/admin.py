@@ -304,9 +304,23 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         return custom_urls + urls
 
     def download_invoice(self, request, pk):
+        from .services.invoice import generate_invoice_pdf
+
         order = self.get_object(request, pk)
-        if not order or not order.invoice_pdf:
-            raise Http404("Faktura nenalezena")
+        if not order:
+            raise Http404("Objednávka nenalezena")
+
+        # Soubor mohl být smazán (ephemeral filesystem na Renderu) → vygeneruj znovu
+        file_missing = (
+            not order.invoice_pdf
+            or not order.invoice_pdf.storage.exists(order.invoice_pdf.name)
+        )
+        if file_missing:
+            if not order.invoice_number:
+                raise Http404("Faktura ještě nebyla vystavena (objednávka není zaplacena).")
+            invoice_file = generate_invoice_pdf(order)
+            order.invoice_pdf.save(invoice_file.name, invoice_file, save=True)
+
         return FileResponse(
             order.invoice_pdf.open("rb"),
             as_attachment=True,
