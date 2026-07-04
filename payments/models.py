@@ -97,6 +97,8 @@ class Order(models.Model):
     )
 
     created_at = models.DateTimeField("Vytvořeno", auto_now_add=True)
+    paid_at = models.DateTimeField("Zaplaceno", null=True, blank=True)
+    review_request_sent_at = models.DateTimeField("Žádost o recenzi odeslána", null=True, blank=True)
 
     # ==============================
     # KONTAKT

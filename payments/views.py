@@ -838,10 +838,11 @@ def _process_paid_order(order, stripe_session, request):
             return
 
         order.status = Order.Status.PAID
+        order.paid_at = timezone.now()
         # stripe_session může být dict (z webhooku) nebo Stripe objekt (z API) –
         # obě varianty podporují .get()
         order.stripe_payment_intent_id = stripe_session.get("payment_intent", "") or ""
-        order.save(update_fields=["status", "stripe_payment_intent_id"])
+        order.save(update_fields=["status", "paid_at", "stripe_payment_intent_id"])
 
         assign_invoice_number(order)
 

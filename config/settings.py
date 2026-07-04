@@ -317,6 +317,11 @@ SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"
 # Prázdný řetězec = GTM se nevkládá do stránky.
 GOOGLE_TAG_MANAGER_ID = os.environ.get("GOOGLE_TAG_MANAGER_ID", "GTM-TVJ3V6PS")
 
+# Odkaz na Google recenzi – nastavit v Render env vars
+GOOGLE_REVIEW_URL = os.environ.get("GOOGLE_REVIEW_URL", "")
+# Počet dní po zaplacení, po kterých se odešle žádost o recenzi
+REVIEW_DELAY_DAYS = int(os.environ.get("REVIEW_DELAY_DAYS", "30"))
+
 # Verze cookie souhlasu. Pokud ji změníš (např. "2"), všichni uživatelé
 # uvidí banner znovu a musí souhlas obnovit. Jinak se souhlas zachová.
 COOKIE_CONSENT_VERSION = os.environ.get("COOKIE_CONSENT_VERSION", "1")
