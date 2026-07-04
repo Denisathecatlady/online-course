@@ -433,33 +433,38 @@ def add_bundle_to_cart(request, variant_id):
 # =====================================================
 
 def cart_detail(request):
-    cart = get_or_create_cart(request)
+    try:
+        cart = get_or_create_cart(request)
 
-    cart = Order.objects.prefetch_related(
-        "items__product_variant__product",
-        "items__product_variant__color",
-        "items__course_plan__course"
-    ).get(id=cart.id)
+        cart = Order.objects.prefetch_related(
+            "items__product_variant__product",
+            "items__product_variant__color",
+            "items__course_plan__course"
+        ).get(id=cart.id)
 
-    items = list(cart.items.all())
-    for item in items:
-        if item.product_variant and item.product_variant.color:
-            item.image_url = get_variant_image_url(
-                item.product_variant.product,
-                item.product_variant.color,
-            )
-        elif item.course_plan:
-            item.image_url = get_public_course_image_url(item.course_plan.course)
-        else:
-            item.image_url = None
+        items = list(cart.items.all())
+        for item in items:
+            if item.product_variant and item.product_variant.color:
+                item.image_url = get_variant_image_url(
+                    item.product_variant.product,
+                    item.product_variant.color,
+                )
+            elif item.course_plan:
+                item.image_url = get_public_course_image_url(item.course_plan.course)
+            else:
+                item.image_url = None
 
-    has_physical_products = cart.contains_physical_product()
+        has_physical_products = cart.contains_physical_product()
 
-    return render(request, "payments/cart.html", {
-        "order": cart,
-        "items": items,
-        "has_physical_products": has_physical_products,
-    })
+        return render(request, "payments/cart.html", {
+            "order": cart,
+            "items": items,
+            "has_physical_products": has_physical_products,
+        })
+
+    except Exception:
+        logger.exception("CART ERROR – neočekávaná výjimka v cart_detail")
+        raise
 
 
 @require_POST
