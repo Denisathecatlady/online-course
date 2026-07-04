@@ -1211,8 +1211,10 @@
 
 .home-cta-label {
   margin: 0;
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  color: var(--text-dark);
   white-space: nowrap;
 }
 
@@ -1637,6 +1639,11 @@
 
   .home-cta-shell .section-title {
     font-size: clamp(2.8rem, 12vw, 4.3rem);
+  }
+
+  .home-cta-label {
+    font-size: clamp(1.2rem, 5.5vw, 1.6rem);
+    white-space: normal;
   }
 
   .home-cta-actions {
