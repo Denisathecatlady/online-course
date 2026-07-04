@@ -1053,7 +1053,9 @@ info@calmdog.cz
         email.send()
 
     except Exception as e:
-        logger.error(f"Failed to send order confirmation email for order {order.id}: {e}")
+        import traceback as _tb
+        _tb.print_exc()
+        logger.error(f"[Email] Nepodařilo se odeslat potvrzení objednávky #{order.id}: {e}")
 # =====================================================
 # ODEBRÁNÍ Z KOŠÍKU
 # =====================================================

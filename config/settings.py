@@ -352,5 +352,21 @@ LOGGING = {
             "level": "WARNING",
             "propagate": False,
         },
+        # Aplikační logy (payments, shop, courses, …) – viditelné v Render logu
+        "payments": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "shop": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "courses": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
     },
 }
