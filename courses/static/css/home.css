@@ -746,7 +746,7 @@
 
 .approach-step {
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid #f5a157;
   transition:
     transform 280ms ease,
     border-color 280ms ease,
@@ -755,7 +755,7 @@
 
 .approach-step:hover {
   transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: #f5c187;
 }
 
 .approach-step-number {
@@ -769,7 +769,7 @@
 .approach-step strong {
   display: block;
   margin-bottom: 0.85rem;
-  color: #fff;
+  color: #f5a157;
   font-size: clamp(1.8rem, 2.5vw, 2.5rem);
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -779,14 +779,6 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
   line-height: 1.6;
-}
-
-.approach-step:first-child {
-  border-top-color: #f5a157;
-}
-
-.approach-step:first-child strong {
-  color: #f5a157;
 }
 
 .course-preview-section {
