@@ -988,6 +988,10 @@ def cookies_view(request):
     return render(request, "pages/cookies.html")
 
 
+def withdrawal(request):
+    return render(request, "courses/withdrawal.html")
+
+
 # ======================================
 # COURSE DASHBOARD (PRIVATE)
 # ======================================

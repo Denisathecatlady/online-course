@@ -16,13 +16,24 @@
   {% if orders %}
     <div class="account-list">
       {% for order in orders %}
-        <a href="{% url 'accounts:order_detail' order.id %}" class="account-list-item">
-          <div>
-            <strong>Objednávka #{{ order.id }}</strong><br>
-            <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
+        <div class="account-list-item">
+          <a href="{% url 'accounts:order_detail' order.id %}" style="flex:1; text-decoration:none; color:inherit;">
+            <div>
+              <strong>Objednávka #{{ order.id }}</strong><br>
+              <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+          </a>
+          <div class="d-flex align-items-center gap-3">
+            <span class="account-price">{{ order.total_price|intcomma }} Kč</span>
+            {% if order.can_withdraw %}
+              <a href="{% url 'courses:withdrawal' %}"
+                 class="btn btn-outline-sage btn-sm"
+                 title="Vrátit zboží – lhůta 14 dní od nákupu">
+                Vrátit zboží
+              </a>
+            {% endif %}
           </div>
-          <span class="account-price">{{ order.total_price|intcomma }} Kč</span>
-        </a>
+        </div>
       {% endfor %}
     </div>
   {% else %}

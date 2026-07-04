@@ -1,7 +1,9 @@
 from collections import defaultdict
+from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from courses.models import ModuleProgress
 from payments.models import CourseAccess, Order
@@ -41,6 +43,12 @@ def order_history(request):
         user=request.user,
         status=Order.Status.PAID,
     ).order_by("-created_at")
+
+    # Označíme objednávky, u kterých ještě běží 14denní lhůta pro vrácení
+    cutoff = timezone.now() - timedelta(days=14)
+    for order in orders:
+        paid_date = order.paid_at or order.created_at
+        order.can_withdraw = paid_date >= cutoff
 
     return render(request, "accounts/order_history.html", {
         "orders": orders,
