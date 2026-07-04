@@ -837,3 +837,77 @@ h1, h2, h3, h4, h5 {
     padding: 0.65rem 1rem;
     letter-spacing: 0.01em;
 }
+
+
+/* =====================================================
+   MOBILNÍ RESPONZIVITA — GLOBÁLNÍ ZÁKLAD
+   Přidáno kvůli telefonům. Desktop se NEMĚNÍ – vše je
+   výhradně uvnitř @media (max-width: …). base.css se
+   načítá poslední, takže tato vrstva platí napříč webem.
+   ===================================================== */
+
+@media (max-width: 768px) {
+    /* Obrázky/média nikdy nepřetečou šířku viewportu.
+       (height neřešíme globálně – ať se nerozbijí pevně
+        oříznuté obrázky s object-fit; to ladíme per-page.) */
+    img,
+    svg,
+    video {
+        max-width: 100%;
+    }
+
+    /* Obsah nelepí na kraj obrazovky */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Zmenšená sekční typografie na telefonu */
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .section-lead {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* Menší vertikální rytmus sekcí */
+    .py-6 {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .pb-6 {
+        padding-bottom: 2.5rem;
+    }
+
+    .mb-6 {
+        margin-bottom: 2.5rem;
+    }
+
+    /* Footer – kompaktnější na telefonu */
+    .site-footer {
+        padding: 3.25rem 0 2.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.7rem;
+    }
+
+    .section-lead {
+        font-size: 0.95rem;
+    }
+
+    /* Tlačítka kompaktnější; tap-target zůstává velký
+       (min-height 56px dědí z výchozího .btn). */
+    .btn {
+        padding: 0.85rem 1.35rem;
+    }
+
+    .site-footer {
+        padding: 2.75rem 0 2.5rem;
+    }
+}

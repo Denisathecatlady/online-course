@@ -67,8 +67,7 @@
               id="add-to-cart-form"
               class="pd-form"
               data-show-type-summary="{% if has_types %}1{% else %}0{% endif %}"
-              data-url-template="{% url 'payments:add_variant_to_cart' 0 %}"
-              {% if bundle_offer %}data-bundle-url-template="{% url 'payments:add_bundle_to_cart' 0 %}"{% endif %}>
+              data-url-template="{% url 'payments:add_variant_to_cart' 0 %}">
           {% csrf_token %}
 
           {% if has_lengths %}
@@ -110,31 +109,10 @@
             <p class="pd-stock-note">Dostupnost se aktualizuje podle vybrané varianty.</p>
           </div>
 
-          {% if bundle_offer %}
-          <div class="pd-bundle-card">
-            <span class="pd-bundle-eyebrow">{{ bundle_offer.title }}</span>
-            <h3 class="pd-bundle-title">{{ bundle_offer.heading }}</h3>
-            <p class="pd-bundle-copy">{{ bundle_offer.copy }}</p>
-            <p id="bundle-summary" class="pd-bundle-summary">Vyberte variantu a zobrazí se i cena kompletu.</p>
-            <input type="hidden" name="bundle_variant_id" id="bundle-variant-id">
-          </div>
-          {% endif %}
-
           <div class="pd-actions">
             <button type="submit" class="btn btn-sage pd-submit" disabled>
               Přidat do košíku
             </button>
-            {% if bundle_offer %}
-            <button
-              type="submit"
-              id="bundle-submit"
-              class="btn btn-outline-sage pd-submit-alt"
-              formaction=""
-              disabled
-            >
-              Přidat očko + vodítko
-            </button>
-            {% endif %}
           </div>
         </form>
         {% endif %}{# /shop_locked #}
@@ -163,7 +141,6 @@ const variants = {{ variants_json|safe }};
 
 const form = document.getElementById("add-to-cart-form");
 const baseUrl = form.dataset.urlTemplate;
-const bundleUrl = form.dataset.bundleUrlTemplate || "";
 const showTypeSummary = form.dataset.showTypeSummary === "1";
 
 const lengthSelect = document.getElementById("length-select");
@@ -174,9 +151,6 @@ const stockElement = document.getElementById("stock-status");
 const variantSummaryElement = document.getElementById("variant-summary");
 const colorPreview = document.getElementById("color-preview");
 const submitButton = document.querySelector(".pd-submit");
-const bundleSubmitButton = document.getElementById("bundle-submit");
-const bundleSummaryElement = document.getElementById("bundle-summary");
-const bundleVariantInput = document.getElementById("bundle-variant-id");
 const productImage = document.getElementById("product-main-image");
 const defaultProductImage = productImage ? productImage.getAttribute("src") : "";
 
@@ -212,19 +186,6 @@ function updateVariant() {
       stockElement.className = "pd-stock-status pd-stock-out";
     }
 
-    if (bundleSubmitButton && bundleVariantInput) {
-      const bundleAvailable = Boolean(match.bundle_variant_id) && match.bundle_stock > 0 && match.stock > 0;
-      bundleVariantInput.value = match.bundle_variant_id || "";
-      bundleSubmitButton.formAction = match.bundle_variant_id
-        ? bundleUrl.replace("0", match.bundle_primary_variant_id || match.id)
-        : "";
-      bundleSubmitButton.disabled = !bundleAvailable;
-      if (bundleSummaryElement) {
-        bundleSummaryElement.innerText = bundleAvailable
-          ? "Komplet: " + match.color_name + " · " + match.bundle_price.toLocaleString("cs-CZ") + " Kč"
-          : "";
-      }
-    }
   } else {
     priceElement.innerText = "Varianta není dostupná";
     stockElement.innerText = "Tato kombinace momentálně není dostupná.";
@@ -233,14 +194,6 @@ function updateVariant() {
     form.action = "";
     submitButton.disabled = true;
     if (productImage) productImage.src = defaultProductImage;
-    if (bundleSubmitButton && bundleVariantInput) {
-      bundleVariantInput.value = "";
-      bundleSubmitButton.formAction = "";
-      bundleSubmitButton.disabled = true;
-    }
-    if (bundleSummaryElement) {
-      bundleSummaryElement.innerText = "Vyzkoušejte jinou kombinaci délky, typu nebo barvy.";
-    }
   }
 }
 

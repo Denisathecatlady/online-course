@@ -773,7 +773,7 @@ def about_us(request):
 
 
 def cemu_se_venujeme(request):
-    return redirect("courses:trainings")
+    return redirect("courses:nase_filozofie")
 
 
 def nase_filozofie(request):
