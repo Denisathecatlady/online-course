@@ -721,12 +721,12 @@ def success(request):
     order = None
 
     if session_id:
-        order = Order.objects.filter(
-            stripe_checkout_session_id=session_id
-        ).first()
+        try:
+            order = Order.objects.filter(
+                stripe_checkout_session_id=session_id
+            ).first()
 
-        if order and order.status != Order.Status.PAID:
-            try:
+            if order and order.status != Order.Status.PAID:
                 stripe_key = get_stripe_secret_key()
                 if stripe_key.startswith("sk_"):
                     stripe.api_key = stripe_key
@@ -739,11 +739,14 @@ def success(request):
                         )
                         _process_paid_order(order, stripe_session, request)
                         order.refresh_from_db()
-            except Exception:
-                logger.exception(
-                    f"[success fallback] Chyba při fallback zpracování "
-                    f"objednávky (session {session_id})"
-                )
+        except Exception:
+            import traceback as _tb
+            _tb.print_exc()   # vždy viditelné v Render logu
+            logger.exception(
+                f"[success fallback] Chyba při fallback zpracování "
+                f"objednávky (session {session_id})"
+            )
+            order = None  # reset aby template renderoval čistě
 
     return render(request, "payments/success.html", {"order": order})
 
