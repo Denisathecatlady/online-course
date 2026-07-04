@@ -42,11 +42,16 @@
 .pd-media {
   position: sticky;
   top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .pd-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
+  width: auto;
+  max-width: 380px;
+  max-height: 70vh;
+  height: auto;
   object-fit: contain;
   border-radius: 2rem;
   display: block;
