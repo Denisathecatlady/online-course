@@ -793,7 +793,7 @@
 .course-preview-head .section-title {
   max-width: none;
   margin-bottom: 1.6rem;
-  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-size: clamp(1.4rem, 2.3vw, 1.75rem);
   line-height: 1.4;
   font-family: inherit;
   font-weight: 500;
