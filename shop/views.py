@@ -393,27 +393,6 @@ def product_detail(request, slug):
     bundle_offer = None
     bundle_companion_is_primary = False
 
-    if product.slug in {"voditko-bez-ocka", "samostatne-ocko"}:
-        companion_slug = (
-            "samostatne-ocko"
-            if product.slug == "voditko-bez-ocka"
-            else "voditko-bez-ocka"
-        )
-        companion_product = Product.objects.filter(slug=companion_slug, is_active=True).first()
-        if companion_product:
-            for variant in companion_product.variants.filter(
-                is_active=True,
-            ).select_related("color").order_by("price", "id"):
-                bundle_companions.setdefault(variant.color_id, variant)
-            bundle_companion_is_primary = product.slug == "samostatne-ocko"
-            bundle_offer = {
-                "title": "Výhodná sada - sleva 10 %",
-                "heading": "Vodítko + Samostatné očko",
-                "copy": (
-                    "Chcete mít vodítko bez očka a současně i očko přes rameno? "
-                    "Přidejte obě varianty do košíku jedním kliknutím se slevou 10 %."
-                ),
-            }
 
     unique_lengths = []
     seen_lengths = set()

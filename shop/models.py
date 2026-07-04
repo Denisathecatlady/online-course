@@ -53,6 +53,8 @@ class Color(models.Model):
 class ProductVariant(models.Model):
 
     LENGTH_CHOICES = [
+        ("3", "3 metry"),
+        ("5", "5 metrů"),
         ("7", "7 metrů"),
         ("10", "10 metrů"),
     ]

@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band motion-band reveal reveal-band" aria-label="Detail psího oka">
-  <img src="{% static 'img/home/hero-pes-oko.png' %}" alt="Detail psího oka" class="home-image-band-photo">
+  <img src="{% static 'img/home/hero-pes-oko.png' %}" alt="Detail psího oka" class="home-photo-eye">
 </section>
 
 <section id="sluzby" class="services-section section-space">
@@ -274,14 +274,14 @@ document.addEventListener("DOMContentLoaded", () => {
 </section>
 
 <section class="home-image-band home-image-band-forest motion-band reveal reveal-band" aria-label="Lesní hero">
-  <img src="{% static 'img/home/obrazek-les-hero.png' %}" alt="Pes v lese" class="home-image-band-photo home-image-band-photo-forest">
+  <img src="{% static 'img/home/obrazek-les-hero.png' %}" alt="Pes v lese" class="home-photo-forest">
 </section>
 
 <section class="course-preview-section section-space">
   <div class="container">
     <div class="course-preview-head reveal">
       <span class="section-kicker">Online kurzy</span>
-      <h2 class="section-title">Obsah, který jde do hloubky a zůstává praktický.</h2>
+      <h2 class="section-title">Obsah, který jde do <span style="color:#b5651d;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;">hloubky</span> a zůstává <span style="color:#b5651d;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;">praktický</span>.</h2>
       <p class="section-text">
         Kurzy stavíme tak, aby byly srozumitelné i použitelné. Teorie je vždy propojená
         s reálnými ukázkami a každodenní prací se psem.
@@ -382,10 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <section class="home-cta section-space">
   <div class="container">
     <div class="home-cta-shell reveal">
-      <h2 class="section-title">
-        Vyberte si cestu, která teď dává
-        <span>největší smysl.</span>
-      </h2>
+      <p class="home-cta-label"><strong>Vyberte si cestu, která teď dává největší smysl.</strong></p>
       <div class="home-cta-actions">
         <a href="{% url 'courses:trainings' %}" class="btn btn-sage home-cta-btn-primary">Osobní trénink</a>
         <a href="{% url 'payments:course_list' %}" class="btn home-cta-btn-outline">Online kurz</a>
