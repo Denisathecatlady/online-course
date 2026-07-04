@@ -151,7 +151,7 @@
 
 .home-hero-title span {
   display: block;
-  color: #6f8d87;
+  color: #4d7a72;
 }
 
 .home-hero-lead,
@@ -165,7 +165,7 @@
   max-width: 780px;
   margin-bottom: 2.5rem;
   font-size: clamp(1.08rem, 1.8vw, 1.35rem);
-  color: rgba(47, 62, 58, 0.7);
+  color: rgba(47, 62, 58, 0.88);
   line-height: 1.75;
 }
 
@@ -719,10 +719,10 @@
 }
 
 .approach-copy .section-title {
-  max-width: 11ch;
   margin: 0 0 1.8rem;
-  font-size: clamp(3.2rem, 6vw, 5.8rem);
-  line-height: 1;
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .approach-copy .section-title span {
@@ -1562,7 +1562,8 @@
   }
 
   .approach-copy .section-title {
-    font-size: clamp(2.8rem, 12vw, 4.2rem);
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    white-space: normal;
   }
 
   .approach-steps {
