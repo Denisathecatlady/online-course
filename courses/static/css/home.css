@@ -740,63 +740,45 @@
 .approach-steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 2rem;
   margin-top: 4.5rem;
 }
 
 .approach-step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 2.25rem 1.9rem 2rem;
-  border-radius: 1.35rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-top: 3px solid #f5a157;
+  padding-top: 2rem;
+  border-top: 1px solid #f5a157;
   transition:
     transform 280ms ease,
-    background-color 280ms ease,
-    box-shadow 280ms ease;
+    border-color 280ms ease,
+    opacity 280ms ease;
 }
 
 .approach-step:hover {
   transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24px 44px rgba(20, 32, 28, 0.24);
+  border-color: #f5c187;
 }
 
 .approach-step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 1.4rem;
-  border-radius: 50%;
-  background: rgba(245, 161, 87, 0.14);
-  border: 1px solid rgba(245, 161, 87, 0.55);
-  color: #f5a157;
-  font-family: "Playfair Display", serif;
-  font-size: 1.45rem;
-  font-weight: 600;
+  display: block;
+  margin-bottom: 0.9rem;
+  color: rgba(220, 232, 225, 0.26);
+  font-size: clamp(3.2rem, 5vw, 4.6rem);
   line-height: 1;
 }
 
 .approach-step strong {
   display: block;
-  min-height: 2.4em;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.85rem;
   color: #f5a157;
-  font-size: clamp(1.3rem, 1.8vw, 1.55rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .approach-step p {
-  margin: 0;
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.97rem;
-  line-height: 1.65;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .course-preview-section {
@@ -811,7 +793,7 @@
 .course-preview-head .section-title {
   max-width: none;
   margin-bottom: 1.6rem;
-  font-size: clamp(1.3rem, 2.1vw, 1.65rem);
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
   line-height: 1.4;
   font-family: inherit;
   font-weight: 500;
@@ -1229,7 +1211,7 @@
 
 .home-cta-label {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   white-space: nowrap;
 }
@@ -1601,12 +1583,11 @@
   }
 
   .approach-step {
-    padding: 1.85rem 1.6rem;
+    padding-top: 1.4rem;
   }
 
   .approach-step strong {
-    min-height: 0;
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .course-preview-head .section-title {
