@@ -935,18 +935,38 @@ def _process_paid_order(order, stripe_session, request):
     # ======================================
 
     User = get_user_model()
-    user, created = User.objects.get_or_create(
-        email=order.buyer_email,
-        defaults={
-            "username": order.buyer_email,
-            "first_name": order.first_name,
-            "last_name": order.last_name,
-        },
-    )
+    created = False
 
-    if created:
-        user.set_unusable_password()
-        user.save()
+    if order.user_id:
+        # Košík patřil přihlášenému uživateli – použijeme ho přímo
+        user = order.user
+    else:
+        # Guest checkout – hledáme existující účet podle e-mailu (case-insensitive)
+        email_normalized = order.buyer_email.strip().lower()
+        existing = User.objects.filter(email__iexact=email_normalized).first()
+
+        if existing:
+            # Existující účet nalezen – objednávka se napojí na něj
+            user = existing
+        else:
+            # Nový zákazník – vytvoříme účet
+            # Username musí být unikátní; e-mail jako základ, případně s příponou
+            base_username = email_normalized
+            username = base_username
+            suffix = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}_{suffix}"
+                suffix += 1
+
+            user = User(
+                email=email_normalized,
+                username=username,
+                first_name=order.first_name,
+                last_name=order.last_name,
+            )
+            user.set_unusable_password()
+            user.save()
+            created = True
 
     order.user = user
     order.save(update_fields=["user"])
