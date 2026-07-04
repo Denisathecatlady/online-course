@@ -781,6 +781,14 @@
   line-height: 1.6;
 }
 
+.approach-step:first-child {
+  border-top-color: #f5a157;
+}
+
+.approach-step:first-child strong {
+  color: #f5a157;
+}
+
 .course-preview-section {
   background: #f5f5f0;
 }
