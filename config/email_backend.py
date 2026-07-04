@@ -16,10 +16,18 @@ class IPv4EmailBackend(_SMTPBackend):
     def open(self):
         _orig = socket.getaddrinfo
 
-        def _ipv4_only(host, port, family=0, socktype=0, proto=0, flags=0):
-            return _orig(host, port, socket.AF_INET, socktype, proto, flags)
+        def _prefer_ipv4(host, port, family=0, socktype=0, proto=0, flags=0):
+            # Zkus IPv4 – řeší ENETUNREACH na některých Render instancích
+            try:
+                results = _orig(host, port, socket.AF_INET, socktype, proto, flags)
+                if results:
+                    return results
+            except socket.gaierror:
+                pass
+            # Fallback: použij cokoliv (IPv6) – pro providery bez IPv4 záznamu
+            return _orig(host, port, family, socktype, proto, flags)
 
-        socket.getaddrinfo = _ipv4_only
+        socket.getaddrinfo = _prefer_ipv4
         try:
             return super().open()
         finally:
