@@ -1,8 +1,23 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.http import Http404
+import logging
+
+_honeypot_log = logging.getLogger("admin.honeypot")
+
+
+def _admin_honeypot(request, *args, **kwargs):
+    """Zachytí boty zkoušející standardní /admin/ URL a zaloguje pokus."""
+    _honeypot_log.warning(
+        "Honeypot hit | IP: %s | path: %s | UA: %.120s",
+        request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", "-")),
+        request.path,
+        request.META.get("HTTP_USER_AGENT", "-"),
+    )
+    raise Http404
 
 
 # Vzhled administrace – interní systém CalmDog
@@ -12,7 +27,10 @@ admin.site.index_title = "Správa e-shopu a kurzů"
 
 
 urlpatterns = [
-    # Admin
+    # Honeypot – zachytí pokusy na standardní /admin/ URL
+    re_path(r"^admin/", _admin_honeypot),
+
+    # Skutečný admin na tajné URL (nastaveno v DJANGO_ADMIN_URL env var)
     path(settings.ADMIN_URL, admin.site.urls),
 
     # Courses (HLAVNÍ APPKA – namespace)

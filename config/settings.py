@@ -50,7 +50,7 @@ CSRF_TRUSTED_ORIGINS = [
     if o.strip()
 ]
 
-ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "tajny-admin/")
+ADMIN_URL = os.environ.get("DJANGO_ADMIN_URL", "e3ff4a8b/")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -345,6 +345,11 @@ LOGGING = {
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
+            "propagate": False,
+        },
+        "admin.honeypot": {
+            "handlers": ["console"],
+            "level": "WARNING",
             "propagate": False,
         },
     },
