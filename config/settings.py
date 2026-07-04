@@ -317,6 +317,10 @@ SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"
 # Prázdný řetězec = GTM se nevkládá do stránky.
 GOOGLE_TAG_MANAGER_ID = os.environ.get("GOOGLE_TAG_MANAGER_ID", "GTM-TVJ3V6PS")
 
+# Verze cookie souhlasu. Pokud ji změníš (např. "2"), všichni uživatelé
+# uvidí banner znovu a musí souhlas obnovit. Jinak se souhlas zachová.
+COOKIE_CONSENT_VERSION = os.environ.get("COOKIE_CONSENT_VERSION", "1")
+
 # Google Search Console – ověřovací kód pro meta tag.
 # Získáš ho v Search Console → Ověřit vlastnictví → HTML tag.
 GOOGLE_SEARCH_CONSOLE_VERIFICATION = os.environ.get("GOOGLE_SEARCH_CONSOLE_VERIFICATION", "")

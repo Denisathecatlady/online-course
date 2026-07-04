@@ -33,9 +33,10 @@
     {% endif %}
 
     {% if gtm_id %}
-    <!-- GTM ID pro cookies.js -->
+    <!-- GTM ID + verze souhlasu pro cookies.js -->
     <meta name="gtm-id" content="{{ gtm_id }}">
-    <!-- GTM fast-path: načte GTM ihned pro uživatele, kteří již souhlasili -->
+    <meta name="cookie-consent-version" content="{{ cookie_consent_version }}">
+    <!-- GTM fast-path: načte GTM ihned pro uživatele, kteří již souhlasili (správná verze) -->
     <script>
       window.calmDogLoadAnalytics = function () {
         var id = document.querySelector('meta[name="gtm-id"]')?.getAttribute('content');
@@ -48,9 +49,13 @@
         s.src = 'https://www.googletagmanager.com/gtm.js?id=' + id;
         document.head.appendChild(s);
       };
-      if (localStorage.getItem('cookieConsent') === 'accepted') {
-        window.calmDogLoadAnalytics();
-      }
+      (function () {
+        var cv = document.querySelector('meta[name="cookie-consent-version"]')?.getAttribute('content') || '1';
+        if (localStorage.getItem('cookieConsent') === 'accepted' &&
+            localStorage.getItem('cookieConsentVersion') === cv) {
+          window.calmDogLoadAnalytics();
+        }
+      })();
     </script>
     {% endif %}
 

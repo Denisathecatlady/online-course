@@ -29,6 +29,7 @@ def cart_context(request):
             "shop_locked": ShopSettings.is_locked(),
             "gtm_id": settings.GOOGLE_TAG_MANAGER_ID,
             "gsc_verification": settings.GOOGLE_SEARCH_CONSOLE_VERIFICATION,
+            "cookie_consent_version": settings.COOKIE_CONSENT_VERSION,
         }
 
     except Exception:
@@ -39,4 +40,5 @@ def cart_context(request):
             "shop_locked": getattr(settings, "SHOP_LOCKED", False),
             "gtm_id": getattr(settings, "GOOGLE_TAG_MANAGER_ID", ""),
             "gsc_verification": getattr(settings, "GOOGLE_SEARCH_CONSOLE_VERIFICATION", ""),
+            "cookie_consent_version": getattr(settings, "COOKIE_CONSENT_VERSION", "1"),
         }
