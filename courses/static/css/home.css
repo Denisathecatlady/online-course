@@ -781,6 +781,23 @@
   line-height: 1.6;
 }
 
+/* Krok 2 – bílý nadpis a linka, oranžová jen u číslice */
+.approach-step:nth-child(2) {
+  border-top-color: rgba(255, 255, 255, 0.85);
+}
+
+.approach-step:nth-child(2):hover {
+  border-top-color: #fff;
+}
+
+.approach-step:nth-child(2) strong {
+  color: #fff;
+}
+
+.approach-step:nth-child(2) .approach-step-number {
+  color: #f5a157;
+}
+
 .course-preview-section {
   background: #f5f5f0;
 }
