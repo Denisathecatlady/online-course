@@ -642,3 +642,36 @@ class CouponUsage(models.Model):
 
     def __str__(self):
         return f"{self.coupon.code} – objednávka #{self.order_id}"
+
+
+# ======================================
+# WELCOME COUPON CLAIM
+# ======================================
+
+class WelcomeCouponClaim(models.Model):
+    """
+    Zaznamenává, že daný e-mail již obdržel uvítací slevový kupón.
+    Unikátnost emailu zabrání opakovanému nároku ze stejné adresy.
+    """
+    email = models.EmailField(
+        "E-mail",
+        unique=True,
+        db_index=True,
+    )
+    coupon = models.OneToOneField(
+        Coupon,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Vytvořený kupón",
+        related_name="welcome_claim",
+    )
+    created_at = models.DateTimeField("Odesláno", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Uvítací sleva"
+        verbose_name_plural = "Uvítací slevy"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.email} ({self.created_at:%Y-%m-%d})"

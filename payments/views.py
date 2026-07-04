@@ -1,4 +1,5 @@
 import os
+import secrets
 import stripe
 import logging
 from decimal import Decimal, ROUND_HALF_UP
@@ -25,7 +26,7 @@ from shop.models import Product, ProductVariant
 from shop.views import get_variant_image_url
 from courses.models import CoursePlan
 from courses.models import Course
-from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim
 from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
 
@@ -1248,3 +1249,81 @@ def shipping(request):
         "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
         "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
     })
+
+
+# =====================================================
+# UVÍTACÍ SLEVA – popup pro nové návštěvníky
+# =====================================================
+
+@require_POST
+def claim_welcome_coupon(request):
+    """
+    Přijme e-mail, zkontroluje unikátnost a odešle slevový kupón 10 %.
+    Každý e-mail může obdržet kupón pouze jednou.
+    """
+    email_raw = request.POST.get("email", "").strip()
+    if not email_raw:
+        return JsonResponse({"ok": False, "error": "Zadejte e-mail."})
+
+    email = email_raw.lower()
+
+    # Ochrana před duplicitním nárokem
+    if WelcomeCouponClaim.objects.filter(email__iexact=email).exists():
+        return JsonResponse({"ok": False, "error": "already_claimed"})
+
+    # Vygeneruj unikátní kód (VITEJ-XXXXXX)
+    code = _generate_welcome_code()
+
+    # Vytvoř Coupon záznam
+    coupon = Coupon.objects.create(
+        code=code,
+        description="Uvítací sleva 10 % – první objednávka",
+        discount_type=Coupon.DiscountType.PERCENT,
+        discount_value=Decimal("10"),
+        max_uses=1,
+        is_active=True,
+    )
+
+    # Zaznamenej nárok
+    WelcomeCouponClaim.objects.create(email=email, coupon=coupon)
+
+    # Odešli e-mail s kódem
+    _send_welcome_coupon_email(email, code)
+
+    return JsonResponse({"ok": True})
+
+
+def _generate_welcome_code():
+    """Vygeneruje unikátní kód ve tvaru VITEJ-XXXXXX."""
+    for _ in range(10):
+        code = "VITEJ-" + secrets.token_hex(3).upper()
+        if not Coupon.objects.filter(code=code).exists():
+            return code
+    # Záložní delší kód při extrémní kolizi
+    return "VITEJ-" + secrets.token_hex(5).upper()
+
+
+def _send_welcome_coupon_email(email, code):
+    """Odešle e-mail s uvítacím kupónem."""
+    try:
+        body = (
+            f"Dobrý den,\n\n"
+            f"děkujeme za zájem o CalmDog! Připravili jsme pro Vás uvítací slevu "
+            f"10 % na první objednávku.\n\n"
+            f"Váš slevový kód:  {code}\n\n"
+            f"Kód zadejte v košíku před platbou – sleva se automaticky odečte.\n"
+            f"Kód je jednorázový a platí na celou objednávku.\n\n"
+            f"Těšíme se na Vás,\n"
+            f"CalmDog\n"
+            f"info@calmdog.cz\n"
+            f"+420 608 163 824\n"
+        )
+        msg = EmailMessage(
+            subject="CalmDog – Vaše uvítací sleva 10 %",
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email],
+        )
+        msg.send()
+    except Exception as exc:
+        logger.error("Chyba pri odesilani uvitaciho kuponu na %s: %s", email, exc)

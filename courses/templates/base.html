@@ -333,5 +333,132 @@ document.addEventListener("DOMContentLoaded", () => {
 <script src="{% static 'js/cookies.js' %}"></script>
 {% include "partials/cookie_banner.html" %}
 
+{% if not hide_site_navbar %}
+<!-- ─── UVÍTACÍ POPUP ─────────────────────────────────────── -->
+<style>
+.wcp-overlay{position:fixed;inset:0;background:rgba(30,35,30,.55);z-index:1900;opacity:0;transition:opacity .28s ease;pointer-events:none}
+.wcp-overlay.wcp-vis{opacity:1;pointer-events:all}
+.wcp-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-54%);z-index:1901;width:min(92vw,440px);background:#fff;border-radius:20px;padding:2.2rem 2rem 2rem;box-shadow:0 24px 60px rgba(0,0,0,.18);opacity:0;transition:opacity .3s ease,transform .3s ease;pointer-events:none}
+.wcp-modal.wcp-vis{opacity:1;transform:translate(-50%,-50%);pointer-events:all}
+.wcp-close{position:absolute;top:.9rem;right:1rem;background:none;border:none;font-size:1.4rem;line-height:1;color:#9aaa9a;cursor:pointer;padding:.2rem .5rem}
+.wcp-close:hover{color:#3d5a45}
+.wcp-badge{display:inline-block;background:#f0f5f1;color:#5f766b;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;padding:.28rem .85rem;margin-bottom:1rem}
+.wcp-modal h2{font-size:1.35rem;font-weight:700;color:#1e231e;margin:0 0 .5rem;line-height:1.25}
+.wcp-modal p{font-size:.92rem;color:#576057;margin:0 0 1.3rem;line-height:1.55}
+.wcp-input{width:100%;border:1.5px solid #cdd8cd;border-radius:10px;padding:.7rem 1rem;font-size:.95rem;color:#1e231e;outline:none;transition:border-color .18s}
+.wcp-input:focus{border-color:#5f766b}
+.wcp-btn{width:100%;margin-top:.75rem;background:#5f766b;color:#fff;border:none;border-radius:10px;padding:.8rem 1rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .18s}
+.wcp-btn:hover{background:#3d5a45}
+.wcp-btn:disabled{background:#c5d0c5;cursor:default}
+.wcp-note{font-size:.78rem;color:#9aaa9a;text-align:center;margin-top:.65rem}
+.wcp-success{text-align:center;padding:.5rem 0}
+.wcp-success .wcp-icon{font-size:2.4rem;margin-bottom:.6rem}
+.wcp-success h3{font-size:1.15rem;font-weight:700;color:#3d5a45;margin:0 0 .4rem}
+.wcp-success p{font-size:.9rem;color:#576057;margin:0}
+.wcp-err{color:#b94040;font-size:.82rem;margin-top:.45rem;display:none}
+</style>
+
+<div class="wcp-overlay" id="wcpOverlay" aria-hidden="true"></div>
+<div class="wcp-modal" id="wcpModal" role="dialog" aria-modal="true" aria-labelledby="wcpTitle">
+  <button class="wcp-close" id="wcpClose" aria-label="Zavřít">×</button>
+
+  <div id="wcpForm">
+    <span class="wcp-badge">🐾 Uvítací nabídka</span>
+    <h2 id="wcpTitle">10 % sleva na první objednávku</h2>
+    <p>Zadejte e-mail a my vám pošleme slevový kód přímo do schránky.</p>
+
+    <form id="wcpEmailForm" novalidate>
+      {% csrf_token %}
+      <input class="wcp-input" type="email" id="wcpEmail" name="email"
+             placeholder="vas@email.cz" autocomplete="email" required>
+      <p class="wcp-err" id="wcpErr"></p>
+      <button class="wcp-btn" type="submit" id="wcpSubmit">Získat slevu</button>
+    </form>
+    <p class="wcp-note">Kupón dorazí e-mailem · platí na celou objednávku · jen jednou na e-mail</p>
+  </div>
+
+  <div id="wcpSuccess" class="wcp-success" style="display:none">
+    <div class="wcp-icon">✉️</div>
+    <h3>Kód je na cestě!</h3>
+    <p>Zkontrolujte e-mail — slevový kód přijde za chvíli.<br>Platí na celou první objednávku.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'cdwp_v1';
+  const DELAY_MS    = 5000;
+
+  if (localStorage.getItem(STORAGE_KEY)) return;   // už zobrazeno / odmítnuto
+
+  const overlay = document.getElementById('wcpOverlay');
+  const modal   = document.getElementById('wcpModal');
+
+  function open() {
+    overlay.classList.add('wcp-vis');
+    modal.classList.add('wcp-vis');
+    modal.removeAttribute('aria-hidden');
+  }
+
+  function close() {
+    overlay.classList.remove('wcp-vis');
+    modal.classList.remove('wcp-vis');
+    localStorage.setItem(STORAGE_KEY, '1');
+  }
+
+  setTimeout(open, DELAY_MS);
+
+  document.getElementById('wcpClose').addEventListener('click', close);
+  overlay.addEventListener('click', close);
+
+  document.getElementById('wcpEmailForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const email  = document.getElementById('wcpEmail').value.trim();
+    const errEl  = document.getElementById('wcpErr');
+    const btn    = document.getElementById('wcpSubmit');
+
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Odesílám…';
+
+    const fd = new FormData();
+    fd.append('email', email);
+    fd.append('csrfmiddlewaretoken', this.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    try {
+      const res  = await fetch('{% url "payments:claim_welcome_coupon" %}', {
+        method: 'POST', body: fd,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        document.getElementById('wcpForm').style.display = 'none';
+        document.getElementById('wcpSuccess').style.display = '';
+        localStorage.setItem(STORAGE_KEY, '1');
+        setTimeout(close, 5000);
+      } else if (data.error === 'already_claimed') {
+        errEl.textContent = 'Tento e-mail již slevu obdržel.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Získat slevu';
+        localStorage.setItem(STORAGE_KEY, '1');   // už ho má – neotravovat dál
+      } else {
+        errEl.textContent = data.error || 'Něco se nepovedlo. Zkuste to znovu.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Získat slevu';
+      }
+    } catch {
+      errEl.textContent = 'Chyba připojení. Zkuste to znovu.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Získat slevu';
+    }
+  });
+})();
+</script>
+{% endif %}
+
 </body>
 </html>

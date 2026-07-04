@@ -10,7 +10,7 @@ from import_export import resources, fields
 from import_export.admin import ExportMixin
 from rangefilter.filters import DateRangeFilter
 
-from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim
 from .services.packeta import create_packet, get_packet_label_pdf, PacketaError
 
 
@@ -659,3 +659,22 @@ class ShopSettingsAdmin(admin.ModelAdmin):
         return redirect(
             reverse("admin:payments_shopsettings_change", args=[obj.pk])
         )
+
+
+# ======================================
+# WELCOME COUPON CLAIMS
+# ======================================
+
+@admin.register(WelcomeCouponClaim)
+class WelcomeCouponClaimAdmin(admin.ModelAdmin):
+    list_display = ("email", "coupon_code", "created_at")
+    search_fields = ("email", "coupon__code")
+    readonly_fields = ("email", "coupon", "created_at")
+    ordering = ("-created_at",)
+
+    @admin.display(description="Kód kupónu")
+    def coupon_code(self, obj):
+        return obj.coupon.code if obj.coupon else "—"
+
+    def has_add_permission(self, request):
+        return False

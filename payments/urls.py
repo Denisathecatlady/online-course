@@ -46,4 +46,7 @@ urlpatterns = [
 
     # Doprava
     path("shipping/", views.shipping, name="shipping"),
+
+    # Uvítací sleva
+    path("welcome-coupon/", views.claim_welcome_coupon, name="claim_welcome_coupon"),
 ]
