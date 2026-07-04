@@ -735,6 +735,18 @@ h1, h2, h3, h4, h5 {
 .cookie-actions {
     display: flex;
     gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.btn-outline-sage {
+    background: transparent;
+    border: 1.5px solid var(--sage);
+    color: var(--sage);
+}
+
+.btn-outline-sage:hover {
+    background: var(--sage-light);
+    color: var(--sage-strong);
 }
 
 

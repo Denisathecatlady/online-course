@@ -1,18 +1,28 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const banner = document.getElementById("cookie-banner");
-    const accepted = localStorage.getItem("cookiesAccepted");
+(function () {
+  var KEY = "cookieConsent";
+  var consent = localStorage.getItem(KEY);
 
-    if (accepted) {
-        banner.style.display = "none";
+  document.addEventListener("DOMContentLoaded", function () {
+    var banner = document.getElementById("cookie-banner");
+    if (!banner) return;
+
+    // Rozhodnutí je uloženo – banner skrýt
+    if (consent !== null) {
+      banner.style.display = "none";
+      return;
     }
 
-    document.getElementById("accept-cookies")?.addEventListener("click", () => {
-        localStorage.setItem("cookiesAccepted", "true");
-        banner.style.display = "none";
+    // Přijmout vše – načíst GTM a uložit souhlas
+    document.getElementById("accept-cookies")?.addEventListener("click", function () {
+      localStorage.setItem(KEY, "accepted");
+      banner.style.display = "none";
+      window.calmDogLoadAnalytics?.();
     });
 
-    document.getElementById("reject-cookies")?.addEventListener("click", () => {
-        localStorage.setItem("cookiesAccepted", "false");
-        banner.style.display = "none";
+    // Jen nezbytné – uložit odmítnutí, GTM se nenačte
+    document.getElementById("reject-cookies")?.addEventListener("click", function () {
+      localStorage.setItem(KEY, "rejected");
+      banner.style.display = "none";
     });
-});
+  });
+})();

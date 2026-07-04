@@ -27,6 +27,8 @@ def cart_context(request):
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
             "shop_locked": ShopSettings.is_locked(),
+            "gtm_id": settings.GOOGLE_TAG_MANAGER_ID,
+            "gsc_verification": settings.GOOGLE_SEARCH_CONSOLE_VERIFICATION,
         }
 
     except Exception:
@@ -35,4 +37,6 @@ def cart_context(request):
             "app_env": settings.APP_ENV,
             "show_preview_banner": settings.SHOW_PREVIEW_BANNER,
             "shop_locked": getattr(settings, "SHOP_LOCKED", False),
+            "gtm_id": getattr(settings, "GOOGLE_TAG_MANAGER_ID", ""),
+            "gsc_verification": getattr(settings, "GOOGLE_SEARCH_CONSOLE_VERIFICATION", ""),
         }

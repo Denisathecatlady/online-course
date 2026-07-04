@@ -27,6 +27,33 @@
     <!-- Favicon -->
     <link rel="icon" href="{% static 'courses/favicon.ico' %}" type="image/x-icon">
 
+    {% if gsc_verification %}
+    <!-- Google Search Console ověření -->
+    <meta name="google-site-verification" content="{{ gsc_verification }}">
+    {% endif %}
+
+    {% if gtm_id %}
+    <!-- GTM ID pro cookies.js -->
+    <meta name="gtm-id" content="{{ gtm_id }}">
+    <!-- GTM fast-path: načte GTM ihned pro uživatele, kteří již souhlasili -->
+    <script>
+      window.calmDogLoadAnalytics = function () {
+        var id = document.querySelector('meta[name="gtm-id"]')?.getAttribute('content');
+        if (!id || window._gtmLoaded) return;
+        window._gtmLoaded = true;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtm.js?id=' + id;
+        document.head.appendChild(s);
+      };
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        window.calmDogLoadAnalytics();
+      }
+    </script>
+    {% endif %}
+
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
