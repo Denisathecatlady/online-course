@@ -315,7 +315,7 @@ SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"
 # Google Tag Manager – Container ID (GTM-XXXXXXX).
 # GTM spravuje všechny tagy (GA4, Clarity …) uvnitř GTM dashboardu.
 # Prázdný řetězec = GTM se nevkládá do stránky.
-GOOGLE_TAG_MANAGER_ID = os.environ.get("GOOGLE_TAG_MANAGER_ID", "GTM-5N3BM68X")
+GOOGLE_TAG_MANAGER_ID = os.environ.get("GOOGLE_TAG_MANAGER_ID", "GTM-TVJ3V6PS")
 
 # Google Search Console – ověřovací kód pro meta tag.
 # Získáš ho v Search Console → Ověřit vlastnictví → HTML tag.
