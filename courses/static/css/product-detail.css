@@ -47,10 +47,10 @@
 .pd-image {
   width: 100%;
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2rem;
   display: block;
-  background: #e8ece9;
+  background: #f5f5f0;
 }
 
 .pd-image-placeholder {
