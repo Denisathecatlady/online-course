@@ -746,7 +746,7 @@
 
 .approach-step {
   padding-top: 2rem;
-  border-top: 1px solid #f5a157;
+  border-top: 1px solid rgba(255, 255, 255, 0.85);
   transition:
     transform 280ms ease,
     border-color 280ms ease,
@@ -755,13 +755,13 @@
 
 .approach-step:hover {
   transform: translateY(-8px);
-  border-color: #f5c187;
+  border-color: #fff;
 }
 
 .approach-step-number {
   display: block;
   margin-bottom: 0.9rem;
-  color: rgba(220, 232, 225, 0.26);
+  color: #f5a157;
   font-size: clamp(3.2rem, 5vw, 4.6rem);
   line-height: 1;
 }
@@ -769,7 +769,7 @@
 .approach-step strong {
   display: block;
   margin-bottom: 0.85rem;
-  color: #f5a157;
+  color: #fff;
   font-size: clamp(1.8rem, 2.5vw, 2.5rem);
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -779,23 +779,6 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
   line-height: 1.6;
-}
-
-/* Krok 2 – bílý nadpis a linka, oranžová jen u číslice */
-.approach-step:nth-child(2) {
-  border-top-color: rgba(255, 255, 255, 0.85);
-}
-
-.approach-step:nth-child(2):hover {
-  border-top-color: #fff;
-}
-
-.approach-step:nth-child(2) strong {
-  color: #fff;
-}
-
-.approach-step:nth-child(2) .approach-step-number {
-  color: #f5a157;
 }
 
 .course-preview-section {
