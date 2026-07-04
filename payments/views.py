@@ -693,7 +693,7 @@ def checkout(request):
         customer_email=cart.buyer_email,
         line_items=line_items,
         discounts=discounts,
-        success_url=build_site_url("/payments/success/"),
+        success_url=build_site_url("/payments/success/?session_id={CHECKOUT_SESSION_ID}"),
         cancel_url=build_site_url("/payments/cancel/"),
         metadata={"order_id": str(cart.id)},
     )
@@ -710,7 +710,42 @@ def checkout(request):
 
 @require_GET
 def success(request):
-    return render(request, "payments/success.html")
+    """
+    Zobrazí stránku po úspěšné platbě.
+
+    Primárně zpracovává objednávku Stripe webhook (stripe_webhook view).
+    Jako záchranný mechanismus (webhook delayed / misconfigured): pokud je
+    objednávka stále PENDING, ověříme stav přímo přes Stripe API a zpracujeme.
+    """
+    session_id = request.GET.get("session_id", "").strip()
+    order = None
+
+    if session_id:
+        order = Order.objects.filter(
+            stripe_checkout_session_id=session_id
+        ).first()
+
+        if order and order.status != Order.Status.PAID:
+            try:
+                stripe_key = get_stripe_secret_key()
+                if stripe_key.startswith("sk_"):
+                    stripe.api_key = stripe_key
+                    stripe_session = stripe.checkout.Session.retrieve(session_id)
+
+                    if stripe_session.payment_status == "paid":
+                        logger.info(
+                            f"[success fallback] Webhook nedorazil – zpracovávám "
+                            f"objednávku #{order.id} ze success view."
+                        )
+                        _process_paid_order(order, stripe_session, request)
+                        order.refresh_from_db()
+            except Exception:
+                logger.exception(
+                    f"[success fallback] Chyba při fallback zpracování "
+                    f"objednávky (session {session_id})"
+                )
+
+    return render(request, "payments/success.html", {"order": order})
 
 
 @require_GET
@@ -761,9 +796,26 @@ def stripe_webhook(request):
     except Order.DoesNotExist:
         return HttpResponse(status=200)
 
-    # Pokud už je zaplaceno → nic nedělat
+    _process_paid_order(order, session, request)
+
+    return HttpResponse(status=200)
+
+
+def _process_paid_order(order, stripe_session, request):
+    """
+    Idempotentní zpracování zaplacené objednávky.
+
+    Volá se ze dvou míst:
+      1. stripe_webhook – primární cesta (Stripe event)
+      2. success view   – záchranný mechanismus pokud webhook nedorazil včas
+
+    Pokud je objednávka již PAID (webhook stihl dřív), funkce okamžitě vrátí
+    aniž by provedla jakékoli změny (idempotence).
+    """
+
+    # Rychlá idempotentní kontrola bez zámku
     if order.status == Order.Status.PAID:
-        return HttpResponse(status=200)
+        return
 
     # ======================================
     # 1️⃣ ULOŽENÍ ZAPLACENÍ (KRITICKÁ ČÁST)
@@ -775,11 +827,17 @@ def stripe_webhook(request):
             Order.objects
             .select_for_update()
             .prefetch_related("items__product_variant", "items__course_plan__course")
-            .get(id=order_id)
+            .get(id=order.id)
         )
 
+        # Double-check po zamčení řádku – webhook mohl dorazit mezitím
+        if order.status == Order.Status.PAID:
+            return
+
         order.status = Order.Status.PAID
-        order.stripe_payment_intent_id = session.get("payment_intent", "")
+        # stripe_session může být dict (z webhooku) nebo Stripe objekt (z API) –
+        # obě varianty podporují .get()
+        order.stripe_payment_intent_id = stripe_session.get("payment_intent", "") or ""
         order.save(update_fields=["status", "stripe_payment_intent_id"])
 
         assign_invoice_number(order)
@@ -925,8 +983,6 @@ def stripe_webhook(request):
     # ======================================
 
     _send_order_confirmation_email(order, user, created, request)
-
-    return HttpResponse(status=200)
 
 
 def _send_order_confirmation_email(order, user, user_was_created, request):
