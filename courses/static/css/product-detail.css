@@ -46,8 +46,9 @@
 
 .pd-image {
   width: 100%;
-  max-height: 380px;
-  object-fit: cover;
+  height: auto;
+  max-height: 65vh;
+  object-fit: contain;
   border-radius: 2rem;
   display: block;
   background: #f5f5f0;
