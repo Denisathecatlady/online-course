@@ -1502,6 +1502,12 @@
   .home-hero-links {
     max-width: none;
   }
+
+  /* Desktopové pravidlo má white-space: nowrap → na úzké obrazovce
+     se nadpis nezalomí a uteče za okraj. Na mobilu povolíme zalomení. */
+  .course-preview-head .section-title {
+    white-space: normal;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1513,6 +1519,29 @@
     min-height: 640px;
     padding: 2.5rem 0 5.5rem;
     background-position: 64% center;
+  }
+
+  /* Na telefonu text běží přes celou šířku, takže původní vodorovný
+     závoj (světlý jen vlevo) nestačí. Nahradíme ho svislým krémovým
+     závojem – silný nahoře pod nadpisem/odstavcem, slabší dole, ať je
+     fotka pořád vidět. Tmavý text tak zůstane čitelný na celé šířce. */
+  .home-hero-media {
+    background:
+      linear-gradient(180deg,
+        rgba(245, 245, 240, 0.88) 0%,
+        rgba(245, 245, 240, 0.82) 44%,
+        rgba(245, 245, 240, 0.55) 68%,
+        rgba(245, 245, 240, 0.32) 100%),
+      url("../img/home/uvodni-stranka-hero.png");
+    background-size: cover;
+    background-position: center top;
+    filter: saturate(1.02) brightness(0.92);
+  }
+
+  .home-hero-title,
+  .home-kicker,
+  .home-hero-lead {
+    text-shadow: 0 1px 14px rgba(245, 245, 240, 0.92);
   }
 
   .home-hero-title {
@@ -1616,7 +1645,8 @@
   }
 
   .course-preview-head .section-title {
-    font-size: clamp(2.8rem, 12vw, 4.3rem);
+    font-size: clamp(2rem, 7vw, 2.6rem);
+    white-space: normal;
   }
 
   .home-course-card {
@@ -1683,6 +1713,11 @@
   .lecturer-stats {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Tlačítka na střed, ať sedí pod vycentrovaným nadpisem CTA. */
+  .home-cta-actions {
+    align-items: center;
   }
 
   .lecturer-section {

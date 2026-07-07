@@ -329,6 +329,34 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<!-- Navbar submenu: hover-intent (menu se nezavře hned při přejezdu myší na položky) -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const CLOSE_DELAY = 320; // ms grace period po opuštění myší
+    document.querySelectorAll(".nav-submenu").forEach(sub => {
+        let timer = null;
+        const open = () => { clearTimeout(timer); sub.classList.add("is-open"); };
+        const scheduleClose = () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => sub.classList.remove("is-open"), CLOSE_DELAY);
+        };
+        // otevře se hned při najetí kamkoli na "O nás" nebo do menu; drží po dobu grace period
+        sub.addEventListener("mouseenter", open);
+        sub.addEventListener("mouseleave", scheduleClose);
+        // klávesnice / dotyk
+        sub.addEventListener("focusin", open);
+        sub.addEventListener("focusout", scheduleClose);
+    });
+    // klik mimo submenu ho zavře (užitečné na dotyku)
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".nav-submenu")) {
+            document.querySelectorAll(".nav-submenu.is-open")
+                .forEach(s => s.classList.remove("is-open"));
+        }
+    });
+});
+</script>
+
 {% block extra_js %}{% endblock %}
 
 <script src="{% static 'js/cookies.js' %}"></script>
