@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/product-list.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -126,7 +127,15 @@
       {% for card in detail_info_cards %}
         <article class="pd-info-card">
           <h2>{{ card.title }}</h2>
-          <p>{{ card.copy }}</p>
+          {% if card.bullets %}
+            <ul class="pd-info-bullets">
+              {% for bullet in card.bullets %}
+                <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>{{ card.copy }}</p>
+          {% endif %}
         </article>
       {% endfor %}
     </div>
@@ -134,6 +143,58 @@
 
   </div>
 </div>
+
+<section class="shop-palette">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-palette-head reveal">
+                <span class="shop-section-kicker">Vlastní barva</span>
+                <h2 class="shop-palette-title">Nevybrali jste si barvu? Nevadí.</h2>
+                <p class="shop-palette-lead">Vyberte si odstín z naší palety a my vám vodítko ušijeme přesně podle vašich představ.</p>
+            </div>
+            <div class="shop-palette-grid reveal">
+                <div class="shop-palette-swatch" style="--sw:#2b2926;" title="419 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#00344b;" title="303 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#4a1a2c;" title="1545 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#c4a882;" title="7517 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#c8a951;" title="117 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#e82828;" title="1788 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#f26522;" title="172 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#f7a800;" title="016 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#d95b0e;" title="1665 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#dc6fa0;" title="213 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#e33428;" title="1788 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#964F4C;" title="18-1750"></div>
+                <div class="shop-palette-swatch" style="--sw:#7a2d42;" title="194 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#0047ba;" title="2935 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#9a7c52;" title="6124 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#5dbfc8;" title="324 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#9a5ea7;" title="2352 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#6892b0;" title="5015 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#da5ea0;" title="233 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#60259e;" title="2613 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#330072;" title="2685 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#009b8d;" title="328 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#4f8c3e;" title="362 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#8b9a6b;" title="5777 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#00b4ac;" title="3272 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#b8e08a;" title="352 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#6dc22f;" title="802 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#b0e0c4;" title="7478 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#d4e000;" title="3935 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#ffe100;" title="803 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#96c2e0;" title="2905 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#f5f0e8;" title="11-0601"></div>
+            </div>
+            <div class="shop-palette-cta reveal">
+                <a href="{% url 'courses:contact' %}" class="shop-btn shop-btn--sage">
+                    Napište nám svoji barvu
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% if not shop_locked %}
 <script>
