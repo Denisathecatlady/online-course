@@ -944,7 +944,7 @@ def get_trainings_data():
             "price": "1 500 Kč",
         },
         {
-            "title": "Socializační aktivity",
+            "title": "Adaptace na prostředí",
             "summary": "Bezpečné seznamování psa s prostředím, které mu dělá potíže.",
             "image": "img/trainings/treninky-5.png",
             "highlights": [

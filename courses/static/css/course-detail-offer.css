@@ -1051,7 +1051,11 @@
   }
 
   .course-showcase-grid,
-  .course-structure-grid {
+  .course-structure-grid,
+  .course-offer-shell,
+  .course-offer-points,
+  .course-plan-head,
+  .course-plan-grid {
     grid-template-columns: 1fr;
   }
 
