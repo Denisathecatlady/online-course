@@ -134,16 +134,33 @@ PRODUCT_DETAIL_CONTENT = {
         ],
         "info_cards": [
             {
-                "title": "Pro koho je",
-                "copy": "Pro majitele, kteří preferují vodítko na které se mohou spolehnout.",
+                "title": "Materiál a vlastnosti",
+                "bullets": [
+                    "Voděodolný popruh s oboustranným Hexa vzorem (včelí plástev)",
+                    "Pevné textilní jádro – drží tah a pod zatížením se nevytahuje",
+                    "PVC povrch odpuzuje vodu, nepojme pachy, odolný UV záření",
+                    "Ohebný i při −40 °C, v mrazu nekřehne",
+                    "Snadná údržba – stačí vlhký hadřík nebo oplach vodou",
+                    "Ustřižené konce se netřepí",
+                ],
             },
             {
-                "title": "Materiál",
-                "copy": "Hexa popruh je pevný, voděodolný a dobře se udržuje po procházkách v terénu.",
+                "title": "Ověřené parametry materiálu",
+                "bullets": [
+                    "Parametry popruhu vycházejí z laboratorních testů výrobce – ne z odhadů",
+                    "Pevnost v přímém tahu i chování při nízkých teplotách jsou ověřeny zkouškou",
+                    "Materiál splňuje požadavky zdravotní nezávadnosti pro přímý kontakt s kůží zvířat i lidí",
+                    "Protokoly ke zkoušce pevnosti v tahu, nízkých teplot a zdravotní nezávadnosti zašleme na požádání",
+                ],
             },
             {
-                "title": "Tip",
-                "copy": "Ke stejné barvě můžete přidat samostatné očko a vytvořit zvýhodněný komplet.",
+                "title": "Karabina",
+                "bullets": [
+                    "Délka 76 mm",
+                    "Barva černá, zinkoslitina",
+                    "Váha 27 g",
+                    "Zatížení až 197 kg",
+                ],
             },
         ],
     },
@@ -159,12 +176,33 @@ PRODUCT_DETAIL_CONTENT = {
         ],
         "info_cards": [
             {
-                "title": "Pro koho je",
-                "copy": "Pro běžné venčení a situace, kdy chcete mít vodítko pevně v ruce.",
+                "title": "Materiál a vlastnosti",
+                "bullets": [
+                    "Voděodolný popruh s oboustranným Hexa vzorem (včelí plástev)",
+                    "Pevné textilní jádro – drží tah a pod zatížením se nevytahuje",
+                    "PVC povrch odpuzuje vodu, nepojme pachy, odolný UV záření",
+                    "Ohebný i při −40 °C, v mrazu nekřehne",
+                    "Snadná údržba – stačí vlhký hadřík nebo oplach vodou",
+                    "Ustřižené konce se netřepí",
+                ],
             },
             {
-                "title": "Materiál",
-                "copy": "Voděodolný Hexa popruh se snadno čistí a je odolný i při běžném každodenním používání.",
+                "title": "Ověřené parametry materiálu",
+                "bullets": [
+                    "Parametry popruhu vycházejí z laboratorních testů výrobce – ne z odhadů",
+                    "Pevnost v přímém tahu i chování při nízkých teplotách jsou ověřeny zkouškou",
+                    "Materiál splňuje požadavky zdravotní nezávadnosti pro přímý kontakt s kůží zvířat i lidí",
+                    "Protokoly ke zkoušce pevnosti v tahu, nízkých teplot a zdravotní nezávadnosti zašleme na požádání",
+                ],
+            },
+            {
+                "title": "Karabina",
+                "bullets": [
+                    "Délka 76 mm",
+                    "Barva černá, zinkoslitina",
+                    "Váha 27 g",
+                    "Zatížení až 197 kg",
+                ],
             },
         ],
     },
@@ -351,6 +389,7 @@ def product_list(request):
             available_colors.append({
                 "name": variant.color.name,
                 "hex_code": variant.color.hex_code or "#d9d9d9",
+                "image_url": get_variant_image_url(product, variant.color),
             })
 
         product_cards.append({

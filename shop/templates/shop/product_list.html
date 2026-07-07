@@ -52,10 +52,6 @@
                             referrerpolicy="strict-origin-when-cross-origin"></iframe>
                     </div>
 
-                    <div class="shop-delivery-card">
-                        <span class="shop-delivery-label">Dodání do</span>
-                        <strong>5–7 pracovních dnů</strong>
-                    </div>
                 </div>
             </div>
 
@@ -169,9 +165,9 @@
                                 <span class="shop-card-badge">{{ card.badge }}</span>
                             {% endif %}
 
-                            <div class="shop-product-photo-frame">
+                            <a href="{% url 'shop:product_detail' card.product.slug %}" class="shop-product-photo-frame" aria-label="Zobrazit detail produktu {{ card.product.name }}">
                                 <img src="{{ card.image_url }}" alt="{{ card.product.name }}" class="shop-product-photo">
-                            </div>
+                            </a>
                         </div>
 
                         <div class="shop-product-body">
@@ -189,6 +185,9 @@
                                                 style="--swatch-color: {{ color.hex_code }};"
                                                 title="{{ color.name }}"
                                                 aria-label="{{ color.name }}"
+                                                data-image-url="{{ color.image_url }}"
+                                                role="button"
+                                                tabindex="0"
                                             ></span>
                                         {% endfor %}
                                     </div>
@@ -225,6 +224,58 @@
                         </div>
                     </article>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shop-palette">
+    <div class="container">
+        <div class="shop-shell">
+            <div class="shop-palette-head reveal">
+                <span class="shop-section-kicker">Vlastní barva</span>
+                <h2 class="shop-palette-title">Nevybrali jste si barvu? Nevadí.</h2>
+                <p class="shop-palette-lead">Vyberte si odstín z naší palety a my vám vodítko ušijeme přesně podle vašich představ.</p>
+            </div>
+            <div class="shop-palette-grid reveal">
+                <div class="shop-palette-swatch" style="--sw:#2b2926;" title="419 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#00344b;" title="303 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#4a1a2c;" title="1545 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#c4a882;" title="7517 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#c8a951;" title="117 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#e82828;" title="1788 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#f26522;" title="172 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#f7a800;" title="016 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#d95b0e;" title="1665 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#dc6fa0;" title="213 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#e33428;" title="1788 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#964F4C;" title="18-1750"></div>
+                <div class="shop-palette-swatch" style="--sw:#7a2d42;" title="194 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#0047ba;" title="2935 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#9a7c52;" title="6124 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#5dbfc8;" title="324 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#9a5ea7;" title="2352 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#6892b0;" title="5015 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#da5ea0;" title="233 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#60259e;" title="2613 C"></div>
+                <div class="shop-palette-swatch" style="--sw:#330072;" title="2685 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#009b8d;" title="328 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#4f8c3e;" title="362 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#8b9a6b;" title="5777 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#00b4ac;" title="3272 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#b8e08a;" title="352 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#6dc22f;" title="802 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#b0e0c4;" title="7478 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#d4e000;" title="3935 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#ffe100;" title="803 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#96c2e0;" title="2905 U"></div>
+                <div class="shop-palette-swatch" style="--sw:#f5f0e8;" title="11-0601"></div>
+            </div>
+            <div class="shop-palette-cta reveal">
+                <a href="{% url 'courses:contact' %}" class="shop-btn shop-btn--sage">
+                    Napište nám svoji barvu
+                    <span aria-hidden="true">→</span>
+                </a>
             </div>
         </div>
     </div>
@@ -427,6 +478,30 @@ document.querySelectorAll("[data-bundle-form]").forEach((form) => {
             form.addEventListener("pointerdown", stopAutoRotate);
         }
     }
+});
+
+document.querySelectorAll(".shop-product-card").forEach((card) => {
+    const dots = card.querySelectorAll(".shop-color-dot[data-image-url]");
+    const image = card.querySelector(".shop-product-photo");
+    if (!dots.length || !image) return;
+
+    dots[0].classList.add("is-active");
+
+    dots.forEach((dot) => {
+        function selectDot() {
+            if (!dot.dataset.imageUrl) return;
+            image.src = dot.dataset.imageUrl;
+            dots.forEach((d) => d.classList.remove("is-active"));
+            dot.classList.add("is-active");
+        }
+        dot.addEventListener("click", selectDot);
+        dot.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectDot();
+            }
+        });
+    });
 });
 </script>
 {% endblock %}
