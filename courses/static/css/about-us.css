@@ -1168,6 +1168,10 @@ MOJE VZDELANI - REDESIGN
     color: #f0a35b;
 }
 
+.philosophy-context-line-end {
+    white-space: nowrap;
+}
+
 .philosophy-context-title {
     max-width: 12ch;
     margin: 2.4rem 0 0;
@@ -4298,6 +4302,10 @@ a.contact-info-value:hover {
 
     .philosophy-context-title {
         font-size: clamp(2.6rem, 13vw, 4rem);
+    }
+
+    .philosophy-context-line-end {
+        white-space: normal;
     }
 
     .philosophy-context-inner-content {
