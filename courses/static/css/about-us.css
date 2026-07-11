@@ -4133,7 +4133,12 @@ a.contact-info-value:hover {
     }
 
     .philosophy-page .philosophy-editorial-visual {
-        max-width: 42rem;
+        max-width: 26rem;
+        margin: 0 auto;
+    }
+
+    .philosophy-page .philosophy-editorial-photo {
+        aspect-ratio: 1;
     }
 
     .philosophy-page .philosophy-editorial-content {
