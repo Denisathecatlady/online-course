@@ -40,7 +40,7 @@ SITE_URL = os.environ.get(
     "http://127.0.0.1:8000"
 )
 
-SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "1") == "1" and APP_ENV != "production"
+SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "0") == "1" and APP_ENV != "production"
 
 # calmdog.cz → www.calmdog.cz (jen v produkci)
 # DOČASNĚ VYPNUTO 2026-07-14: způsobovalo smyčku přesměrování (redirect loop) –
