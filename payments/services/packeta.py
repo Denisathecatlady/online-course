@@ -177,7 +177,9 @@ def create_packet(order) -> dict:
 
     packet_id_el = root.find(".//packetId")
     if packet_id_el is None or not packet_id_el.text:
-        raise PacketaError("NO_ID", "Packeta nevrátila packetId.")
+        raw = ET.tostring(root, encoding="unicode")
+        logger.error(f"[Packeta] Odpověď bez packetId (objednávka #{order.id}): {raw[:2000]}")
+        raise PacketaError("NO_ID", f"Packeta nevrátila packetId. Odpověď: {raw[:500]}")
 
     packet_id = packet_id_el.text.strip()
     barcode_el = root.find(".//barcode")
