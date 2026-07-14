@@ -106,7 +106,7 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 | `PACKETA_MODE` | `mock` or `live` |
 | `PACKETA_DEFAULT_WEIGHT` | Default shipment weight in kg (default `0.5`) |
 | `HOTEL_ICAL_URL` | iCal feed URL for hotel availability |
-| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP (Seznam.cz, port 465 SSL) |
+| `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS`, `EMAIL_USE_SSL`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP relay (Brevo, `smtp-relay.brevo.com`, port 587, TLS). Not declared in `render.yaml` — set manually per Render service. Brevo's "Authorized IPs" security feature (Settings → Security) must have SMTP keys deactivated or Render's outbound IP authorized, otherwise sends fail with `535`/`525 Unauthorized IP address`. |
 | `DATABASE_URL` | PostgreSQL on Render; SQLite used locally if unset |
 | `DJANGO_ADMIN_URL` | Custom admin path (default `tajny-admin/`) |
 
