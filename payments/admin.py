@@ -177,6 +177,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         "mark_as_canceled",
         "retry_packeta_shipment",
         "retry_packeta_label",
+        "resend_confirmation_email",
     ]
 
     readonly_fields = (
@@ -424,6 +425,45 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
             self.message_user(
                 request,
                 f"⏭ Přeskočeno (nejedná se o Zásilkovnu nebo zásilka již existuje): {skipped}",
+                level=messages.WARNING,
+            )
+
+    # ── Akce – přeposlat potvrzovací e-mail ───────────────
+
+    @admin.action(description="✉️ Přeposlat potvrzovací e-mail")
+    def resend_confirmation_email(self, request, queryset):
+        from .views import _send_order_confirmation_email
+
+        sent = 0
+        failed = 0
+        skipped = 0
+
+        for order in queryset:
+            if order.status != Order.Status.PAID:
+                skipped += 1
+                continue
+            ok = _send_order_confirmation_email(order, order.user, False, request)
+            if ok:
+                sent += 1
+            else:
+                failed += 1
+
+        if sent:
+            self.message_user(
+                request,
+                f"✅ Potvrzovací e-mail odeslán: {sent}",
+                level=messages.SUCCESS,
+            )
+        if failed:
+            self.message_user(
+                request,
+                f"❌ Odeslání selhalo: {failed}. Podrobnosti viz server log.",
+                level=messages.ERROR,
+            )
+        if skipped:
+            self.message_user(
+                request,
+                f"⏭ Přeskočeno (objednávka není zaplacená): {skipped}",
                 level=messages.WARNING,
             )
 

@@ -1102,11 +1102,13 @@ info@calmdog.cz
             order.invoice_pdf.close()
 
         email.send()
+        return True
 
     except Exception as e:
         import traceback as _tb
         _tb.print_exc()
         logger.error(f"[Email] Nepodařilo se odeslat potvrzení objednávky #{order.id}: {e}")
+        return False
 # =====================================================
 # ODEBRÁNÍ Z KOŠÍKU
 # =====================================================
