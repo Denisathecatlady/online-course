@@ -86,6 +86,8 @@ class Order(models.Model):
         ZASILKOVNA = "zasilkovna", "Zásilkovna"
         KURYR = "kuryr", "Kurýr"
 
+    FREE_SHIPPING_THRESHOLD = Decimal("1500")
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -224,6 +226,10 @@ class Order(models.Model):
     @property
     def items_total(self):
         return sum((item.subtotal for item in self.items.all()), Decimal("0"))
+
+    @property
+    def qualifies_for_free_shipping(self):
+        return self.items_total >= self.FREE_SHIPPING_THRESHOLD
 
     @property
     def total_price(self):

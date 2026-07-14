@@ -593,11 +593,12 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:shipping"))
 
     def test_03_combined_cart_total_price_includes_shipping(self):
-        """Celková cena = vodítko + kurz + doprava Zásilkovnou."""
+        """Celková cena přes 1500 Kč => doprava Zásilkovnou je zdarma."""
         self._build_combined_cart()
 
         cart = Order.objects.get(status=Order.Status.CART)
-        expected = Decimal("1590.00") + Decimal("3490.00") + Decimal("99.00")
+        self.assertEqual(cart.shipping_price, Decimal("0.00"))
+        expected = Decimal("1590.00") + Decimal("3490.00")
         self.assertEqual(cart.total_price, expected)
 
     def test_04_checkout_post_creates_stripe_session(self):

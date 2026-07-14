@@ -1282,16 +1282,17 @@ def shipping(request):
                 "packeta_mode": settings.PACKETA_MODE,
                 "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
                 "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
+                "free_shipping": cart.qualifies_for_free_shipping,
             })
 
         cart.shipping_method = method
 
         if method == Order.ShippingMethod.ZASILKOVNA:
-            cart.shipping_price = 99
+            cart.shipping_price = 0 if cart.qualifies_for_free_shipping else 99
             cart.packeta_point_id = packeta_point_id
             cart.packeta_point_name = packeta_point_name or packeta_point_id
         elif method == Order.ShippingMethod.KURYR:
-            cart.shipping_price = 119
+            cart.shipping_price = 0 if cart.qualifies_for_free_shipping else 119
             cart.packeta_point_id = None
             cart.packeta_point_name = None
         else:
@@ -1317,6 +1318,7 @@ def shipping(request):
         "packeta_mode": settings.PACKETA_MODE,
         "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
         "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
+        "free_shipping": cart.qualifies_for_free_shipping,
     })
 
 
