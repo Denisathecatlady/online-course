@@ -63,6 +63,11 @@
     </script>
     {% endif %}
 
+    {% if recaptcha_enabled %}
+    <!-- reCAPTCHA v3 – ochrana veřejných formulářů (kontakt, hotel, uvítací sleva) proti spamu -->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    {% endif %}
+
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -402,6 +407,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <form id="wcpEmailForm" novalidate>
       {% csrf_token %}
+      <div style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true">
+        <label for="wcpWebsite">Nechte prázdné</label>
+        <input type="text" id="wcpWebsite" name="website" tabindex="-1" autocomplete="off">
+      </div>
       <input class="wcp-input" type="email" id="wcpEmail" name="email"
              placeholder="vas@email.cz" autocomplete="email" required>
       <p class="wcp-err" id="wcpErr"></p>
@@ -478,9 +487,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fd = new FormData();
     fd.append('email', email);
+    fd.append('website', document.getElementById('wcpWebsite').value);
     fd.append('csrfmiddlewaretoken', this.querySelector('[name=csrfmiddlewaretoken]').value);
 
     try {
+      const recaptchaEnabled = {{ recaptcha_enabled|yesno:"true,false" }};
+      const token = recaptchaEnabled
+        ? await grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'welcome_coupon'})
+        : '';
+      fd.append('recaptcha_token', token);
+
       const res  = await fetch('{% url "payments:claim_welcome_coupon" %}', {
         method: 'POST', body: fd,
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -500,6 +516,16 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(STORAGE_KEY, '1');   // už ho má – neotravovat dál
       } else if (data.error === 'email_failed') {
         errEl.textContent = 'E-mail se nepodařilo odeslat. Zkuste to prosím znovu za chvíli.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Získat slevu';
+      } else if (data.error === 'recaptcha_failed') {
+        errEl.textContent = 'Nepodařilo se ověřit, že nejste robot. Zkuste to prosím znovu.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Získat slevu';
+      } else if (data.error === 'invalid_email') {
+        errEl.textContent = 'Zadejte prosím platnou e-mailovou adresu.';
         errEl.style.display = 'block';
         btn.disabled = false;
         btn.textContent = 'Získat slevu';

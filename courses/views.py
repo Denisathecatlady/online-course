@@ -17,6 +17,7 @@ import os
 from types import SimpleNamespace
 
 from .models import Course, Module, ModuleProgress, ModuleQuizProgress, CoursePlan
+from .forms import ContactForm
 from payments.models import CourseAccess
 
 
@@ -845,44 +846,44 @@ def contact(request):
     ]
 
     if request.method == "POST":
-        # Honeypot – reálný návštěvník toto skryté pole nikdy nevyplní.
-        if request.POST.get("website", "").strip():
+        form = ContactForm(request.POST, request=request)
+        if form.is_valid():
+            # Honeypot – reálný návštěvník toto skryté pole nikdy nevyplní.
+            # Bot dostane stejnou "úspěšnou" odpověď, ale nic se neodešle.
+            if not form.is_spam:
+                recipient = "info@calmdog.cz"
+                body = (
+                    f"Jmeno: {form.cleaned_data['name']}\n"
+                    f"E-mail: {form.cleaned_data['email']}\n\n"
+                    f"Predmet: {form.cleaned_data['subject']}\n\n"
+                    f"Zprava:\n{form.cleaned_data['message']}"
+                )
+                try:
+                    email_message = EmailMessage(
+                        subject=f"Kontakt z webu: {form.cleaned_data['subject']}",
+                        body=body,
+                        from_email=settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER or recipient,
+                        to=[recipient],
+                        reply_to=[form.cleaned_data["email"]],
+                    )
+                    email_message.send(fail_silently=False)
+                except Exception:
+                    messages.error(request, "Zprávu se nepodařilo odeslat. Zkuste prosím e-mail nebo telefon.")
+                    return render(request, "courses/contact.html", {
+                        "contact_cards": contact_cards,
+                        "team_members": team_members,
+                        "form": form,
+                    })
+
             messages.success(request, "Zpráva byla odeslána.")
             return redirect("courses:contact")
-
-        name = request.POST.get("name", "").strip()
-        email = request.POST.get("email", "").strip()
-        subject = request.POST.get("subject", "").strip()
-        message = request.POST.get("message", "").strip()
-
-        if not all([name, email, subject, message]):
-            messages.error(request, "Vyplňte prosím všechna pole.")
-        else:
-            recipient = "info@calmdog.cz"
-            body = (
-                f"Jmeno: {name}\n"
-                f"E-mail: {email}\n\n"
-                f"Predmet: {subject}\n\n"
-                f"Zprava:\n{message}"
-            )
-
-            try:
-                email_message = EmailMessage(
-                    subject=f"Kontakt z webu: {subject}",
-                    body=body,
-                    from_email=settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER or recipient,
-                    to=[recipient],
-                    reply_to=[email],
-                )
-                email_message.send(fail_silently=False)
-                messages.success(request, "Zpráva byla odeslána.")
-                return redirect("courses:contact")
-            except Exception:
-                messages.error(request, "Zprávu se nepodařilo odeslat. Zkuste prosím e-mail nebo telefon.")
+    else:
+        form = ContactForm(request=request)
 
     return render(request, "courses/contact.html", {
         "contact_cards": contact_cards,
         "team_members": team_members,
+        "form": form,
     })
 
 

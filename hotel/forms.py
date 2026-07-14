@@ -1,5 +1,6 @@
 from django import forms
 from .models import HotelReservation
+from courses.recaptcha import verify_recaptcha
 
 
 class HotelReservationForm(forms.ModelForm):
@@ -8,6 +9,10 @@ class HotelReservationForm(forms.ModelForm):
         label="Souhlasím s obchodními podmínkami a zpracováním osobních údajů",
         error_messages={"required": "Souhlas s podmínkami je povinný."},
     )
+
+    # Honeypot – lidé ho nevidí, boti ho běžně vyplní.
+    website = forms.CharField(required=False)
+    recaptcha_token = forms.CharField(required=False, widget=forms.HiddenInput)
 
     class Meta:
         model = HotelReservation
@@ -31,7 +36,8 @@ class HotelReservationForm(forms.ModelForm):
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, request=None, **kwargs):
+        self.request = request
         super().__init__(*args, **kwargs)
         # Správné klávesnice na mobilu + automatické doplňování prohlížeče
         autocomplete_tokens = {
@@ -53,6 +59,14 @@ class HotelReservationForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
+
+        self.is_spam = bool(cleaned.get("website"))
+        if not self.is_spam:
+            if not verify_recaptcha(self.request, cleaned.get("recaptcha_token", ""), "hotel_reservation"):
+                raise forms.ValidationError(
+                    "Nepodařilo se ověřit, že nejste robot. Zkuste to prosím znovu."
+                )
+
         date_from = cleaned.get("date_from")
         date_to = cleaned.get("date_to")
         if date_from and date_to:

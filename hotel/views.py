@@ -131,14 +131,17 @@ def reservation_form(request):
     has_calendar = bool(ical_url)
 
     if request.method == "POST":
-        form = HotelReservationForm(request.POST)
+        form = HotelReservationForm(request.POST, request=request)
         if form.is_valid():
+            if form.is_spam:
+                # Honeypot – tichý "úspěch" pro bota, nic se neuloží ani neodešle.
+                return redirect("hotel:reservation_success")
             reservation = form.save()
             _send_customer_email(reservation)
             _send_admin_notification(reservation)
             return redirect("hotel:reservation_success")
     else:
-        form = HotelReservationForm()
+        form = HotelReservationForm(request=request)
 
     return render(request, "hotel/reservation_form.html", {
         "form": form,

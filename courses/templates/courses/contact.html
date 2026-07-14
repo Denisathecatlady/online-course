@@ -115,12 +115,13 @@
           <div class="contact-form-content p-4 p-md-5">
             <p class="about-eyebrow mb-2">Napište mi</p>
             <h2 class="about-subtitle mb-3">Kontaktní formulář</h2>
-            <form method="post" class="contact-form">
+            <form method="post" class="contact-form" id="contactForm">
               {% csrf_token %}
               <div class="contact-form-honeypot" aria-hidden="true">
                 <label for="contact-website">Nechte prázdné</label>
                 <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off">
               </div>
+              <input type="hidden" name="recaptcha_token" id="contactRecaptchaToken">
               <div class="contact-form-row">
                 <input type="text" name="name" class="form-control" placeholder="Jméno" aria-label="Jméno" autocomplete="name" required>
                 <input type="email" name="email" class="form-control" placeholder="E-mail" aria-label="E-mail" autocomplete="email" inputmode="email" required>
@@ -129,6 +130,22 @@
               <textarea name="message" class="form-control" rows="6" placeholder="Zpráva" aria-label="Zpráva" required></textarea>
               <button type="submit" class="btn btn-sage contact-submit">Odeslat</button>
             </form>
+            {% if recaptcha_enabled %}
+            <script>
+            (function () {
+              var form = document.getElementById('contactForm');
+              form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                grecaptcha.ready(function () {
+                  grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'contact'}).then(function (token) {
+                    document.getElementById('contactRecaptchaToken').value = token;
+                    form.submit();
+                  });
+                });
+              });
+            })();
+            </script>
+            {% endif %}
           </div>
         </div>
       </section>

@@ -26,8 +26,14 @@
             </div>
             {% endif %}
 
-            <form method="post" novalidate>
+            <form method="post" novalidate id="hotelReservationForm">
                 {% csrf_token %}
+
+                <div style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true">
+                    <label for="hotel-website">Nechte prázdné</label>
+                    <input type="text" id="hotel-website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+                <input type="hidden" name="recaptcha_token" id="hotelRecaptchaToken">
 
                 <!-- KONTAKTNÍ ÚDAJE -->
                 <div class="reservation-section mb-4">
@@ -309,6 +315,20 @@ document.addEventListener("DOMContentLoaded", function () {
         el.classList.remove("form-control");
         el.classList.add("form-select");
     });
+
+    // ── reCAPTCHA v3 – vygenerovat token těsně před odesláním ──
+    {% if recaptcha_enabled %}
+    var reservationForm = document.getElementById("hotelReservationForm");
+    reservationForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        grecaptcha.ready(function () {
+            grecaptcha.execute("{{ recaptcha_site_key }}", {action: "hotel_reservation"}).then(function (token) {
+                document.getElementById("hotelRecaptchaToken").value = token;
+                reservationForm.submit();
+            });
+        });
+    });
+    {% endif %}
 });
 </script>
 {% endblock %}

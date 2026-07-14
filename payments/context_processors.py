@@ -30,6 +30,8 @@ def cart_context(request):
             "gtm_id": settings.GOOGLE_TAG_MANAGER_ID,
             "gsc_verification": settings.GOOGLE_SEARCH_CONSOLE_VERIFICATION,
             "cookie_consent_version": settings.COOKIE_CONSENT_VERSION,
+            "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY,
+            "recaptcha_enabled": settings.RECAPTCHA_ENABLED,
         }
 
     except Exception:
@@ -41,4 +43,6 @@ def cart_context(request):
             "gtm_id": getattr(settings, "GOOGLE_TAG_MANAGER_ID", ""),
             "gsc_verification": getattr(settings, "GOOGLE_SEARCH_CONSOLE_VERIFICATION", ""),
             "cookie_consent_version": getattr(settings, "COOKIE_CONSENT_VERSION", "1"),
+            "recaptcha_site_key": getattr(settings, "RECAPTCHA_SITE_KEY", ""),
+            "recaptcha_enabled": getattr(settings, "RECAPTCHA_ENABLED", False),
         }

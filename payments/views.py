@@ -21,11 +21,14 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.db import transaction
 from django.db.models import F
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from shop.models import Product, ProductVariant
 from shop.views import get_variant_image_url
 from courses.models import CoursePlan
 from courses.models import Course
+from courses.recaptcha import verify_recaptcha
 from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim, NewsletterSubscriber
 from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
@@ -1286,6 +1289,19 @@ def claim_welcome_coupon(request):
     email_raw = request.POST.get("email", "").strip()
     if not email_raw:
         return JsonResponse({"ok": False, "error": "Zadejte e-mail."})
+
+    # Honeypot – reálný návštěvník toto skryté pole nikdy nevyplní.
+    # Bot dostane stejnou "úspěšnou" odpověď, ale nic se neodešle ani neuloží.
+    if request.POST.get("website", "").strip():
+        return JsonResponse({"ok": True})
+
+    if not verify_recaptcha(request, request.POST.get("recaptcha_token", ""), "welcome_coupon"):
+        return JsonResponse({"ok": False, "error": "recaptcha_failed"})
+
+    try:
+        validate_email(email_raw)
+    except DjangoValidationError:
+        return JsonResponse({"ok": False, "error": "invalid_email"})
 
     email = email_raw.lower()
 
