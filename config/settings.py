@@ -403,6 +403,10 @@ GOOGLE_CALENDAR_ENABLED = bool(GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SE
 # Scope pro čtení/zápis událostí v kalendáři trenéra.
 GOOGLE_CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
+# Jak daleko dopředu importovat volné termíny z Google kalendářů dostupnosti
+# (management command import_availability_from_google).
+TRAININGS_IMPORT_HORIZON_DAYS = int(os.environ.get("TRAININGS_IMPORT_HORIZON_DAYS", "60"))
+
 # ======================================================
 # RECAPTCHA v3 – ochrana veřejných formulářů proti spamu
 # ======================================================

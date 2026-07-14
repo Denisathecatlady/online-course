@@ -12,23 +12,29 @@ Pokrývají automatické kontroly ze zadání:
 """
 
 from datetime import time, timedelta
+from unittest import mock
+from zoneinfo import ZoneInfo
 
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from .models import (
+    AvailabilityCalendar,
     AvailabilityWindow,
     Location,
     TrainingReservation,
     TrainingSlot,
     Trainer,
 )
+from .services import availability_import
 
 User = get_user_model()
+
+PRAGUE = ZoneInfo("Europe/Prague")
 
 
 def future_date(days=7):
@@ -284,3 +290,119 @@ class BookingFlowTests(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertIn("login", resp.url)
         self.assertIn("next=/moje-treninky/", resp.url)
+
+
+def _gcal_event(event_id, summary, start, end, status="confirmed", all_day=False):
+    return {
+        "event_id": event_id,
+        "summary": summary,
+        "start_dt": start,
+        "end_dt": end,
+        "status": status,
+        "all_day": all_day,
+    }
+
+
+@override_settings(GOOGLE_CALENDAR_ENABLED=True, TRAININGS_IMPORT_HORIZON_DAYS=60)
+class ImportFromGoogleTests(TestCase):
+    """Import volných termínů z Google kalendáře (Google API mockované)."""
+
+    def setUp(self):
+        self.location = Location.objects.create(name="Žatec", slug="zatec")
+        self.trainer = Trainer.objects.create(
+            name="Test trenér",
+            email="t@example.com",
+            google_connected=True,
+            google_oauth_token='{"token": "fake"}',
+        )
+        self.trainer.locations.add(self.location)
+        self.cal = AvailabilityCalendar.objects.create(
+            trainer=self.trainer,
+            location=self.location,
+            google_calendar_id="cal_zatec",
+            default_slot_minutes=60,
+        )
+        self.day9 = (timezone.now().astimezone(PRAGUE) + timedelta(days=3)).replace(
+            hour=9, minute=0, second=0, microsecond=0
+        )
+
+    def _run(self, events, **kw):
+        with mock.patch.object(
+            availability_import.google_calendar, "is_enabled", return_value=True
+        ), mock.patch.object(
+            availability_import.google_calendar, "list_events", return_value=events
+        ):
+            return availability_import.import_from_google(**kw)
+
+    def test_individual_event_creates_window_and_slots(self):
+        stats = self._run(
+            [_gcal_event("ev1", "Individuální", self.day9, self.day9 + timedelta(hours=2))]
+        )
+        self.assertEqual(stats["created"], 1)
+        window = AvailabilityWindow.objects.get(google_event_id="ev1")
+        self.assertEqual(window.source, AvailabilityWindow.Source.GOOGLE)
+        self.assertEqual(window.session_type, AvailabilityWindow.SessionType.INDIVIDUAL)
+        self.assertEqual(window.capacity, 1)
+        self.assertEqual(window.location, self.location)
+        self.assertTrue(window.is_active)
+        self.assertEqual(window.slots.count(), 2)  # 2 h / 60 min
+
+    def test_group_event_capacity_from_title(self):
+        self._run(
+            [_gcal_event("evg", "Skupina 5", self.day9, self.day9 + timedelta(hours=1))]
+        )
+        window = AvailabilityWindow.objects.get(google_event_id="evg")
+        self.assertEqual(window.session_type, AvailabilityWindow.SessionType.GROUP)
+        self.assertEqual(window.capacity, 5)
+        self.assertEqual(window.slots.count(), 1)
+
+    def test_reimport_is_idempotent(self):
+        events = [_gcal_event("ev1", "Individuální", self.day9, self.day9 + timedelta(hours=2))]
+        self._run(events)
+        stats = self._run(events)
+        self.assertEqual(stats["updated"], 1)
+        self.assertEqual(AvailabilityWindow.objects.filter(google_event_id="ev1").count(), 1)
+        self.assertEqual(TrainingSlot.objects.count(), 2)
+
+    def test_deleted_event_deactivates_window_and_removes_free_slots(self):
+        self._run([_gcal_event("ev1", "Individuální", self.day9, self.day9 + timedelta(hours=2))])
+        stats = self._run([])  # událost už v kalendáři není
+        self.assertEqual(stats["deactivated"], 1)
+        window = AvailabilityWindow.objects.get(google_event_id="ev1")
+        self.assertFalse(window.is_active)
+        self.assertEqual(window.slots.count(), 0)
+
+    def test_confirmed_slot_survives_event_deletion(self):
+        self._run([_gcal_event("ev1", "Individuální", self.day9, self.day9 + timedelta(hours=2))])
+        window = AvailabilityWindow.objects.get(google_event_id="ev1")
+        slot = window.slots.order_by("start").first()
+        TrainingReservation.objects.create(
+            slot=slot,
+            first_name="Jana",
+            last_name="Nováková",
+            email="jana@example.com",
+            dog_name="Rex",
+            status=TrainingReservation.Status.CONFIRMED,
+        )
+        self._run([])  # smazáno v Googlu
+        window.refresh_from_db()
+        self.assertFalse(window.is_active)
+        self.assertTrue(window.slots.filter(pk=slot.pk).exists())  # booked zůstal
+        self.assertEqual(window.slots.count(), 1)  # volný slot pryč
+
+    def test_all_day_and_cancelled_events_skipped(self):
+        stats = self._run(
+            [
+                _gcal_event("ad", "Individuální", self.day9, self.day9 + timedelta(hours=1), all_day=True),
+                _gcal_event("cx", "Individuální", self.day9, self.day9 + timedelta(hours=1), status="cancelled"),
+            ]
+        )
+        self.assertEqual(AvailabilityWindow.objects.count(), 0)
+        self.assertEqual(stats["skipped"], 2)
+
+    def test_cross_midnight_event_skipped(self):
+        start = self.day9.replace(hour=23)
+        end = start + timedelta(hours=2)  # přesahuje do dalšího dne
+        stats = self._run([_gcal_event("mid", "Individuální", start, end)])
+        self.assertEqual(AvailabilityWindow.objects.count(), 0)
+        self.assertEqual(stats["skipped"], 1)

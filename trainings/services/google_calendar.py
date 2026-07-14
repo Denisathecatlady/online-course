@@ -103,6 +103,97 @@ def _get_service(trainer):
 # Události
 # ──────────────────────────────────────────────────────────
 
+def list_events(trainer, calendar_id, time_min, time_max):
+    """
+    Načte události z daného kalendáře trenéra v rozsahu [time_min, time_max].
+
+    Vrací list normalizovaných dictů:
+        {
+          "event_id": str,          # unikátní i pro jednotlivé instance opakování
+          "summary": str,
+          "start_dt": datetime|None,  # None u celodenních událostí
+          "end_dt": datetime|None,
+          "status": str,            # "confirmed" / "cancelled" / ...
+          "all_day": bool,
+        }
+
+    `singleEvents=True` rozbalí opakující se události na jednotlivé instance,
+    takže trenér může nastavit např. týdenní dostupnost a každý týden vznikne
+    samostatné okno. Vrací [] když je integrace vypnutá / trenér nepřipojen /
+    nastane chyba (volající to ošetří).
+    """
+    if not is_enabled():
+        logger.info("[GCal] Integrace vypnutá – přeskakuji čtení událostí.")
+        return []
+
+    if not trainer.google_ready:
+        logger.info(f"[GCal] Trenér {trainer} nemá připojený kalendář – přeskakuji čtení.")
+        return []
+
+    if not calendar_id:
+        return []
+
+    from datetime import datetime
+
+    service = _get_service(trainer)
+    if service is None:
+        return []
+
+    events = []
+    page_token = None
+    try:
+        while True:
+            response = (
+                service.events()
+                .list(
+                    calendarId=calendar_id,
+                    timeMin=time_min.isoformat(),
+                    timeMax=time_max.isoformat(),
+                    singleEvents=True,
+                    orderBy="startTime",
+                    maxResults=250,
+                    pageToken=page_token,
+                )
+                .execute()
+            )
+            for item in response.get("items", []):
+                start = item.get("start", {})
+                end = item.get("end", {})
+                all_day = "date" in start  # celodenní událost má "date", ne "dateTime"
+
+                start_dt = end_dt = None
+                if not all_day:
+                    start_raw = start.get("dateTime")
+                    end_raw = end.get("dateTime")
+                    if start_raw:
+                        start_dt = datetime.fromisoformat(start_raw)
+                    if end_raw:
+                        end_dt = datetime.fromisoformat(end_raw)
+
+                events.append(
+                    {
+                        "event_id": item.get("id", ""),
+                        "summary": item.get("summary", "") or "",
+                        "start_dt": start_dt,
+                        "end_dt": end_dt,
+                        "status": item.get("status", ""),
+                        "all_day": all_day,
+                    }
+                )
+
+            page_token = response.get("nextPageToken")
+            if not page_token:
+                break
+    except Exception as e:
+        logger.error(
+            f"[GCal] Chyba při čtení událostí z kalendáře {calendar_id} "
+            f"(trenér {trainer}): {e}"
+        )
+        return []
+
+    return events
+
+
 def _build_event_body(reservation) -> dict:
     slot = reservation.slot
     prefix = "Skupinový trénink" if slot.is_group else "Individuální trénink"

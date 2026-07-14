@@ -12,13 +12,14 @@ from django.utils import timezone
 from django.utils.html import format_html
 
 from .models import (
+    AvailabilityCalendar,
     AvailabilityWindow,
     Location,
     Trainer,
     TrainingReservation,
     TrainingSlot,
 )
-from .services import google_calendar, notifications
+from .services import availability_import, google_calendar, notifications
 
 
 @admin.register(Location)
@@ -61,6 +62,48 @@ class TrainerAdmin(admin.ModelAdmin):
         return format_html('<a class="button" href="{}">{}</a>', url, label)
 
 
+@admin.register(AvailabilityCalendar)
+class AvailabilityCalendarAdmin(admin.ModelAdmin):
+    list_display = (
+        "location", "trainer", "google_calendar_id", "default_slot_minutes", "is_active",
+    )
+    list_filter = ("is_active", "location", "trainer")
+    search_fields = ("location__name", "trainer__name", "google_calendar_id")
+    actions = ["import_from_google_action"]
+
+    fieldsets = (
+        ("Napojení", {
+            "fields": ("trainer", "location", "google_calendar_id", "is_active"),
+            "description": (
+                "ID Google kalendáře najdete v Google Kalendáři: Nastavení kalendáře → "
+                "Integrovat kalendář → „ID kalendáře“. Každá lokalita má vlastní "
+                "kalendář dostupnosti (oddělený od kalendáře s rezervacemi)."
+            ),
+        }),
+        ("Sloty", {
+            "fields": ("default_slot_minutes", "note"),
+            "description": "Na jak dlouhé sloty se okno z kalendáře rozdělí.",
+        }),
+    )
+
+    @admin.action(description="Načíst termíny z Google kalendáře (všechny aktivní)")
+    def import_from_google_action(self, request, queryset):
+        if not google_calendar.is_enabled():
+            self.message_user(
+                request,
+                "Google integrace není nakonfigurovaná (chybí OAuth klient v nastavení serveru).",
+                level="warning",
+            )
+            return
+        stats = availability_import.import_from_google()
+        self.message_user(
+            request,
+            f"Import hotov. Kalendářů: {stats['calendars']}, vytvořeno: {stats['created']}, "
+            f"aktualizováno: {stats['updated']}, deaktivováno: {stats['deactivated']}, "
+            f"přeskočeno: {stats['skipped']}.",
+        )
+
+
 class TrainingSlotInline(admin.TabularInline):
     model = TrainingSlot
     extra = 0
@@ -81,11 +124,12 @@ class TrainingSlotInline(admin.TabularInline):
 class AvailabilityWindowAdmin(admin.ModelAdmin):
     list_display = (
         "location", "trainer", "date", "start_time", "end_time",
-        "slot_duration_minutes", "session_type", "capacity", "is_active", "slot_count",
+        "slot_duration_minutes", "session_type", "capacity", "source", "is_active", "slot_count",
     )
-    list_filter = ("location", "trainer", "session_type", "is_active", "date")
+    list_filter = ("location", "trainer", "session_type", "source", "is_active", "date")
     search_fields = ("location__name", "trainer__name", "note")
     date_hierarchy = "date"
+    readonly_fields = ("source", "google_event_id")
     inlines = [TrainingSlotInline]
     actions = ["block_windows", "unblock_windows"]
 
@@ -102,6 +146,13 @@ class AvailabilityWindowAdmin(admin.ModelAdmin):
         }),
         ("Ostatní", {
             "fields": ("is_active", "note"),
+        }),
+        ("Původ", {
+            "fields": ("source", "google_event_id"),
+            "description": (
+                "Okna z Google kalendáře se přepisují při každém importu – "
+                "časy upravujte v Google kalendáři, ne zde."
+            ),
         }),
     )
 

@@ -81,6 +81,59 @@ class Trainer(models.Model):
         return bool(self.google_connected and self.google_oauth_token)
 
 
+class AvailabilityCalendar(models.Model):
+    """
+    Napojení jedné lokality na dedikovaný Google kalendář, ze kterého se čtou
+    volné termíny (dostupnost). Trenér si v Googlu založí zvlášť kalendář pro
+    každou lokalitu (např. „CalmDog – Žatec") a jeho ID sem vloží. Import
+    (viz `trainings/services/availability_import.py`) pak z událostí v tomto
+    kalendáři vytvoří `AvailabilityWindow` → rezervovatelné sloty.
+
+    Booking události trenéra jdou do jeho hlavního kalendáře
+    (`Trainer.google_calendar_id`, default „primary"), takže čtení dostupnosti
+    z odděleného kalendáře nevytváří smyčku.
+    """
+
+    trainer = models.ForeignKey(
+        Trainer,
+        on_delete=models.CASCADE,
+        related_name="availability_calendars",
+        verbose_name="Trenér",
+    )
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        related_name="availability_calendars",
+        verbose_name="Lokalita",
+    )
+    google_calendar_id = models.CharField(
+        "ID Google kalendáře dostupnosti",
+        max_length=255,
+        help_text="ID dedikovaného Google kalendáře pro tuto lokalitu "
+        "(Nastavení kalendáře → Integrovat kalendář → ID kalendáře).",
+    )
+    default_slot_minutes = models.PositiveSmallIntegerField(
+        "Výchozí délka slotu (min)",
+        default=60,
+        help_text="Na jak dlouhé sloty se okno z kalendáře rozdělí.",
+    )
+    is_active = models.BooleanField("Aktivní", default=True)
+    note = models.CharField("Poznámka", max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = "Kalendář dostupnosti"
+        verbose_name_plural = "Kalendáře dostupnosti"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trainer", "location"],
+                name="unique_availability_calendar_per_trainer_location",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.location} → {self.google_calendar_id}"
+
+
 class AvailabilityWindow(models.Model):
     """
     Časové okno, které trenér zadá v administraci. Systém ho rozdělí
@@ -90,6 +143,10 @@ class AvailabilityWindow(models.Model):
     class SessionType(models.TextChoices):
         INDIVIDUAL = "individual", "Individuální"
         GROUP = "group", "Skupinová"
+
+    class Source(models.TextChoices):
+        MANUAL = "manual", "Ručně v adminu"
+        GOOGLE = "google", "Google kalendář"
 
     location = models.ForeignKey(
         Location, on_delete=models.PROTECT, related_name="windows", verbose_name="Lokalita"
@@ -115,6 +172,20 @@ class AvailabilityWindow(models.Model):
         help_text="Odškrtnutím okno zablokujete (sloty se nenabízejí).",
     )
     note = models.CharField("Poznámka", max_length=255, blank=True)
+    source = models.CharField(
+        "Původ",
+        max_length=20,
+        choices=Source.choices,
+        default=Source.MANUAL,
+        help_text="Okno zadané ručně, nebo naimportované z Google kalendáře.",
+    )
+    google_event_id = models.CharField(
+        "ID Google události",
+        max_length=1024,
+        blank=True,
+        db_index=True,
+        help_text="Identifikátor zdrojové události v Google kalendáři (jen u importu).",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
