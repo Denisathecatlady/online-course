@@ -43,7 +43,11 @@ SITE_URL = os.environ.get(
 SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "1") == "1" and APP_ENV != "production"
 
 # calmdog.cz → www.calmdog.cz (jen v produkci)
-PREPEND_WWW = APP_ENV == "production"
+# DOČASNĚ VYPNUTO 2026-07-14: způsobovalo smyčku přesměrování (redirect loop) –
+# pravděpodobně koliduje s přesměrováním na straně Renderu/DNS opačným směrem.
+# Než se ověří správné nastavení domény v Renderu, ať Django do přesměrování
+# nezasahuje.
+PREPEND_WWW = False
 
 
 
