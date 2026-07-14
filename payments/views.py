@@ -944,6 +944,8 @@ def _process_paid_order(order, stripe_session, request):
                 f"(objednávka #{order.id}): {e}"
             )
 
+        _send_order_notification_email(order)
+
     # ======================================
     # 4️⃣ VYTVOŘENÍ / NAPOJENÍ UŽIVATELE
     # ======================================
@@ -1108,6 +1110,48 @@ info@calmdog.cz
         import traceback as _tb
         _tb.print_exc()
         logger.error(f"[Email] Nepodařilo se odeslat potvrzení objednávky #{order.id}: {e}")
+        return False
+
+
+def _send_order_notification_email(order):
+    """
+    Pošle interní upozornění na info@calmdog.cz o nové objednávce s fyzickým
+    produktem (Zásilkovna) – v příloze štítek na balíček, pokud se ho podařilo vytvořit.
+    """
+    try:
+        items_text = ""
+        for item in order.items.select_related("product_variant__product").all():
+            if item.product_variant:
+                items_text += f"  • {item.product_variant.product.name} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+
+        body = f"""Nová objednávka č. {order.id} ({order.first_name} {order.last_name}, {order.buyer_email}):
+
+{items_text}
+Výdejní místo: {order.packeta_point_name or "-"}
+Sledovací číslo Packeta: {order.packeta_tracking_number or "zatím nevytvořeno"}
+"""
+
+        email = EmailMessage(
+            subject=f"CalmDog – nová objednávka č. {order.id} (Zásilkovna)",
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=["info@calmdog.cz"],
+        )
+
+        if order.packeta_label_pdf and order.packeta_label_pdf.storage.exists(order.packeta_label_pdf.name):
+            order.packeta_label_pdf.open("rb")
+            email.attach(
+                f"stitek_packeta_{order.id}.pdf",
+                order.packeta_label_pdf.read(),
+                "application/pdf",
+            )
+            order.packeta_label_pdf.close()
+
+        email.send()
+        return True
+
+    except Exception as e:
+        logger.error(f"[Email] Nepodařilo se odeslat upozornění na novou objednávku #{order.id}: {e}")
         return False
 # =====================================================
 # ODEBRÁNÍ Z KOŠÍKU
