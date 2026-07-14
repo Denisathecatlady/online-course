@@ -66,6 +66,11 @@ services:
         sync: false
       - key: GOOGLE_OAUTH_REDIRECT_URI
         value: https://www.calmdog.cz/moje-treninky/google/callback/
+      # Přihlášení přes Google (allauth) – vlastní OAuth klient, jiný než výše
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
 
   # ─── CRON: žádosti o Google recenzi (jen produkce) ──────────────────────────
   - type: cron
@@ -186,6 +191,11 @@ services:
       - key: PACKETA_API_PASSWORD
         sync: false
       - key: MAPY_API_KEY
+        sync: false
+      # Přihlášení přes Google (allauth)
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
         sync: false
 
 databases:
