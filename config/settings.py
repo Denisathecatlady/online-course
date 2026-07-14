@@ -36,7 +36,7 @@ SITE_URL = os.environ.get(
     "http://127.0.0.1:8000"
 )
 
-SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "1") == "1" and APP_ENV != "production"
+SHOW_PREVIEW_BANNER = os.environ.get("SHOW_PREVIEW_BANNER", "0") == "1" and APP_ENV != "production"
 
 # calmdog.cz → www.calmdog.cz (jen v produkci)
 PREPEND_WWW = APP_ENV == "production"
