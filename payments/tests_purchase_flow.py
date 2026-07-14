@@ -156,7 +156,7 @@ class FullLeashPurchaseTests(TestCase):
     """
     Scénář:
     Host si koupí vodítko bez očka (7 m, Šedá, cena 1 490 Kč)
-    a zvolí dopravu Zásilkovnou (79 Kč).
+    a zvolí dopravu Zásilkovnou (99 Kč).
 
     Testujeme každý krok flow samostatně i finální stav po webhoku.
     """
@@ -224,7 +224,7 @@ class FullLeashPurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:shipping"))
 
     def test_03_zasilkovna_saves_pickup_point_and_price(self):
-        """POST /shipping/ uloží výdejní místo Zásilkovny a cenu 79 Kč."""
+        """POST /shipping/ uloží výdejní místo Zásilkovny a cenu 99 Kč."""
         self._add_to_cart()
 
         response = self._select_zasilkovna()
@@ -232,7 +232,7 @@ class FullLeashPurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:contact_details"))
         cart = Order.objects.get(status=Order.Status.CART)
         self.assertEqual(cart.shipping_method, Order.ShippingMethod.ZASILKOVNA)
-        self.assertEqual(str(cart.shipping_price), "79.00")
+        self.assertEqual(str(cart.shipping_price), "99.00")
         self.assertEqual(cart.packeta_point_id, "12345")
         self.assertEqual(cart.packeta_point_name, "Z-BOX Praha 1 - Vodičkova")
 
@@ -293,8 +293,11 @@ class FullLeashPurchaseTests(TestCase):
         # Packeta API bylo zavoláno
         mock_packet.assert_called_once()
 
-        # Potvrzovací email odeslán
-        self.assertEqual(len(mail.outbox), 1)
+        # Potvrzovací email zákazníkovi + interní upozornění na info@calmdog.cz
+        self.assertEqual(len(mail.outbox), 2)
+        recipients = [email.to[0] for email in mail.outbox]
+        self.assertIn("zakaznik@example.com", recipients)
+        self.assertIn("info@calmdog.cz", recipients)
 
     def test_06_webhook_is_idempotent_for_already_paid_order(self):
         """
@@ -496,7 +499,7 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
     Scénář:
     Host přidá do košíku vodítko (1 590 Kč, 10 m, Pastelově růžová)
     i online kurz (3 490 Kč, 365 dní).
-    Zvolí Zásilkovnu (79 Kč).
+    Zvolí Zásilkovnu (99 Kč).
     Webhook musí:
       - snížit sklad vodítka o 1
       - udělit CourseAccess ke kurzu
@@ -594,7 +597,7 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
         self._build_combined_cart()
 
         cart = Order.objects.get(status=Order.Status.CART)
-        expected = Decimal("1590.00") + Decimal("3490.00") + Decimal("79.00")
+        expected = Decimal("1590.00") + Decimal("3490.00") + Decimal("99.00")
         self.assertEqual(cart.total_price, expected)
 
     def test_04_checkout_post_creates_stripe_session(self):
@@ -649,8 +652,11 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
         # Packeta zavolána (je fyzická Zásilkovna)
         mock_packet.assert_called_once()
 
-        # Email
-        self.assertEqual(len(mail.outbox), 1)
+        # Potvrzovací email zákazníkovi + interní upozornění na info@calmdog.cz
+        self.assertEqual(len(mail.outbox), 2)
+        recipients = [email.to[0] for email in mail.outbox]
+        self.assertIn("kombinovany@example.com", recipients)
+        self.assertIn("info@calmdog.cz", recipients)
 
     def test_06_webhook_retry_does_not_duplicate_stock_reduction_or_access(self):
         """

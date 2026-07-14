@@ -1287,7 +1287,7 @@ def shipping(request):
         cart.shipping_method = method
 
         if method == Order.ShippingMethod.ZASILKOVNA:
-            cart.shipping_price = 79
+            cart.shipping_price = 99
             cart.packeta_point_id = packeta_point_id
             cart.packeta_point_name = packeta_point_name or packeta_point_id
         elif method == Order.ShippingMethod.KURYR:
