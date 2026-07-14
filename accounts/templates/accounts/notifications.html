@@ -1,0 +1,50 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Účet</p>
+      <h1 class="account-title">Oznámení a souhlasy</h1>
+      <p class="account-copy">Nastavte si, jaké e-maily od nás chcete dostávat.</p>
+    </div>
+    <div class="account-head-actions">
+      <a href="{% url 'accounts:settings' %}" class="btn btn-outline-sage">Zpět na nastavení</a>
+    </div>
+  </div>
+
+  <form method="post" class="account-form">
+    {% csrf_token %}
+
+    <section class="profile-section">
+      <div class="profile-section-head">
+        <h2 class="profile-section-title">Marketingové souhlasy</h2>
+        <p class="profile-section-desc">Souhlas můžete kdykoli odvolat, na nic to nemá vliv.</p>
+      </div>
+      <div class="profile-section-body">
+        <div class="form-check form-switch mb-3">
+          {{ form.marketing_consent }}
+          <label class="form-check-label" for="{{ form.marketing_consent.id_for_label }}">
+            {{ form.marketing_consent.label }}
+          </label>
+          {% if profile.marketing_consent_updated_at %}
+          <p class="account-setting-row-desc mt-1">
+            Naposledy změněno {{ profile.marketing_consent_updated_at|date:"d. m. Y H:i" }}
+          </p>
+          {% endif %}
+        </div>
+        <div class="form-check form-switch">
+          {{ form.review_request_opt_in }}
+          <label class="form-check-label" for="{{ form.review_request_opt_in.id_for_label }}">
+            {{ form.review_request_opt_in.label }}
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <div class="profile-actions">
+      <button type="submit" class="btn btn-sage">Uložit změny</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

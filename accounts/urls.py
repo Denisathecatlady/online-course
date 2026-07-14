@@ -40,4 +40,5 @@ urlpatterns = [
     path("faktury/", views.invoices, name="invoices"),
     path("faktury/<int:pk>/stahnout/", views.download_invoice, name="invoice_download"),
     path("nastaveni/", views.account_settings, name="settings"),
+    path("nastaveni/oznameni/", views.notifications, name="notifications"),
 ]
