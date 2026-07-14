@@ -349,15 +349,26 @@ def invoices(request):
 
 @login_required
 def download_invoice(request, pk):
+    from payments.services.invoice import generate_invoice_pdf
+
     order = get_object_or_404(Order, pk=pk, user=request.user)
 
-    if not order.invoice_pdf:
+    if not order.invoice_number:
         raise Http404("Faktura není k dispozici.")
+
+    # Soubor mohl být smazán (ephemeral filesystem na Renderu) → vygeneruj znovu
+    file_missing = (
+        not order.invoice_pdf
+        or not order.invoice_pdf.storage.exists(order.invoice_pdf.name)
+    )
+    if file_missing:
+        invoice_file = generate_invoice_pdf(order)
+        order.invoice_pdf.save(invoice_file.name, invoice_file, save=True)
 
     return FileResponse(
         order.invoice_pdf.open("rb"),
         as_attachment=True,
-        filename=f"faktura_{order.invoice_number or order.id}.pdf",
+        filename=f"faktura_{order.invoice_number}.pdf",
     )
 
 
