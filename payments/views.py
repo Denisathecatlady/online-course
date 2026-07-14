@@ -663,7 +663,7 @@ def checkout(request):
         if item.course_plan:
             name = item.course_plan.course.title
         elif item.product_variant:
-            name = item.product_variant.product.name
+            name = str(item.product_variant)
         else:
             continue
 
@@ -934,17 +934,21 @@ def _process_paid_order(order, stripe_session, request):
                 )
 
         except PacketaError as e:
+            packeta_error = f"[{e.code}] {e.message}"
             logger.error(
                 f"[Packeta] API chyba při vytváření zásilky "
-                f"(objednávka #{order.id}): [{e.code}] {e.message}"
+                f"(objednávka #{order.id}): {packeta_error}"
             )
         except Exception as e:
+            packeta_error = str(e)
             logger.error(
                 f"[Packeta] Neočekávaná chyba při vytváření zásilky "
-                f"(objednávka #{order.id}): {e}"
+                f"(objednávka #{order.id}): {packeta_error}"
             )
+        else:
+            packeta_error = None
 
-        _send_order_notification_email(order)
+        _send_order_notification_email(order, packeta_error=packeta_error)
 
     # ======================================
     # 4️⃣ VYTVOŘENÍ / NAPOJENÍ UŽIVATELE
@@ -1035,6 +1039,18 @@ def _process_paid_order(order, stripe_session, request):
     _send_order_confirmation_email(order, user, created, request)
 
 
+def _variant_description(variant):
+    """Vrátí popisek varianty produktu (barva, délka, typ zakončení) pro e-maily."""
+    parts = []
+    if variant.color_id:
+        parts.append(f"barva {variant.color.name}")
+    if variant.length:
+        parts.append(variant.get_length_display())
+    if variant.type:
+        parts.append(variant.get_type_display())
+    return ", ".join(parts)
+
+
 def _send_order_confirmation_email(order, user, user_was_created, request):
     """
     Pošle zákazníkovi potvrzovací email s fakturou a (pokud je nový uživatel)
@@ -1055,11 +1071,15 @@ def _send_order_confirmation_email(order, user, user_was_created, request):
 
         # --- sestavení položek ---
         items_text = ""
-        for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+        for item in order.items.select_related(
+            "course_plan__course", "product_variant__product", "product_variant__color"
+        ).all():
             if item.course_plan:
                 items_text += f"  • Online kurz: {item.course_plan.course.title} – varianta {item.course_plan.name} ({item.price_at_purchase:.0f} Kč)\n"
             elif item.product_variant:
-                items_text += f"  • {item.product_variant.product.name} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+                variant_desc = _variant_description(item.product_variant)
+                suffix = f" – {variant_desc}" if variant_desc else ""
+                items_text += f"  • {item.product_variant.product.name}{suffix} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
 
         if order.shipping_price:
             items_text += f"  • Doprava – {order.get_shipping_method_display()}: {order.shipping_price:.0f} Kč\n"
@@ -1113,22 +1133,28 @@ info@calmdog.cz
         return False
 
 
-def _send_order_notification_email(order):
+def _send_order_notification_email(order, packeta_error=None):
     """
     Pošle interní upozornění na info@calmdog.cz o nové objednávce s fyzickým
     produktem (Zásilkovna) – v příloze štítek na balíček, pokud se ho podařilo vytvořit.
     """
     try:
         items_text = ""
-        for item in order.items.select_related("product_variant__product").all():
+        for item in order.items.select_related("product_variant__product", "product_variant__color").all():
             if item.product_variant:
-                items_text += f"  • {item.product_variant.product.name} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+                variant_desc = _variant_description(item.product_variant)
+                suffix = f" – {variant_desc}" if variant_desc else ""
+                items_text += f"  • {item.product_variant.product.name}{suffix} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+
+        tracking_line = order.packeta_tracking_number or "zatím nevytvořeno"
+        if not order.packeta_tracking_number and packeta_error:
+            tracking_line = f"zatím nevytvořeno – chyba: {packeta_error}"
 
         body = f"""Nová objednávka č. {order.id} ({order.first_name} {order.last_name}, {order.buyer_email}):
 
 {items_text}
 Výdejní místo: {order.packeta_point_name or "-"}
-Sledovací číslo Packeta: {order.packeta_tracking_number or "zatím nevytvořeno"}
+Sledovací číslo Packeta: {tracking_line}
 """
 
         email = EmailMessage(

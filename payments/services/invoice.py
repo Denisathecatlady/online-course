@@ -89,6 +89,11 @@ def generate_invoice_pdf(order):
         height - 100,
         f"Datum vystavení: {date.today().strftime('%d.%m.%Y')}",
     )
+    p.drawRightString(
+        width - 40,
+        height - 115,
+        f"Datum splatnosti: {date.today().strftime('%d.%m.%Y')}",
+    )
 
     # --------------------------------------------------
     # DODAVATEL
@@ -148,7 +153,7 @@ def generate_invoice_pdf(order):
         if item.course_plan:
             description = f"Online kurz {item.course_plan.course.title}, varianta {item.course_plan.name}"
         elif item.product_variant:
-            description = item.product_variant.product.name
+            description = str(item.product_variant)
         else:
             description = f"Polozka #{item.id}"
 
