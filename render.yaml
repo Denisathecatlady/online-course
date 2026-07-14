@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: starter
     region: frankfurt
-    branch: refactor-cart-system
+    branch: main
     buildCommand: |
       pip install -r requirements.txt
       python manage.py migrate --noinput
@@ -73,7 +73,7 @@ services:
     runtime: python
     plan: starter
     region: frankfurt
-    branch: refactor-cart-system
+    branch: main
     schedule: "0 8 * * *"   # každý den v 8:00 UTC = 9:00/10:00 CZ
     buildCommand: pip install -r requirements.txt
     startCommand: python manage.py send_review_requests
@@ -105,7 +105,7 @@ services:
     runtime: python
     plan: starter
     region: frankfurt
-    branch: refactor-cart-system
+    branch: main
     schedule: "*/30 * * * *"   # každých 30 minut
     buildCommand: pip install -r requirements.txt
     startCommand: python manage.py sync_google_calendar
@@ -139,7 +139,7 @@ services:
     runtime: python
     plan: starter
     region: frankfurt
-    branch: refactor-cart-system
+    branch: staging
     buildCommand: |
       pip install -r requirements.txt
       python manage.py migrate --noinput
