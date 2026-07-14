@@ -54,23 +54,22 @@ def _escape(value: str) -> str:
 
 def _soap_call(method: str, inner_xml: str) -> ET.Element:
     """
-    Odešle SOAP požadavek na Packeta API a vrátí kořenový element odpovědi.
-    Vyhodí PacketaError pokud API vrátí chybu, nebo requests výjimku při síťové chybě.
+    Odešle XML požadavek na Packeta API a vrátí kořenový element odpovědi.
+
+    Přes název je to legacy "REST" XML API (endpoint /api/rest), NE SOAP –
+    kořenový element požadavku je přímo název metody, žádná soap:Envelope
+    obálka. Vyhodí PacketaError pokud API vrátí chybu, nebo requests
+    výjimku při síťové chybě.
     """
     envelope = (
         '<?xml version="1.0" encoding="utf-8"?>'
-        '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
-        "<soap:Body>"
         f"<{method}>"
         f"{inner_xml}"
         f"</{method}>"
-        "</soap:Body>"
-        "</soap:Envelope>"
     )
 
     headers = {
         "Content-Type": "text/xml; charset=utf-8",
-        "SOAPAction": method,
     }
 
     response = requests.post(
@@ -82,25 +81,17 @@ def _soap_call(method: str, inner_xml: str) -> ET.Element:
     response.raise_for_status()
 
     root = ET.fromstring(response.content)
-    ns = {"soap": "http://schemas.xmlsoap.org/soap/envelope/"}
 
-    # Hledáme chybový element (fault nebo status=error)
-    fault = root.find(".//soap:Fault", ns)
-    if fault is not None:
-        code = fault.findtext("faultcode") or "FAULT"
-        msg = fault.findtext("faultstring") or "Unknown SOAP fault"
-        raise PacketaError(code, msg)
-
-    # Packeta vrací <status>ok</status> nebo <status>error</status>
+    # Packeta vrací <status>ok</status>, jinak <status>fault</status>/<status>error</status>
+    # s chybovým kódem v <fault> a lidsky čitelnou zprávou v <string>.
     status_el = root.find(".//status")
-    if status_el is not None and status_el.text == "error":
-        fault_el = root.find(".//fault")
-        if fault_el is not None:
-            code = fault_el.findtext("code") or "ERROR"
-            msg = fault_el.findtext("message") or "Unknown Packeta error"
-        else:
-            code = "ERROR"
-            msg = "Packeta vrátila chybu bez detailů."
+    if status_el is not None and status_el.text != "ok":
+        code = root.findtext(".//fault") or "ERROR"
+        msg = (
+            root.findtext(".//string")
+            or root.findtext(".//message")
+            or "Packeta vrátila chybu bez detailů."
+        )
         raise PacketaError(code, msg)
 
     return root
@@ -175,7 +166,13 @@ def create_packet(order) -> dict:
 
     root = _soap_call("createPacket", inner_xml)
 
+    # Packeta zabaluje výsledek do <result>/<r> (dle verze API) s <id> zásilky uvnitř;
+    # zkusíme i starší tvar <packetId> pro jistotu.
     packet_id_el = root.find(".//packetId")
+    if packet_id_el is None:
+        packet_id_el = root.find(".//result/id")
+    if packet_id_el is None:
+        packet_id_el = root.find(".//id")
     if packet_id_el is None or not packet_id_el.text:
         raw = ET.tostring(root, encoding="unicode")
         logger.error(f"[Packeta] Odpověď bez packetId (objednávka #{order.id}): {raw[:2000]}")
