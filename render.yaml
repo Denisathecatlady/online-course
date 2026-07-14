@@ -163,7 +163,7 @@ services:
       - key: USE_S3_STORAGE
         value: "0"
       - key: PACKETA_MODE
-        value: mock
+        value: live
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
