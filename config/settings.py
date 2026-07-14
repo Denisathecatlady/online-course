@@ -374,6 +374,14 @@ PACKETA_MOCK_POINT_NAME = os.environ.get(
 )
 
 # ======================================================
+#  MAPY.CZ – našeptávač adres (Suggest API)
+# ======================================================
+# Klíč je bezpečný pro klientský JS – v administraci Mapy.com ho omezit
+# na povolené domény (calmdog.cz, *.calmdog.cz, localhost:*).
+# Bez klíče se našeptávač jen tiše neaktivuje, pole zůstává běžný text input.
+MAPY_API_KEY = os.environ.get("MAPY_API_KEY", "")
+
+# ======================================================
 # HOTEL – GOOGLE CALENDAR (iCal)
 # ======================================================
 HOTEL_ICAL_URL = os.environ.get("HOTEL_ICAL_URL", "")

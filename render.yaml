@@ -53,6 +53,8 @@ services:
         sync: false
       - key: HOTEL_ICAL_URL
         sync: false
+      - key: MAPY_API_KEY
+        sync: false
       - key: DJANGO_ADMIN_URL
         sync: false
       - key: GOOGLE_REVIEW_URL
@@ -182,6 +184,8 @@ services:
       - key: PACKETA_WIDGET_API_KEY
         sync: false
       - key: PACKETA_API_PASSWORD
+        sync: false
+      - key: MAPY_API_KEY
         sync: false
 
 databases:

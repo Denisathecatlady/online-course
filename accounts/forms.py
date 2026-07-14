@@ -112,6 +112,20 @@ class UserProfileForm(forms.ModelForm):
             if name in self.fields:
                 self.fields[name].widget.attrs.setdefault("inputmode", mode)
 
+        # Našeptávač adres (Mapy.cz) – vyplní město a PSČ po výběru ulice
+        if "street" in self.fields:
+            self.fields["street"].widget.attrs.update({
+                "data-address-suggest": "1",
+                "data-city-target": "id_city",
+                "data-zip-target": "id_zip_code",
+            })
+        if "invoice_street" in self.fields:
+            self.fields["invoice_street"].widget.attrs.update({
+                "data-address-suggest": "1",
+                "data-city-target": "id_invoice_city",
+                "data-zip-target": "id_invoice_zip",
+            })
+
     def save(self, commit=True):
         profile = super().save(commit=False)
 

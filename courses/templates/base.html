@@ -70,7 +70,7 @@
 
 </head>
 
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}" data-mapy-api-key="{{ mapy_api_key|default:'' }}">
 
 <a class="skip-link" href="#main">Přeskočit na obsah</a>
 
@@ -369,6 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 {% block extra_js %}{% endblock %}
 
 <script src="{% static 'js/cookies.js' %}"></script>
+<script src="{% static 'js/address-suggest.js' %}" defer></script>
 {% include "partials/cookie_banner.html" %}
 
 {% if not hide_site_navbar %}

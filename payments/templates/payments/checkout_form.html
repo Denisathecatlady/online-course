@@ -131,19 +131,20 @@
 
               <div class="mb-3">
                 <label class="form-label">Ulice *</label>
-                <input type="text" name="street" class="form-control" value="{{ cart.street }}"
-                       autocomplete="address-line1" required>
+                <input type="text" name="street" id="id_checkout_street" class="form-control" value="{{ cart.street }}"
+                       autocomplete="address-line1" required
+                       data-address-suggest="1" data-city-target="id_checkout_city" data-zip-target="id_checkout_zip">
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Město *</label>
-                  <input type="text" name="city" class="form-control" value="{{ cart.city }}"
+                  <input type="text" name="city" id="id_checkout_city" class="form-control" value="{{ cart.city }}"
                          autocomplete="address-level2" required>
                 </div>
                 <div class="col-md-6 mb-0">
                   <label class="form-label">PSČ *</label>
-                  <input type="text" name="zip_code" class="form-control" value="{{ cart.zip_code }}"
+                  <input type="text" name="zip_code" id="id_checkout_zip" class="form-control" value="{{ cart.zip_code }}"
                          autocomplete="postal-code" inputmode="numeric" required>
                 </div>
               </div>
@@ -183,21 +184,22 @@
                 <!-- Ulice -->
                 <div class="mb-3">
                   <label class="form-label">Ulice a číslo popisné</label>
-                  <input type="text" name="invoice_street" class="form-control" value="{{ cart.invoice_street }}"
-                         autocomplete="billing address-line1">
+                  <input type="text" name="invoice_street" id="id_checkout_invoice_street" class="form-control" value="{{ cart.invoice_street }}"
+                         autocomplete="billing address-line1"
+                         data-address-suggest="1" data-city-target="id_checkout_invoice_city" data-zip-target="id_checkout_invoice_zip">
                 </div>
 
                 <!-- PSČ + Město -->
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <label class="form-label">PSČ</label>
-                    <input type="text" name="invoice_zip" class="form-control" value="{{ cart.invoice_zip }}"
+                    <input type="text" name="invoice_zip" id="id_checkout_invoice_zip" class="form-control" value="{{ cart.invoice_zip }}"
                            autocomplete="billing postal-code" inputmode="numeric">
                   </div>
 
                   <div class="col-md-8 mb-3">
                     <label class="form-label">Město</label>
-                    <input type="text" name="invoice_city" class="form-control" value="{{ cart.invoice_city }}"
+                    <input type="text" name="invoice_city" id="id_checkout_invoice_city" class="form-control" value="{{ cart.invoice_city }}"
                            autocomplete="billing address-level2">
                   </div>
                 </div>

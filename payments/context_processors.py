@@ -32,6 +32,7 @@ def cart_context(request):
             "cookie_consent_version": settings.COOKIE_CONSENT_VERSION,
             "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY,
             "recaptcha_enabled": settings.RECAPTCHA_ENABLED,
+            "mapy_api_key": settings.MAPY_API_KEY,
         }
 
     except Exception:
@@ -45,4 +46,5 @@ def cart_context(request):
             "cookie_consent_version": getattr(settings, "COOKIE_CONSENT_VERSION", "1"),
             "recaptcha_site_key": getattr(settings, "RECAPTCHA_SITE_KEY", ""),
             "recaptcha_enabled": getattr(settings, "RECAPTCHA_ENABLED", False),
+            "mapy_api_key": getattr(settings, "MAPY_API_KEY", ""),
         }

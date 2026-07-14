@@ -1126,3 +1126,45 @@ video {
         transform: none !important;
     }
 }
+
+/* ---- Našeptávač adres (Mapy.cz Suggest) ---- */
+.address-suggest-list {
+    position: absolute;
+    z-index: 1200;
+    left: 0;
+    right: 0;
+    margin-top: 0.35rem;
+    padding: 0.4rem;
+    list-style: none;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+}
+
+.address-suggest-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: calc(var(--radius-sm) - 4px);
+    cursor: pointer;
+}
+
+.address-suggest-item:hover,
+.address-suggest-item.is-active {
+    background: var(--sage-light);
+}
+
+.address-suggest-item-main {
+    font-size: 0.95rem;
+    color: var(--text-strong);
+    font-weight: 500;
+}
+
+.address-suggest-item-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
