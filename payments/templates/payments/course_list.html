@@ -33,7 +33,7 @@
           <a href="{% url 'payments:course_detail' course.slug %}" class="course-card-link" aria-label="{{ course.title }}">
           {% endif %}
             <div class="course-card-media">
-              <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="course-card-image">
+              <img src="{{ course.listing_image_url }}" alt="{{ course.title }}" class="course-card-image"{% if forloop.counter > 2 %} loading="lazy"{% endif %}>
             </div>
 
             <div class="course-card-overlay"></div>

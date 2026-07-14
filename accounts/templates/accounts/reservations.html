@@ -1,0 +1,67 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Tréninky</p>
+      <h1 class="account-title">Rezervace tréninků</h1>
+      <p class="account-copy">Přehled vašich rezervací tréninků.</p>
+    </div>
+    <a href="{% url 'trainings:select_location' %}" class="btn btn-sage">Rezervovat trénink</a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} mb-3" role="alert">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <h2 class="account-title account-title-sm">Nadcházející rezervace</h2>
+  {% if upcoming %}
+  <div class="account-list">
+    {% for r in upcoming %}
+    <div class="account-list-item">
+      <div>
+        <strong>{{ r.slot.start|date:"j. n. Y · H:i" }}</strong><br>
+        <small>{{ r.location }} · {{ r.dog_name }}</small>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="account-price">{{ r.get_status_display }}</span>
+        <form method="post" action="{% url 'trainings:cancel_reservation' r.pk %}"
+              onsubmit="return confirm('Opravdu chcete zrušit tuto rezervaci?');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-sage btn-sm">Zrušit</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="account-empty-state">
+    <i class="bi bi-calendar-check" aria-hidden="true"></i>
+    <p>Zatím nemáte žádnou nadcházející rezervaci.</p>
+  </div>
+  {% endif %}
+
+  <h2 class="account-title account-title-sm mt-4">Historie tréninků</h2>
+  {% if history %}
+  <div class="account-list">
+    {% for r in history %}
+    <div class="account-list-item">
+      <div>
+        <strong>{{ r.slot.start|date:"j. n. Y · H:i" }}</strong><br>
+        <small>{{ r.location }} · {{ r.dog_name }}</small>
+      </div>
+      <span class="account-price">{{ r.get_status_display }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="account-empty-state">
+    <i class="bi bi-clock-history" aria-hidden="true"></i>
+    <p>Zatím nemáte žádné absolvované tréninky.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="{% static 'accounts/css/account-dashboard.css' %}">
 {% endblock %}
 
@@ -12,21 +13,54 @@
       {% if not hide_account_sidebar %}
       <aside class="account-sidebar reveal">
         <div class="account-sidebar-card">
-          <span class="badge badge-soft mb-3">Můj účet</span>
-          <h1 class="account-sidebar-title">{{ request.user.first_name|default:request.user.email }}</h1>
-          <p class="account-sidebar-copy">
-            Správa profilu, objednávek a přístupů ke kurzům na jednom místě.
-          </p>
+          <div class="account-profile-head">
+            <span class="account-avatar" aria-hidden="true">{{ request.user.first_name|first|default:request.user.email|first|upper }}</span>
+            <div class="account-profile-meta">
+              <p class="account-profile-name">{{ request.user.get_full_name|default:request.user.email }}</p>
+              <p class="account-profile-since">Členem od {{ request.user.date_joined|date:"F Y" }}</p>
+            </div>
+          </div>
 
-          <nav class="account-nav">
-            <a href="{% url 'accounts:profile' %}" class="account-nav-link {% if account_section == 'profile' %}is-active{% endif %}">
-              Profil
+          <button class="account-sidebar-toggle d-lg-none" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#accountNav"
+                  aria-expanded="false" aria-controls="accountNav">
+            <span><i class="bi bi-list" aria-hidden="true"></i> Sekce účtu</span>
+            <i class="bi bi-chevron-down account-sidebar-toggle-caret" aria-hidden="true"></i>
+          </button>
+
+          <nav id="accountNav" class="account-nav collapse" aria-label="Navigace účtu">
+            <a href="{% url 'accounts:overview' %}" class="account-nav-link{% if account_section == 'overview' %} is-active{% endif %}"{% if account_section == 'overview' %} aria-current="page"{% endif %}>
+              <i class="bi bi-grid-1x2 account-nav-icon" aria-hidden="true"></i><span>Přehled</span>
             </a>
-            <a href="{% url 'accounts:order_history' %}" class="account-nav-link {% if account_section == 'orders' %}is-active{% endif %}">
-              Objednávky
+            <a href="{% url 'accounts:profile' %}" class="account-nav-link{% if account_section == 'profile' %} is-active{% endif %}"{% if account_section == 'profile' %} aria-current="page"{% endif %}>
+              <i class="bi bi-person account-nav-icon" aria-hidden="true"></i><span>Můj profil</span>
             </a>
-            <a href="{% url 'accounts:my_courses' %}" class="account-nav-link {% if account_section == 'courses' %}is-active{% endif %}">
-              Moje kurzy
+            <a href="{% url 'accounts:dogs' %}" class="account-nav-link{% if account_section == 'dogs' %} is-active{% endif %}"{% if account_section == 'dogs' %} aria-current="page"{% endif %}>
+              <svg class="account-nav-icon" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <ellipse cx="5.5" cy="12" rx="2" ry="2.6"/><ellipse cx="9.6" cy="8" rx="2" ry="2.8"/><ellipse cx="14.4" cy="8" rx="2" ry="2.8"/><ellipse cx="18.5" cy="12" rx="2" ry="2.6"/>
+                <path d="M12 12.5c-2.6 0-4.7 1.8-5.4 3.8-.5 1.5.7 2.9 2.3 2.9.9 0 1.7-.4 3.1-.4s2.2.4 3.1.4c1.6 0 2.8-1.4 2.3-2.9-.7-2-2.8-3.8-5.4-3.8z"/>
+              </svg><span>Moji psi</span>
+            </a>
+            <a href="{% url 'accounts:reservations' %}" class="account-nav-link{% if account_section == 'reservations' %} is-active{% endif %}"{% if account_section == 'reservations' %} aria-current="page"{% endif %}>
+              <i class="bi bi-calendar-check account-nav-icon" aria-hidden="true"></i><span>Rezervace tréninků</span>
+            </a>
+            <a href="{% url 'accounts:courses' %}" class="account-nav-link{% if account_section == 'courses' %} is-active{% endif %}"{% if account_section == 'courses' %} aria-current="page"{% endif %}>
+              <i class="bi bi-mortarboard account-nav-icon" aria-hidden="true"></i><span>Moje kurzy</span>
+            </a>
+            <a href="{% url 'accounts:order_history' %}" class="account-nav-link{% if account_section == 'orders' %} is-active{% endif %}"{% if account_section == 'orders' %} aria-current="page"{% endif %}>
+              <i class="bi bi-bag account-nav-icon" aria-hidden="true"></i><span>Historie objednávek</span>
+            </a>
+            <a href="{% url 'accounts:invoices' %}" class="account-nav-link{% if account_section == 'invoices' %} is-active{% endif %}"{% if account_section == 'invoices' %} aria-current="page"{% endif %}>
+              <i class="bi bi-receipt account-nav-icon" aria-hidden="true"></i><span>Faktury</span>
+            </a>
+            <a href="{% url 'accounts:settings' %}" class="account-nav-link{% if account_section == 'settings' %} is-active{% endif %}"{% if account_section == 'settings' %} aria-current="page"{% endif %}>
+              <i class="bi bi-gear account-nav-icon" aria-hidden="true"></i><span>Nastavení účtu</span>
+            </a>
+
+            <span class="account-nav-sep" aria-hidden="true"></span>
+
+            <a href="{% url 'accounts:logout' %}" class="account-nav-link account-nav-link-danger">
+              <i class="bi bi-box-arrow-right account-nav-icon" aria-hidden="true"></i><span>Odhlásit se</span>
             </a>
           </nav>
         </div>

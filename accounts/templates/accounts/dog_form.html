@@ -1,0 +1,29 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Vaši psi</p>
+      <h1 class="account-title">{% if is_new %}Přidat psa{% else %}Upravit psa{% endif %}</h1>
+      <p class="account-copy">Údaje o psech se předvyplní při rezervaci tréninku.</p>
+    </div>
+    <div class="account-head-actions">
+      <a href="{% url 'accounts:dogs' %}" class="btn btn-outline-sage">Zpět na psy</a>
+    </div>
+  </div>
+
+  <datalist id="dog-breeds">
+    {% for b in dog_breeds %}<option value="{{ b }}"></option>{% endfor %}
+  </datalist>
+
+  <form method="post" enctype="multipart/form-data" class="account-form">
+    {% csrf_token %}
+    {% include "accounts/_dog_form_fields.html" with df=form %}
+
+    <div class="profile-actions">
+      <button type="submit" class="btn btn-sage">{% if is_new %}Přidat psa{% else %}Uložit změny{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "accounts/account_base.html" %}
+{% load static %}
+
+{% block extra_css %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'trainings/css/reservations.css' %}">
+{% endblock %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Rezervace tréninku</p>
+      <h2 class="account-title mb-1">Vyberte město</h2>
+      <p class="account-copy mb-0">
+        Nejprve zvolte lokalitu, poté se zobrazí volné termíny.
+      </p>
+    </div>
+    <a href="{% url 'trainings:my_reservations' %}" class="btn btn-outline-sage">
+      Zpět
+    </a>
+  </div>
+
+  {% include "trainings/_messages.html" %}
+
+  {% if locations %}
+    <div class="tr-location-grid">
+      {% for location in locations %}
+      <a href="{% url 'trainings:available_slots' location.slug %}" class="tr-location-tile">
+        <span class="tr-location-name">{{ location.name }}</span>
+        {% if location.address %}
+          <span class="tr-location-address">{{ location.address }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="account-empty">Momentálně nejsou k dispozici žádné lokality.</p>
+  {% endif %}
+</div>
+{% endblock %}

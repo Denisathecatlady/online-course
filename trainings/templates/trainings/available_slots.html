@@ -1,0 +1,96 @@
+{% extends "accounts/account_base.html" %}
+{% load static %}
+
+{% block extra_css %}{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="{% static 'trainings/css/reservations.css' %}">
+{% endblock %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Volné termíny</p>
+      <h2 class="account-title mb-1">{{ location.name }}</h2>
+      <p class="account-copy mb-0">
+        Vyberte si termín tréninku. Obsazené termíny se nezobrazují.
+      </p>
+    </div>
+    <a href="{% url 'trainings:select_location' %}" class="btn btn-outline-sage">
+      Změnit město
+    </a>
+  </div>
+
+  {% include "trainings/_messages.html" %}
+
+  {% if days %}
+    <div class="tr-day-filter">
+      <label for="tr-day-filter" class="form-label">Filtrovat podle dne</label>
+      <input type="text" id="tr-day-filter" class="form-control" placeholder="Všechny dny" readonly>
+    </div>
+
+    <div id="tr-days">
+      {% for day in days %}
+      <div class="tr-day" data-date="{{ day.date|date:'Y-m-d' }}">
+        <h3 class="tr-day-title">{{ day.date|date:"l j. F Y" }}</h3>
+        <div class="tr-slots">
+          {% for slot in day.slots %}
+          <a href="{% url 'trainings:book_slot' slot.id %}"
+             class="tr-slot{% if slot.is_group %} tr-slot-group{% endif %}">
+            <span class="tr-slot-time">{{ slot.start|date:"H:i" }}–{{ slot.end|date:"H:i" }}</span>
+            <span class="tr-slot-meta">
+              {{ slot.trainer.name }}{% if slot.is_group %} · volných {{ slot.calc_spots_left }}/{{ slot.capacity }}{% endif %}
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="account-empty">
+      Pro tuto lokalitu nejsou aktuálně žádné volné termíny.
+      Zkuste to prosím později.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}{{ block.super }}
+{% if days %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var dayEls = Array.prototype.slice.call(document.querySelectorAll("#tr-days .tr-day"));
+  var availableDates = dayEls.map(function (el) { return el.dataset.date; });
+
+  function showAll() {
+    dayEls.forEach(function (el) { el.style.display = ""; });
+  }
+
+  function showOnly(dateStr) {
+    dayEls.forEach(function (el) {
+      el.style.display = (el.dataset.date === dateStr) ? "" : "none";
+    });
+  }
+
+  var input = document.getElementById("tr-day-filter");
+  if (input && window.flatpickr) {
+    flatpickr(input, {
+      locale: "cs",
+      dateFormat: "Y-m-d",
+      enable: availableDates.length ? availableDates : undefined,
+      onChange: function (selectedDates, dateStr) {
+        if (dateStr) { showOnly(dateStr); } else { showAll(); }
+      },
+    });
+    input.addEventListener("dblclick", function () {
+      input._flatpickr.clear();
+      showAll();
+    });
+  }
+});
+</script>
+{% endif %}
+{% endblock %}

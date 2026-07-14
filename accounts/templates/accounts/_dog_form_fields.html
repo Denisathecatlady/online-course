@@ -1,0 +1,68 @@
+{% comment %}Pole formuláře psa. Očekává proměnnou `df` (DogForm).{% endcomment %}
+{% if df.non_field_errors %}
+  <div class="invalid-feedback d-block mb-2">{{ df.non_field_errors }}</div>
+{% endif %}
+<div class="row">
+  <div class="col-md-6 mb-3">
+    {{ df.name.label_tag }}
+    {{ df.name }}
+    {% for error in df.name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="col-md-6 mb-3">
+    {{ df.breed.label_tag }}
+    {{ df.breed }}
+  </div>
+
+  <div class="col-md-4 mb-3">
+    {{ df.sex.label_tag }}
+    {{ df.sex }}
+  </div>
+  <div class="col-md-4 mb-3">
+    {{ df.birth_date.label_tag }}
+    {{ df.birth_date }}
+  </div>
+  <div class="col-md-4 mb-3">
+    {{ df.is_neutered.label_tag }}
+    {{ df.is_neutered }}
+  </div>
+
+  <div class="col-md-4 mb-3">
+    {{ df.weight.label_tag }}
+    {{ df.weight }}
+  </div>
+  <div class="col-md-4 mb-3">
+    {{ df.color.label_tag }}
+    {{ df.color }}
+  </div>
+  <div class="col-md-4 mb-3">
+    {{ df.chip_number.label_tag }}
+    {{ df.chip_number }}
+  </div>
+
+  <div class="col-md-6 mb-3">
+    {{ df.vaccinated_on.label_tag }}
+    {{ df.vaccinated_on }}
+  </div>
+  <div class="col-md-6 mb-3">
+    {{ df.dewormed_on.label_tag }}
+    {{ df.dewormed_on }}
+  </div>
+
+  <div class="col-12 mb-3">
+    {{ df.diet.label_tag }}
+    {{ df.diet }}
+  </div>
+
+  <div class="col-md-6 mb-3">
+    {{ df.photo.label_tag }}
+    {% if df.instance.photo %}
+      <div class="dog-form-photo"><img src="{{ df.instance.photo.url }}" alt="{{ df.instance.name }}"></div>
+    {% endif %}
+    {{ df.photo }}
+  </div>
+
+  <div class="col-12 mb-3">
+    {{ df.notes.label_tag }}
+    {{ df.notes }}
+  </div>
+</div>

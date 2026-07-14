@@ -2,8 +2,14 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models, transaction
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from datetime import timedelta
+
+# Soukromé úložiště pro faktury a přepravní štítky – mimo MEDIA_ROOT, takže
+# tyto soubory nejde stáhnout přímou URL (viz PRIVATE_MEDIA_ROOT v settings).
+# Přístup výhradně přes chráněné view s kontrolou vlastníka objednávky.
+private_storage = FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT)
 
 
 # ======================================
@@ -175,7 +181,7 @@ class Order(models.Model):
 
     packeta_packet_id = models.CharField("Packeta – ID zásilky", max_length=100, blank=True, null=True)
     packeta_tracking_number = models.CharField("Packeta – sledovací číslo", max_length=100, blank=True, null=True)
-    packeta_label_pdf = models.FileField("Packeta – štítek (PDF)", upload_to="packeta_labels/", blank=True, null=True)
+    packeta_label_pdf = models.FileField("Packeta – štítek (PDF)", upload_to="packeta_labels/", storage=private_storage, blank=True, null=True)
     packeta_point_id = models.CharField("Packeta – ID výdejního místa", max_length=100, blank=True, null=True)
     packeta_point_name = models.CharField("Packeta – výdejní místo", max_length=255, blank=True, null=True)
 
@@ -199,7 +205,7 @@ class Order(models.Model):
         blank=True,
     )
 
-    invoice_pdf = models.FileField("Faktura (PDF)", upload_to="invoices/", blank=True, null=True)
+    invoice_pdf = models.FileField("Faktura (PDF)", upload_to="invoices/", storage=private_storage, blank=True, null=True)
 
     # ==============================
     # BUSINESS LOGIC
@@ -675,3 +681,48 @@ class WelcomeCouponClaim(models.Model):
 
     def __str__(self):
         return f"{self.email} ({self.created_at:%Y-%m-%d})"
+
+
+# ======================================
+# ODBĚRATELÉ NEWSLETTERU
+# ======================================
+
+class NewsletterSubscriber(models.Model):
+    """
+    Čistý seznam kontaktů se souhlasem s newsletterem, oddělený od objednávek.
+    Deduplikace přes unikátní e-mail – jeden člověk = jeden řádek.
+    """
+    email = models.EmailField("E-mail", unique=True, db_index=True)
+    first_name = models.CharField("Jméno", max_length=120, blank=True)
+    last_name = models.CharField("Příjmení", max_length=120, blank=True)
+    is_subscribed = models.BooleanField("Odebírá", default=True)
+    source = models.CharField("Zdroj souhlasu", max_length=50, default="checkout", blank=True)
+    created_at = models.DateTimeField("Souhlas udělen", auto_now_add=True)
+    updated_at = models.DateTimeField("Aktualizováno", auto_now=True)
+
+    class Meta:
+        verbose_name = "Odběratel newsletteru"
+        verbose_name_plural = "Odběratelé newsletteru"
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return self.email
+
+    @classmethod
+    def sync_from_order(cls, order):
+        """
+        Vloží/aktualizuje odběratele z objednávky. Volá se jen tehdy,
+        když byl souhlas udělen (newsletter_opt_in=True).
+        """
+        email = (order.buyer_email or "").strip().lower()
+        if not email:
+            return None
+
+        defaults = {"is_subscribed": True, "source": "checkout"}
+        if order.first_name:
+            defaults["first_name"] = order.first_name.strip()
+        if order.last_name:
+            defaults["last_name"] = order.last_name.strip()
+
+        subscriber, _ = cls.objects.update_or_create(email=email, defaults=defaults)
+        return subscriber

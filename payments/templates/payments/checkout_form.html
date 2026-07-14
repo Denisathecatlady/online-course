@@ -85,25 +85,29 @@
               <div class="mb-3">
                 <label class="form-label">E-mail *</label>
                 <input type="email" name="email" class="form-control"
-                       value="{{ cart.buyer_email|default:user.email }}" required>
+                       value="{{ cart.buyer_email|default:user.email }}"
+                       autocomplete="email" inputmode="email" required>
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Jméno *</label>
                   <input type="text" name="first_name" class="form-control"
-                         value="{{ cart.first_name|default:user.first_name }}" required>
+                         value="{{ cart.first_name|default:user.first_name }}"
+                         autocomplete="given-name" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Příjmení *</label>
                   <input type="text" name="last_name" class="form-control"
-                         value="{{ cart.last_name|default:user.last_name }}" required>
+                         value="{{ cart.last_name|default:user.last_name }}"
+                         autocomplete="family-name" required>
                 </div>
               </div>
 
               <div class="mb-0">
                 <label class="form-label">Telefon *</label>
-                <input type="text" name="phone" class="form-control" value="{{ cart.phone }}" required>
+                <input type="tel" name="phone" class="form-control" value="{{ cart.phone }}"
+                       autocomplete="tel" inputmode="tel" required>
               </div>
             </div>
           </div>
@@ -127,17 +131,20 @@
 
               <div class="mb-3">
                 <label class="form-label">Ulice *</label>
-                <input type="text" name="street" class="form-control" value="{{ cart.street }}" required>
+                <input type="text" name="street" class="form-control" value="{{ cart.street }}"
+                       autocomplete="address-line1" required>
               </div>
 
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Město *</label>
-                  <input type="text" name="city" class="form-control" value="{{ cart.city }}" required>
+                  <input type="text" name="city" class="form-control" value="{{ cart.city }}"
+                         autocomplete="address-level2" required>
                 </div>
                 <div class="col-md-6 mb-0">
                   <label class="form-label">PSČ *</label>
-                  <input type="text" name="zip_code" class="form-control" value="{{ cart.zip_code }}" required>
+                  <input type="text" name="zip_code" class="form-control" value="{{ cart.zip_code }}"
+                         autocomplete="postal-code" inputmode="numeric" required>
                 </div>
               </div>
             </div>
@@ -163,31 +170,35 @@
                 <!-- Jméno / firma -->
                 <div class="mb-3">
                   <label class="form-label">Jméno / název firmy</label>
-                  <input type="text" name="invoice_name" class="form-control" value="{{ cart.invoice_name }}">
+                  <input type="text" name="invoice_name" class="form-control" value="{{ cart.invoice_name }}"
+                         autocomplete="billing organization">
                 </div>
 
                 <!-- IČO -->
                 <div class="mb-3">
                   <label class="form-label">IČO</label>
-                  <input type="text" name="invoice_ico" class="form-control">
+                  <input type="text" name="invoice_ico" class="form-control" inputmode="numeric">
                 </div>
 
                 <!-- Ulice -->
                 <div class="mb-3">
                   <label class="form-label">Ulice a číslo popisné</label>
-                  <input type="text" name="invoice_street" class="form-control" value="{{ cart.invoice_street }}">
+                  <input type="text" name="invoice_street" class="form-control" value="{{ cart.invoice_street }}"
+                         autocomplete="billing address-line1">
                 </div>
 
                 <!-- PSČ + Město -->
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <label class="form-label">PSČ</label>
-                    <input type="text" name="invoice_zip" class="form-control" value="{{ cart.invoice_zip }}">
+                    <input type="text" name="invoice_zip" class="form-control" value="{{ cart.invoice_zip }}"
+                           autocomplete="billing postal-code" inputmode="numeric">
                   </div>
 
                   <div class="col-md-8 mb-3">
                     <label class="form-label">Město</label>
-                    <input type="text" name="invoice_city" class="form-control" value="{{ cart.invoice_city }}">
+                    <input type="text" name="invoice_city" class="form-control" value="{{ cart.invoice_city }}"
+                           autocomplete="billing address-level2">
                   </div>
                 </div>
 

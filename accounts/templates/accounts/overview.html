@@ -1,0 +1,64 @@
+{% extends "accounts/account_base.html" %}
+{% load static %}
+
+{% block account_content %}
+<div class="account-content-card account-overview-hero">
+  <span class="account-avatar account-avatar-lg" aria-hidden="true">{{ request.user.first_name|first|default:request.user.email|first|upper }}</span>
+  <div class="account-overview-hero-text">
+    <p class="account-eyebrow">Přehled účtu</p>
+    <h1 class="account-title">Vítejte zpět{% if request.user.first_name %}, {{ request.user.first_name }}{% endif %}</h1>
+    <p class="account-copy">Členem CalmDog od {{ request.user.date_joined|date:"j. F Y" }}.</p>
+  </div>
+</div>
+
+<div class="account-cards">
+  <div class="account-card">
+    <span class="account-stat-icon"><i class="bi bi-mortarboard" aria-hidden="true"></i></span>
+    <div class="account-stat-value">{{ stats.purchased }}</div>
+    <p class="account-stat-label">Zakoupené kurzy</p>
+  </div>
+  <div class="account-card">
+    <span class="account-stat-icon"><i class="bi bi-play-circle" aria-hidden="true"></i></span>
+    <div class="account-stat-value">{{ stats.active }}</div>
+    <p class="account-stat-label">Aktivní přístupy</p>
+  </div>
+  <div class="account-card">
+    <span class="account-stat-icon"><i class="bi bi-patch-check" aria-hidden="true"></i></span>
+    <div class="account-stat-value">{{ stats.completed }}</div>
+    <p class="account-stat-label">Dokončené kurzy</p>
+  </div>
+  <div class="account-card">
+    <span class="account-stat-icon"><i class="bi bi-calendar-check" aria-hidden="true"></i></span>
+    <div class="account-stat-value">{{ stats.upcoming_trainings }}</div>
+    <p class="account-stat-label">Nadcházející tréninky</p>
+  </div>
+  <div class="account-card">
+    <span class="account-stat-icon"><i class="bi bi-bag" aria-hidden="true"></i></span>
+    <div class="account-stat-value">{{ stats.orders }}</div>
+    <p class="account-stat-label">Objednávky</p>
+  </div>
+</div>
+
+{% if recent_courses %}
+<div class="account-content-card mt-4">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Rozstudováno</p>
+      <h2 class="account-title account-title-sm">Vaše kurzy</h2>
+    </div>
+    <a href="{% url 'accounts:courses' %}" class="btn btn-outline-sage btn-sm">Všechny kurzy</a>
+  </div>
+  <div class="account-list">
+    {% for access in recent_courses %}
+    <div class="account-list-item account-overview-course">
+      <div class="account-overview-course-main">
+        <strong>{{ access.course.title }}</strong>
+        <div class="account-access-progress-bar mt-2"><span style="width: {{ access.progress_percent }}%;"></span></div>
+      </div>
+      <span class="account-price">{{ access.progress_percent }} %</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

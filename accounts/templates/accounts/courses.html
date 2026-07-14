@@ -1,0 +1,43 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Vzdělávání</p>
+      <h1 class="account-title">Moje kurzy</h1>
+      <p class="account-copy">Vaše zakoupené kurzy a průběh studia.</p>
+    </div>
+  </div>
+
+  {% if accesses %}
+  <div class="account-course-grid">
+    {% for access in accesses %}
+    <article class="account-course-tile">
+      <div class="account-course-thumb">
+        {% if access.course.image %}
+          <img src="{{ access.course.image.url }}" alt="{{ access.course.title }}">
+        {% else %}
+          <span class="account-course-thumb-fallback" aria-hidden="true"><i class="bi bi-mortarboard"></i></span>
+        {% endif %}
+      </div>
+      <div class="account-course-body">
+        <h2 class="account-course-tile-title">{{ access.course.title }}</h2>
+        <div class="account-access-progress-row">
+          <span>Průběh studia</span><strong>{{ access.progress_percent }} %</strong>
+        </div>
+        <div class="account-access-progress-bar"><span style="width: {{ access.progress_percent }}%;"></span></div>
+        <a href="{% url 'courses:course_dashboard' access.course.slug %}" class="btn btn-sage btn-sm mt-3">{{ access.cta_label }}</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="account-empty-state">
+    <i class="bi bi-mortarboard" aria-hidden="true"></i>
+    <p>Zatím nemáte žádné zakoupené kurzy.</p>
+    <a href="{% url 'payments:course_list' %}" class="btn btn-sage mt-2">Prohlédnout kurzy</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

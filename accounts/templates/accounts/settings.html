@@ -1,0 +1,51 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Účet</p>
+      <h1 class="account-title">Nastavení účtu</h1>
+      <p class="account-copy">Přihlašovací údaje, kontakt a souhlasy na jednom místě.</p>
+    </div>
+  </div>
+
+  <div class="account-settings-list">
+    <div class="account-setting-row">
+      <span class="account-setting-row-icon"><i class="bi bi-envelope" aria-hidden="true"></i></span>
+      <h2 class="account-setting-row-title">E-mail</h2>
+      <p class="account-setting-row-desc">{{ request.user.email }}</p>
+      <div class="account-setting-row-action">
+        <a href="{% url 'account_email' %}" class="btn btn-outline-sage btn-sm">Změnit</a>
+      </div>
+    </div>
+
+    <div class="account-setting-row">
+      <span class="account-setting-row-icon"><i class="bi bi-shield-lock" aria-hidden="true"></i></span>
+      <h2 class="account-setting-row-title">Heslo</h2>
+      <p class="account-setting-row-desc">Změňte si přihlašovací heslo k účtu.</p>
+      <div class="account-setting-row-action">
+        <a href="{% url 'account_change_password' %}" class="btn btn-outline-sage btn-sm">Změnit heslo</a>
+      </div>
+    </div>
+
+    <div class="account-setting-row">
+      <span class="account-setting-row-icon"><i class="bi bi-telephone" aria-hidden="true"></i></span>
+      <h2 class="account-setting-row-title">Kontakt a adresa</h2>
+      <p class="account-setting-row-desc">Telefon i doručovací a fakturační údaje upravíte ve svém profilu.</p>
+      <div class="account-setting-row-action">
+        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-outline-sage btn-sm">Upravit v profilu</a>
+      </div>
+    </div>
+
+    <div class="account-setting-row">
+      <span class="account-setting-row-icon"><i class="bi bi-bell" aria-hidden="true"></i></span>
+      <h2 class="account-setting-row-title">Oznámení a souhlasy</h2>
+      <p class="account-setting-row-desc">Nastavení oznámení a marketingových / GDPR souhlasů brzy doplníme.</p>
+      <div class="account-setting-row-action">
+        <span class="badge badge-soft">Připravujeme</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

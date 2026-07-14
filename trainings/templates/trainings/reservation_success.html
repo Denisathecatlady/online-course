@@ -1,0 +1,50 @@
+{% extends "accounts/account_base.html" %}
+{% load static %}
+
+{% block extra_css %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'trainings/css/reservations.css' %}">
+{% endblock %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="tr-success-icon">✓</div>
+
+  <p class="account-eyebrow mb-2">Hotovo</p>
+  <h2 class="account-title mb-1">Rezervace potvrzena</h2>
+  <p class="account-copy">
+    Potvrzení jsme Vám poslali e-mailem na <strong>{{ reservation.email }}</strong>.
+  </p>
+
+  <div class="tr-summary mt-3">
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Město</span>
+      <span class="tr-summary-value">{{ reservation.slot.location.name }}</span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Datum</span>
+      <span class="tr-summary-value">{{ reservation.slot.start|date:"l j. n. Y" }}</span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Čas</span>
+      <span class="tr-summary-value">
+        {{ reservation.slot.start|date:"H:i" }}–{{ reservation.slot.end|date:"H:i" }}
+      </span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Typ</span>
+      <span class="tr-summary-value">
+        {% if reservation.slot.is_group %}Skupinový trénink{% else %}Individuální trénink{% endif %}
+      </span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Pes</span>
+      <span class="tr-summary-value">{{ reservation.dog_name }}</span>
+    </div>
+  </div>
+
+  <div class="d-flex gap-3 flex-wrap mt-4">
+    <a href="{% url 'trainings:my_reservations' %}" class="btn btn-sage">Moje rezervace</a>
+    <a href="{% url 'trainings:select_location' %}" class="btn btn-outline-sage">Rezervovat další</a>
+  </div>
+</div>
+{% endblock %}

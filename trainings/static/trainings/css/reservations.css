@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Rezervační systém tréninků (profilová sekce).
+   Třídy jsou prefixované `tr-`, aby nekolidovaly s veřejnou stránkou tréninků
+   (courses/static/css/trainings.css). Barvy z design tokenů (base.css).
+   ========================================================================== */
+
+/* ── Výběr lokality ──────────────────────────────────────── */
+.tr-location-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.tr-location-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.4rem 1.5rem;
+  border-radius: var(--radius-lg, 24px);
+  background: #fff;
+  border: 1px solid var(--line, rgba(95, 118, 107, 0.12));
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(31, 47, 42, 0.06));
+  text-decoration: none;
+  color: var(--text, #2f3e3a);
+  transition: transform 0.25s var(--ease, ease), box-shadow 0.25s, border-color 0.25s;
+}
+
+.tr-location-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong, rgba(95, 118, 107, 0.22));
+  box-shadow: var(--shadow-md, 0 12px 30px rgba(31, 47, 42, 0.08));
+  color: var(--sage-deep, #29493c);
+}
+
+.tr-location-name { font-size: 1.15rem; font-weight: 600; }
+.tr-location-address { font-size: 0.85rem; color: var(--text-muted, #6f7c82); }
+
+/* ── Dny + sloty ─────────────────────────────────────────── */
+.tr-day { margin-bottom: 1.75rem; }
+
+.tr-day-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--sage-strong, #3e6a57);
+  text-transform: capitalize;
+}
+
+.tr-slots { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+.tr-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 150px;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md, 18px);
+  background: var(--cream, #fbfaf7);
+  border: 1px solid var(--line, rgba(95, 118, 107, 0.12));
+  text-decoration: none;
+  color: var(--text, #2f3e3a);
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.tr-slot:hover {
+  transform: translateY(-2px);
+  border-color: var(--sage, #5f766b);
+  background: #fff;
+  color: var(--sage-deep, #29493c);
+}
+
+.tr-slot-time { font-weight: 600; font-size: 1rem; }
+.tr-slot-meta { font-size: 0.78rem; color: var(--text-muted, #6f7c82); }
+.tr-slot-group { border-left: 3px solid var(--accent, #ef9d58); }
+
+.tr-day-filter { max-width: 260px; margin-bottom: 1.75rem; }
+
+/* ── Souhrn rezervace ────────────────────────────────────── */
+.tr-summary {
+  padding: 1.1rem 1.4rem;
+  border-radius: var(--radius-lg, 24px);
+  background: var(--sage-soft, #e6ece9);
+  margin-bottom: 1.5rem;
+}
+
+.tr-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+.tr-summary-row + .tr-summary-row { border-top: 1px solid rgba(95, 118, 107, 0.15); }
+.tr-summary-label { color: var(--text-muted, #6f7c82); }
+.tr-summary-value { font-weight: 600; color: var(--text-strong, #1f2f2a); text-align: right; }
+
+/* ── Rezervace v profilu (řádky) ─────────────────────────── */
+.tr-reservation-main { flex: 1; }
+.tr-reservation-when { font-weight: 600; color: var(--text-strong, #1f2f2a); }
+.tr-reservation-meta { font-size: 0.85rem; color: var(--text-muted, #6f7c82); }
+
+.tr-status {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tr-status-confirmed { background: var(--sage-soft, #e6ece9); color: var(--sage-deep, #29493c); }
+.tr-status-completed { background: #eef1f4; color: #4a5560; }
+.tr-status-canceled { background: #f7e7e3; color: #9a4b39; }
+
+/* ── Úspěšná rezervace ───────────────────────────────────── */
+.tr-success-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.25rem;
+  border-radius: 999px;
+  background: var(--sage-soft, #e6ece9);
+  color: var(--sage-deep, #29493c);
+  font-size: 2rem;
+}

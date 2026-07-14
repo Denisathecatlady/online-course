@@ -1,0 +1,65 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Vaši psi</p>
+      <h1 class="account-title">Moji psi</h1>
+      <p class="account-copy">Údaje o vašich psech se předvyplní při rezervaci tréninku.</p>
+    </div>
+    <div class="account-head-actions">
+      <a href="{% url 'accounts:dog_add' %}" class="btn btn-sage">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Přidat psa
+      </a>
+    </div>
+  </div>
+
+  {% if dogs %}
+  <div class="account-dog-grid">
+    {% for dog in dogs %}
+    <article class="account-dog-card">
+      <span class="account-dog-photo{% if not dog.photo %} account-dog-photo-empty{% endif %}" aria-hidden="true">
+        {% if dog.photo %}
+          <img src="{{ dog.photo.url }}" alt="{{ dog.name }}">
+        {% else %}
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+            <ellipse cx="5.5" cy="12" rx="2" ry="2.6"/><ellipse cx="9.6" cy="8" rx="2" ry="2.8"/><ellipse cx="14.4" cy="8" rx="2" ry="2.8"/><ellipse cx="18.5" cy="12" rx="2" ry="2.6"/>
+            <path d="M12 12.5c-2.6 0-4.7 1.8-5.4 3.8-.5 1.5.7 2.9 2.3 2.9.9 0 1.7-.4 3.1-.4s2.2.4 3.1.4c1.6 0 2.8-1.4 2.3-2.9-.7-2-2.8-3.8-5.4-3.8z"/>
+          </svg>
+        {% endif %}
+      </span>
+      <h2 class="account-dog-name">{{ dog.name }}</h2>
+      <dl class="account-dog-meta">
+        {% if dog.breed %}<div><dt>Plemeno</dt><dd>{{ dog.breed }}</dd></div>{% endif %}
+        {% if dog.get_sex_display %}<div><dt>Pohlaví</dt><dd>{{ dog.get_sex_display }}</dd></div>{% endif %}
+        {% if dog.birth_date %}<div><dt>Narození</dt><dd>{{ dog.birth_date|date:"j. n. Y" }}{% if dog.age_years is not None %} · {{ dog.age_years }} r.{% endif %}</dd></div>{% endif %}
+        {% if dog.get_is_neutered_display %}<div><dt>Kastrace</dt><dd>{{ dog.get_is_neutered_display }}</dd></div>{% endif %}
+        {% if dog.weight %}<div><dt>Hmotnost</dt><dd>{{ dog.weight|floatformat:"-2" }} kg</dd></div>{% endif %}
+        {% if dog.color %}<div><dt>Barva</dt><dd>{{ dog.color }}</dd></div>{% endif %}
+        {% if dog.chip_number %}<div><dt>Čip</dt><dd>{{ dog.chip_number }}</dd></div>{% endif %}
+        {% if dog.vaccinated_on %}<div><dt>Očkování</dt><dd>{{ dog.vaccinated_on|date:"j. n. Y" }}</dd></div>{% endif %}
+        {% if dog.dewormed_on %}<div><dt>Odčervení</dt><dd>{{ dog.dewormed_on|date:"j. n. Y" }}</dd></div>{% endif %}
+        {% if dog.diet %}<div><dt>Dieta</dt><dd>{{ dog.diet }}</dd></div>{% endif %}
+      </dl>
+      {% if dog.notes %}<p class="account-dog-note">{{ dog.notes }}</p>{% endif %}
+      <div class="account-dog-actions">
+        <a href="{% url 'accounts:dog_edit' dog.pk %}" class="btn btn-outline-sage btn-sm">Upravit</a>
+        <form method="post" action="{% url 'accounts:dog_delete' dog.pk %}"
+              onsubmit="return confirm('Opravdu chcete smazat psa {{ dog.name|escapejs }}?');">
+          {% csrf_token %}
+          <button type="submit" class="account-dog-delete-btn">Smazat</button>
+        </form>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="account-empty-state">
+    <i class="bi bi-emoji-smile" aria-hidden="true"></i>
+    <p>Zatím tu nemáte žádného psa.</p>
+    <a href="{% url 'accounts:dog_add' %}" class="btn btn-sage mt-2">Přidat prvního psa</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

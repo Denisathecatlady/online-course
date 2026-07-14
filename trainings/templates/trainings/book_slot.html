@@ -1,0 +1,107 @@
+{% extends "accounts/account_base.html" %}
+{% load static %}
+
+{% block extra_css %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'trainings/css/reservations.css' %}">
+{% endblock %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow mb-2">Potvrzení rezervace</p>
+      <h2 class="account-title mb-1">Rezervace tréninku</h2>
+      <p class="account-copy mb-0">
+        Zkontrolujte údaje a potvrďte rezervaci.
+      </p>
+    </div>
+    <a href="{% url 'trainings:available_slots' slot.location.slug %}" class="btn btn-outline-sage">
+      Zpět na termíny
+    </a>
+  </div>
+
+  {% include "trainings/_messages.html" %}
+
+  <div class="tr-summary">
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Město</span>
+      <span class="tr-summary-value">{{ slot.location.name }}</span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Datum</span>
+      <span class="tr-summary-value">{{ slot.start|date:"l j. n. Y" }}</span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Čas</span>
+      <span class="tr-summary-value">{{ slot.start|date:"H:i" }}–{{ slot.end|date:"H:i" }}</span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Typ</span>
+      <span class="tr-summary-value">
+        {% if slot.is_group %}Skupinový trénink{% else %}Individuální trénink{% endif %}
+      </span>
+    </div>
+    <div class="tr-summary-row">
+      <span class="tr-summary-label">Trenér</span>
+      <span class="tr-summary-value">{{ slot.trainer.name }}</span>
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-sm-6">
+        <label for="{{ form.first_name.id_for_label }}" class="form-label">
+          {{ form.first_name.label }} <span class="text-danger">*</span>
+        </label>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="col-sm-6">
+        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+          {{ form.last_name.label }} <span class="text-danger">*</span>
+        </label>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="col-sm-6">
+        <label for="{{ form.email.id_for_label }}" class="form-label">
+          {{ form.email.label }} <span class="text-danger">*</span>
+        </label>
+        {{ form.email }}
+        {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="col-sm-6">
+        <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}<div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="col-sm-6">
+        <label for="{{ form.dog_name.id_for_label }}" class="form-label">
+          {{ form.dog_name.label }} <span class="text-danger">*</span>
+        </label>
+        {{ form.dog_name }}
+        {% if form.dog_name.errors %}<div class="invalid-feedback d-block">{{ form.dog_name.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="col-12">
+        <label for="{{ form.note.id_for_label }}" class="form-label">{{ form.note.label }}</label>
+        {{ form.note }}
+        {% if form.note.errors %}<div class="invalid-feedback d-block">{{ form.note.errors.0 }}</div>{% endif %}
+      </div>
+    </div>
+
+    <div class="d-flex gap-3 flex-wrap mt-4">
+      <button type="submit" class="btn btn-sage btn-lg">Potvrdit rezervaci</button>
+      <a href="{% url 'trainings:available_slots' slot.location.slug %}" class="btn btn-outline-sage btn-lg">
+        Zrušit
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

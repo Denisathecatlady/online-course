@@ -10,7 +10,7 @@ from import_export import resources, fields
 from import_export.admin import ExportMixin
 from rangefilter.filters import DateRangeFilter
 
-from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim, NewsletterSubscriber
 from .services.packeta import create_packet, get_packet_label_pdf, PacketaError
 
 
@@ -75,6 +75,13 @@ class CouponUsageResource(resources.ModelResource):
     class Meta:
         model = CouponUsage
         fields = ("id", "kupon", "zakaznik", "order", "discount_amount", "used_at")
+        export_order = fields
+
+
+class NewsletterSubscriberResource(resources.ModelResource):
+    class Meta:
+        model = NewsletterSubscriber
+        fields = ("email", "first_name", "last_name", "is_subscribed", "source", "created_at")
         export_order = fields
 
     def dehydrate_kupon(self, obj):
@@ -678,3 +685,24 @@ class WelcomeCouponClaimAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = NewsletterSubscriberResource
+    list_display = ("email", "first_name", "last_name", "is_subscribed", "created_at")
+    list_filter = ("is_subscribed", ("created_at", DateRangeFilter))
+    search_fields = ("email", "first_name", "last_name")
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+    actions = ["mark_subscribed", "mark_unsubscribed"]
+
+    @admin.action(description="Označit jako odebírající")
+    def mark_subscribed(self, request, queryset):
+        updated = queryset.update(is_subscribed=True)
+        self.message_user(request, f"Označeno jako odebírající: {updated}", messages.SUCCESS)
+
+    @admin.action(description="Označit jako odhlášené")
+    def mark_unsubscribed(self, request, queryset):
+        updated = queryset.update(is_subscribed=False)
+        self.message_user(request, f"Označeno jako odhlášené: {updated}", messages.SUCCESS)

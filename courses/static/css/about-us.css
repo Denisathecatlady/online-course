@@ -2190,6 +2190,15 @@ a.contact-info-value:hover {
     gap: 0.95rem;
 }
 
+/* Honeypot proti spamu – skryté i pro čtečky, reálný uživatel jej nikdy nevidí/nevyplní. */
+.contact-form-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .contact-form-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

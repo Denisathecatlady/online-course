@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Odhlášení | CalmDog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card text-center">
+          <h1 class="auth-title">Odhlásit se</h1>
+          <p class="auth-lead">Opravdu se chcete odhlásit ze svého účtu?</p>
+          <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+            {% endif %}
+            <button type="submit" class="auth-btn">Odhlásit se →</button>
+          </form>
+          <a href="{% url 'accounts:profile' %}" class="auth-link">Zpět do profilu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

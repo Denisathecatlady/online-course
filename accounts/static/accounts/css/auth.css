@@ -117,6 +117,265 @@
   margin-bottom: 1.5rem;
 }
 
+/* =====================================================
+   AUTH – přepínač login/registrace + sociální přihlášení
+   (rozšíření pro allauth stránky, moderní SaaS styl)
+   ===================================================== */
+
+.auth-title,
+.auth-lead {
+  text-align: center;
+}
+
+/* Přepínač Přihlásit se / Vytvořit účet */
+.auth-tabs {
+  display: flex;
+  gap: 0.35rem;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 2rem;
+  padding: 0.35rem;
+  background: #eef2f0;
+  border-radius: 999px;
+}
+
+.auth-tab {
+  display: inline-block;
+  padding: 0.6rem 1.6rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5f6f67;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.auth-tab:hover {
+  color: #2f3e3a;
+}
+
+.auth-tab.is-active {
+  background: #ffffff;
+  color: #2f3e3a;
+  box-shadow: 0 2px 8px rgba(31, 47, 42, 0.08);
+}
+
+/* Řádek: zapamatovat + zapomenuté heslo */
+.auth-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.auth-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: #5f6f67;
+  margin: 0;
+  cursor: pointer;
+}
+
+.auth-remember input {
+  width: auto;
+  margin: 0;
+}
+
+.auth-link-inline {
+  font-size: 0.9rem;
+  color: #5f766b;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.auth-link-inline:hover {
+  text-decoration: underline;
+}
+
+/* Chybové hlášky u polí + nápověda */
+.auth-field-error {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #a23b28;
+}
+
+.auth-help {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: #8a978f;
+  line-height: 1.5;
+}
+
+/* Oddělovač „nebo" */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.8rem 0;
+  color: #9aa7a0;
+  font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8e4;
+}
+
+/* Sociální tlačítka */
+.auth-social {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.auth-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  border: 2px solid #d7dfda;
+  background: #ffffff;
+  color: #2f3e3a;
+  font-size: 0.98rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.auth-social-btn:hover {
+  border-color: #b9c6bf;
+  background: #fbfdfc;
+  transform: translateY(-1px);
+  color: #2f3e3a;
+}
+
+.auth-social-icon {
+  flex: 0 0 auto;
+}
+
+.auth-social-btn.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-social-btn.is-disabled:hover {
+  border-color: #d7dfda;
+  background: #ffffff;
+  transform: none;
+}
+
+.auth-soon {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #97a49c;
+  background: #eef2f0;
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+}
+
+/* Přepínací věta pod kartou */
+.auth-switch {
+  margin: 1.8rem 0 0;
+  text-align: center;
+  font-size: 0.92rem;
+  color: #5f6f67;
+}
+
+.auth-switch a {
+  color: #5f766b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* Správa e-mailů */
+.auth-subtitle {
+  font-size: 1.15rem;
+  color: #1f2f28;
+  margin: 0 0 1rem;
+}
+
+.auth-hr {
+  border: none;
+  border-top: 1px solid #e2e8e4;
+  margin: 2rem 0;
+}
+
+.auth-email-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.auth-email-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  border: 2px solid #e2e8e4;
+  border-radius: 16px;
+}
+
+.auth-email-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.auth-email-label input {
+  width: auto;
+  margin: 0;
+}
+
+.auth-email-addr {
+  font-weight: 500;
+  color: #2f3e3a;
+  word-break: break-all;
+}
+
+.auth-email-badges {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.auth-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
+.auth-badge.is-ok { background: #e3f0e8; color: #2f6b47; }
+.auth-badge.is-warn { background: #fbecd9; color: #9a5a1e; }
+.auth-badge.is-primary { background: #e6ece9; color: #3e6a57; }
+
+.auth-email-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 /* ===========================
    RESPONSIVE
    =========================== */
@@ -128,5 +387,15 @@
 
   .auth-title {
     font-size: 1.9rem;
+  }
+
+  .auth-email-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .auth-tab {
+    padding: 0.55rem 1.2rem;
   }
 }

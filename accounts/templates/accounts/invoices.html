@@ -1,0 +1,35 @@
+{% extends "accounts/account_base.html" %}
+{% load humanize %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Doklady</p>
+      <h1 class="account-title">Faktury</h1>
+      <p class="account-copy">Faktury k zaplaceným objednávkám ke stažení v PDF.</p>
+    </div>
+  </div>
+
+  {% if orders %}
+  <div class="account-list">
+    {% for order in orders %}
+    <div class="account-list-item">
+      <div>
+        <strong>Faktura č. {{ order.invoice_number|default:order.id }}</strong><br>
+        <small>{{ order.created_at|date:"d.m.Y" }} · {{ order.total_price|intcomma }} Kč</small>
+      </div>
+      <a href="{% url 'accounts:invoice_download' order.pk %}" class="btn btn-outline-sage btn-sm">
+        <i class="bi bi-download" aria-hidden="true"></i> Stáhnout PDF
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="account-empty-state">
+    <i class="bi bi-receipt" aria-hidden="true"></i>
+    <p>Zatím tu nejsou žádné faktury.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

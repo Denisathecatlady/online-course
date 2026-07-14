@@ -1,0 +1,16 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">{{ section_eyebrow }}</p>
+      <h1 class="account-title">{{ section_title }}</h1>
+    </div>
+  </div>
+  <div class="account-empty-state">
+    <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+    <p>{{ section_copy|default:"Tato sekce se právě připravuje." }}</p>
+  </div>
+</div>
+{% endblock %}

@@ -19,6 +19,11 @@ def validate_pdf(file):
     if not file.name.lower().endswith(".pdf"):
         raise ValidationError("Soubor musí být PDF.")
 
+    header = file.read(5)
+    file.seek(0)
+    if header != b"%PDF-":
+        raise ValidationError("Soubor není platné PDF.")
+
 
 # ======================================
 # COURSE

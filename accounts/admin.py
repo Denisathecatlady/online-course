@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin.sites import NotRegistered
 from django.utils.html import format_html
 
-from .models import UserProfile
+from .models import UserProfile, Dog
 from payments.models import CourseAccess
 
 
@@ -48,6 +48,18 @@ class CourseAccessInline(admin.TabularInline):
 
 
 # ======================================
+# INLINE – psi uživatele
+# ======================================
+
+class DogInline(admin.TabularInline):
+    model = Dog
+    extra = 0
+    verbose_name = "Pes"
+    verbose_name_plural = "Psi"
+    fields = ("name", "breed", "sex", "is_neutered", "birth_date", "weight")
+
+
+# ======================================
 # USER
 # ======================================
 
@@ -59,7 +71,7 @@ except NotRegistered:
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    inlines = (UserProfileInline, CourseAccessInline)
+    inlines = (UserProfileInline, DogInline, CourseAccessInline)
     list_display = UserAdmin.list_display + ("profile_role", "courses_count")
     list_filter = UserAdmin.list_filter + ("profile__role",)
 
@@ -88,3 +100,15 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_filter = ("role", "country")
     search_fields = ("user__username", "user__email", "phone", "city")
     autocomplete_fields = ("user",)
+
+
+# ======================================
+# DOG (samostatně)
+# ======================================
+
+@admin.register(Dog)
+class DogAdmin(admin.ModelAdmin):
+    list_display = ("name", "owner", "breed", "sex", "is_neutered", "weight", "birth_date")
+    list_filter = ("sex", "is_neutered")
+    search_fields = ("name", "breed", "chip_number", "owner__username", "owner__email")
+    autocomplete_fields = ("owner",)

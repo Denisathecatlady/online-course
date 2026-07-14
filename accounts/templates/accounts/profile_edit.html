@@ -1,0 +1,112 @@
+{% extends "accounts/account_base.html" %}
+
+{% block account_content %}
+<div class="account-content-card profile-card">
+  <div class="account-content-head">
+    <div>
+      <p class="account-eyebrow">Můj účet</p>
+      <h1 class="account-title">Upravit profil</h1>
+      <p class="account-copy">Osobní údaje, doručovací a fakturační adresa.</p>
+    </div>
+    <div class="account-head-actions">
+      <a href="{% url 'accounts:profile' %}" class="btn btn-outline-sage">Zpět na profil</a>
+    </div>
+  </div>
+
+  <form method="post" class="account-form profile-form">
+    {% csrf_token %}
+
+    <section class="profile-section">
+      <div class="profile-section-head">
+        <h2 class="profile-section-title">Osobní údaje</h2>
+        <p class="profile-section-desc">Jméno, kontakt a přihlašovací e-mail.</p>
+      </div>
+      <div class="profile-section-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label">E-mail</label>
+            <div class="profile-readonly">
+              <span>{{ request.user.email }}</span>
+              <a href="{% url 'accounts:settings' %}" class="profile-readonly-link">Změnit</a>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            {{ form.phone.label_tag }}
+            {{ form.phone }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-section">
+      <div class="profile-section-head">
+        <h2 class="profile-section-title">Doručovací adresa</h2>
+        <p class="profile-section-desc">Kam vám máme posílat zásilky.</p>
+      </div>
+      <div class="profile-section-body">
+        <div class="mb-3">
+          {{ form.street.label_tag }}
+          {{ form.street }}
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            {{ form.city.label_tag }}
+            {{ form.city }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.zip_code.label_tag }}
+            {{ form.zip_code }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.country.label_tag }}
+            {{ form.country }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-section">
+      <div class="profile-section-head">
+        <h2 class="profile-section-title">Fakturační údaje</h2>
+        <p class="profile-section-desc">Vyplňte, pokud se liší od doručovací adresy.</p>
+      </div>
+      <div class="profile-section-body">
+        <div class="mb-3">
+          {{ form.invoice_name.label_tag }}
+          {{ form.invoice_name }}
+        </div>
+        <div class="mb-3">
+          {{ form.invoice_street.label_tag }}
+          {{ form.invoice_street }}
+        </div>
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            {{ form.invoice_city.label_tag }}
+            {{ form.invoice_city }}
+          </div>
+          <div class="col-md-3 mb-3">
+            {{ form.invoice_zip.label_tag }}
+            {{ form.invoice_zip }}
+          </div>
+          <div class="col-md-4 mb-3">
+            {{ form.invoice_country.label_tag }}
+            {{ form.invoice_country }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="profile-actions">
+      <button type="submit" class="btn btn-sage">Uložit změny</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

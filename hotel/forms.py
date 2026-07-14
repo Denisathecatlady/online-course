@@ -31,6 +31,26 @@ class HotelReservationForm(forms.ModelForm):
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Správné klávesnice na mobilu + automatické doplňování prohlížeče
+        autocomplete_tokens = {
+            "first_name": "given-name",
+            "last_name": "family-name",
+            "email": "email",
+            "phone": "tel",
+        }
+        inputmode_tokens = {
+            "email": "email",
+            "phone": "tel",
+        }
+        for name, token in autocomplete_tokens.items():
+            if name in self.fields:
+                self.fields[name].widget.attrs.setdefault("autocomplete", token)
+        for name, mode in inputmode_tokens.items():
+            if name in self.fields:
+                self.fields[name].widget.attrs.setdefault("inputmode", mode)
+
     def clean(self):
         cleaned = super().clean()
         date_from = cleaned.get("date_from")

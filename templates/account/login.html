@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Přihlášení | CalmDog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card">
+
+          <div class="auth-tabs">
+            <a href="{% url 'account_login' %}" class="auth-tab is-active">Přihlásit se</a>
+            <a href="{% url 'account_signup' %}" class="auth-tab">Vytvořit účet</a>
+          </div>
+
+          <h1 class="auth-title">Vítejte zpět</h1>
+          <p class="auth-lead">Přihlaste se ke svému účtu a pokračujte do kurzů, objednávek nebo rezervací.</p>
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger text-start">
+              {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+          {% endif %}
+
+          <form method="post" action="{% url 'account_login' %}" class="auth-form text-start">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="{{ form.login.id_for_label }}" class="form-label">E-mail</label>
+              {{ form.login }}
+              {% for error in form.login.errors %}<div class="auth-field-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div class="mb-2">
+              <label for="{{ form.password.id_for_label }}" class="form-label">Heslo</label>
+              {{ form.password }}
+              {% for error in form.password.errors %}<div class="auth-field-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div class="auth-row-between mb-3">
+              {% if form.remember %}
+                <label class="auth-remember">{{ form.remember }} <span>Zůstat přihlášen/a</span></label>
+              {% else %}
+                <span></span>
+              {% endif %}
+              <a href="{% url 'account_reset_password' %}" class="auth-link-inline">Zapomenuté heslo?</a>
+            </div>
+
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+            {% endif %}
+
+            <button type="submit" class="auth-btn">Přihlásit se →</button>
+          </form>
+
+          {% include "account/_calmdog_social.html" %}
+
+          <p class="auth-switch">
+            Ještě nemáte účet? <a href="{% url 'account_signup' %}">Vytvořte si ho</a>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}E-mailové adresy | CalmDog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card">
+          <div class="auth-eyebrow">Účet</div>
+          <h1 class="auth-title">E-mailové adresy</h1>
+          <p class="auth-lead">
+            Spravujte e-maily svého účtu. Nová adresa se aktivuje až po ověření –
+            pošleme na ni potvrzovací odkaz.
+          </p>
+
+          {% if emailaddresses %}
+            <form action="{% url 'account_email' %}" method="post" class="auth-form text-start">
+              {% csrf_token %}
+              <ul class="auth-email-list">
+                {% for emailaddress in emailaddresses %}
+                  <li class="auth-email-item">
+                    <label class="auth-email-label">
+                      <input type="radio" name="email" value="{{ emailaddress.email }}"
+                             {% if emailaddress.primary or emailaddresses|length == 1 %}checked{% endif %}>
+                      <span class="auth-email-addr">{{ emailaddress.email }}</span>
+                    </label>
+                    <span class="auth-email-badges">
+                      {% if emailaddress.verified %}
+                        <span class="auth-badge is-ok">Ověřeno</span>
+                      {% else %}
+                        <span class="auth-badge is-warn">Neověřeno</span>
+                      {% endif %}
+                      {% if emailaddress.primary %}<span class="auth-badge is-primary">Primární</span>{% endif %}
+                    </span>
+                  </li>
+                {% endfor %}
+              </ul>
+
+              <div class="auth-email-actions">
+                <button type="submit" name="action_primary" class="btn btn-outline-sage btn-sm">Nastavit jako primární</button>
+                <button type="submit" name="action_send" class="btn btn-outline-sage btn-sm">Znovu poslat ověření</button>
+                <button type="submit" name="action_remove" class="btn btn-outline-sage btn-sm">Odebrat</button>
+              </div>
+            </form>
+          {% endif %}
+
+          <hr class="auth-hr">
+
+          <h2 class="auth-subtitle">Přidat e-mail</h2>
+          <form method="post" action="{% url 'account_email' %}" class="auth-form text-start">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="{{ form.email.id_for_label }}" class="form-label">Nová e-mailová adresa</label>
+              {{ form.email }}
+              {% for error in form.email.errors %}<div class="auth-field-error">{{ error }}</div>{% endfor %}
+            </div>
+            <button type="submit" name="action_add" class="auth-btn">Přidat a ověřit e-mail →</button>
+          </form>
+
+          <a href="{% url 'accounts:profile' %}" class="auth-link">Zpět do profilu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -845,6 +845,11 @@ def contact(request):
     ]
 
     if request.method == "POST":
+        # Honeypot – reálný návštěvník toto skryté pole nikdy nevyplní.
+        if request.POST.get("website", "").strip():
+            messages.success(request, "Zpráva byla odeslána.")
+            return redirect("courses:contact")
+
         name = request.POST.get("name", "").strip()
         email = request.POST.get("email", "").strip()
         subject = request.POST.get("subject", "").strip()

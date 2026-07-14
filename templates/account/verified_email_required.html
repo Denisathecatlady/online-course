@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ověření e-mailu | CalmDog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card text-center">
+          <div class="auth-eyebrow">Ještě krok</div>
+          <h1 class="auth-title">Potvrďte svůj e-mail</h1>
+          <p class="auth-lead">
+            Pro pokračování je potřeba ověřit e-mailovou adresu. Poslali jsme vám
+            ověřovací odkaz – zkontrolujte prosím schránku i složku spam.
+          </p>
+          <a href="{% url 'account_login' %}" class="auth-link">Zpět na přihlášení</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

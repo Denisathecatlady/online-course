@@ -6,6 +6,10 @@
     <title>{% block title %}Kurz{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Preconnect ke zdrojům fontů (rychlejší načtení) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <!-- Bootstrap (nejnižší priorita) -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -62,6 +66,8 @@
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
+
+<a class="skip-link" href="#main">Přeskočit na obsah</a>
 
 {% if not hide_site_navbar %}
 <!-- NAVBAR -->
@@ -166,7 +172,8 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link navbar-utility-link {% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'my_courses' %}active{% endif %}"
-                           href="{% url 'accounts:my_courses' %}">
+                           href="{% url 'accounts:my_courses' %}"
+                           {% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name == 'my_courses' %}aria-current="page"{% endif %}>
                             Přejít do e-learning portálu
                         </a>
                     </li>
@@ -215,7 +222,7 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="post" action="{% url 'accounts:logout' %}" class="px-3">
+                                <form method="post" action="{% url 'account_logout' %}" class="px-3">
                                     {% csrf_token %}
                                     <button type="submit"
                                             class="btn btn-outline-sage btn-sm w-100">
@@ -229,9 +236,15 @@
                 {% else %}
 
                     <li class="nav-item">
-                        <a href="{% url 'accounts:login' %}"
-                           class="btn btn-sage btn-sm">
+                        <a href="{% url 'account_login' %}"
+                           class="btn btn-outline-sage btn-sm">
                             Přihlásit se
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'account_signup' %}"
+                           class="btn btn-sage btn-sm">
+                            Vytvořit účet
                         </a>
                     </li>
 
@@ -256,7 +269,7 @@
 {% block hero %}{% endblock %}
 
 <!-- HLAVNÍ OBSAH -->
-<main class="pt-4 pb-5 page-wrapper">
+<main id="main" class="pt-4 pb-5 page-wrapper">
     {% block content %}{% endblock %}
 </main>
 
@@ -329,31 +342,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- Navbar submenu: hover-intent (menu se nezavře hned při přejezdu myší na položky) -->
 <script>
+/* Po odeslání formuláře s chybami posuň fokus na první chybné pole */
 document.addEventListener("DOMContentLoaded", () => {
-    const CLOSE_DELAY = 320; // ms grace period po opuštění myší
-    document.querySelectorAll(".nav-submenu").forEach(sub => {
-        let timer = null;
-        const open = () => { clearTimeout(timer); sub.classList.add("is-open"); };
-        const scheduleClose = () => {
-            clearTimeout(timer);
-            timer = setTimeout(() => sub.classList.remove("is-open"), CLOSE_DELAY);
-        };
-        // otevře se hned při najetí kamkoli na "O nás" nebo do menu; drží po dobu grace period
-        sub.addEventListener("mouseenter", open);
-        sub.addEventListener("mouseleave", scheduleClose);
-        // klávesnice / dotyk
-        sub.addEventListener("focusin", open);
-        sub.addEventListener("focusout", scheduleClose);
-    });
-    // klik mimo submenu ho zavře (užitečné na dotyku)
-    document.addEventListener("click", (e) => {
-        if (!e.target.closest(".nav-submenu")) {
-            document.querySelectorAll(".nav-submenu.is-open")
-                .forEach(s => s.classList.remove("is-open"));
+    let target = document.querySelector(".is-invalid, [aria-invalid='true']");
+    if (!target) {
+        const feedback = document.querySelector(".invalid-feedback.d-block");
+        if (feedback) {
+            const group = feedback.closest(".mb-3, .col-12, .col-sm-6, .col-md-6, .form-group") || feedback.parentElement;
+            target = group ? group.querySelector("input:not([type='hidden']), select, textarea") : null;
         }
-    });
+    }
+    if (target && typeof target.focus === "function") {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+        setTimeout(() => { try { target.focus({ preventScroll: true }); } catch (e) {} }, reduce ? 0 : 250);
+    }
 });
 </script>
 
@@ -365,10 +369,10 @@ document.addEventListener("DOMContentLoaded", () => {
 {% if not hide_site_navbar %}
 <!-- ─── UVÍTACÍ POPUP ─────────────────────────────────────── -->
 <style>
-.wcp-overlay{position:fixed;inset:0;background:rgba(30,35,30,.55);z-index:1900;opacity:0;transition:opacity .28s ease;pointer-events:none}
-.wcp-overlay.wcp-vis{opacity:1;pointer-events:all}
-.wcp-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-54%);z-index:1901;width:min(92vw,440px);background:#fff;border-radius:20px;padding:2.2rem 2rem 2rem;box-shadow:0 24px 60px rgba(0,0,0,.18);opacity:0;transition:opacity .3s ease,transform .3s ease;pointer-events:none}
-.wcp-modal.wcp-vis{opacity:1;transform:translate(-50%,-50%);pointer-events:all}
+.wcp-overlay{position:fixed;inset:0;background:rgba(30,35,30,.55);z-index:1900;opacity:0;visibility:hidden;transition:opacity .28s ease,visibility .28s ease;pointer-events:none}
+.wcp-overlay.wcp-vis{opacity:1;visibility:visible;pointer-events:all}
+.wcp-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-54%);z-index:1901;width:min(92vw,440px);background:#fff;border-radius:20px;padding:2.2rem 2rem 2rem;box-shadow:0 24px 60px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s ease;pointer-events:none}
+.wcp-modal.wcp-vis{opacity:1;visibility:visible;transform:translate(-50%,-50%);pointer-events:all}
 .wcp-close{position:absolute;top:.9rem;right:1rem;background:none;border:none;font-size:1.4rem;line-height:1;color:#9aaa9a;cursor:pointer;padding:.2rem .5rem}
 .wcp-close:hover{color:#3d5a45}
 .wcp-badge{display:inline-block;background:#f0f5f1;color:#5f766b;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;padding:.28rem .85rem;margin-bottom:1rem}
@@ -422,17 +426,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const overlay = document.getElementById('wcpOverlay');
   const modal   = document.getElementById('wcpModal');
+  let lastFocused = null;
+
+  function focusables() {
+    return modal.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+  }
+
+  function onKeydown(e) {
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = focusables();
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 
   function open() {
+    lastFocused = document.activeElement;
     overlay.classList.add('wcp-vis');
     modal.classList.add('wcp-vis');
-    modal.removeAttribute('aria-hidden');
+    document.addEventListener('keydown', onKeydown);
+    const email = document.getElementById('wcpEmail');
+    if (email) { try { email.focus(); } catch (_) {} }
   }
 
   function close() {
     overlay.classList.remove('wcp-vis');
     modal.classList.remove('wcp-vis');
+    document.removeEventListener('keydown', onKeydown);
     localStorage.setItem(STORAGE_KEY, '1');
+    if (lastFocused && typeof lastFocused.focus === 'function') { lastFocused.focus(); }
   }
 
   setTimeout(open, DELAY_MS);

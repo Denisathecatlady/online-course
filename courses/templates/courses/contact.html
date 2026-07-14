@@ -86,7 +86,7 @@
           {% for member in team_members %}
             <article class="contact-team-card {{ member.accent_class }}">
               <div class="contact-team-image-wrap">
-                <img src="{{ member.image_url }}" alt="{{ member.name }}" class="contact-team-image">
+                <img src="{{ member.image_url }}" alt="{{ member.name }}" class="contact-team-image" loading="lazy">
               </div>
               <div class="contact-team-body">
                 <p class="contact-team-role">{{ member.role }}</p>
@@ -110,19 +110,23 @@
       <section class="about-section contact-form-card card card-soft border-0 reveal">
         <div class="contact-form-layout">
           <div class="contact-form-media">
-            <img src="{% static 'img/contact/kontakt.png' %}" alt="Pes CalmDog" class="contact-form-image">
+            <img src="{% static 'img/contact/kontakt.png' %}" alt="Pes CalmDog" class="contact-form-image" loading="lazy">
           </div>
           <div class="contact-form-content p-4 p-md-5">
             <p class="about-eyebrow mb-2">Napište mi</p>
             <h2 class="about-subtitle mb-3">Kontaktní formulář</h2>
             <form method="post" class="contact-form">
               {% csrf_token %}
-              <div class="contact-form-row">
-                <input type="text" name="name" class="form-control" placeholder="Jméno" required>
-                <input type="email" name="email" class="form-control" placeholder="E-mail" required>
+              <div class="contact-form-honeypot" aria-hidden="true">
+                <label for="contact-website">Nechte prázdné</label>
+                <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off">
               </div>
-              <input type="text" name="subject" class="form-control" placeholder="Předmět" required>
-              <textarea name="message" class="form-control" rows="6" placeholder="Zpráva" required></textarea>
+              <div class="contact-form-row">
+                <input type="text" name="name" class="form-control" placeholder="Jméno" aria-label="Jméno" autocomplete="name" required>
+                <input type="email" name="email" class="form-control" placeholder="E-mail" aria-label="E-mail" autocomplete="email" inputmode="email" required>
+              </div>
+              <input type="text" name="subject" class="form-control" placeholder="Předmět" aria-label="Předmět" required>
+              <textarea name="message" class="form-control" rows="6" placeholder="Zpráva" aria-label="Zpráva" required></textarea>
               <button type="submit" class="btn btn-sage contact-submit">Odeslat</button>
             </form>
           </div>

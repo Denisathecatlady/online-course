@@ -316,6 +316,7 @@
   font-size: 2rem;
   line-height: 1;
   color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
 }
 
 .course-plan-price span {
@@ -607,6 +608,7 @@
   font-size: clamp(2.25rem, 3vw, 2.8rem);
   line-height: 1;
   color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
 }
 
 .course-purchase-price span {
@@ -991,6 +993,7 @@
   font-size: 2.4rem;
   line-height: 1;
   color: var(--text-dark);
+  font-variant-numeric: tabular-nums;
 }
 
 .course-variant-price span {

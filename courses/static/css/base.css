@@ -249,6 +249,10 @@ h1, h2, h3, h4, h5 {
     position: relative;
 }
 
+.nav-submenu-link {
+    white-space: nowrap;
+}
+
 .nav-submenu-link::after {
     content: "";
     display: inline-block;
@@ -263,12 +267,12 @@ h1, h2, h3, h4, h5 {
 .nav-submenu-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 0.2rem);
     left: 0;
     min-width: 250px;
     list-style: none;
     margin: 0;
-    padding: 0.7rem 0.55rem 0.55rem;
+    padding: 0.55rem;
     border: 1px solid var(--line);
     border-radius: 22px;
     background: rgba(251, 250, 247, 0.99);
@@ -276,19 +280,17 @@ h1, h2, h3, h4, h5 {
     z-index: 1001;
 }
 
-/* Neviditelný "můstek" – drží hover souvislý mezi odkazem a menu (proti uskakování). */
 .nav-submenu-menu::before {
     content: "";
     position: absolute;
-    top: -8px;
+    top: -14px;
     left: 0;
     right: 0;
-    height: 8px;
+    height: 14px;
 }
 
 .nav-submenu:hover .nav-submenu-menu,
-.nav-submenu:focus-within .nav-submenu-menu,
-.nav-submenu.is-open .nav-submenu-menu {
+.nav-submenu:focus-within .nav-submenu-menu {
     display: block;
 }
 
@@ -380,31 +382,15 @@ h1, h2, h3, h4, h5 {
     }
 
     .nav-submenu-menu {
-        display: block;
         position: static;
-        margin-top: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-color: transparent;
+        margin-top: 0.4rem;
         box-shadow: none;
         min-width: 100%;
-        /* Jen opacity se animuje (nemění rozměry/hit-test) – prostor pro položky
-           se otevře okamžitě, aby myš při přejezdu dolů "nehonila" rostoucí box. */
-        transition: opacity 0.15s ease;
     }
 
     .nav-submenu:hover .nav-submenu-menu,
-    .nav-submenu:focus-within .nav-submenu-menu,
-    .nav-submenu.is-open .nav-submenu-menu {
-        max-height: 260px;
-        opacity: 1;
-        margin-top: 0.4rem;
-        padding-top: 0.55rem;
-        padding-bottom: 0.55rem;
-        border-color: var(--line);
+    .nav-submenu:focus-within .nav-submenu-menu {
+        display: block;
     }
 
     .nav-sep {
@@ -769,6 +755,19 @@ h1, h2, h3, h4, h5 {
     flex-shrink: 0;
 }
 
+@media (max-width: 576px) {
+    .cookie-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+        gap: 0.9rem;
+    }
+
+    .cookie-actions .btn {
+        flex: 1;
+    }
+}
+
 .btn-outline-sage {
     background: transparent;
     border: 1.5px solid var(--sage);
@@ -940,5 +939,190 @@ h1, h2, h3, h4, h5 {
 
     .site-footer {
         padding: 2.75rem 0 2.5rem;
+    }
+}
+
+
+/* =====================================================
+   PŘÍSTUPNOST & KONZISTENCE — GLOBÁLNÍ VRSTVA
+   Přidáno v rámci UI/UX revize. Pouze doplňuje – nemění
+   text ani barvy značky. base.css se načítá poslední,
+   takže tato pravidla platí napříč celým webem.
+   ===================================================== */
+
+/* ---- Viditelný focus pro klávesnici (sage prsten) ---- */
+:focus-visible {
+    outline: 2px solid var(--sage-strong);
+    outline-offset: 2px;
+}
+
+a:focus-visible,
+.btn:focus-visible,
+.navbar-nav .nav-link:focus-visible,
+.nav-submenu-item:focus-visible,
+.dropdown-item:focus-visible,
+.icon-toggle:focus-visible {
+    outline: 2px solid var(--sage-strong);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* Tmavé pozadí footeru → světlý prsten kvůli kontrastu */
+.site-footer a:focus-visible,
+.site-footer-pill:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* Toggler měl focus dříve schovaný – vracíme viditelný prsten */
+.navbar-toggler:focus-visible {
+    outline: 2px solid var(--sage-strong);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* Myší focus nechává prsten schovaný (dostane ho jen klávesnice) */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+
+/* ---- Skip link (objeví se jen při tabování z klávesnice) ---- */
+.skip-link {
+    position: fixed;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 2000;
+    display: inline-flex;
+    align-items: center;
+    background: var(--sage-strong);
+    color: #fff;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transform: translateY(calc(-100% - 1rem));
+    transition: transform 0.18s var(--ease);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    color: #fff;
+}
+
+
+/* ---- Formulářové prvky: jednotný sage focus napříč webem ----
+   (auth.css má vlastní, specifičtější styl – ten zůstává beze změny) */
+.form-control,
+.form-select {
+    border-radius: var(--radius-sm);
+    border-color: var(--line-strong);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 0.2rem rgba(95, 118, 107, 0.18);
+}
+
+.form-check-input:checked {
+    background-color: var(--sage);
+    border-color: var(--sage);
+}
+
+/* Chybové stavy polí – sjednocené */
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #c0563f;
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(192, 86, 63, 0.18);
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+    color: #a23b28;
+}
+
+
+/* ---- Hlášky (alert) – sladěné se značkou ---- */
+.alert {
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+}
+
+.alert-danger {
+    background: #f8eaea;
+    border-color: #e0b4b4;
+    color: #8a2c2c;
+}
+
+.alert-success {
+    background: #e7f0ea;
+    border-color: #bcd6c7;
+    color: #2f5d47;
+}
+
+.alert-info {
+    background: #e8eef1;
+    border-color: #c4d3db;
+    color: #315063;
+}
+
+.alert-warning {
+    background: #f9f2dc;
+    border-color: #e6d6a0;
+    color: #7a5a1e;
+}
+
+
+/* ---- Obrázky nikdy nepřetečou (napříč všemi šířkami) ---- */
+img,
+svg,
+video {
+    max-width: 100%;
+}
+
+
+/* ---- Dotykové cíle na mobilu (min. ~44px) ---- */
+@media (max-width: 991px) {
+    .navbar .btn {
+        min-height: 44px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 46px;
+    }
+}
+
+
+/* ---- Omezení pohybu (přístupnost) ---- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1 !important;
+        transform: none !important;
     }
 }

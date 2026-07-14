@@ -284,6 +284,22 @@
     overflow: hidden;
 }
 
+/* Karty v mřížce ožijí při najetí – stejný pocit jako u info/support karet */
+.shop-product-grid .shop-product-card {
+    transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+}
+
+.shop-product-grid .shop-product-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(95, 118, 107, 0.2);
+    box-shadow: 0 32px 60px -34px rgba(35, 46, 41, 0.5);
+}
+
+.shop-color-dot:focus-visible {
+    outline: 2px solid #5f766b;
+    outline-offset: 3px;
+}
+
 .shop-product-card--featured {
     display: grid;
     grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
@@ -549,6 +565,7 @@
     color: #8b8d91;
     font-size: 1rem;
     text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
 }
 
 .shop-price-value {
@@ -558,6 +575,7 @@
     line-height: 1;
     letter-spacing: -0.04em;
     color: #2b2c2f;
+    font-variant-numeric: tabular-nums;
 }
 
 .shop-section-head {

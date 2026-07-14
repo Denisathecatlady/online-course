@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.http import Http404
+from accounts.forms import BrandedSetPasswordForm
 import logging
 
 _honeypot_log = logging.getLogger("admin.honeypot")
@@ -39,8 +40,13 @@ urlpatterns = [
         include(("courses.urls", "courses"), namespace="courses")
     ),
 
-    # Accounts
+    # Accounts – vlastní stránky (profil, kurzy, objednávky) + aliasy
     path("ucty/", include("accounts.urls")),
+
+    # Allauth – přihlášení, registrace, ověření e-mailu, reset/změna hesla,
+    # změna e-mailu, sociální přihlášení (Google). Routy: login/, signup/,
+    # logout/, password/reset/, password/change/, email/, google/login/ …
+    path("ucty/", include("allauth.urls")),
 
     # Payments (namespace)
     path(
@@ -50,6 +56,11 @@ urlpatterns = [
 
     # Hotel pro psy a kočky
     path("hotel/", include(("hotel.urls", "hotel"), namespace="hotel")),
+
+    # Rezervace tréninků (profilová sekce).
+    # Pozor: /treninky/ je veřejná marketingová stránka v courses.urls,
+    # proto rezervační systém běží na /moje-treninky/.
+    path("moje-treninky/", include(("trainings.urls", "trainings"), namespace="trainings")),
 
     # Shop (vodítka)
     path("voditka/", include("shop.urls")),
@@ -74,7 +85,8 @@ urlpatterns = [
     path(
         "ucty/reset-hesla/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
-            template_name="accounts/registration/password_reset_confirm.html"
+            template_name="accounts/registration/password_reset_confirm.html",
+            form_class=BrandedSetPasswordForm,
         ),
         name="password_reset_confirm",
     ),

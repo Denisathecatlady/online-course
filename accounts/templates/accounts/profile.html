@@ -1,103 +1,106 @@
 {% extends "accounts/account_base.html" %}
 
 {% block account_content %}
-<div class="account-content-card">
+<div class="account-content-card profile-card">
   <div class="account-content-head">
     <div>
-      <p class="account-eyebrow mb-2">Profil</p>
-      <h2 class="account-title mb-1">Nastavení účtu</h2>
-      <p class="account-copy mb-0">
-        Upravte si osobní údaje, doručovací adresu i fakturační informace.
-      </p>
+      <p class="account-eyebrow">Můj účet</p>
+      <h1 class="account-title">Můj profil</h1>
+      <p class="account-copy">Přehled vašich osobních údajů a adres.</p>
     </div>
-
-    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-sage">
-      Změna hesla
-    </a>
+    <div class="account-head-actions">
+      <a href="{% url 'accounts:profile_edit' %}" class="btn btn-sage">
+        <i class="bi bi-pencil" aria-hidden="true"></i> Upravit údaje
+      </a>
+    </div>
   </div>
 
-  <form method="post" class="account-form">
-    {% csrf_token %}
-
-    <details class="account-accordion" open>
-      <summary class="account-accordion-trigger">Osobní údaje</summary>
-      <div class="account-accordion-body">
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">E-mail</label>
-            <input type="email" class="form-control" value="{{ request.user.email }}" disabled>
+  <section class="profile-section">
+    <div class="profile-section-head">
+      <h2 class="profile-section-title">Osobní údaje</h2>
+      <p class="profile-section-desc">Jméno, kontakt a přihlašovací e-mail.</p>
+    </div>
+    <div class="profile-section-body">
+      <div class="row">
+        <div class="col-md-6 profile-view-item">
+          <p class="profile-view-label">Jméno</p>
+          <p class="profile-view-value{% if not request.user.first_name %} is-empty{% endif %}">{{ request.user.first_name|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-md-6 profile-view-item">
+          <p class="profile-view-label">Příjmení</p>
+          <p class="profile-view-value{% if not request.user.last_name %} is-empty{% endif %}">{{ request.user.last_name|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-12 profile-view-item">
+          <p class="profile-view-label">E-mail</p>
+          <div class="profile-readonly">
+            <span>{{ request.user.email }}</span>
+            <a href="{% url 'accounts:settings' %}" class="profile-readonly-link">Změnit</a>
           </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Telefon</label>
-            {{ form.phone }}
-          </div>
-          <div class="col-md-6 mb-3">
-            {{ form.first_name.label_tag }}
-            {{ form.first_name }}
-          </div>
-          <div class="col-md-6 mb-3">
-            {{ form.last_name.label_tag }}
-            {{ form.last_name }}
-          </div>
+        </div>
+        <div class="col-md-6 profile-view-item">
+          <p class="profile-view-label">Telefon</p>
+          <p class="profile-view-value{% if not profile.phone %} is-empty{% endif %}">{{ profile.phone|default:"Neuvedeno" }}</p>
         </div>
       </div>
-    </details>
+    </div>
+  </section>
 
-    <details class="account-accordion">
-      <summary class="account-accordion-trigger">Doručovací údaje</summary>
-      <div class="account-accordion-body">
-        <div class="mb-3">
-          {{ form.street.label_tag }}
-          {{ form.street }}
+  <section class="profile-section">
+    <div class="profile-section-head">
+      <h2 class="profile-section-title">Doručovací adresa</h2>
+      <p class="profile-section-desc">Kam vám máme posílat zásilky.</p>
+    </div>
+    <div class="profile-section-body">
+      <div class="row">
+        <div class="col-12 profile-view-item">
+          <p class="profile-view-label">Ulice a číslo</p>
+          <p class="profile-view-value{% if not profile.street %} is-empty{% endif %}">{{ profile.street|default:"Neuvedeno" }}</p>
         </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            {{ form.city.label_tag }}
-            {{ form.city }}
-          </div>
-          <div class="col-md-3 mb-3">
-            {{ form.zip_code.label_tag }}
-            {{ form.zip_code }}
-          </div>
-          <div class="col-md-3 mb-3">
-            {{ form.country.label_tag }}
-            {{ form.country }}
-          </div>
+        <div class="col-md-6 profile-view-item">
+          <p class="profile-view-label">Město</p>
+          <p class="profile-view-value{% if not profile.city %} is-empty{% endif %}">{{ profile.city|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-md-3 profile-view-item">
+          <p class="profile-view-label">PSČ</p>
+          <p class="profile-view-value{% if not profile.zip_code %} is-empty{% endif %}">{{ profile.zip_code|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-md-3 profile-view-item">
+          <p class="profile-view-label">Stát</p>
+          <p class="profile-view-value{% if not profile.country %} is-empty{% endif %}">{{ profile.country|default:"Neuvedeno" }}</p>
         </div>
       </div>
-    </details>
+    </div>
+  </section>
 
-    <details class="account-accordion">
-      <summary class="account-accordion-trigger">Fakturační adresa</summary>
-      <div class="account-accordion-body">
-        <div class="mb-3">
-          {{ form.invoice_name.label_tag }}
-          {{ form.invoice_name }}
+  <section class="profile-section">
+    <div class="profile-section-head">
+      <h2 class="profile-section-title">Fakturační údaje</h2>
+      <p class="profile-section-desc">Použijí se na fakturách, pokud se liší od doručovací adresy.</p>
+    </div>
+    <div class="profile-section-body">
+      <div class="row">
+        <div class="col-12 profile-view-item">
+          <p class="profile-view-label">Fakturační jméno / firma</p>
+          <p class="profile-view-value{% if not profile.invoice_name %} is-empty{% endif %}">{{ profile.invoice_name|default:"Neuvedeno" }}</p>
         </div>
-        <div class="mb-3">
-          {{ form.invoice_street.label_tag }}
-          {{ form.invoice_street }}
+        <div class="col-12 profile-view-item">
+          <p class="profile-view-label">Ulice</p>
+          <p class="profile-view-value{% if not profile.invoice_street %} is-empty{% endif %}">{{ profile.invoice_street|default:"Neuvedeno" }}</p>
         </div>
-        <div class="row">
-          <div class="col-md-5 mb-3">
-            {{ form.invoice_city.label_tag }}
-            {{ form.invoice_city }}
-          </div>
-          <div class="col-md-3 mb-3">
-            {{ form.invoice_zip.label_tag }}
-            {{ form.invoice_zip }}
-          </div>
-          <div class="col-md-4 mb-3">
-            {{ form.invoice_country.label_tag }}
-            {{ form.invoice_country }}
-          </div>
+        <div class="col-md-5 profile-view-item">
+          <p class="profile-view-label">Město</p>
+          <p class="profile-view-value{% if not profile.invoice_city %} is-empty{% endif %}">{{ profile.invoice_city|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-md-3 profile-view-item">
+          <p class="profile-view-label">PSČ</p>
+          <p class="profile-view-value{% if not profile.invoice_zip %} is-empty{% endif %}">{{ profile.invoice_zip|default:"Neuvedeno" }}</p>
+        </div>
+        <div class="col-md-4 profile-view-item">
+          <p class="profile-view-label">Stát</p>
+          <p class="profile-view-value{% if not profile.invoice_country %} is-empty{% endif %}">{{ profile.invoice_country|default:"Neuvedeno" }}</p>
         </div>
       </div>
-    </details>
-
-    <button type="submit" class="btn btn-sage mt-4">
-      Uložit změny
-    </button>
-  </form>
+    </div>
+  </section>
 </div>
 {% endblock %}

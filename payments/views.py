@@ -26,7 +26,7 @@ from shop.models import Product, ProductVariant
 from shop.views import get_variant_image_url
 from courses.models import CoursePlan
 from courses.models import Course
-from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim
+from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim, NewsletterSubscriber
 from .services.cart import get_or_create_cart
 from payments.services.invoice import generate_invoice_pdf, assign_invoice_number
 
@@ -367,7 +367,11 @@ def add_variant_to_cart(request, variant_id):
 
     cart = get_or_create_cart(request)
 
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = max(1, int(request.POST.get("quantity", 1)))
+    except (TypeError, ValueError):
+        quantity = 1
+
     try:
         add_product_variant_to_order(cart, variant, quantity)
     except ValueError as exc:
@@ -407,7 +411,10 @@ def add_bundle_to_cart(request, variant_id):
     if primary_variant.color_id != bundle_variant.color_id:
         return HttpResponseBadRequest("Bundle musí mít shodnou barvu obou částí.")
 
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = max(1, int(request.POST.get("quantity", 1)))
+    except (TypeError, ValueError):
+        quantity = 1
     cart = get_or_create_cart(request)
 
     try:
@@ -637,6 +644,9 @@ def checkout(request):
         "newsletter_opt_in",
         "status"
     ])
+
+    if cart.newsletter_opt_in:
+        NewsletterSubscriber.sync_from_order(cart)
 
     # Pokud je fyzický produkt a není doprava
     # ------------------------------
@@ -993,15 +1003,25 @@ def _process_paid_order(order, stripe_session, request):
 
     if order.coupon_id and order.discount_amount and order.discount_amount > 0:
         if not CouponUsage.objects.filter(order=order).exists():
-            CouponUsage.objects.create(
-                coupon=order.coupon,
-                user=user,
-                order=order,
-                discount_amount=order.discount_amount,
-            )
-            Coupon.objects.filter(pk=order.coupon_id).update(
-                used_count=F("used_count") + 1
-            )
+            with transaction.atomic():
+                coupon = Coupon.objects.select_for_update().get(pk=order.coupon_id)
+
+                # Znovu ověřit limit až tady, pod zámkem – zabrání souběžným
+                # objednávkám vyčerpat "jednorázový" kupón víc než jednou.
+                if coupon.max_uses is None or coupon.used_count < coupon.max_uses:
+                    CouponUsage.objects.create(
+                        coupon=coupon,
+                        user=user,
+                        order=order,
+                        discount_amount=order.discount_amount,
+                    )
+                    coupon.used_count = F("used_count") + 1
+                    coupon.save(update_fields=["used_count"])
+                else:
+                    logger.warning(
+                        f"[Coupon] Kupón {coupon.code} vyčerpán souběžnou objednávkou "
+                        f"– použití u objednávky #{order.id} nezaznamenáno."
+                    )
 
     # ======================================
     # 6️⃣ EMAIL ZÁKAZNÍKOVI

@@ -25,9 +25,10 @@
 
 .account-sidebar-card,
 .account-content-card {
-    border-radius: 28px;
-    box-shadow: 0 22px 60px rgba(35, 46, 41, 0.08);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 248, 244, 0.96));
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    box-shadow: none;
+    background: #ffffff;
 }
 
 .account-sidebar-card {
@@ -49,35 +50,35 @@
 
 .account-nav {
     display: grid;
-    gap: 0.65rem;
+    gap: 0.1rem;
 }
 
 .account-nav-link {
-    display: block;
-    padding: 0.95rem 1rem;
-    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 8px;
     text-decoration: none;
+    color: var(--text-soft);
+    background: transparent;
+    border: none;
+    transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.account-nav-link:hover {
+    background: var(--bg-soft);
     color: var(--text-dark);
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(95, 118, 107, 0.08);
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.account-nav-link:hover,
-.account-nav-link.is-active {
-    transform: translateY(-1px);
-    border-color: rgba(95, 118, 107, 0.24);
-    box-shadow: 0 14px 28px rgba(95, 118, 107, 0.08);
 }
 
 .account-nav-link.is-active {
-    background: linear-gradient(180deg, #ffffff, #eef4f0);
-    color: var(--sage);
+    background: var(--sage-light);
+    color: var(--sage-strong);
     font-weight: 600;
 }
 
 .account-content-card {
-    padding: 1.6rem;
+    padding: 1.75rem 1.9rem;
 }
 
 .account-content-head {
@@ -110,16 +111,29 @@
 .account-form .form-select,
 .account-form input[type="password"] {
     width: 100%;
-    border-radius: 14px;
-    border: 1px solid #d8dfdb;
-    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    padding: 0.7rem 0.9rem;
     background: #fff;
+    color: var(--text-dark);
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
 }
 
-.account-form label {
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 0.45rem;
+.account-form .form-control:focus,
+.account-form .form-select:focus,
+.account-form input[type="password"]:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(95, 118, 107, 0.14);
+    outline: none;
+}
+
+.account-form label,
+.account-form .form-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-soft);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
 }
 
 .account-form p {
@@ -127,9 +141,9 @@
 }
 
 .account-accordion {
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.84);
-    border: 1px solid rgba(95, 118, 107, 0.1);
+    border-radius: 10px;
+    background: var(--bg-light);
+    border: 1px solid var(--line);
     margin-bottom: 1rem;
     overflow: hidden;
 }
@@ -153,7 +167,7 @@
 
 .account-list {
     display: grid;
-    gap: 0.9rem;
+    gap: 0;
 }
 
 .account-list-item {
@@ -161,12 +175,15 @@
     justify-content: space-between;
     gap: 1rem;
     align-items: center;
-    padding: 1rem 1.1rem;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.82);
+    padding: 0.95rem 0.15rem;
+    background: transparent;
     text-decoration: none;
     color: var(--text-dark);
-    border: 1px solid rgba(95, 118, 107, 0.08);
+    border-bottom: 1px solid var(--line);
+}
+
+.account-list-item:last-child {
+    border-bottom: 0;
 }
 
 .account-price {
@@ -201,9 +218,9 @@
 .account-total-box {
     margin-top: 1.5rem;
     padding: 1rem 1.1rem;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.84);
-    border: 1px solid rgba(95, 118, 107, 0.1);
+    border-radius: 10px;
+    background: var(--bg-light);
+    border: 1px solid var(--line);
 }
 
 .account-total-row {
@@ -287,10 +304,10 @@
 
 .account-courses-panel {
     overflow: hidden;
-    border-radius: 28px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(95, 118, 107, 0.1);
-    box-shadow: 0 22px 60px rgba(35, 46, 41, 0.08);
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: none;
 }
 
 .account-courses-panel-empty {
@@ -439,7 +456,6 @@
 }
 
 .account-access-btn:hover {
-    transform: translateY(-1px);
     background: #5f766b;
     color: #ffffff;
 }
@@ -511,4 +527,607 @@
     .account-access-btn {
         width: 100%;
     }
+}
+
+/* ============================================================
+   REDESIGN 2026 – dashboard účtu
+   (v account-* namespace; využívá tokeny z base.css :root)
+   ============================================================ */
+
+/* -- Profilová hlavička v sidebaru -- */
+.account-profile-head {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.account-avatar {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(160deg, var(--sage-mid), var(--sage-deep));
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.account-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-profile-meta {
+    min-width: 0;
+}
+
+.account-profile-name {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.account-profile-since {
+    margin: 0.1rem 0 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* -- Mobilní přepínač sekcí (Bootstrap collapse) -- */
+.account-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.account-sidebar-toggle-caret {
+    transition: transform 0.25s var(--ease);
+}
+
+.account-sidebar-toggle[aria-expanded="true"] .account-sidebar-toggle-caret {
+    transform: rotate(180deg);
+}
+
+/* -- Ikony v navigaci -- */
+.account-nav-icon {
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--sage);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-nav-link.is-active .account-nav-icon {
+    color: var(--sage-strong);
+}
+
+.account-nav-link span {
+    min-width: 0;
+}
+
+/* -- Oddělovač + odhlášení -- */
+.account-nav-sep {
+    height: 1px;
+    margin: 0.35rem 0.2rem;
+    background: var(--line);
+}
+
+.account-nav-link-danger {
+    color: #a1483d;
+}
+
+.account-nav-link-danger .account-nav-icon {
+    color: #b9564a;
+}
+
+.account-nav-link-danger:hover {
+    background: rgba(161, 72, 61, 0.08);
+    color: #a1483d;
+}
+
+/* -- Viditelný focus ring (klávesnice) -- */
+.account-nav-link:focus-visible,
+.account-sidebar-toggle:focus-visible {
+    outline: 2px solid var(--sage-strong);
+    outline-offset: 2px;
+}
+
+/* -- Collapse: na desktopu je nav vždy vidět -- */
+@media (min-width: 992px) {
+    #accountNav.account-nav.collapse {
+        display: grid !important;
+        height: auto !important;
+    }
+}
+
+/* ---- Přehledové / statistické karty ---- */
+.account-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.account-card {
+    padding: 1.2rem 1.25rem;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+}
+
+.account-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    color: var(--sage);
+    font-size: 1.35rem;
+}
+
+.account-stat-value {
+    font-family: "Playfair Display", serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-dark);
+}
+
+.account-stat-label {
+    margin: 0.35rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+/* ---- Prázdný stav ---- */
+.account-empty-state {
+    text-align: center;
+    padding: 2.5rem 1.25rem;
+    color: var(--text-muted);
+}
+
+.account-empty-state i {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 2.4rem;
+    color: var(--sage);
+}
+
+/* ---- Akce v hlavičce profilu (více tlačítek vedle sebe) ---- */
+.account-head-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* ---- Karty psů (přehled „Moji psi") ---- */
+.account-dog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.account-dog-card {
+    padding: 1.35rem;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+}
+
+.account-dog-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--sage-light);
+    color: var(--sage-strong);
+}
+
+.account-dog-name {
+    margin: 0 0 0.6rem;
+    font-size: 1.35rem;
+    color: var(--text-dark);
+}
+
+.account-dog-meta {
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+}
+
+.account-dog-meta > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.92rem;
+}
+
+.account-dog-meta dt {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.account-dog-meta dd {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 600;
+    text-align: right;
+}
+
+.account-dog-note {
+    margin: 0.85rem 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+/* ---- Akce na kartě psa (Upravit / Smazat) ---- */
+.account-dog-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+}
+
+.account-dog-delete-btn {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #a1483d;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.account-dog-delete-btn:hover {
+    text-decoration: underline;
+}
+
+/* ---- Menší nadpis sekce ---- */
+.account-title-sm {
+    font-size: 1.35rem;
+    margin: 0 0 0.9rem;
+}
+
+/* ---- Dlaždice kurzů (přehled „Moje kurzy") ---- */
+.account-course-tile {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+    transition: border-color 0.18s var(--ease);
+}
+
+.account-course-tile:hover {
+    border-color: var(--line-strong);
+}
+
+.account-course-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--sage-light);
+    overflow: hidden;
+}
+
+.account-course-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-course-thumb-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage);
+    font-size: 2.4rem;
+}
+
+.account-course-body {
+    padding: 1.1rem 1.2rem 1.3rem;
+}
+
+.account-course-tile-title {
+    margin: 0 0 0.7rem;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+}
+
+/* ---- Nastavení účtu (řádky s oddělovačem) ---- */
+.account-settings-list {
+    display: grid;
+    gap: 0;
+}
+
+.account-setting-row {
+    display: grid;
+    grid-template-columns: 1.8rem minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    column-gap: 1rem;
+    align-items: center;
+    padding: 1.2rem 0.15rem;
+    border-top: 1px solid var(--line);
+}
+
+.account-setting-row:first-child {
+    border-top: 0;
+}
+
+.account-setting-row-icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    color: var(--sage);
+    font-size: 1.25rem;
+}
+
+.account-setting-row-title {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.account-setting-row-desc {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0.1rem 0 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.account-setting-row-action {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+}
+
+@media (max-width: 575px) {
+    .account-setting-row {
+        grid-template-columns: 1.8rem minmax(0, 1fr);
+    }
+
+    .account-setting-row-action {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        margin-top: 0.7rem;
+    }
+}
+
+/* ============================================================
+   PRÉMIOVÝ PROFIL (Stripe styl) + sjednocení
+   ============================================================ */
+
+/* -- Overview hero (doplnění chybějícího stylu) -- */
+.account-overview-hero {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.account-avatar-lg {
+    width: 4.4rem;
+    height: 4.4rem;
+    font-size: 1.95rem;
+}
+
+.account-overview-hero-text {
+    min-width: 0;
+}
+
+.account-overview-course-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* -- Profilový formulář: sekce s popiskem vlevo -- */
+.profile-section {
+    display: grid;
+    grid-template-columns: minmax(0, 230px) minmax(0, 1fr);
+    gap: 1.25rem 2.5rem;
+    padding: 1.7rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.profile-section:first-of-type {
+    padding-top: 0.35rem;
+    border-top: 0;
+}
+
+.profile-section-title {
+    margin: 0 0 0.3rem;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-dark);
+}
+
+.profile-section-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.profile-section-body {
+    min-width: 0;
+}
+
+.profile-section-body .row:last-child [class*="col"]:last-child .mb-3 {
+    margin-bottom: 0;
+}
+
+/* -- Read-only e-mail -- */
+.profile-readonly {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    border: 1px dashed var(--line-strong);
+    background: var(--bg-light);
+    color: var(--text-soft);
+}
+
+.profile-readonly span {
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+.profile-readonly-link {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sage);
+    text-decoration: none;
+}
+
+.profile-readonly-link:hover {
+    color: var(--sage-strong);
+}
+
+/* -- Přehled profilu (jen ke čtení) -- */
+.profile-view-item {
+    margin-bottom: 1rem;
+}
+
+.profile-view-label {
+    margin: 0 0 0.3rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.profile-view-value {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.profile-view-value.is-empty {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* -- Save bar -- */
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.6rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+}
+
+/* -- Tablet/mobil: sekce pod sebe -- */
+@media (max-width: 767px) {
+    .profile-section {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+        padding: 1.4rem 0;
+    }
+
+    .account-overview-hero {
+        gap: 1rem;
+    }
+
+    .account-avatar-lg {
+        width: 3.6rem;
+        height: 3.6rem;
+        font-size: 1.55rem;
+    }
+
+    .profile-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ---- Doladění pro malé telefony ---- */
+@media (max-width: 480px) {
+    .account-content-card {
+        padding: 1.25rem;
+    }
+
+    .account-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .account-dog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---- Fotka psa (karta + formulář) ---- */
+.account-dog-photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 0.85rem;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--sage-light);
+}
+
+.account-dog-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-dog-photo-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage);
+}
+
+.dog-form-photo {
+    margin-bottom: 0.5rem;
+}
+
+.dog-form-photo img {
+    max-width: 120px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
 }

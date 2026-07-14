@@ -2,6 +2,12 @@
    CONTENT PROSE (text z administrace)
    ===================================================== */
 
+/* Čitelná délka řádku (~65–75 znaků) pro dlouhé právní texty */
+.content-prose {
+    max-width: 68ch;
+    margin-inline: auto;
+}
+
 .content-prose p {
     margin-bottom: 1.2rem;
     line-height: 1.75;

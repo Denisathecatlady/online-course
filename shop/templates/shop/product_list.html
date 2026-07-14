@@ -166,7 +166,7 @@
                             {% endif %}
 
                             <a href="{% url 'shop:product_detail' card.product.slug %}" class="shop-product-photo-frame" aria-label="Zobrazit detail produktu {{ card.product.name }}">
-                                <img src="{{ card.image_url }}" alt="{{ card.product.name }}" class="shop-product-photo">
+                                <img src="{{ card.image_url }}" alt="{{ card.product.name }}" class="shop-product-photo" loading="lazy">
                             </a>
                         </div>
 
@@ -414,7 +414,7 @@
                 </div>
 
                 <div class="shop-cta-media">
-                    <img src="{{ cta_image_url }}" alt="Pes CalmDog v exteriéru" class="shop-cta-image">
+                    <img src="{{ cta_image_url }}" alt="Pes CalmDog v exteriéru" class="shop-cta-image" loading="lazy">
                 </div>
             </div>
         </div>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Potvrzení e-mailu | CalmDog{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card text-center">
+          <h1 class="auth-title">Potvrzení e-mailu</h1>
+
+          {% if confirmation %}
+            <p class="auth-lead">
+              Potvrďte prosím, že <strong>{{ confirmation.email_address.email }}</strong>
+              je vaše e-mailová adresa.
+            </p>
+            <form method="post" action="{% url 'account_confirm_email' confirmation.key %}" class="auth-form">
+              {% csrf_token %}
+              {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+              {% endif %}
+              <button type="submit" class="auth-btn">Potvrdit e-mail →</button>
+            </form>
+          {% else %}
+            <p class="auth-lead">
+              Tento potvrzovací odkaz je neplatný nebo už vypršel.
+              Přihlaste se a nechte si poslat nový.
+            </p>
+            <a href="{% url 'account_login' %}" class="auth-btn">Zpět na přihlášení</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

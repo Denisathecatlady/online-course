@@ -175,6 +175,7 @@
   color: #2d2d2d;
   line-height: 1;
   margin-bottom: 0.45rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .pd-variant-summary {
@@ -236,6 +237,12 @@
 .pd-select:focus {
   outline: none;
   border-bottom-color: #5f766b;
+}
+
+.pd-select:focus-visible {
+  outline: 2px solid #5f766b;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* Barva */
