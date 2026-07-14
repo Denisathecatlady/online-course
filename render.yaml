@@ -51,6 +51,11 @@ services:
         sync: false
       - key: PACKETA_WIDGET_API_KEY
         sync: false
+      # Indikace odesílatele (sender) z Packeta administrace – musí přesně sedět
+      - key: PACKETA_ESHOP_NAME
+        sync: false
+      - key: HEUREKA_API_KEY
+        sync: false
       - key: HOTEL_ICAL_URL
         sync: false
       - key: MAPY_API_KEY
@@ -191,6 +196,11 @@ services:
       - key: PACKETA_WIDGET_API_KEY
         sync: false
       - key: PACKETA_API_PASSWORD
+        sync: false
+      # Indikace odesílatele (sender) z Packeta administrace – musí přesně sedět
+      - key: PACKETA_ESHOP_NAME
+        sync: false
+      - key: HEUREKA_API_KEY
         sync: false
       - key: MAPY_API_KEY
         sync: false
