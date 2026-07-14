@@ -84,6 +84,7 @@ def _soap_call(method: str, inner_xml: str) -> ET.Element:
 
     # Packeta vrací <status>ok</status>, jinak <status>fault</status>/<status>error</status>
     # s chybovým kódem v <fault> a lidsky čitelnou zprávou v <string>.
+    # <detail> (pokud není prázdný) obsahuje konkrétní důvod, např. které pole selhalo.
     status_el = root.find(".//status")
     if status_el is not None and status_el.text != "ok":
         code = root.findtext(".//fault") or "ERROR"
@@ -92,6 +93,10 @@ def _soap_call(method: str, inner_xml: str) -> ET.Element:
             or root.findtext(".//message")
             or "Packeta vrátila chybu bez detailů."
         )
+        detail_el = root.find(".//detail")
+        if detail_el is not None and len(detail_el) > 0:
+            detail_xml = ET.tostring(detail_el, encoding="unicode")
+            msg = f"{msg} Detail: {detail_xml[:800]}"
         raise PacketaError(code, msg)
 
     return root
