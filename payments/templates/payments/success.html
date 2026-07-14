@@ -20,12 +20,24 @@
 
             <p class="hero-lead mb-4">
               Platba proběhla úspěšně.<br>
-              Přístup ke kurzu se aktivuje během chvilky.
+              {% if order and order.contains_course %}
+                Přístup ke kurzu se aktivuje během chvilky.
+              {% elif order and order.contains_physical_product %}
+                Objednávku brzy zpracujeme a odešleme.
+              {% else %}
+                Potvrzení objednávky dorazí na Váš e-mail.
+              {% endif %}
             </p>
 
-            <a href="{% url 'accounts:my_courses' %}" class="btn btn-sage">
-              Přejít do mých kurzů →
-            </a>
+            {% if order and order.contains_course %}
+              <a href="{% url 'accounts:my_courses' %}" class="btn btn-sage">
+                Přejít do mých kurzů →
+              </a>
+            {% else %}
+              <a href="{% url 'accounts:order_history' %}" class="btn btn-sage">
+                Přejít k objednávkám →
+              </a>
+            {% endif %}
 
           </div>
         </div>

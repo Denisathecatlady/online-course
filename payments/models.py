@@ -233,6 +233,9 @@ class Order(models.Model):
     def contains_physical_product(self):
         return self.items.filter(product_variant__isnull=False).exists()
 
+    def contains_course(self):
+        return self.items.filter(course_plan__isnull=False).exists()
+
     # ----------------------
     # SLEVOVÝ KUPÓN – pomocné metody
     # ----------------------
