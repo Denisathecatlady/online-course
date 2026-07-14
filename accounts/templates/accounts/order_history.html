@@ -21,11 +21,22 @@
             <div>
               <strong>Objednávka #{{ order.id }}</strong><br>
               <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
+              {% if order.contains_physical_product %}
+                <span class="account-shipping-status is-{{ order.shipping_status }}">{{ order.get_shipping_status_display }}</span>
+              {% endif %}
             </div>
           </a>
           <div class="d-flex align-items-center gap-3">
             <span class="account-price">{{ order.total_price|intcomma }} Kč</span>
-            {% if order.can_withdraw %}
+            {% if order.can_request_return %}
+              <form method="post" action="{% url 'accounts:request_return' order.id %}"
+                    onsubmit="return confirm('Opravdu chcete vrátit tuto objednávku? Vygenerujeme vratkový kód od Zásilkovny.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-sage btn-sm" title="Vrátit zboží – lhůta 14 dní od doručení">
+                  Vrátit zboží
+                </button>
+              </form>
+            {% elif order.can_withdraw %}
               <a href="{% url 'courses:withdrawal' %}"
                  class="btn btn-outline-sage btn-sm"
                  title="Vrátit zboží – lhůta 14 dní od nákupu">

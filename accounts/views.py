@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import timedelta
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -50,6 +51,26 @@ def profile_edit(request):
     })
 
 
+def _mark_withdrawal_eligibility(order):
+    """
+    Nastaví na objednávku can_withdraw / can_request_return.
+
+    14denní lhůta na odstoupení od smlouvy běží od převzetí zboží (§1829 obč.
+    zákoníku) – použije se order.delivered_at, pokud už je zásilka sledovaná
+    jako doručená. Starší objednávky bez sledovaného doručení mají fallback na
+    zaplacení, ať lhůta nespadne úplně (méně přesné, ale bezpečnější než 0 dní).
+    """
+    reference_date = order.delivered_at or order.paid_at or order.created_at
+    cutoff = timezone.now() - timedelta(days=14)
+    order.can_withdraw = reference_date >= cutoff
+
+    order.can_request_return = (
+        order.can_withdraw
+        and order.contains_physical_product()
+        and not order.return_requested_at
+    )
+
+
 @login_required
 def order_history(request):
     orders = Order.objects.filter(
@@ -57,11 +78,8 @@ def order_history(request):
         status=Order.Status.PAID,
     ).order_by("-created_at")
 
-    # Označíme objednávky, u kterých ještě běží 14denní lhůta pro vrácení
-    cutoff = timezone.now() - timedelta(days=14)
     for order in orders:
-        paid_date = order.paid_at or order.created_at
-        order.can_withdraw = paid_date >= cutoff
+        _mark_withdrawal_eligibility(order)
 
     return render(request, "accounts/order_history.html", {
         "orders": orders,
@@ -76,11 +94,40 @@ def order_detail(request, pk):
         pk=pk,
         user=request.user,
     )
+    _mark_withdrawal_eligibility(order)
 
     return render(request, "accounts/order_detail.html", {
         "order": order,
         "account_section": "orders",
     })
+
+
+@login_required
+def request_return(request, pk):
+    from payments.services.packeta import PacketaError, create_packet_claim
+
+    order = get_object_or_404(Order, pk=pk, user=request.user, status=Order.Status.PAID)
+    _mark_withdrawal_eligibility(order)
+
+    if request.method != "POST" or not order.can_request_return:
+        return redirect("accounts:order_detail", pk=order.pk)
+
+    try:
+        result = create_packet_claim(order)
+    except (PacketaError, ValueError) as e:
+        messages.error(request, f"Vratku se nepodařilo vyřídit: {e}")
+        return redirect("accounts:order_detail", pk=order.pk)
+
+    order.return_requested_at = timezone.now()
+    order.return_packet_id = result["packet_id"]
+    order.return_barcode_text = result["barcode_text"]
+    order.save(update_fields=["return_requested_at", "return_packet_id", "return_barcode_text"])
+
+    messages.success(
+        request,
+        "Vratka byla vyřízena. Vratkový kód najdete níže, poslali jsme ho i e-mailem.",
+    )
+    return redirect("accounts:order_detail", pk=order.pk)
 
 
 @login_required

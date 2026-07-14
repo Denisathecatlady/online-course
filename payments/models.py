@@ -86,6 +86,11 @@ class Order(models.Model):
         ZASILKOVNA = "zasilkovna", "Zásilkovna"
         KURYR = "kuryr", "Kurýr"
 
+    class ShippingStatus(models.TextChoices):
+        PROCESSING = "processing", "Zpracovává se"
+        SHIPPED = "shipped", "Odesláno"
+        DELIVERED = "delivered", "Doručeno"
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -186,6 +191,32 @@ class Order(models.Model):
     packeta_point_name = models.CharField("Packeta – výdejní místo", max_length=255, blank=True, null=True)
 
     packeta_created_at = models.DateTimeField("Packeta – vytvořeno", blank=True, null=True)
+
+    # ==============================
+    # STAV ZÁSILKY (sledování doručení)
+    # ==============================
+
+    shipping_status = models.CharField(
+        "Stav zásilky",
+        max_length=20,
+        choices=ShippingStatus.choices,
+        default=ShippingStatus.PROCESSING,
+    )
+    dispatched_at = models.DateTimeField("Předáno dopravci", null=True, blank=True)
+    delivered_at = models.DateTimeField("Doručeno / vyzvednuto", null=True, blank=True)
+
+    # Syrová data z poslední kontroly Packeta packetStatus – pro ladění mapování stavů
+    packeta_last_status_code = models.PositiveIntegerField("Packeta – poslední kód stavu", null=True, blank=True)
+    packeta_last_status_name = models.CharField("Packeta – poslední stav (text)", max_length=255, blank=True)
+    packeta_status_checked_at = models.DateTimeField("Poslední kontrola stavu", null=True, blank=True)
+
+    # ==============================
+    # VRÁCENÍ ZBOŽÍ (vratkový kód Zásilkovny)
+    # ==============================
+
+    return_requested_at = models.DateTimeField("Vratka vyžádána", null=True, blank=True)
+    return_packet_id = models.CharField("Packeta – ID vratkové zásilky", max_length=100, blank=True)
+    return_barcode_text = models.CharField("Vratkový kód", max_length=100, blank=True)
 
     # ==============================
     # STRIPE

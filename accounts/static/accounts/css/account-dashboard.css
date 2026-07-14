@@ -1131,3 +1131,30 @@
     border-radius: 8px;
     border: 1px solid var(--line);
 }
+
+/* ---- Stav zásilky (Zpracovává se / Odesláno / Doručeno) ---- */
+.account-shipping-status {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.6rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.account-shipping-status.is-processing {
+    background: var(--sage-light);
+    color: var(--text-muted);
+}
+
+.account-shipping-status.is-shipped {
+    background: rgba(239, 157, 88, 0.14);
+    color: var(--accent);
+}
+
+.account-shipping-status.is-delivered {
+    background: var(--sage-light);
+    color: var(--sage-strong);
+}

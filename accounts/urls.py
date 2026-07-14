@@ -37,6 +37,7 @@ urlpatterns = [
     path("moje-kurzy/", views.my_courses, name="my_courses"),
     path("objednavky/", views.order_history, name="order_history"),
     path("objednavky/<int:pk>/", views.order_detail, name="order_detail"),
+    path("objednavky/<int:pk>/vratit/", views.request_return, name="request_return"),
     path("faktury/", views.invoices, name="invoices"),
     path("faktury/<int:pk>/stahnout/", views.download_invoice, name="invoice_download"),
     path("nastaveni/", views.account_settings, name="settings"),

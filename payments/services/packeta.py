@@ -175,18 +175,95 @@ def create_packet(order) -> dict:
 
     root = _soap_call("createPacket", inner_xml)
 
-    packet_id_el = root.find(".//packetId")
+    packet_id_el = root.find(".//result/id")
     if packet_id_el is None or not packet_id_el.text:
         raise PacketaError("NO_ID", "Packeta nevrátila packetId.")
 
     packet_id = packet_id_el.text.strip()
-    barcode_el = root.find(".//barcode")
+    barcode_el = root.find(".//result/barcode")
     tracking = barcode_el.text.strip() if barcode_el is not None and barcode_el.text else packet_id
 
     logger.info(f"[Packeta] Zásilka vytvořena: {packet_id} (objednávka #{order.id})")
     return {
         "packet_id": packet_id,
         "tracking_number": tracking,
+    }
+
+
+def create_packet_claim(order) -> dict:
+    """
+    Vytvoří vratkovou zásilku (reklamace/vrácení zboží) k původní zásilce a vrátí
+    vratkový kód. Packeta na žádost pošle štítek/kód i e-mailem zákazníkovi
+    (sendLabelToEmail).
+
+    Vrací:
+        {
+            "packet_id": "Z9876543210",
+            "barcode": "Z9876543210",
+            "barcode_text": "9876543210",  # vratkový kód k zobrazení zákazníkovi
+        }
+
+    Vyhodí:
+        PacketaError  – Packeta odmítla vratku (např. neplatné číslo původní zásilky)
+        ValueError    – chybí sledovací číslo původní zásilky nebo heslo
+        requests.*    – síťová chyba
+    """
+    if not order.packeta_tracking_number:
+        raise ValueError("Chybí packeta_tracking_number – objednávka nemá zásilku Packeta.")
+
+    # ── MOCK režim ─────────────────────────────────────────
+    if getattr(settings, "PACKETA_MODE", "live") == "mock":
+        suffix = str(order.id).zfill(8)
+        mock_id = f"ZRETMOCK{suffix}"
+        logger.info(f"[Packeta MOCK] Vratka pro objednávku #{order.id}: {mock_id}")
+        return {
+            "packet_id": mock_id,
+            "barcode": mock_id,
+            "barcode_text": suffix,
+        }
+
+    # ── LIVE režim ─────────────────────────────────────────
+    api_password = getattr(settings, "PACKETA_API_PASSWORD", None)
+    if not api_password:
+        raise ValueError("Chybí PACKETA_API_PASSWORD pro live Packeta režim.")
+
+    number = _escape(order.packeta_tracking_number)
+    email = _escape(order.buyer_email or "")
+    phone = _escape(getattr(order, "phone", "") or "")
+    value = float(order.total_price)
+    currency = "CZK"
+    eshop = _escape(getattr(settings, "PACKETA_ESHOP_NAME", "CalmDog"))
+
+    inner_xml = (
+        f"<apiPassword>{_escape(api_password)}</apiPassword>"
+        f"<claimAttributes>"
+        f"  <number>{number}</number>"
+        f"  <email>{email}</email>"
+        f"  <phone>{phone}</phone>"
+        f"  <value>{value:.2f}</value>"
+        f"  <currency>{currency}</currency>"
+        f"  <eshop>{eshop}</eshop>"
+        f"  <sendLabelToEmail>1</sendLabelToEmail>"
+        f"</claimAttributes>"
+    )
+
+    root = _soap_call("createPacketClaim", inner_xml)
+
+    packet_id_el = root.find(".//result/id")
+    if packet_id_el is None or not packet_id_el.text:
+        raise PacketaError("NO_ID", "Packeta nevrátila ID vratkové zásilky.")
+
+    packet_id = packet_id_el.text.strip()
+    barcode_el = root.find(".//result/barcode")
+    barcode = barcode_el.text.strip() if barcode_el is not None and barcode_el.text else packet_id
+    barcode_text_el = root.find(".//result/barcodeText")
+    barcode_text = barcode_text_el.text.strip() if barcode_text_el is not None and barcode_text_el.text else barcode
+
+    logger.info(f"[Packeta] Vratka vytvořena: {packet_id} (objednávka #{order.id})")
+    return {
+        "packet_id": packet_id,
+        "barcode": barcode,
+        "barcode_text": barcode_text,
     }
 
 
@@ -222,8 +299,8 @@ def get_packet_label_pdf(packet_id: str, format: str = "A6 on A4", offset: int =
 
     root = _soap_call("packetLabelPdf", inner_xml)
 
-    # Odpověď obsahuje base64 encoded PDF
-    label_el = root.find(".//labelContents")
+    # Odpověď obsahuje base64 encoded PDF přímo jako text elementu <result>
+    label_el = root.find(".//result")
     if label_el is None or not label_el.text:
         raise PacketaError("NO_LABEL", "Packeta nevrátila obsah štítku.")
 
@@ -238,10 +315,10 @@ def get_packet_status(packet_id: str) -> dict:
 
     Vrací:
         {
-            "code_text": "Delivered",
+            "code_text": "delivered",
             "code": 4,
-            "name": "Doručeno",
-            "date": "2024-06-01",
+            "name": "Zásilka byla doručena.",
+            "date": "2024-06-01T10:15:00",
         }
 
     Vyhodí:
@@ -267,11 +344,17 @@ def get_packet_status(packet_id: str) -> dict:
 
     root = _soap_call("packetStatus", inner_xml)
 
+    # Aktuální stav je v <r><record>...</record></r> – code/name/date žijí
+    # pod record jako statusCode/statusText/dateTime, ne přímo pod response.
+    record = root.find(".//record")
+    if record is None:
+        return {"code_text": "", "code": 0, "name": "", "date": ""}
+
     return {
-        "code_text": (root.findtext(".//codeText") or "").strip(),
-        "code": int(root.findtext(".//code") or 0),
-        "name": (root.findtext(".//name") or "").strip(),
-        "date": (root.findtext(".//date") or "").strip(),
+        "code_text": (record.findtext("codeText") or "").strip(),
+        "code": int(record.findtext("statusCode") or 0),
+        "name": (record.findtext("statusText") or "").strip(),
+        "date": (record.findtext("dateTime") or "").strip(),
     }
 
 

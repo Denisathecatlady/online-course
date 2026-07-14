@@ -38,6 +38,20 @@
           <strong>{{ order.get_shipping_method_display }}</strong>
           {% if order.packeta_point_name %} - {{ order.packeta_point_name }}{% endif %}
         </p>
+
+        {% if order.contains_physical_product %}
+          <p class="mb-2">
+            Stav zásilky:
+            <span class="account-shipping-status is-{{ order.shipping_status }}">{{ order.get_shipping_status_display }}</span>
+          </p>
+          {% if order.dispatched_at %}
+            <p class="mb-1 text-muted">Předáno dopravci: {{ order.dispatched_at|date:"d.m.Y" }}</p>
+          {% endif %}
+          {% if order.delivered_at %}
+            <p class="mb-1 text-muted">Doručeno / vyzvednuto: {{ order.delivered_at|date:"d.m.Y" }}</p>
+          {% endif %}
+        {% endif %}
+
         {% if order.packeta_tracking_number %}
           <p class="mb-1">Tracking: {{ order.packeta_tracking_number }}</p>
         {% endif %}
@@ -46,6 +60,25 @@
         {% endif %}
       </div>
     </details>
+  {% endif %}
+
+  {% if order.return_barcode_text %}
+    <div class="account-total-box mt-4">
+      <p class="mb-1 fw-semibold">Vratkový kód</p>
+      <p class="mb-1" style="font-size: 1.4rem; letter-spacing: 0.05em;">{{ order.return_barcode_text }}</p>
+      <p class="mb-0 text-muted">
+        Kód jsme poslali i e-mailem. Předložte ho na pobočce Zásilkovny při vrácení balíku
+        (vyžádáno {{ order.return_requested_at|date:"d.m.Y" }}).
+      </p>
+    </div>
+  {% elif order.can_request_return %}
+    <div class="mt-4">
+      <form method="post" action="{% url 'accounts:request_return' order.id %}"
+            onsubmit="return confirm('Opravdu chcete vrátit tuto objednávku? Vygenerujeme vratkový kód od Zásilkovny.');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-sage">Vrátit zboží</button>
+      </form>
+    </div>
   {% endif %}
 
   <div class="account-total-box mt-4">

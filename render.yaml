@@ -133,6 +133,40 @@ services:
       - key: GOOGLE_OAUTH_CLIENT_SECRET
         sync: false
 
+  # ─── CRON: synchronizace stavu zásilek Packeta (vratky + doručení) ──────────
+  - type: cron
+    name: calmdog-packeta-status-sync
+    runtime: python
+    plan: starter
+    region: frankfurt
+    branch: refactor-cart-system
+    schedule: "*/30 * * * *"   # každých 30 minut
+    buildCommand: pip install -r requirements.txt
+    startCommand: python manage.py sync_packeta_status
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: USE_S3_STORAGE
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_ADMIN_URL
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: calmdog-db
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        value: www.calmdog.cz,calmdog.cz
+      - key: PACKETA_API_PASSWORD
+        sync: false
+      - key: PACKETA_MODE
+        value: live
+      - key: PACKETA_ESHOP_NAME
+        sync: false
+
   # ─── STAGING / PREVIEW ──────────────────────────────────────────────────────
   - type: web
     name: calmdog-preview

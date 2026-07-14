@@ -5,6 +5,7 @@ import os
 from django.core.files.base import ContentFile
 from django.db.models import Max
 from django.conf import settings
+from django.utils.timezone import localtime
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -78,6 +79,9 @@ def generate_invoice_pdf(order):
     p.setFont("DejaVu-Bold", 20)
     p.drawRightString(width - 40, height - 60, "FAKTURA")
 
+    # Datum vystavení = den zaplacení (ne den (re)generace PDF).
+    issue_date = localtime(order.paid_at).date() if order.paid_at else date.today()
+
     p.setFont("DejaVu", 10)
     p.drawRightString(
         width - 40,
@@ -87,7 +91,12 @@ def generate_invoice_pdf(order):
     p.drawRightString(
         width - 40,
         height - 100,
-        f"Datum vystavení: {date.today().strftime('%d.%m.%Y')}",
+        f"Datum vystavení: {issue_date.strftime('%d.%m.%Y')}",
+    )
+    p.drawRightString(
+        width - 40,
+        height - 115,
+        f"Datum splatnosti: {issue_date.strftime('%d.%m.%Y')} (uhrazeno)",
     )
 
     # --------------------------------------------------
@@ -144,11 +153,19 @@ def generate_invoice_pdf(order):
     line_y = y - 22
     total_amount = 0
 
-    for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+    items_qs = order.items.select_related(
+        "course_plan__course", "product_variant__product", "product_variant__color"
+    )
+    for item in items_qs.all():
         if item.course_plan:
             description = f"Online kurz {item.course_plan.course.title}, varianta {item.course_plan.name}"
         elif item.product_variant:
-            description = item.product_variant.product.name
+            variant = item.product_variant
+            description = variant.product.name
+            details = [variant.color.name]
+            if variant.length:
+                details.append(variant.get_length_display())
+            description += f" ({', '.join(details)})"
         else:
             description = f"Polozka #{item.id}"
 
@@ -182,6 +199,18 @@ def generate_invoice_pdf(order):
         line_y - 40,
         f"Celkem k úhradě: {total_amount:.2f} Kč",
     )
+
+    # --------------------------------------------------
+    # PODPIS
+    # --------------------------------------------------
+    signature_y = line_y - 90
+
+    p.setLineWidth(0.5)
+    p.line(width - 190, signature_y, width - 40, signature_y)
+
+    p.setFont("DejaVu", 9)
+    p.drawCentredString(width - 115, signature_y - 14, "Podpis")
+    p.drawCentredString(width - 115, signature_y - 28, "Ing. Andrea Zoulová")
 
     # --------------------------------------------------
     # PATIČKA
