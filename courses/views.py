@@ -977,7 +977,7 @@ def gdpr(request):
 
 
 def privacy_policy(request):
-    return render(request, "courses/privacy_policy.html")
+    return redirect("courses:gdpr", permanent=True)
 
 
 def terms(request):
