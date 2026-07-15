@@ -80,6 +80,10 @@ Module quiz sequencing logic lives in `courses/views.py:build_module_steps()`. Q
 
 Set `PACKETA_MODE=mock` in env to skip real API calls during development. Admin has retry actions for failed shipments.
 
+`PACKETA_ESHOP_NAME` must match the eshop name exactly as registered with Packeta, including case and TLD — the correct value is `CalmDog.cz` (**not** `CalmDog`). A mismatch causes the `<eshop>` field in API requests to be rejected. Confirmed via order #86 debugging (2026-07): shipment creation was failing until this was corrected on `calmdog-preview`.
+
+**Open issue (unresolved as of 2026-07-14):** on order #86, after fixing `PACKETA_ESHOP_NAME`, retrying shipment creation reported success ("Zásilky vytvořeny: 1") but no label was actually generated for the order. Since `create_packet()` and `get_packet_label_pdf()` are separate calls, the likely cause is that the retry action only calls `create_packet()` and never triggers (or silently fails at) the label-fetch step — but this wasn't confirmed before the investigating session hit its usage limit. Next step: read the actual admin action behind "🔄 Opakovat vytvoření zásilky (Packeta)" (search `payments/admin.py`) and check whether/how it calls `get_packet_label_pdf()`.
+
 ### File storage (R2 / S3)
 
 When `USE_S3_STORAGE=1`, all `FileField`/`ImageField` uploads go to Cloudflare R2 via `django-storages`. **Always use `.open("rb")` instead of `.path`** when reading stored files — `.path` breaks on R2. Example:
@@ -103,8 +107,11 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_STORAGE_BUCKET_NAME`, `AWS_S3_ENDPOINT_URL` | Cloudflare R2 credentials |
 | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` | Stripe |
 | `PACKETA_API_PASSWORD`, `PACKETA_WIDGET_API_KEY` | Zásilkovna live |
+| `PACKETA_ESHOP_NAME` | Must exactly match the eshop name registered with Packeta: `CalmDog.cz` (not `CalmDog`) — mismatch breaks the `<eshop>` API field |
 | `PACKETA_MODE` | `mock` or `live` |
 | `PACKETA_DEFAULT_WEIGHT` | Default shipment weight in kg (default `0.5`) |
+| `APP_ENV` | `production` / `staging` / defaults to `development` if unset. Gates `SHOW_PREVIEW_BANNER` and `PREPEND_WWW` — see Deployment section below |
+| `SHOW_PREVIEW_BANNER` | `1`/`0`, defaults to `0` (fail-safe). Combined with `APP_ENV != "production"` to decide whether the staging-only migration-lock banner renders |
 | `HOTEL_ICAL_URL` | iCal feed URL for hotel availability |
 | `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP (Seznam.cz, port 465 SSL) |
 | `DATABASE_URL` | PostgreSQL on Render; SQLite used locally if unset |
@@ -122,3 +129,20 @@ Landing page + reservation interest form. Availability fetched from iCal URL (`H
 - Start: `gunicorn config.wsgi:application`
 - Stripe webhook must be registered for the production domain; secret goes in `STRIPE_WEBHOOK_SECRET`
 - `PACKETA_MODE=mock` is set in `render.yaml` for the staging service
+
+### Services (`render.yaml`)
+
+Two web services, both auto-deploying from **`refactor-cart-system`** (this is the branch that's actually live — `main` is a separate, much simpler line of development and is *not* what's deployed):
+
+| Service | Domain | `APP_ENV` | `SHOW_PREVIEW_BANNER` | `PACKETA_MODE` |
+|---|---|---|---|---|
+| `calmdog` (production) | `www.calmdog.cz`, `calmdog.cz` | `production` | `0` | `live` |
+| `calmdog-preview` (staging) | Render-assigned | `staging` | `1` | `mock` |
+
+**Known footgun — Render Blueprint env var drift:** adding/changing a key in `render.yaml` does **not** retroactively apply to an already-provisioned service. It only takes effect on initial service creation or when you explicitly click "Sync" in the Render dashboard for that service. If a service's live env vars silently diverge from `render.yaml`, `APP_ENV` falls back to its code default (`"development"`, not `"production"`), which cascades into:
+- `SHOW_PREVIEW_BANNER` evaluating true → the staging-only "Nákup kurzů a produktů je dočasně pozastaven..." banner (`.migration-banner` in `courses/templates/base.html`) renders on the live site
+- `PREPEND_WWW` evaluating false → `calmdog.cz` no longer redirects to `www.calmdog.cz`
+
+This exact drift was found live on production on 2026-07-14 (both symptoms confirmed via direct HTTP checks against `calmdog.cz`). Code was hardened so `SHOW_PREVIEW_BANNER` now fails closed (defaults to hidden) instead of failing open — see the env var table above — but the underlying fix is still to verify/set `APP_ENV=production` and `SHOW_PREVIEW_BANNER=0` directly in the Render dashboard for the `calmdog` service (or trigger a blueprint Sync), since `render.yaml` alone doesn't guarantee it's actually applied.
+
+If a similar "why is a staging-only thing showing in production" bug shows up again, check env var drift here first before assuming it's a code bug.
