@@ -98,6 +98,8 @@ services:
         sync: false
       - key: GOOGLE_REVIEW_URL
         sync: false
+      - key: DJANGO_ADMIN_URL
+        sync: false
 
   # ─── CRON: zpětná synchronizace Google kalendáře (rezervace tréninků) ───────
   - type: cron
@@ -131,6 +133,8 @@ services:
       - key: GOOGLE_OAUTH_CLIENT_ID
         sync: false
       - key: GOOGLE_OAUTH_CLIENT_SECRET
+        sync: false
+      - key: DJANGO_ADMIN_URL
         sync: false
 
   # ─── STAGING / PREVIEW ──────────────────────────────────────────────────────
