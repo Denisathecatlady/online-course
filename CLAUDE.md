@@ -108,7 +108,7 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 | `HOTEL_ICAL_URL` | iCal feed URL for hotel availability |
 | `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS`, `EMAIL_USE_SSL`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP relay (Brevo, `smtp-relay.brevo.com`, port 587, TLS). Not declared in `render.yaml` — set manually per Render service. Brevo's "Authorized IPs" security feature (Settings → Security) must have SMTP keys deactivated or Render's outbound IP authorized, otherwise sends fail with `535`/`525 Unauthorized IP address`. |
 | `DATABASE_URL` | PostgreSQL on Render; SQLite used locally if unset |
-| `DJANGO_ADMIN_URL` | Custom admin path (default `tajny-admin/`) |
+| `DJANGO_SECRET_KEY`, `DJANGO_ADMIN_URL` | **Mandatory whenever `DJANGO_DEBUG` is unset/`0`** — `config/settings.py` raises `RuntimeError` at import time (before any view/command code runs) if either falls back to its dev sentinel value while not in debug mode. This applies to **every** Render service, including cron jobs — not just the web services. Must be declared (`sync: false`) in every service's `envVars` block in `render.yaml` *and* have its value filled in manually per-service in the Render dashboard (`sync: false` doesn't carry a value across services). |
 
 ### Hotel app
 
@@ -122,3 +122,4 @@ Landing page + reservation interest form. Availability fetched from iCal URL (`H
 - Start: `gunicorn config.wsgi:application`
 - Stripe webhook must be registered for the production domain; secret goes in `STRIPE_WEBHOOK_SECRET`
 - `PACKETA_MODE=mock` is set in `render.yaml` for the staging service
+- **Every service in `render.yaml`** (both `web` and `cron` types) needs its own `DJANGO_SECRET_KEY` and `DJANGO_ADMIN_URL` env vars — see [Settings / env vars](#settings--env-vars). New cron jobs added to `render.yaml` have historically forgotten these and crashed on first run (`RuntimeError: Missing DJANGO_ADMIN_URL in production.`); check for this when adding a new cron/service.
