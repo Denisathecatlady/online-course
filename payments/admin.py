@@ -10,6 +10,8 @@ from import_export import resources, fields
 from import_export.admin import ExportMixin
 from rangefilter.filters import DateRangeFilter
 
+from config.admin_ui import badge as _badge
+
 from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim, NewsletterSubscriber
 from .services.packeta import create_packet, get_packet_label_pdf, PacketaError
 
@@ -95,22 +97,13 @@ class NewsletterSubscriberResource(resources.ModelResource):
 # POMOCNÉ – barevné štítky stavů
 # ======================================
 
-ORDER_STATUS_COLORS = {
-    Order.Status.CART: "#9e9e9e",
-    Order.Status.PENDING: "#e0a800",
-    Order.Status.PAID: "#2e7d32",
-    Order.Status.FAILED: "#c62828",
-    Order.Status.CANCELED: "#616161",
+ORDER_STATUS_VARIANTS = {
+    Order.Status.CART: "muted",
+    Order.Status.PENDING: "warning",
+    Order.Status.PAID: "success",
+    Order.Status.FAILED: "danger",
+    Order.Status.CANCELED: "muted",
 }
-
-
-def _badge(text, color):
-    return format_html(
-        '<span style="background:{};color:#fff;padding:2px 8px;'
-        'border-radius:10px;font-size:11px;white-space:nowrap;">{}</span>',
-        color,
-        text,
-    )
 
 
 # ======================================
@@ -246,17 +239,17 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
 
     @admin.display(description="Stav")
     def status_badge(self, obj):
-        return _badge(obj.get_status_display(), ORDER_STATUS_COLORS.get(obj.status, "#777"))
+        return _badge(obj.get_status_display(), ORDER_STATUS_VARIANTS.get(obj.status, "muted"))
 
     @admin.display(description="Platba")
     def payment_badge(self, obj):
         if obj.status == Order.Status.PAID:
-            return _badge("Zaplaceno", "#2e7d32")
+            return _badge("Zaplaceno", "success")
         if obj.status == Order.Status.PENDING:
-            return _badge("Čeká na platbu", "#e0a800")
+            return _badge("Čeká na platbu", "warning")
         if obj.status == Order.Status.FAILED:
-            return _badge("Neúspěšná", "#c62828")
-        return _badge("Nezaplaceno", "#9e9e9e")
+            return _badge("Neúspěšná", "danger")
+        return _badge("Nezaplaceno", "muted")
 
     @admin.display(description="Mezisoučet zboží")
     def items_total_display(self, obj):
@@ -548,10 +541,10 @@ class CourseAccessAdmin(ExportMixin, admin.ModelAdmin):
     @admin.display(description="Přístup")
     def access_badge(self, obj):
         if obj.has_access():
-            return _badge("Aktivní", "#2e7d32")
+            return _badge("Aktivní", "success")
         if not obj.is_active:
-            return _badge("Neaktivní", "#9e9e9e")
-        return _badge("Vypršel", "#c62828")
+            return _badge("Neaktivní", "muted")
+        return _badge("Vypršel", "danger")
 
     @admin.action(description="✅ Aktivovat přístup")
     def activate_access(self, request, queryset):
@@ -632,8 +625,8 @@ class CouponAdmin(admin.ModelAdmin):
     @admin.display(description="Stav")
     def active_badge(self, obj):
         if obj.is_active:
-            return _badge("Aktivní", "#2e7d32")
-        return _badge("Neaktivní", "#9e9e9e")
+            return _badge("Aktivní", "success")
+        return _badge("Neaktivní", "muted")
 
     @admin.display(description="Platnost")
     def validity_display(self, obj):

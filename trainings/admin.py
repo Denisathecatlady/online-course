@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 
+from config.admin_ui import badge
 from .models import (
     AvailabilityCalendar,
     AvailabilityWindow,
@@ -217,7 +218,7 @@ class TrainingSlotAdmin(admin.ModelAdmin):
 class TrainingReservationAdmin(admin.ModelAdmin):
     list_display = (
         "full_name", "dog_name", "slot", "location_name", "trainer_name",
-        "status", "created_at",
+        "status_badge", "created_at",
     )
     list_filter = ("status", "slot__location", "slot__session_type", "slot__trainer")
     search_fields = ("first_name", "last_name", "email", "dog_name")
@@ -236,6 +237,16 @@ class TrainingReservationAdmin(admin.ModelAdmin):
             "fields": ("status", "created_at", "canceled_at", "google_event_id"),
         }),
     )
+
+    STATUS_VARIANTS = {
+        TrainingReservation.Status.CONFIRMED: "success",
+        TrainingReservation.Status.COMPLETED: "info",
+        TrainingReservation.Status.CANCELED: "muted",
+    }
+
+    @admin.display(description="Stav", ordering="status")
+    def status_badge(self, obj):
+        return badge(obj.get_status_display(), self.STATUS_VARIANTS.get(obj.status, "muted"))
 
     @admin.display(description="Lokalita")
     def location_name(self, obj):

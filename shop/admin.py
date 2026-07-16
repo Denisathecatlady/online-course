@@ -83,10 +83,10 @@ class ProductVariantAdmin(ImportExportModelAdmin):
     @admin.display(description="Skladem")
     def stock_badge(self, obj):
         if obj.stock <= 0:
-            return format_html('<span style="color:#c62828;font-weight:600;">Vyprodáno</span>')
+            return format_html('<span class="cd-badge cd-badge--danger">Vyprodáno</span>')
         if obj.stock <= 3:
-            return format_html('<span style="color:#e0a800;font-weight:600;">Málo ({})</span>', obj.stock)
-        return format_html('<span style="color:#2e7d32;">Skladem ({})</span>', obj.stock)
+            return format_html('<span class="cd-badge cd-badge--warning">Málo ({})</span>', obj.stock)
+        return format_html('<span class="cd-badge cd-badge--success">Skladem ({})</span>', obj.stock)
 
     @admin.action(description="✅ Aktivovat varianty")
     def activate_variants(self, request, queryset):

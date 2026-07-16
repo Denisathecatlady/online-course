@@ -1,0 +1,980 @@
+/* ==========================================================================
+   CalmDog – Design-systém administrace
+   --------------------------------------------------------------------------
+   Jeden verzovaný motiv pro celý Django admin. Nahrazuje dřívější DB-téma
+   (django-admin-interface), takže vzhled je stejný ve všech prostředích.
+
+   Strategie: přepíšeme CSS proměnné Django adminu (přebarví se tím tlačítka,
+   odkazy, hlavička, zprávy, vybrané řádky…) a doplníme moderní komponenty
+   (karty, tabulky se sticky hlavičkou, formuláře, štítky, dashboard).
+
+   Značka:  Primární #0E4C66 (námořní modrá) · Sekundární #10B0C8 (tyrkys)
+   Písmo:   Open Sans
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN-TOKENY  (přepis proměnných Django adminu + vlastní tokeny)
+   -------------------------------------------------------------------------- */
+
+:root,
+:root[data-theme="light"] {
+    /* --- Značka CalmDog --- */
+    --cd-navy: #0E4C66;
+    --cd-navy-700: #0A3A4E;
+    --cd-navy-800: #072C3B;
+    --cd-teal: #10B0C8;
+    --cd-teal-600: #0E93A7;
+    --cd-teal-050: #E6F7FA;
+
+    /* --- Neutrály --- */
+    --cd-bg: #F4F6F8;
+    --cd-card: #FFFFFF;
+    --cd-ink: #1F2D3D;
+    --cd-muted: #64748B;
+    --cd-quiet: #94A3B8;
+    --cd-line: #E6EAEE;
+    --cd-line-strong: #DCE2E8;
+
+    /* --- Sémantické stavy --- */
+    --cd-success: #16A34A;  --cd-success-bg: #E7F6ED;  --cd-success-fg: #15803D;
+    --cd-warning: #D97706;  --cd-warning-bg: #FEF3E2;  --cd-warning-fg: #B45309;
+    --cd-danger:  #DC2626;  --cd-danger-bg:  #FDECEC;  --cd-danger-fg:  #B91C1C;
+    --cd-info:    #0EA5E9;  --cd-info-bg:    #E6F7FA;  --cd-info-fg:    #0E7490;
+
+    /* --- Tvarosloví --- */
+    --cd-radius: 14px;
+    --cd-radius-sm: 10px;
+    --cd-radius-lg: 16px;
+    --cd-radius-pill: 999px;
+    --cd-shadow-sm: 0 1px 2px rgba(15, 42, 58, .06);
+    --cd-shadow-md: 0 2px 10px rgba(15, 42, 58, .07);
+    --cd-shadow-lg: 0 10px 30px rgba(15, 42, 58, .10);
+    --cd-ring: 0 0 0 3px rgba(16, 176, 200, .30);
+
+    /* === Přepis proměnných Django adminu === */
+    --primary: var(--cd-navy);
+    --secondary: var(--cd-navy);
+    --accent: var(--cd-teal);
+    --primary-fg: #ffffff;
+
+    --body-fg: var(--cd-ink);
+    --body-bg: var(--cd-bg);
+    --body-quiet-color: var(--cd-muted);
+    --body-medium-color: #475569;
+    --body-loud-color: #0F172A;
+
+    --header-color: #DCEAF1;
+    --header-branding-color: #ffffff;
+    --header-bg: var(--cd-navy);
+    --header-link-color: #ffffff;
+
+    --breadcrumbs-fg: var(--cd-muted);
+    --breadcrumbs-link-fg: var(--cd-navy);
+    --breadcrumbs-bg: #ffffff;
+
+    --link-fg: #0E7C97;
+    --link-hover-color: var(--cd-navy-700);
+    --link-selected-fg: var(--cd-navy);
+
+    --hairline-color: var(--cd-line);
+    --border-color: var(--cd-line-strong);
+
+    --error-fg: var(--cd-danger);
+
+    --message-success-bg: var(--cd-success-bg);
+    --message-warning-bg: var(--cd-warning-bg);
+    --message-error-bg: var(--cd-danger-bg);
+
+    --darkened-bg: #EEF2F5;
+    --selected-bg: var(--cd-teal-050);
+    --selected-row: #F0FAFC;
+
+    --button-fg: #ffffff;
+    --button-bg: var(--cd-navy);
+    --button-hover-bg: var(--cd-navy-700);
+    --default-button-bg: var(--cd-teal);
+    --default-button-hover-bg: var(--cd-teal-600);
+    --close-button-bg: #64748B;
+    --close-button-hover-bg: #475569;
+    --delete-button-bg: var(--cd-danger);
+    --delete-button-hover-bg: #B91C1C;
+
+    --object-tools-fg: #ffffff;
+    --object-tools-bg: var(--cd-teal);
+    --object-tools-hover-bg: var(--cd-teal-600);
+
+    --font-family-primary: "Open Sans", system-ui, -apple-system, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    color-scheme: light;
+}
+
+/* Vzhled sjednocen na světlý ve všech prostředích (i při systémovém dark-mode
+   a při přepnutí přepínače v hlavičce) – řeší dřívější nejednotnost. */
+@media (prefers-color-scheme: dark) {
+    :root { color-scheme: light; }
+}
+
+/* --------------------------------------------------------------------------
+   2. ZÁKLAD
+   -------------------------------------------------------------------------- */
+
+html { color-scheme: light; }
+
+body {
+    font-family: var(--font-family-primary);
+    background: var(--cd-bg);
+    color: var(--cd-ink);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a:link, a:visited { color: var(--link-fg); text-decoration: none; }
+a:hover { color: var(--link-hover-color); }
+
+/* Skrytý přepínač světlý/tmavý – motiv je záměrně jen světlý */
+button.theme-toggle { display: none !important; }
+
+/* Přístupnost: viditelný focus na všech interaktivních prvcích (WCAG 2.4.7) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.button:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--cd-teal);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   3. HLAVIČKA
+   -------------------------------------------------------------------------- */
+
+#header {
+    background: linear-gradient(100deg, var(--cd-navy-800) 0%, var(--cd-navy) 55%, #12597A 100%);
+    color: #fff;
+    padding: 14px 40px;
+    box-shadow: var(--cd-shadow-md);
+    line-height: 1.3;
+    border-bottom: 3px solid var(--cd-teal);
+}
+
+#branding h1 {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: .2px;
+    margin: 0;
+}
+#branding h1, #branding h1 a:link, #branding h1 a:visited { color: #fff; }
+#branding h1::before {
+    content: "🐾";
+    margin-right: 9px;
+    filter: saturate(0) brightness(3);
+}
+
+#header #user-tools {
+    font-size: 12.5px;
+    color: #CBDDE7;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+}
+#header #user-tools a {
+    border-bottom: none;
+    color: #fff;
+    font-weight: 600;
+}
+#header #user-tools a:not(.button):hover { color: var(--cd-teal); }
+#user-tools a.button,
+#logout-form button {
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: var(--cd-radius-pill);
+    padding: 5px 14px;
+    color: #fff;
+    font-weight: 600;
+    transition: background .15s ease, border-color .15s ease;
+}
+#user-tools a.button:hover,
+#logout-form button:hover {
+    background: var(--cd-teal);
+    border-color: var(--cd-teal);
+    color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   4. DROBEČKOVÁ NAVIGACE
+   -------------------------------------------------------------------------- */
+
+div.breadcrumbs {
+    background: #fff;
+    color: var(--cd-muted);
+    padding: 12px 40px;
+    border-bottom: 1px solid var(--cd-line);
+    font-size: 13px;
+    font-weight: 500;
+}
+div.breadcrumbs a { color: var(--cd-navy); font-weight: 600; }
+div.breadcrumbs a:hover { color: var(--cd-teal-600); }
+
+/* --------------------------------------------------------------------------
+   5. ROZVRŽENÍ
+   -------------------------------------------------------------------------- */
+
+#content { padding: 28px 40px; }
+#content > h1,
+.dashboard #content > h1 { display: none; } /* nadpis nahrazen kartami / brandingem */
+
+/* Dashboard využívá plnou šířku – Django jej jinak drží na 600 px (počítá
+   s pravým sloupcem „poslední akce", který zde nepoužíváme). */
+.dashboard #content { width: auto; }
+
+.colMS, .colM { max-width: 100%; }
+
+/* --------------------------------------------------------------------------
+   6. POSTRANNÍ NAVIGACE (přepracovaná do skupin s ikonami)
+   -------------------------------------------------------------------------- */
+
+#nav-sidebar {
+    background: #fff;
+    border-right: 1px solid var(--cd-line);
+    width: 258px;
+    padding: 14px 12px 32px;
+}
+#main.shifted #nav-sidebar { width: 258px; }
+.toggle-nav-sidebar {
+    border-right: 1px solid var(--cd-line);
+    background: #fff;
+    color: var(--cd-muted);
+}
+.toggle-nav-sidebar:hover { background: var(--cd-teal-050); color: var(--cd-navy); }
+
+.cd-nav-group { margin-bottom: 6px; }
+.cd-nav-group__title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: var(--cd-quiet);
+}
+.cd-nav-group__title svg { width: 15px; height: 15px; flex: none; color: var(--cd-teal); }
+
+.cd-nav-list { list-style: none; margin: 0 0 6px; padding: 0; }
+.cd-nav-list li {
+    display: flex;
+    align-items: center;
+    margin: 1px 0;
+    border-radius: var(--cd-radius-sm);
+}
+.cd-nav-list li:hover { background: var(--cd-teal-050); }
+.cd-nav-link {
+    flex: 1 1 auto;
+    padding: 8px 12px;
+    border-radius: var(--cd-radius-sm);
+    color: var(--cd-ink);
+    font-weight: 500;
+    font-size: 13.5px;
+    line-height: 1.25;
+    transition: background .13s ease, color .13s ease;
+}
+.cd-nav-link:hover { color: var(--cd-navy); }
+.cd-nav-link.cd-active {
+    background: var(--cd-navy);
+    color: #fff;
+    box-shadow: var(--cd-shadow-sm);
+}
+.cd-nav-add {
+    flex: none;
+    padding: 5px 12px;
+    color: var(--cd-quiet);
+    font-size: 16px;
+    line-height: 1;
+    border-radius: var(--cd-radius-sm);
+}
+.cd-nav-add:hover { color: var(--cd-teal-600); }
+
+/* Fallback pro nativní Django sidebar (kdyby vlastní nav nebyla k dispozici) */
+#nav-sidebar .current-model a { color: #fff; }
+
+/* --------------------------------------------------------------------------
+   7. KARTY / MODULY
+   -------------------------------------------------------------------------- */
+
+.module {
+    background: var(--cd-card);
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    margin-bottom: 22px;
+    overflow: hidden;
+}
+.module > h2,
+.module > caption,
+.inline-group h2,
+fieldset.module > h2 {
+    background: #fff;
+    color: var(--cd-navy);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cd-line);
+}
+.module > table { margin: 0; }
+.module p, .module ul { padding-left: 18px; padding-right: 18px; }
+
+/* --------------------------------------------------------------------------
+   8. TABULKY (changelist) – sticky hlavička, hover, barevné štítky
+   -------------------------------------------------------------------------- */
+
+#changelist { background: transparent; }
+#changelist .results {
+    overflow-x: auto;
+    border-radius: var(--cd-radius);
+    border: 1px solid var(--cd-line);
+    box-shadow: var(--cd-shadow-sm);
+    background: #fff;
+}
+#changelist table { border-collapse: separate; border-spacing: 0; }
+
+#changelist thead th,
+#changelist thead td {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #F7F9FB;
+    color: var(--cd-muted);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--cd-line-strong);
+    padding: 12px 12px;
+    white-space: nowrap;
+}
+#changelist thead th a { color: var(--cd-muted); }
+#changelist thead th.sorted { color: var(--cd-navy); background: #EEF4F7; }
+#changelist thead th a:hover { color: var(--cd-navy); }
+
+#changelist tbody th,
+#changelist tbody td {
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--cd-line);
+    vertical-align: middle;
+}
+#changelist tbody tr { background: #fff; transition: background .12s ease; }
+#changelist tbody tr:hover { background: var(--cd-teal-050); }
+#changelist tbody tr:last-child th,
+#changelist tbody tr:last-child td { border-bottom: none; }
+#changelist tbody a:link, #changelist tbody a:visited { color: var(--cd-navy); font-weight: 600; }
+
+/* Panel akcí nad tabulkou */
+#changelist .actions {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    color: var(--cd-muted);
+}
+#changelist .actions select { min-width: 220px; }
+
+/* Vyhledávání */
+#changelist-search { margin-bottom: 16px; }
+#changelist-search input[type="text"] {
+    min-width: 280px;
+    padding: 9px 14px 9px 12px;
+}
+#toolbar form#changelist-search input[type="submit"] { margin-left: 6px; }
+
+/* --------------------------------------------------------------------------
+   9. FILTRY (pravý sloupec)
+   -------------------------------------------------------------------------- */
+
+#changelist-filter {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 6px 4px 12px;
+    width: 240px;
+}
+#changelist-filter h2 {
+    background: transparent;
+    color: var(--cd-navy);
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: 12px 16px 8px;
+    border: none;
+}
+#changelist-filter h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cd-muted);
+    padding: 6px 16px 4px;
+    text-transform: none;
+}
+#changelist-filter ul { padding: 0 8px 10px; margin: 0; border-bottom: 1px solid var(--cd-line); }
+#changelist-filter li { margin: 0; }
+#changelist-filter li a {
+    display: block;
+    padding: 6px 10px;
+    border-radius: var(--cd-radius-sm);
+    color: var(--cd-ink);
+    font-size: 13px;
+}
+#changelist-filter li a:hover { background: var(--cd-teal-050); color: var(--cd-navy); }
+#changelist-filter li.selected a {
+    background: var(--cd-navy);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   10. STRÁNKOVÁNÍ
+   -------------------------------------------------------------------------- */
+
+.paginator {
+    padding: 16px 2px 6px;
+    border-top: none;
+    font-size: 13px;
+    color: var(--cd-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.paginator a:link, .paginator a:visited,
+.paginator .this-page {
+    display: inline-block;
+    min-width: 34px;
+    text-align: center;
+    padding: 6px 11px;
+    border-radius: var(--cd-radius-sm);
+    border: 1px solid var(--cd-line-strong);
+    background: #fff;
+    color: var(--cd-navy);
+    font-weight: 600;
+}
+.paginator a:hover { background: var(--cd-teal-050); border-color: var(--cd-teal); }
+.paginator .this-page {
+    background: var(--cd-navy);
+    color: #fff;
+    border-color: var(--cd-navy);
+}
+
+/* --------------------------------------------------------------------------
+   11. FORMULÁŘE
+   -------------------------------------------------------------------------- */
+
+.form-row {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cd-line);
+}
+fieldset.module .form-row:last-child { border-bottom: none; }
+.aligned label {
+    width: 200px;
+    padding: 8px 16px 0 0;
+    color: var(--cd-muted);
+    font-weight: 600;
+    font-size: 13px;
+}
+.help, .helptext, p.help, div.help {
+    color: var(--cd-quiet);
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+.aligned .help, .form-row .help { margin-left: 200px; padding-left: 0; }
+
+input[type="text"], input[type="password"], input[type="email"],
+input[type="url"], input[type="number"], input[type="tel"],
+input[type="search"], input[type="date"], input[type="time"],
+input[type="datetime-local"], textarea, select,
+.vTextField, .vURLField {
+    border: 1px solid var(--cd-line-strong);
+    border-radius: var(--cd-radius-sm);
+    padding: 9px 12px;
+    background: #fff;
+    color: var(--cd-ink);
+    font-size: 13.5px;
+    font-family: inherit;
+    transition: border-color .14s ease, box-shadow .14s ease;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus,
+input[type="url"]:focus, input[type="number"]:focus, input[type="tel"]:focus,
+input[type="search"]:focus, input[type="date"]:focus, input[type="time"]:focus,
+input[type="datetime-local"]:focus, textarea:focus, select:focus,
+.vTextField:focus, .vURLField:focus {
+    border-color: var(--cd-teal);
+    box-shadow: var(--cd-ring);
+    outline: none;
+}
+textarea { min-height: 90px; line-height: 1.5; }
+
+/* Zaškrtávátka a přepínače v barvě značky */
+input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--cd-teal);
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+}
+
+/* Povinné pole */
+.required label::after,
+.aligned .required label::after { content: " *"; color: var(--cd-danger); font-weight: 700; }
+
+/* Sbalitelné sekce */
+fieldset.collapse { border-radius: var(--cd-radius); }
+fieldset.collapsed .collapse-toggle { color: var(--cd-teal-600); }
+
+/* Řádek s tlačítky */
+.submit-row {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 14px 18px;
+    margin: 22px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.submit-row .deletelink-box { margin-left: auto; }
+.submit-row a.deletelink {
+    background: var(--cd-danger-bg);
+    color: var(--cd-danger-fg);
+    border-radius: var(--cd-radius-sm);
+    padding: 9px 16px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+.submit-row a.deletelink:hover { background: var(--cd-danger); color: #fff; }
+
+/* --------------------------------------------------------------------------
+   12. TLAČÍTKA
+   -------------------------------------------------------------------------- */
+
+.button, input[type="submit"], input[type="button"],
+.submit-row input, a.button, .object-tools a {
+    border-radius: var(--cd-radius-sm);
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: .2px;
+    padding: 9px 18px;
+    border: none;
+    cursor: pointer;
+    transition: background .14s ease, box-shadow .14s ease, transform .04s ease;
+}
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover,
+.submit-row input:hover, a.button:hover { box-shadow: var(--cd-shadow-md); }
+.button:active, input[type="submit"]:active { transform: translateY(1px); }
+
+.button.default, input[type="submit"].default {
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(16, 176, 200, .28);
+}
+
+/* Sekundární / nenápadná tlačítka */
+a.button.cd-ghost, .button.cd-ghost {
+    background: #fff;
+    border: 1px solid var(--cd-line-strong);
+    color: var(--cd-navy);
+}
+a.button.cd-ghost:hover { background: var(--cd-teal-050); }
+
+/* Nástroje objektu („Přidat …") */
+.object-tools { margin-top: 2px; }
+.object-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: none;
+    letter-spacing: .2px;
+    box-shadow: 0 2px 8px rgba(16, 176, 200, .25);
+}
+.object-tools a.addlink::before { content: "＋"; font-weight: 700; }
+
+/* Tlačítko uvnitř administrace (např. Připojit Google kalendář) */
+p .button, .field-google_connect_link .button { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   13. ZPRÁVY / UPOZORNĚNÍ
+   -------------------------------------------------------------------------- */
+
+ul.messagelist { padding: 0; margin: 0 0 20px; }
+ul.messagelist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 18px;
+    margin-bottom: 10px;
+    border: 1px solid var(--cd-line);
+    border-left: 4px solid var(--cd-muted);
+    border-radius: var(--cd-radius-sm);
+    background: #fff;
+    color: var(--cd-ink);
+    font-size: 13.5px;
+    box-shadow: var(--cd-shadow-sm);
+    background-image: none;
+}
+ul.messagelist li::before { font-size: 15px; line-height: 1.4; }
+ul.messagelist li.success { border-left-color: var(--cd-success); background: var(--cd-success-bg); }
+ul.messagelist li.success::before { content: "✓"; color: var(--cd-success-fg); font-weight: 700; }
+ul.messagelist li.warning { border-left-color: var(--cd-warning); background: var(--cd-warning-bg); }
+ul.messagelist li.warning::before { content: "!"; color: var(--cd-warning-fg); font-weight: 800; }
+ul.messagelist li.error { border-left-color: var(--cd-danger); background: var(--cd-danger-bg); }
+ul.messagelist li.error::before { content: "×"; color: var(--cd-danger-fg); font-weight: 800; }
+ul.messagelist li.info { border-left-color: var(--cd-info); background: var(--cd-info-bg); }
+
+.errornote {
+    background: var(--cd-danger-bg);
+    color: var(--cd-danger-fg);
+    border: 1px solid #F5C2C2;
+    border-radius: var(--cd-radius-sm);
+    padding: 12px 16px;
+    font-weight: 600;
+}
+ul.errorlist li {
+    background: var(--cd-danger);
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+/* --------------------------------------------------------------------------
+   14. ŠTÍTKY STAVŮ  (.cd-badge) – sjednocené, měkké, přístupné
+   -------------------------------------------------------------------------- */
+
+.cd-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--cd-radius-pill);
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.6;
+    white-space: nowrap;
+    letter-spacing: .2px;
+}
+.cd-badge::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .9;
+}
+.cd-badge--success { background: var(--cd-success-bg); color: var(--cd-success-fg); }
+.cd-badge--warning { background: var(--cd-warning-bg); color: var(--cd-warning-fg); }
+.cd-badge--danger  { background: var(--cd-danger-bg);  color: var(--cd-danger-fg); }
+.cd-badge--muted   { background: #EEF2F5;              color: #64748B; }
+.cd-badge--info    { background: var(--cd-info-bg);    color: var(--cd-info-fg); }
+.cd-badge--primary { background: var(--cd-teal-050);   color: var(--cd-navy); }
+
+/* --------------------------------------------------------------------------
+   15. INLINE SKUPINY (položky objednávky, varianty…)
+   -------------------------------------------------------------------------- */
+
+.inline-group {
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+.inline-group .tabular tr.add-row td { background: #FAFBFC; }
+.inline-related h3 {
+    background: #F7F9FB;
+    color: var(--cd-muted);
+    border-bottom: 1px solid var(--cd-line);
+    font-size: 12.5px;
+}
+.inline-group .tabular td.original p { color: var(--cd-muted); }
+
+/* Náhled barvy (shop) a další drobné vizuály zůstávají inline z Pythonu */
+
+/* --------------------------------------------------------------------------
+   16. VÝBĚR MNOHA (m2m selector), autocomplete (Select2)
+   -------------------------------------------------------------------------- */
+
+.selector-available, .selector-chosen {
+    border: 1px solid var(--cd-line-strong);
+    border-radius: var(--cd-radius-sm);
+    overflow: hidden;
+}
+.selector-available h2, .selector-chosen h2 {
+    background: #F7F9FB;
+    color: var(--cd-muted);
+    border: none;
+    border-bottom: 1px solid var(--cd-line);
+}
+.select2-container--admin-autocomplete .select2-selection,
+.select2-container--admin-autocomplete .select2-dropdown {
+    border-color: var(--cd-line-strong) !important;
+    border-radius: var(--cd-radius-sm) !important;
+}
+.select2-container--admin-autocomplete.select2-container--focus .select2-selection {
+    border-color: var(--cd-teal) !important;
+    box-shadow: var(--cd-ring) !important;
+}
+.select2-container--admin-autocomplete .select2-results__option--highlighted[aria-selected] {
+    background: var(--cd-navy) !important;
+}
+
+/* --------------------------------------------------------------------------
+   17. DASHBOARD  (vlastní přehled – karty + graf)
+   -------------------------------------------------------------------------- */
+
+.cd-dash { max-width: 1180px; }
+.cd-dash__head { margin-bottom: 22px; }
+.cd-dash__title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--cd-navy);
+    margin: 0 0 4px;
+    letter-spacing: -.2px;
+}
+.cd-dash__subtitle { color: var(--cd-muted); font-size: 14px; margin: 0; }
+
+.cd-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.cd-stat {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 18px 18px 16px;
+    transition: box-shadow .16s ease, transform .16s ease, border-color .16s ease;
+    color: var(--cd-ink);
+}
+a.cd-stat:hover {
+    box-shadow: var(--cd-shadow-lg);
+    transform: translateY(-2px);
+    border-color: var(--cd-teal);
+    color: var(--cd-ink);
+}
+.cd-stat__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cd-stat__icon {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    border-radius: 11px;
+    background: var(--cd-teal-050);
+    color: var(--cd-navy);
+}
+.cd-stat__icon svg { width: 20px; height: 20px; }
+.cd-stat__icon--amber { background: var(--cd-warning-bg); color: var(--cd-warning-fg); }
+.cd-stat__icon--green { background: var(--cd-success-bg); color: var(--cd-success-fg); }
+.cd-stat__icon--red { background: var(--cd-danger-bg); color: var(--cd-danger-fg); }
+.cd-stat__pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: var(--cd-radius-pill);
+    background: #EEF2F5;
+    color: var(--cd-muted);
+}
+.cd-stat__pill--up { background: var(--cd-success-bg); color: var(--cd-success-fg); }
+.cd-stat__value { font-size: 30px; font-weight: 800; line-height: 1.05; color: var(--cd-navy); letter-spacing: -.5px; }
+.cd-stat__label { font-size: 13px; color: var(--cd-muted); margin-top: 4px; font-weight: 500; }
+
+.cd-panel {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 20px 22px;
+    margin-bottom: 24px;
+}
+.cd-panel__title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--cd-muted);
+    margin: 0 0 16px;
+}
+
+/* Sloupcový graf (čistě CSS/SVG, bez knihoven) */
+.cd-chart { display: flex; align-items: flex-end; gap: 8px; height: 150px; }
+.cd-chart__col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+.cd-chart__bar {
+    width: 100%;
+    max-width: 34px;
+    border-radius: 7px 7px 3px 3px;
+    background: linear-gradient(180deg, var(--cd-teal) 0%, var(--cd-navy) 100%);
+    min-height: 3px;
+    position: relative;
+    transition: filter .15s ease;
+}
+.cd-chart__col:hover .cd-chart__bar { filter: brightness(1.08); }
+.cd-chart__bar span {
+    position: absolute; top: -19px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 700; color: var(--cd-navy);
+}
+.cd-chart__label { font-size: 10.5px; color: var(--cd-quiet); white-space: nowrap; }
+
+/* Rychlé odkazy pod grafem */
+.cd-quick { display: flex; flex-wrap: wrap; gap: 10px; }
+.cd-quick a {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 14px;
+    border: 1px solid var(--cd-line-strong);
+    border-radius: var(--cd-radius-pill);
+    background: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--cd-navy);
+}
+.cd-quick a:hover { background: var(--cd-teal-050); border-color: var(--cd-teal); }
+.cd-quick a svg { width: 15px; height: 15px; color: var(--cd-teal); }
+
+/* Karty sekcí (rozcestník na dashboardu) */
+.cd-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+}
+.cd-group-card {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow-sm);
+    overflow: hidden;
+}
+.cd-group-card__head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cd-line);
+    font-weight: 700;
+    color: var(--cd-navy);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+.cd-group-card__head svg { width: 17px; height: 17px; flex: none; color: var(--cd-teal); }
+.cd-group-card .cd-nav-list { padding: 8px 10px; margin: 0; }
+
+/* --------------------------------------------------------------------------
+   18. PŘIHLAŠOVACÍ STRÁNKA
+   -------------------------------------------------------------------------- */
+
+body.login {
+    background: linear-gradient(135deg, #0A3A4E 0%, #0E4C66 45%, #12718F 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+body.login #container {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: var(--cd-radius-lg);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+    border: none;
+    overflow: hidden;
+    margin: 20px;
+}
+body.login #header {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: none;
+    padding: 30px 30px 6px;
+    text-align: center;
+}
+body.login #branding h1 { color: var(--cd-navy); font-size: 22px; }
+body.login #branding h1::before { filter: none; }
+body.login #content { padding: 10px 30px 30px; }
+body.login .form-row { border: none; padding: 8px 0; }
+body.login .form-row label { width: auto; display: block; margin-bottom: 6px; color: var(--cd-muted); }
+body.login .form-row input { width: 100%; box-sizing: border-box; padding: 11px 13px; }
+body.login .submit-row {
+    border: none; box-shadow: none; background: transparent; padding: 12px 0 0; margin: 0;
+}
+body.login .submit-row input {
+    width: 100%;
+    background: var(--cd-teal);
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+}
+body.login .submit-row input:hover { background: var(--cd-teal-600); }
+body.login .password-reset-link { text-align: center; margin-top: 14px; }
+
+/* --------------------------------------------------------------------------
+   19. DROBNOSTI / SROVNÁNÍ
+   -------------------------------------------------------------------------- */
+
+/* Date hierarchy pod nadpisem */
+.change-list .xfull, ul.toplinks {
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius-sm);
+    box-shadow: var(--cd-shadow-sm);
+    padding: 8px 12px;
+    margin-bottom: 14px;
+}
+
+/* Kalendář a hodiny (widgety pro datum/čas) */
+.calendarbox, .clockbox { border-radius: var(--cd-radius-sm); box-shadow: var(--cd-shadow-lg); border: 1px solid var(--cd-line); }
+.calendar caption, .calendarbox h2 { background: var(--cd-navy) !important; color: #fff !important; }
+
+/* Přepínač řádků – „Vybrat vše" apod. */
+#changelist .actions .button {
+    padding: 6px 14px;
+}
+
+/* Karta „historie" a delete confirmation */
+.delete-confirmation .cancel-link {
+    border-radius: var(--cd-radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   20. RESPONZIVITA
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+    #header { padding: 12px 20px; }
+    div.breadcrumbs { padding: 11px 20px; }
+    #content { padding: 20px; }
+    #changelist-filter { width: 100%; }
+}
+
+@media (max-width: 768px) {
+    #branding h1 { font-size: 17px; }
+    .cd-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .cd-stat__value { font-size: 25px; }
+    .aligned label { width: 100%; display: block; padding-bottom: 4px; }
+    .aligned .help, .form-row .help { margin-left: 0; }
+    .submit-row { flex-wrap: wrap; }
+    .cd-dash__title { font-size: 20px; }
+    #content { padding: 16px 14px; }
+}
+
+@media (max-width: 480px) {
+    .cd-stats { grid-template-columns: 1fr; }
+    #changelist-search input[type="text"] { min-width: 0; width: 100%; }
+}

@@ -94,6 +94,30 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 - Design patterns: kicker with `::before` line, Playfair Display headings, `#f5f5f0` background, `border-radius: 28px` cards, sage green (`#5f766b`, `#6f8780`) primary color
 - Body text color: `#2f3e3a` (dark forest green, NOT pure black)
 
+### Administrace (Django admin)
+
+Vlastní **verzovaný** design-systém administrace (styl „moderní SaaS": Stripe/Linear).
+Nahradil dřívější DB-téma `django-admin-interface` (odebráno z `INSTALLED_APPS` i
+`requirements.txt`; migrace `payments/0016_calmdog_admin_theme` je nyní no-op).
+
+- **Barvy:** primární `#0E4C66` (navy), sekundární `#10B0C8` (tyrkys). Písmo Open Sans.
+- **CSS:** `courses/static/admin/css/calmdog_admin.css` — jeden soubor, přepisuje CSS
+  proměnné Django adminu (`--primary`, `--header-bg`, `--button-bg`…) + komponenty.
+  Motiv je záměrně jen světlý (přepínač světlý/tmavý je skrytý).
+- **Šablony:** `templates/admin/base_site.html` (načte CSS + font), `index.html`
+  (dashboard: KPI karty + graf + rozcestník), `nav_sidebar.html` (navigace ve skupinách).
+  Vlastní admin šablony **musí dědit z `admin/base_site.html`**, jinak se CSS nenačte.
+- **Navigace/dashboard/ikony:** `courses/templatetags/calmdog_admin.py`.
+  - `_NAV_GROUPS` = mapování modelů do sekcí (Prodej, Sklad, Akademie, Rezervace,
+    Klienti, Marketing, Systém). Nový model se přidá do příslušné skupiny (nezařazené
+    spadnou do „Ostatní", takže nikdy nezmizí).
+  - `dashboard_metrics()` = KPI karty + data grafu. `_ICONS` = inline SVG (bez CDN).
+- **Barevné štítky stavů:** jediný sdílený helper `config/admin_ui.py:badge(text, variant)`
+  → `<span class="cd-badge cd-badge--{variant}">`; varianty `success|warning|danger|muted|info|primary`.
+  Používej ho místo inline stylů (importuje se v `*/admin.py`).
+- **Názvy sekcí** v menu = `verbose_name` v `*/apps.py` (česky). Modely mají české
+  `verbose_name` v `Meta`.
+
 ### Settings / env vars
 
 | Variable | Purpose |

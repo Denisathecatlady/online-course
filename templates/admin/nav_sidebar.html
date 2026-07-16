@@ -1,0 +1,41 @@
+{% load i18n calmdog_admin %}
+{% comment %}
+  CalmDog – postranní navigace přeskupená do logických sekcí s ikonami.
+  Zachovává přepínač sbalení i odkaz „přeskočit na obsah" z výchozího Djanga.
+{% endcomment %}
+<button class="toggle-nav-sidebar" id="toggle-nav-sidebar" aria-label="{% translate 'Toggle navigation' %}"></button>
+<nav class="sticky" id="nav-sidebar" aria-label="{% translate 'Sidebar' %}">
+  <a href="#content-start" class="skip-to-content-link">{% translate 'Skip to main content' %}</a>
+
+  {% url 'admin:index' as cd_index_url %}
+  <div class="cd-nav-group">
+    <ul class="cd-nav-list">
+      <li>
+        <a class="cd-nav-link{% if request.path == cd_index_url %} cd-active{% endif %}" href="{{ cd_index_url }}">
+          Přehled
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {% calmdog_nav as cd_groups %}
+  {% for group in cd_groups %}
+    <div class="cd-nav-group">
+      <div class="cd-nav-group__title">{% cd_icon group.icon %}{{ group.label }}</div>
+      <ul class="cd-nav-list">
+        {% for model in group.models %}
+          <li>
+            {% if model.admin_url %}
+              <a class="cd-nav-link{% if model.cd_active %} cd-active{% endif %}" href="{{ model.admin_url }}"{% if model.cd_active %} aria-current="page"{% endif %}>{{ model.name }}</a>
+            {% else %}
+              <span class="cd-nav-link">{{ model.name }}</span>
+            {% endif %}
+            {% if model.add_url %}
+              <a class="cd-nav-add" href="{{ model.add_url }}" aria-label="Přidat: {{ model.name }}">＋</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</nav>
