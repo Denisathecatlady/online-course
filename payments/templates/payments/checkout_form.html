@@ -85,7 +85,7 @@
               <div class="mb-3">
                 <label class="form-label">E-mail *</label>
                 <input type="email" name="email" class="form-control"
-                       value="{{ cart.buyer_email|default:user.email }}"
+                       value="{% if cart.buyer_email %}{{ cart.buyer_email }}{% elif user.is_authenticated %}{{ user.email }}{% endif %}"
                        autocomplete="email" inputmode="email" required>
               </div>
 
@@ -93,13 +93,13 @@
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Jméno *</label>
                   <input type="text" name="first_name" class="form-control"
-                         value="{{ cart.first_name|default:user.first_name }}"
+                         value="{% if cart.first_name %}{{ cart.first_name }}{% elif user.is_authenticated %}{{ user.first_name }}{% endif %}"
                          autocomplete="given-name" required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Příjmení *</label>
                   <input type="text" name="last_name" class="form-control"
-                         value="{{ cart.last_name|default:user.last_name }}"
+                         value="{% if cart.last_name %}{{ cart.last_name }}{% elif user.is_authenticated %}{{ user.last_name }}{% endif %}"
                          autocomplete="family-name" required>
                 </div>
               </div>
@@ -228,7 +228,7 @@
                 </label>
               </div>
 
-              <div class="form-check mb-0">
+              <div class="form-check mb-3">
                 <input class="form-check-input"
                       type="checkbox"
                       name="newsletter"
@@ -237,6 +237,19 @@
                       {% if cart.newsletter_opt_in %}checked{% endif %}>
                 <label class="form-check-label" for="newsletter">
                   Souhlasím se zasíláním e-mailového newsletteru (tipy, novinky)
+                </label>
+              </div>
+
+              <div class="form-check mb-0">
+                <input class="form-check-input"
+                      type="checkbox"
+                      name="heureka"
+                      value="1"
+                      id="heureka"
+                      {% if cart.heureka_opt_in %}checked{% endif %}>
+                <label class="form-check-label" for="heureka">
+                  Souhlasím s předáním e-mailu a čísla objednávky službě Heureka Ověřeno zákazníky,
+                  která mi zašle dotazník spokojenosti s nákupem
                 </label>
               </div>
 

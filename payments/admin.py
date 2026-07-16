@@ -189,6 +189,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         "packeta_tracking_number",
         "packeta_created_at",
         "packeta_label_link",
+        "heureka_sent_at",
         "stripe_checkout_session_id",
         "stripe_payment_intent_id",
         "invoice_download",
@@ -202,7 +203,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
             "fields": ("items_total_display", "coupon", "discount_display", "shipping_price", "total_display"),
         }),
         ("Kontakt", {
-            "fields": ("buyer_email", "first_name", "last_name", "phone", "newsletter_opt_in"),
+            "fields": ("buyer_email", "first_name", "last_name", "phone", "newsletter_opt_in", "heureka_opt_in"),
         }),
         ("Doručovací adresa", {
             "fields": ("street", "city", "zip_code", "country"),
@@ -221,6 +222,10 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
                 "packeta_packet_id", "packeta_tracking_number",
                 "packeta_created_at", "packeta_label_link",
             ),
+        }),
+        ("Heureka Ověřeno zákazníků", {
+            "classes": ("collapse",),
+            "fields": ("heureka_sent_at",),
         }),
         ("Platba (Stripe)", {
             "classes": ("collapse",),

@@ -4,6 +4,7 @@ import stripe
 import logging
 from decimal import Decimal, ROUND_HALF_UP
 from payments.services.packeta import create_packet, get_packet_label_pdf, PacketaError
+from payments.services.heureka import send_order_review_request
 from django.utils import timezone
 
 from django.conf import settings
@@ -628,6 +629,7 @@ def checkout(request):
     cart.invoice_zip = request.POST.get("invoice_zip", "").strip()
     cart.invoice_country = request.POST.get("invoice_country", "CZ").strip()
     cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
+    cart.heureka_opt_in = bool(request.POST.get("heureka"))
     cart.status = Order.Status.PENDING
 
     cart.save(update_fields=[
@@ -645,6 +647,7 @@ def checkout(request):
         "invoice_zip",
         "invoice_country",
         "newsletter_opt_in",
+        "heureka_opt_in",
         "status"
     ])
 
@@ -1037,6 +1040,22 @@ def _process_paid_order(order, stripe_session, request):
     # ======================================
 
     _send_order_confirmation_email(order, user, created, request)
+
+    # ======================================
+    # 7️⃣ HEUREKA OVĚŘENO ZÁKAZNÍKY
+    # ======================================
+
+    if order.heureka_opt_in and not order.heureka_sent_at:
+        try:
+            sent = send_order_review_request(order)
+            if sent:
+                order.heureka_sent_at = timezone.now()
+                order.save(update_fields=["heureka_sent_at"])
+        except Exception as e:
+            logger.error(
+                f"[Heureka] Chyba při odesílání objednávky #{order.id} "
+                f"do Ověřeno zákazníky: {e}"
+            )
 
 
 def _variant_description(variant):

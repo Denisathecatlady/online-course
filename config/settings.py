@@ -418,6 +418,15 @@ RECAPTCHA_SCORE_THRESHOLD = float(os.environ.get("RECAPTCHA_SCORE_THRESHOLD", "0
 # formuláře fungují dál, jen bez CAPTCHA ochrany.
 RECAPTCHA_ENABLED = bool(RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY)
 
+# ======================================================
+# HEUREKA – OVĚŘENO ZÁKAZNÍKY
+# ======================================================
+# Účet zatím není aktivní – dokud není HEUREKA_API_KEY nastaven, integrace
+# se elegantně přeskočí (jen loguje, nic neodesílá). Endpoint/payload v
+# payments/services/heureka.py zatím není ověřený proti reálnému účtu.
+HEUREKA_API_KEY = os.environ.get("HEUREKA_API_KEY", "")
+HEUREKA_ENABLED = bool(HEUREKA_API_KEY)
+
 # Uzamčení prodeje (bez deploye – stačí nastavit SHOP_LOCKED=1 v Render env)
 SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"
 

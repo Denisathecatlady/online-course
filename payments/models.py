@@ -117,6 +117,7 @@ class Order(models.Model):
     last_name = models.CharField("Příjmení", max_length=120, blank=True)
     phone = models.CharField("Telefon", max_length=40, blank=True)
     newsletter_opt_in = models.BooleanField("Přihlášen k newsletteru", default=False)
+    heureka_opt_in = models.BooleanField("Souhlas s Heureka Ověřeno zákazníky", default=False)
 
     # ==============================
     # DORUČOVACÍ ADRESA
@@ -188,6 +189,12 @@ class Order(models.Model):
     packeta_point_name = models.CharField("Packeta – výdejní místo", max_length=255, blank=True, null=True)
 
     packeta_created_at = models.DateTimeField("Packeta – vytvořeno", blank=True, null=True)
+
+    # ==============================
+    # HEUREKA OVĚŘENO ZÁKAZNÍKY
+    # ==============================
+
+    heureka_sent_at = models.DateTimeField("Heureka – odesláno", blank=True, null=True)
 
     # ==============================
     # STRIPE

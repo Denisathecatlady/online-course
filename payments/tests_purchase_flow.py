@@ -252,6 +252,22 @@ class FullLeashPurchaseTests(TestCase):
         self.assertEqual(order.buyer_email, "zakaznik@example.com")
         self.assertEqual(order.first_name, "Jana")
         self.assertEqual(order.last_name, "Dvořáková")
+        self.assertFalse(order.heureka_opt_in)
+
+    def test_04b_checkout_post_saves_heureka_opt_in(self):
+        """Zaškrtnutý souhlas s Heureka Ověřeno zákazníky se uloží na objednávku."""
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+        self.assertTrue(order.heureka_opt_in)
 
     def test_05_webhook_completes_full_purchase(self):
         """
@@ -333,6 +349,64 @@ class FullLeashPurchaseTests(TestCase):
         self.assertEqual(self.variant.stock, stock_before)
         # Packeta se nevolala
         mock_packet.assert_not_called()
+
+    def test_07_webhook_heureka_failure_does_not_block_order(self):
+        """
+        Pokud odeslání do Heureka Ověřeno zákazníky spadne, objednávka se
+        přesto musí dokončit (PAID) a heureka_sent_at zůstane prázdné.
+        """
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+        self.assertTrue(order.heureka_opt_in)
+
+        with patch(
+            "payments.views.send_order_review_request",
+            side_effect=Exception("boom"),
+        ) as mock_heureka:
+            response, _ = _fire_webhook(self.client, order.id)
+
+        self.assertEqual(response.status_code, 200)
+        mock_heureka.assert_called_once()
+
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.PAID)
+        self.assertIsNone(order.heureka_sent_at)
+
+    def test_08_webhook_heureka_sent_only_once_on_retry(self):
+        """
+        Opakovaný webhook (Stripe retry) nesmí odeslat objednávku do Heureky
+        podruhé, pokud už jednou úspěšně odešla (heureka_sent_at je pojistka).
+        """
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+
+        with patch(
+            "payments.views.send_order_review_request", return_value=True
+        ) as mock_heureka:
+            _fire_webhook(self.client, order.id)
+            order.refresh_from_db()
+            self.assertIsNotNone(order.heureka_sent_at)
+
+            # Stripe retry – stejný webhook dorazí podruhé
+            _fire_webhook(self.client, order.id)
+
+        mock_heureka.assert_called_once()
 
 
 # ===========================================================================
