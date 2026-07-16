@@ -14,7 +14,7 @@ from .models import Product, ProductVariant, Color
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
-    fields = ("length", "type", "color", "price", "stock", "is_active")
+    fields = ("code", "length", "type", "color", "price", "stock", "is_active")
     autocomplete_fields = ("color",)
 
 
@@ -72,10 +72,10 @@ class ColorAdmin(admin.ModelAdmin):
 
 @admin.register(ProductVariant)
 class ProductVariantAdmin(ImportExportModelAdmin):
-    list_display = ("product", "length", "type", "color", "price", "stock", "stock_badge", "is_active")
-    list_editable = ("price", "stock", "is_active")
+    list_display = ("product", "code", "length", "type", "color", "price", "stock", "stock_badge", "is_active")
+    list_editable = ("code", "price", "stock", "is_active")
     list_filter = ("is_active", "length", "type", "product", ("price", NumericRangeFilter))
-    search_fields = ("product__name", "color__name")
+    search_fields = ("product__name", "color__name", "code")
     ordering = ("product", "length", "type")
     autocomplete_fields = ("product", "color")
     actions = ["activate_variants", "deactivate_variants"]

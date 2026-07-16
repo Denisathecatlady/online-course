@@ -627,6 +627,7 @@ def checkout(request):
     cart.invoice_city = request.POST.get("invoice_city", "").strip()
     cart.invoice_zip = request.POST.get("invoice_zip", "").strip()
     cart.invoice_country = request.POST.get("invoice_country", "CZ").strip()
+    cart.invoice_ico = request.POST.get("invoice_ico", "").strip()
     cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
     cart.status = Order.Status.PENDING
 
@@ -644,6 +645,7 @@ def checkout(request):
         "invoice_city",
         "invoice_zip",
         "invoice_country",
+        "invoice_ico",
         "newsletter_opt_in",
         "status"
     ])

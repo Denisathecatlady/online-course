@@ -72,6 +72,8 @@ class ProductVariant(models.Model):
         verbose_name="Produkt"
     )
 
+    code = models.SlugField("Kód varianty", max_length=50, blank=True, db_index=True)
+
     length = models.CharField(
         "Délka",
         max_length=5,
