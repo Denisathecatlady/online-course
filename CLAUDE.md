@@ -94,6 +94,30 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 - Design patterns: kicker with `::before` line, Playfair Display headings, `#f5f5f0` background, `border-radius: 28px` cards, sage green (`#5f766b`, `#6f8780`) primary color
 - Body text color: `#2f3e3a` (dark forest green, NOT pure black)
 
+### Administrace (Django admin)
+
+Vlastní **verzovaný** design-systém administrace (styl „moderní SaaS": Stripe/Linear).
+Nahradil dřívější DB-téma `django-admin-interface` (odebráno z `INSTALLED_APPS` i
+`requirements.txt`; migrace `payments/0016_calmdog_admin_theme` je nyní no-op).
+
+- **Barvy:** primární `#0E4C66` (navy), sekundární `#10B0C8` (tyrkys). Písmo Open Sans.
+- **CSS:** `courses/static/admin/css/calmdog_admin.css` — jeden soubor, přepisuje CSS
+  proměnné Django adminu (`--primary`, `--header-bg`, `--button-bg`…) + komponenty.
+  Motiv je záměrně jen světlý (přepínač světlý/tmavý je skrytý).
+- **Šablony:** `templates/admin/base_site.html` (načte CSS + font), `index.html`
+  (dashboard: KPI karty + graf + rozcestník), `nav_sidebar.html` (navigace ve skupinách).
+  Vlastní admin šablony **musí dědit z `admin/base_site.html`**, jinak se CSS nenačte.
+- **Navigace/dashboard/ikony:** `courses/templatetags/calmdog_admin.py`.
+  - `_NAV_GROUPS` = mapování modelů do sekcí (Prodej, Sklad, Akademie, Rezervace,
+    Klienti, Marketing, Systém). Nový model se přidá do příslušné skupiny (nezařazené
+    spadnou do „Ostatní", takže nikdy nezmizí).
+  - `dashboard_metrics()` = KPI karty + data grafu. `_ICONS` = inline SVG (bez CDN).
+- **Barevné štítky stavů:** jediný sdílený helper `config/admin_ui.py:badge(text, variant)`
+  → `<span class="cd-badge cd-badge--{variant}">`; varianty `success|warning|danger|muted|info|primary`.
+  Používej ho místo inline stylů (importuje se v `*/admin.py`).
+- **Názvy sekcí** v menu = `verbose_name` v `*/apps.py` (česky). Modely mají české
+  `verbose_name` v `Meta`.
+
 ### Settings / env vars
 
 | Variable | Purpose |
@@ -108,7 +132,7 @@ return FileResponse(order.invoice_pdf.open("rb"), ...)
 | `HOTEL_ICAL_URL` | iCal feed URL for hotel availability |
 | `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS`, `EMAIL_USE_SSL`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP relay (Brevo, `smtp-relay.brevo.com`, port 587, TLS). Not declared in `render.yaml` — set manually per Render service. Brevo's "Authorized IPs" security feature (Settings → Security) must have SMTP keys deactivated or Render's outbound IP authorized, otherwise sends fail with `535`/`525 Unauthorized IP address`. |
 | `DATABASE_URL` | PostgreSQL on Render; SQLite used locally if unset |
-| `DJANGO_ADMIN_URL` | Custom admin path (default `tajny-admin/`) |
+| `DJANGO_SECRET_KEY`, `DJANGO_ADMIN_URL` | **Mandatory whenever `DJANGO_DEBUG` is unset/`0`** — `config/settings.py` raises `RuntimeError` at import time (before any view/command code runs) if either falls back to its dev sentinel value while not in debug mode. This applies to **every** Render service, including cron jobs — not just the web services. Must be declared (`sync: false`) in every service's `envVars` block in `render.yaml` *and* have its value filled in manually per-service in the Render dashboard (`sync: false` doesn't carry a value across services). |
 
 ### Hotel app
 
@@ -122,3 +146,4 @@ Landing page + reservation interest form. Availability fetched from iCal URL (`H
 - Start: `gunicorn config.wsgi:application`
 - Stripe webhook must be registered for the production domain; secret goes in `STRIPE_WEBHOOK_SECRET`
 - `PACKETA_MODE=mock` is set in `render.yaml` for the staging service
+- **Every service in `render.yaml`** (both `web` and `cron` types) needs its own `DJANGO_SECRET_KEY` and `DJANGO_ADMIN_URL` env vars — see [Settings / env vars](#settings--env-vars). New cron jobs added to `render.yaml` have historically forgotten these and crashed on first run (`RuntimeError: Missing DJANGO_ADMIN_URL in production.`); check for this when adding a new cron/service.

@@ -1,6 +1,8 @@
 from django.contrib import admin, messages
 from django.utils.html import format_html
 
+from config.admin_ui import badge as _badge
+
 from .models import (
     Course,
     CoursePlan,
@@ -8,15 +10,6 @@ from .models import (
     ModuleProgress,
     ModuleQuizProgress,
 )
-
-
-def _badge(text, color):
-    return format_html(
-        '<span style="background:{};color:#fff;padding:2px 8px;'
-        'border-radius:10px;font-size:11px;white-space:nowrap;">{}</span>',
-        color,
-        text,
-    )
 
 
 # =========================
@@ -76,10 +69,10 @@ class CourseAdmin(admin.ModelAdmin):
     @admin.display(description="Stav")
     def active_badge(self, obj):
         if obj.coming_soon:
-            return _badge("Připravujeme", "#e0a800")
+            return _badge("Připravujeme", "warning")
         if obj.is_active:
-            return _badge("Aktivní", "#2e7d32")
-        return _badge("Skrytý", "#9e9e9e")
+            return _badge("Aktivní", "success")
+        return _badge("Skrytý", "muted")
 
     @admin.display(description="Počet lekcí")
     def module_count(self, obj):
@@ -165,8 +158,8 @@ class ModuleProgressAdmin(admin.ModelAdmin):
     @admin.display(description="Stav")
     def completed_badge(self, obj):
         if obj.completed:
-            return _badge("Dokončeno", "#2e7d32")
-        return _badge("Probíhá", "#9e9e9e")
+            return _badge("Dokončeno", "success")
+        return _badge("Probíhá", "muted")
 
 
 # =========================
@@ -184,5 +177,5 @@ class ModuleQuizProgressAdmin(admin.ModelAdmin):
     @admin.display(description="Výsledek")
     def passed_badge(self, obj):
         if obj.passed:
-            return _badge("Splněno", "#2e7d32")
-        return _badge("Nesplněno", "#c62828")
+            return _badge("Splněno", "success")
+        return _badge("Nesplněno", "danger")

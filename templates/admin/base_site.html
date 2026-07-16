@@ -1,14 +1,24 @@
 {% extends "admin/base.html" %}
+{% load static %}
+
+{% comment %}
+  CalmDog – hlavička administrace.
+  Načítá vlastní design-systém (calmdog_admin.css) a písmo Open Sans.
+  Odkaz na CSS je v extrahead (poslední v <head>), aby přepsal i responsive.css.
+{% endcomment %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('CalmDog administrace') }}{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">{{ site_header|default:_('CalmDog – administrace') }}</a>
+</div>
+{% endblock %}
 
 {% block extrahead %}
 {{ block.super }}
-<style>
-  /* Aktivní sekce v levém menu – bílý text na zeleném pozadí */
-  #nav-sidebar .current-app > table > caption > a,
-  #nav-sidebar .current-app > table > caption,
-  #nav-sidebar .current-model > th > a,
-  #nav-sidebar .current-model > td > a {
-    color: #fff !important;
-  }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'admin/css/calmdog_admin.css' %}">
 {% endblock %}

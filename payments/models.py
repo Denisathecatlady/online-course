@@ -137,6 +137,7 @@ class Order(models.Model):
     invoice_city = models.CharField("Fakturační město", max_length=120, blank=True)
     invoice_zip = models.CharField("Fakturační PSČ", max_length=20, blank=True)
     invoice_country = models.CharField("Fakturační země", max_length=2, default="CZ", blank=True)
+    invoice_ico = models.CharField("IČO", max_length=20, blank=True)
 
     # ==============================
     # DOPRAVA

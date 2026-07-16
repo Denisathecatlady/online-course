@@ -22,9 +22,7 @@ google-auth==2.29.0
 google-auth-oauthlib==1.2.0
 google-api-python-client==2.126.0
 
-# Admin – vylepšení (export/import, vzhled, filtry)
+# Admin – vylepšení (export/import, filtry)
 django-import-export==4.4.1
 tablib==3.9.0
-django-admin-interface==0.32.0
-django-colorfield==0.14.0
 django-admin-rangefilter==0.13.5

@@ -71,10 +71,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # ======================================================
 
 INSTALLED_APPS = [
-    # Vzhled adminu – MUSÍ být před django.contrib.admin
-    "admin_interface",
-    "colorfield",
-
+    # Vzhled administrace CalmDog je řešený vlastním design-systémem
+    # (šablony templates/admin/ + courses/static/admin/css/calmdog_admin.css),
+    # verzovaným v gitu – proto konzistentní ve všech prostředích.
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
