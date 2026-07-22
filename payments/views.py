@@ -629,6 +629,19 @@ def checkout(request):
     cart.invoice_zip = request.POST.get("invoice_zip", "").strip()
     cart.invoice_country = request.POST.get("invoice_country", "CZ").strip()
     cart.invoice_ico = request.POST.get("invoice_ico", "").strip()
+
+    # „Fakturační adresa je stejná jako kontaktní" jen skryje fakturační pole,
+    # takže dorazí prázdná – převezmeme je z kontaktních/doručovacích údajů,
+    # aby měla faktura (i admin) kompletní odběratelské jméno a adresu.
+    if not cart.invoice_name:
+        cart.invoice_name = f"{cart.first_name} {cart.last_name}".strip()
+    if not cart.invoice_street:
+        cart.invoice_street = cart.street
+    if not cart.invoice_city:
+        cart.invoice_city = cart.city
+    if not cart.invoice_zip:
+        cart.invoice_zip = cart.zip_code
+
     cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
     cart.heureka_opt_in = bool(request.POST.get("heureka"))
     cart.status = Order.Status.PENDING

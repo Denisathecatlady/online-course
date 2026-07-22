@@ -120,20 +120,31 @@ def generate_invoice_pdf(order):
     p.setFont("DejaVu-Bold", 11)
     p.drawString(300, y_top, "Odběratel")
 
+    # Fakturační údaje s fallbackem na kontaktní/doručovací adresu. Když
+    # zákazník ponechal „Fakturační adresa je stejná jako kontaktní",
+    # jsou invoice_* pole prázdná – použijeme jméno a adresu z objednávky,
+    # jinak by odběratel na faktuře neměl jméno ani adresu.
+    buyer_name = order.invoice_name or f"{order.first_name} {order.last_name}".strip()
+    buyer_street = order.invoice_street or order.street
+    buyer_zip = order.invoice_zip or order.zip_code
+    buyer_city = order.invoice_city or order.city
+    buyer_zip_city = f"{buyer_zip} {buyer_city}".strip()
+
     p.setFont("DejaVu", 10)
-    p.drawString(300, y_top - 18, order.invoice_name)
-    p.drawString(300, y_top - 33, order.invoice_street)
-    p.drawString(
-        300,
-        y_top - 48,
-        f"{order.invoice_zip} {order.invoice_city}",
-    )
+    line = y_top - 18
+    for text in (buyer_name, buyer_street, buyer_zip_city):
+        if text:
+            p.drawString(300, line, text)
+            line -= 15
     if order.buyer_email:
-        p.drawString(300, y_top - 63, f"E-mail: {order.buyer_email}")
+        p.drawString(300, line, f"E-mail: {order.buyer_email}")
+        line -= 15
     if order.phone:
-        p.drawString(300, y_top - 78, f"Telefon: {order.phone}")
+        p.drawString(300, line, f"Telefon: {order.phone}")
+        line -= 15
     if order.invoice_ico:
-        p.drawString(300, y_top - 93, f"IČO: {order.invoice_ico}")
+        p.drawString(300, line, f"IČO: {order.invoice_ico}")
+        line -= 15
 
     # --------------------------------------------------
     # ČÁRA
