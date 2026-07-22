@@ -86,6 +86,8 @@ class Order(models.Model):
         ZASILKOVNA = "zasilkovna", "Zásilkovna"
         KURYR = "kuryr", "Kurýr"
 
+    FREE_SHIPPING_THRESHOLD = Decimal("1500")
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -115,6 +117,7 @@ class Order(models.Model):
     last_name = models.CharField("Příjmení", max_length=120, blank=True)
     phone = models.CharField("Telefon", max_length=40, blank=True)
     newsletter_opt_in = models.BooleanField("Přihlášen k newsletteru", default=False)
+    heureka_opt_in = models.BooleanField("Souhlas s Heureka Ověřeno zákazníky", default=False)
 
     # ==============================
     # DORUČOVACÍ ADRESA
@@ -134,6 +137,7 @@ class Order(models.Model):
     invoice_city = models.CharField("Fakturační město", max_length=120, blank=True)
     invoice_zip = models.CharField("Fakturační PSČ", max_length=20, blank=True)
     invoice_country = models.CharField("Fakturační země", max_length=2, default="CZ", blank=True)
+    invoice_ico = models.CharField("IČO", max_length=20, blank=True)
 
     # ==============================
     # DOPRAVA
@@ -188,6 +192,12 @@ class Order(models.Model):
     packeta_created_at = models.DateTimeField("Packeta – vytvořeno", blank=True, null=True)
 
     # ==============================
+    # HEUREKA OVĚŘENO ZÁKAZNÍKY
+    # ==============================
+
+    heureka_sent_at = models.DateTimeField("Heureka – odesláno", blank=True, null=True)
+
+    # ==============================
     # STRIPE
     # ==============================
 
@@ -226,12 +236,19 @@ class Order(models.Model):
         return sum((item.subtotal for item in self.items.all()), Decimal("0"))
 
     @property
+    def qualifies_for_free_shipping(self):
+        return self.items_total >= self.FREE_SHIPPING_THRESHOLD
+
+    @property
     def total_price(self):
         total = self.items_total + self.shipping_price - self.discount_amount
         return max(total, Decimal("0"))
 
     def contains_physical_product(self):
         return self.items.filter(product_variant__isnull=False).exists()
+
+    def contains_course(self):
+        return self.items.filter(course_plan__isnull=False).exists()
 
     # ----------------------
     # SLEVOVÝ KUPÓN – pomocné metody

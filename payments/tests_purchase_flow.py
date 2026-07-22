@@ -156,7 +156,7 @@ class FullLeashPurchaseTests(TestCase):
     """
     Scénář:
     Host si koupí vodítko bez očka (7 m, Šedá, cena 1 490 Kč)
-    a zvolí dopravu Zásilkovnou (79 Kč).
+    a zvolí dopravu Zásilkovnou (99 Kč).
 
     Testujeme každý krok flow samostatně i finální stav po webhoku.
     """
@@ -224,7 +224,7 @@ class FullLeashPurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:shipping"))
 
     def test_03_zasilkovna_saves_pickup_point_and_price(self):
-        """POST /shipping/ uloží výdejní místo Zásilkovny a cenu 79 Kč."""
+        """POST /shipping/ uloží výdejní místo Zásilkovny a cenu 99 Kč."""
         self._add_to_cart()
 
         response = self._select_zasilkovna()
@@ -232,7 +232,7 @@ class FullLeashPurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:contact_details"))
         cart = Order.objects.get(status=Order.Status.CART)
         self.assertEqual(cart.shipping_method, Order.ShippingMethod.ZASILKOVNA)
-        self.assertEqual(str(cart.shipping_price), "79.00")
+        self.assertEqual(str(cart.shipping_price), "99.00")
         self.assertEqual(cart.packeta_point_id, "12345")
         self.assertEqual(cart.packeta_point_name, "Z-BOX Praha 1 - Vodičkova")
 
@@ -252,6 +252,22 @@ class FullLeashPurchaseTests(TestCase):
         self.assertEqual(order.buyer_email, "zakaznik@example.com")
         self.assertEqual(order.first_name, "Jana")
         self.assertEqual(order.last_name, "Dvořáková")
+        self.assertFalse(order.heureka_opt_in)
+
+    def test_04b_checkout_post_saves_heureka_opt_in(self):
+        """Zaškrtnutý souhlas s Heureka Ověřeno zákazníky se uloží na objednávku."""
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+        self.assertTrue(order.heureka_opt_in)
 
     def test_05_webhook_completes_full_purchase(self):
         """
@@ -293,8 +309,11 @@ class FullLeashPurchaseTests(TestCase):
         # Packeta API bylo zavoláno
         mock_packet.assert_called_once()
 
-        # Potvrzovací email odeslán
-        self.assertEqual(len(mail.outbox), 1)
+        # Potvrzovací email zákazníkovi + interní upozornění na info@calmdog.cz
+        self.assertEqual(len(mail.outbox), 2)
+        recipients = [email.to[0] for email in mail.outbox]
+        self.assertIn("zakaznik@example.com", recipients)
+        self.assertIn("info@calmdog.cz", recipients)
 
     def test_06_webhook_is_idempotent_for_already_paid_order(self):
         """
@@ -330,6 +349,64 @@ class FullLeashPurchaseTests(TestCase):
         self.assertEqual(self.variant.stock, stock_before)
         # Packeta se nevolala
         mock_packet.assert_not_called()
+
+    def test_07_webhook_heureka_failure_does_not_block_order(self):
+        """
+        Pokud odeslání do Heureka Ověřeno zákazníky spadne, objednávka se
+        přesto musí dokončit (PAID) a heureka_sent_at zůstane prázdné.
+        """
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+        self.assertTrue(order.heureka_opt_in)
+
+        with patch(
+            "payments.views.send_order_review_request",
+            side_effect=Exception("boom"),
+        ) as mock_heureka:
+            response, _ = _fire_webhook(self.client, order.id)
+
+        self.assertEqual(response.status_code, 200)
+        mock_heureka.assert_called_once()
+
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.PAID)
+        self.assertIsNone(order.heureka_sent_at)
+
+    def test_08_webhook_heureka_sent_only_once_on_retry(self):
+        """
+        Opakovaný webhook (Stripe retry) nesmí odeslat objednávku do Heureky
+        podruhé, pokud už jednou úspěšně odešla (heureka_sent_at je pojistka).
+        """
+        self._add_to_cart()
+        self._select_zasilkovna()
+
+        data = _checkout_data("zakaznik@example.com", "Jana", "Dvořáková")
+        data["heureka"] = "1"
+        fake_session = _fake_stripe_session()
+        with patch("payments.views.stripe.checkout.Session.create", return_value=fake_session):
+            self.client.post(reverse("payments:contact_details"), data)
+
+        order = Order.objects.get(stripe_checkout_session_id="cs_test_abc123")
+
+        with patch(
+            "payments.views.send_order_review_request", return_value=True
+        ) as mock_heureka:
+            _fire_webhook(self.client, order.id)
+            order.refresh_from_db()
+            self.assertIsNotNone(order.heureka_sent_at)
+
+            # Stripe retry – stejný webhook dorazí podruhé
+            _fire_webhook(self.client, order.id)
+
+        mock_heureka.assert_called_once()
 
 
 # ===========================================================================
@@ -496,7 +573,7 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
     Scénář:
     Host přidá do košíku vodítko (1 590 Kč, 10 m, Pastelově růžová)
     i online kurz (3 490 Kč, 365 dní).
-    Zvolí Zásilkovnu (79 Kč).
+    Zvolí Zásilkovnu (99 Kč).
     Webhook musí:
       - snížit sklad vodítka o 1
       - udělit CourseAccess ke kurzu
@@ -590,11 +667,12 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
         self.assertRedirects(response, reverse("payments:shipping"))
 
     def test_03_combined_cart_total_price_includes_shipping(self):
-        """Celková cena = vodítko + kurz + doprava Zásilkovnou."""
+        """Celková cena přes 1500 Kč => doprava Zásilkovnou je zdarma."""
         self._build_combined_cart()
 
         cart = Order.objects.get(status=Order.Status.CART)
-        expected = Decimal("1590.00") + Decimal("3490.00") + Decimal("79.00")
+        self.assertEqual(cart.shipping_price, Decimal("0.00"))
+        expected = Decimal("1590.00") + Decimal("3490.00")
         self.assertEqual(cart.total_price, expected)
 
     def test_04_checkout_post_creates_stripe_session(self):
@@ -649,8 +727,11 @@ class CombinedLeashAndCoursePurchaseTests(TestCase):
         # Packeta zavolána (je fyzická Zásilkovna)
         mock_packet.assert_called_once()
 
-        # Email
-        self.assertEqual(len(mail.outbox), 1)
+        # Potvrzovací email zákazníkovi + interní upozornění na info@calmdog.cz
+        self.assertEqual(len(mail.outbox), 2)
+        recipients = [email.to[0] for email in mail.outbox]
+        self.assertIn("kombinovany@example.com", recipients)
+        self.assertIn("info@calmdog.cz", recipients)
 
     def test_06_webhook_retry_does_not_duplicate_stock_reduction_or_access(self):
         """

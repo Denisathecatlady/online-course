@@ -89,6 +89,11 @@ def generate_invoice_pdf(order):
         height - 100,
         f"Datum vystavení: {date.today().strftime('%d.%m.%Y')}",
     )
+    p.drawRightString(
+        width - 40,
+        height - 115,
+        f"Datum splatnosti: {date.today().strftime('%d.%m.%Y')}",
+    )
 
     # --------------------------------------------------
     # DODAVATEL
@@ -115,14 +120,31 @@ def generate_invoice_pdf(order):
     p.setFont("DejaVu-Bold", 11)
     p.drawString(300, y_top, "Odběratel")
 
+    # Fakturační údaje s fallbackem na kontaktní/doručovací adresu. Když
+    # zákazník ponechal „Fakturační adresa je stejná jako kontaktní",
+    # jsou invoice_* pole prázdná – použijeme jméno a adresu z objednávky,
+    # jinak by odběratel na faktuře neměl jméno ani adresu.
+    buyer_name = order.invoice_name or f"{order.first_name} {order.last_name}".strip()
+    buyer_street = order.invoice_street or order.street
+    buyer_zip = order.invoice_zip or order.zip_code
+    buyer_city = order.invoice_city or order.city
+    buyer_zip_city = f"{buyer_zip} {buyer_city}".strip()
+
     p.setFont("DejaVu", 10)
-    p.drawString(300, y_top - 18, order.invoice_name)
-    p.drawString(300, y_top - 33, order.invoice_street)
-    p.drawString(
-        300,
-        y_top - 48,
-        f"{order.invoice_zip} {order.invoice_city}",
-    )
+    line = y_top - 18
+    for text in (buyer_name, buyer_street, buyer_zip_city):
+        if text:
+            p.drawString(300, line, text)
+            line -= 15
+    if order.buyer_email:
+        p.drawString(300, line, f"E-mail: {order.buyer_email}")
+        line -= 15
+    if order.phone:
+        p.drawString(300, line, f"Telefon: {order.phone}")
+        line -= 15
+    if order.invoice_ico:
+        p.drawString(300, line, f"IČO: {order.invoice_ico}")
+        line -= 15
 
     # --------------------------------------------------
     # ČÁRA
@@ -136,7 +158,8 @@ def generate_invoice_pdf(order):
     y = y_top - 150
 
     p.setFont("DejaVu-Bold", 11)
-    p.drawString(40, y, "Popis")
+    p.drawString(40, y, "Kód")
+    p.drawString(150, y, "Popis")
     p.drawRightString(width - 40, y, "Cena")
 
     p.setFont("DejaVu", 10)
@@ -144,15 +167,24 @@ def generate_invoice_pdf(order):
     line_y = y - 22
     total_amount = 0
 
-    for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+    items_qs = order.items.select_related(
+        "course_plan__course", "product_variant__product", "product_variant__color"
+    ).all()
+
+    for item in items_qs:
         if item.course_plan:
+            code = item.course_plan.code
             description = f"Online kurz {item.course_plan.course.title}, varianta {item.course_plan.name}"
         elif item.product_variant:
-            description = item.product_variant.product.name
+            code = item.product_variant.code
+            description = str(item.product_variant)
         else:
+            code = ""
             description = f"Polozka #{item.id}"
 
-        p.drawString(40, line_y, description[:75])
+        if code:
+            p.drawString(40, line_y, code[:16])
+        p.drawString(150, line_y, description[:52])
         p.drawRightString(width - 40, line_y, f"{item.subtotal:.2f} Kč")
         total_amount += item.subtotal
         line_y -= 18

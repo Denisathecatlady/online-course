@@ -4,6 +4,7 @@ import stripe
 import logging
 from decimal import Decimal, ROUND_HALF_UP
 from payments.services.packeta import create_packet, get_packet_label_pdf, PacketaError
+from payments.services.heureka import send_order_review_request
 from django.utils import timezone
 
 from django.conf import settings
@@ -627,7 +628,22 @@ def checkout(request):
     cart.invoice_city = request.POST.get("invoice_city", "").strip()
     cart.invoice_zip = request.POST.get("invoice_zip", "").strip()
     cart.invoice_country = request.POST.get("invoice_country", "CZ").strip()
+    cart.invoice_ico = request.POST.get("invoice_ico", "").strip()
+
+    # „Fakturační adresa je stejná jako kontaktní" jen skryje fakturační pole,
+    # takže dorazí prázdná – převezmeme je z kontaktních/doručovacích údajů,
+    # aby měla faktura (i admin) kompletní odběratelské jméno a adresu.
+    if not cart.invoice_name:
+        cart.invoice_name = f"{cart.first_name} {cart.last_name}".strip()
+    if not cart.invoice_street:
+        cart.invoice_street = cart.street
+    if not cart.invoice_city:
+        cart.invoice_city = cart.city
+    if not cart.invoice_zip:
+        cart.invoice_zip = cart.zip_code
+
     cart.newsletter_opt_in = bool(request.POST.get("newsletter"))
+    cart.heureka_opt_in = bool(request.POST.get("heureka"))
     cart.status = Order.Status.PENDING
 
     cart.save(update_fields=[
@@ -644,7 +660,9 @@ def checkout(request):
         "invoice_city",
         "invoice_zip",
         "invoice_country",
+        "invoice_ico",
         "newsletter_opt_in",
+        "heureka_opt_in",
         "status"
     ])
 
@@ -663,7 +681,7 @@ def checkout(request):
         if item.course_plan:
             name = item.course_plan.course.title
         elif item.product_variant:
-            name = item.product_variant.product.name
+            name = str(item.product_variant)
         else:
             continue
 
@@ -934,15 +952,21 @@ def _process_paid_order(order, stripe_session, request):
                 )
 
         except PacketaError as e:
+            packeta_error = f"[{e.code}] {e.message}"
             logger.error(
                 f"[Packeta] API chyba při vytváření zásilky "
-                f"(objednávka #{order.id}): [{e.code}] {e.message}"
+                f"(objednávka #{order.id}): {packeta_error}"
             )
         except Exception as e:
+            packeta_error = str(e)
             logger.error(
                 f"[Packeta] Neočekávaná chyba při vytváření zásilky "
-                f"(objednávka #{order.id}): {e}"
+                f"(objednávka #{order.id}): {packeta_error}"
             )
+        else:
+            packeta_error = None
+
+        _send_order_notification_email(order, packeta_error=packeta_error)
 
     # ======================================
     # 4️⃣ VYTVOŘENÍ / NAPOJENÍ UŽIVATELE
@@ -1032,6 +1056,34 @@ def _process_paid_order(order, stripe_session, request):
 
     _send_order_confirmation_email(order, user, created, request)
 
+    # ======================================
+    # 7️⃣ HEUREKA OVĚŘENO ZÁKAZNÍKY
+    # ======================================
+
+    if order.heureka_opt_in and not order.heureka_sent_at:
+        try:
+            sent = send_order_review_request(order)
+            if sent:
+                order.heureka_sent_at = timezone.now()
+                order.save(update_fields=["heureka_sent_at"])
+        except Exception as e:
+            logger.error(
+                f"[Heureka] Chyba při odesílání objednávky #{order.id} "
+                f"do Ověřeno zákazníky: {e}"
+            )
+
+
+def _variant_description(variant):
+    """Vrátí popisek varianty produktu (barva, délka, typ zakončení) pro e-maily."""
+    parts = []
+    if variant.color_id:
+        parts.append(f"barva {variant.color.name}")
+    if variant.length:
+        parts.append(variant.get_length_display())
+    if variant.type:
+        parts.append(variant.get_type_display())
+    return ", ".join(parts)
+
 
 def _send_order_confirmation_email(order, user, user_was_created, request):
     """
@@ -1053,11 +1105,15 @@ def _send_order_confirmation_email(order, user, user_was_created, request):
 
         # --- sestavení položek ---
         items_text = ""
-        for item in order.items.select_related("course_plan__course", "product_variant__product").all():
+        for item in order.items.select_related(
+            "course_plan__course", "product_variant__product", "product_variant__color"
+        ).all():
             if item.course_plan:
                 items_text += f"  • Online kurz: {item.course_plan.course.title} – varianta {item.course_plan.name} ({item.price_at_purchase:.0f} Kč)\n"
             elif item.product_variant:
-                items_text += f"  • {item.product_variant.product.name} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+                variant_desc = _variant_description(item.product_variant)
+                suffix = f" – {variant_desc}" if variant_desc else ""
+                items_text += f"  • {item.product_variant.product.name}{suffix} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
 
         if order.shipping_price:
             items_text += f"  • Doprava – {order.get_shipping_method_display()}: {order.shipping_price:.0f} Kč\n"
@@ -1108,6 +1164,98 @@ info@calmdog.cz
         import traceback as _tb
         _tb.print_exc()
         logger.error(f"[Email] Nepodařilo se odeslat potvrzení objednávky #{order.id}: {e}")
+        return False
+
+
+def _ensure_packeta_label_bytes(order):
+    """
+    Vrátí PDF štítku Zásilkovny jako bytes – dotáhne ho na vyžádání.
+
+    - Když je štítek už uložený ve storage → přečte a vrátí ho (`.open("rb")`,
+      ne `.path`, kvůli R2).
+    - Jinak když objednávka má `packeta_packet_id` → stáhne štítek z Packety,
+      uloží ho do `order.packeta_label_pdf` a vrátí bytes.
+    - Když zásilka ještě neexistuje → vrátí None.
+
+    Výjimky (PacketaError apod.) nechává probublat, ať volající zná důvod.
+    Řeší efemérní disk na Renderu (USE_S3_STORAGE=0) – soubor se po redeployi
+    ztratí, ale dokud existuje packet_id, štítek jde vždy dotáhnout znovu.
+    """
+    if order.packeta_label_pdf and order.packeta_label_pdf.storage.exists(order.packeta_label_pdf.name):
+        order.packeta_label_pdf.open("rb")
+        try:
+            return order.packeta_label_pdf.read()
+        finally:
+            order.packeta_label_pdf.close()
+
+    if not order.packeta_packet_id:
+        return None
+
+    from django.core.files.base import ContentFile
+
+    pdf_bytes = get_packet_label_pdf(order.packeta_packet_id)
+    order.packeta_label_pdf.save(
+        f"label_packeta_{order.id}.pdf",
+        ContentFile(pdf_bytes),
+        save=True,
+    )
+    return pdf_bytes
+
+
+def _send_order_notification_email(order, packeta_error=None):
+    """
+    Pošle interní upozornění na info@calmdog.cz o nové objednávce s fyzickým
+    produktem (Zásilkovna) – v příloze štítek na balíček, pokud se ho podařilo vytvořit.
+    """
+    try:
+        items_text = ""
+        for item in order.items.select_related("product_variant__product", "product_variant__color").all():
+            if item.product_variant:
+                variant_desc = _variant_description(item.product_variant)
+                suffix = f" – {variant_desc}" if variant_desc else ""
+                items_text += f"  • {item.product_variant.product.name}{suffix} ({item.price_at_purchase:.0f} Kč × {item.quantity} ks)\n"
+
+        tracking_line = order.packeta_tracking_number or "zatím nevytvořeno"
+        if not order.packeta_tracking_number and packeta_error:
+            tracking_line = f"zatím nevytvořeno – chyba: {packeta_error}"
+
+        body = f"""Nová objednávka č. {order.id} ({order.first_name} {order.last_name}, {order.buyer_email}):
+
+{items_text}
+Výdejní místo: {order.packeta_point_name or "-"}
+Sledovací číslo Packeta: {tracking_line}
+"""
+
+        email = EmailMessage(
+            subject=f"CalmDog – nová objednávka č. {order.id} (Zásilkovna)",
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=["info@calmdog.cz"],
+        )
+
+        # Štítek dotáhneme na vyžádání – i když se hned při objednávce nestáhl
+        # (nebo ho smazal redeploy), dokud existuje packet_id, jde ho znovu získat.
+        try:
+            label_bytes = _ensure_packeta_label_bytes(order)
+            if label_bytes:
+                email.attach(
+                    f"stitek_packeta_{order.id}.pdf",
+                    label_bytes,
+                    "application/pdf",
+                )
+        except Exception as label_err:
+            # Štítek se nepodařilo získat – e-mail přesto pošleme (bez přílohy),
+            # ať upozornění na objednávku nezapadne.
+            logger.error(
+                f"[Email] Nepodařilo se přiložit štítek k upozornění na objednávku "
+                f"#{order.id}: {label_err}"
+            )
+
+        email.send()
+        return True
+
+    except Exception as e:
+        logger.error(f"[Email] Nepodařilo se odeslat upozornění na novou objednávku #{order.id}: {e}")
         return False
 # =====================================================
 # ODEBRÁNÍ Z KOŠÍKU
@@ -1238,16 +1386,17 @@ def shipping(request):
                 "packeta_mode": settings.PACKETA_MODE,
                 "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
                 "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
+                "free_shipping": cart.qualifies_for_free_shipping,
             })
 
         cart.shipping_method = method
 
         if method == Order.ShippingMethod.ZASILKOVNA:
-            cart.shipping_price = 79
+            cart.shipping_price = 0 if cart.qualifies_for_free_shipping else 99
             cart.packeta_point_id = packeta_point_id
             cart.packeta_point_name = packeta_point_name or packeta_point_id
         elif method == Order.ShippingMethod.KURYR:
-            cart.shipping_price = 119
+            cart.shipping_price = 0 if cart.qualifies_for_free_shipping else 119
             cart.packeta_point_id = None
             cart.packeta_point_name = None
         else:
@@ -1273,6 +1422,7 @@ def shipping(request):
         "packeta_mode": settings.PACKETA_MODE,
         "packeta_mock_point_id": settings.PACKETA_MOCK_POINT_ID,
         "packeta_mock_point_name": settings.PACKETA_MOCK_POINT_NAME,
+        "free_shipping": cart.qualifies_for_free_shipping,
     })
 
 

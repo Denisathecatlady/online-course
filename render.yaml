@@ -51,6 +51,11 @@ services:
         sync: false
       - key: PACKETA_WIDGET_API_KEY
         sync: false
+      # Indikace odesílatele (sender) z Packeta administrace – musí přesně sedět
+      - key: PACKETA_ESHOP_NAME
+        sync: false
+      - key: HEUREKA_API_KEY
+        sync: false
       - key: HOTEL_ICAL_URL
         sync: false
       - key: MAPY_API_KEY
@@ -66,6 +71,11 @@ services:
         sync: false
       - key: GOOGLE_OAUTH_REDIRECT_URI
         value: https://www.calmdog.cz/moje-treninky/google/callback/
+      # Přihlášení přes Google (allauth) – vlastní OAuth klient, jiný než výše
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
 
   # ─── CRON: žádosti o Google recenzi (jen produkce) ──────────────────────────
   - type: cron
@@ -86,6 +96,8 @@ services:
         value: "0"
       - key: DJANGO_SECRET_KEY
         sync: false
+      - key: DJANGO_ADMIN_URL
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: calmdog-db
@@ -101,7 +113,9 @@ services:
       - key: DJANGO_ADMIN_URL
         sync: false
 
-  # ─── CRON: zpětná synchronizace Google kalendáře (rezervace tréninků) ───────
+  # ─── CRON: synchronizace Google kalendáře (rezervace tréninků) ──────────────
+  # 1) import_availability_from_google – načte volné termíny z kalendářů dostupnosti
+  # 2) sync_google_calendar – zruší rezervace, jejichž událost byla v Googlu smazána
   - type: cron
     name: calmdog-training-gcal-sync
     runtime: python
@@ -110,7 +124,7 @@ services:
     branch: main
     schedule: "*/30 * * * *"   # každých 30 minut
     buildCommand: pip install -r requirements.txt
-    startCommand: python manage.py sync_google_calendar
+    startCommand: python manage.py import_availability_from_google && python manage.py sync_google_calendar
     envVars:
       - key: APP_ENV
         value: production
@@ -119,6 +133,8 @@ services:
       - key: USE_S3_STORAGE
         value: "0"
       - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_ADMIN_URL
         sync: false
       - key: DATABASE_URL
         fromDatabase:
@@ -162,13 +178,15 @@ services:
       - key: USE_S3_STORAGE
         value: "0"
       - key: PACKETA_MODE
-        value: mock
+        value: live
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: calmdog-preview-db
           property: connectionString
+      - key: DJANGO_ADMIN_URL
+        sync: false
       - key: SITE_URL
         sync: false
       - key: DJANGO_ALLOWED_HOSTS
@@ -189,7 +207,17 @@ services:
         sync: false
       - key: PACKETA_API_PASSWORD
         sync: false
+      # Indikace odesílatele (sender) z Packeta administrace – musí přesně sedět
+      - key: PACKETA_ESHOP_NAME
+        sync: false
+      - key: HEUREKA_API_KEY
+        sync: false
       - key: MAPY_API_KEY
+        sync: false
+      # Přihlášení přes Google (allauth)
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
         sync: false
 
 databases:

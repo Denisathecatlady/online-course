@@ -1,14 +1,19 @@
+import io
+
 from django.contrib import admin, messages
 from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils import timezone
 from django.http import FileResponse, Http404
+from django.shortcuts import redirect
 
 from django.core.files.base import ContentFile
 
 from import_export import resources, fields
 from import_export.admin import ExportMixin
 from rangefilter.filters import DateRangeFilter
+
+from config.admin_ui import badge as _badge
 
 from .models import Order, OrderItem, CourseAccess, Coupon, CouponUsage, ShopSettings, WelcomeCouponClaim, NewsletterSubscriber
 from .services.packeta import create_packet, get_packet_label_pdf, PacketaError
@@ -95,22 +100,13 @@ class NewsletterSubscriberResource(resources.ModelResource):
 # POMOCNÉ – barevné štítky stavů
 # ======================================
 
-ORDER_STATUS_COLORS = {
-    Order.Status.CART: "#9e9e9e",
-    Order.Status.PENDING: "#e0a800",
-    Order.Status.PAID: "#2e7d32",
-    Order.Status.FAILED: "#c62828",
-    Order.Status.CANCELED: "#616161",
+ORDER_STATUS_VARIANTS = {
+    Order.Status.CART: "muted",
+    Order.Status.PENDING: "warning",
+    Order.Status.PAID: "success",
+    Order.Status.FAILED: "danger",
+    Order.Status.CANCELED: "muted",
 }
-
-
-def _badge(text, color):
-    return format_html(
-        '<span style="background:{};color:#fff;padding:2px 8px;'
-        'border-radius:10px;font-size:11px;white-space:nowrap;">{}</span>',
-        color,
-        text,
-    )
 
 
 # ======================================
@@ -178,6 +174,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         "retry_packeta_shipment",
         "retry_packeta_label",
         "resend_confirmation_email",
+        "resend_order_notification_email",
     ]
 
     readonly_fields = (
@@ -189,6 +186,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         "packeta_tracking_number",
         "packeta_created_at",
         "packeta_label_link",
+        "heureka_sent_at",
         "stripe_checkout_session_id",
         "stripe_payment_intent_id",
         "invoice_download",
@@ -202,7 +200,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
             "fields": ("items_total_display", "coupon", "discount_display", "shipping_price", "total_display"),
         }),
         ("Kontakt", {
-            "fields": ("buyer_email", "first_name", "last_name", "phone", "newsletter_opt_in"),
+            "fields": ("buyer_email", "first_name", "last_name", "phone", "newsletter_opt_in", "heureka_opt_in"),
         }),
         ("Doručovací adresa", {
             "fields": ("street", "city", "zip_code", "country"),
@@ -221,6 +219,10 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
                 "packeta_packet_id", "packeta_tracking_number",
                 "packeta_created_at", "packeta_label_link",
             ),
+        }),
+        ("Heureka Ověřeno zákazníků", {
+            "classes": ("collapse",),
+            "fields": ("heureka_sent_at",),
         }),
         ("Platba (Stripe)", {
             "classes": ("collapse",),
@@ -246,17 +248,17 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
 
     @admin.display(description="Stav")
     def status_badge(self, obj):
-        return _badge(obj.get_status_display(), ORDER_STATUS_COLORS.get(obj.status, "#777"))
+        return _badge(obj.get_status_display(), ORDER_STATUS_VARIANTS.get(obj.status, "muted"))
 
     @admin.display(description="Platba")
     def payment_badge(self, obj):
         if obj.status == Order.Status.PAID:
-            return _badge("Zaplaceno", "#2e7d32")
+            return _badge("Zaplaceno", "success")
         if obj.status == Order.Status.PENDING:
-            return _badge("Čeká na platbu", "#e0a800")
+            return _badge("Čeká na platbu", "warning")
         if obj.status == Order.Status.FAILED:
-            return _badge("Neúspěšná", "#c62828")
-        return _badge("Nezaplaceno", "#9e9e9e")
+            return _badge("Neúspěšná", "danger")
+        return _badge("Nezaplaceno", "muted")
 
     @admin.display(description="Mezisoučet zboží")
     def items_total_display(self, obj):
@@ -286,9 +288,9 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
 
     @admin.display(description="Štítek")
     def packeta_label_link(self, obj):
-        if not obj.packeta_label_pdf:
-            if obj.packeta_packet_id:
-                return format_html('<em style="color:#aaa">Bez štítku</em>')
+        # Odkaz nabídneme kdykoli existuje zásilka – download si štítek dotáhne
+        # z Packety na vyžádání, i když soubor zrovna není uložený.
+        if not obj.pk or not obj.packeta_packet_id:
             return "—"
         url = reverse("admin:order-packeta-label-download", args=[obj.pk])
         return format_html('<a href="{}">🏷 Štítek PDF</a>', url)
@@ -336,13 +338,41 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         )
 
     def download_packeta_label(self, request, pk):
+        from .views import _ensure_packeta_label_bytes
+
         order = self.get_object(request, pk)
-        if not order or not order.packeta_label_pdf:
+        if not order:
+            raise Http404("Objednávka nenalezena")
+        if not order.packeta_packet_id:
+            raise Http404("Zásilka na Zásilkovně ještě nebyla vytvořena.")
+
+        # Soubor mohl být smazán (ephemeral filesystem na Renderu) nebo se hned
+        # při objednávce nestáhl → dotáhni ho z Packety na vyžádání.
+        try:
+            pdf_bytes = _ensure_packeta_label_bytes(order)
+        except PacketaError as e:
+            self.message_user(
+                request,
+                f"Štítek se nepodařilo stáhnout z Packety: [{e.code}] {e.message}",
+                level=messages.ERROR,
+            )
+            return redirect(reverse("admin:payments_order_change", args=[order.pk]))
+        except Exception as e:
+            self.message_user(
+                request,
+                f"Štítek se nepodařilo stáhnout: {e}",
+                level=messages.ERROR,
+            )
+            return redirect(reverse("admin:payments_order_change", args=[order.pk]))
+
+        if not pdf_bytes:
             raise Http404("Štítek nenalezen")
+
         return FileResponse(
-            order.packeta_label_pdf.open("rb"),
+            io.BytesIO(pdf_bytes),
             as_attachment=True,
             filename=f"label_packeta_{order.id}.pdf",
+            content_type="application/pdf",
         )
 
     # ── Akce – stav objednávky ────────────────────────────
@@ -467,6 +497,47 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
                 level=messages.WARNING,
             )
 
+    # ── Akce – přeposlat interní e-mail se štítkem ────────
+
+    @admin.action(description="🏷 Přeposlat interní e-mail se štítkem")
+    def resend_order_notification_email(self, request, queryset):
+        from .views import _send_order_notification_email
+
+        sent = 0
+        skipped = 0
+        failed = 0
+
+        for order in queryset:
+            if order.shipping_method != Order.ShippingMethod.ZASILKOVNA:
+                skipped += 1
+                continue
+            # _send_order_notification_email si štítek dotáhne z Packety samo
+            # a přiloží ho; chyby si loguje a vrací False.
+            ok = _send_order_notification_email(order)
+            if ok:
+                sent += 1
+            else:
+                failed += 1
+
+        if sent:
+            self.message_user(
+                request,
+                f"✅ Interní e-mail se štítkem odeslán na info@calmdog.cz: {sent}",
+                level=messages.SUCCESS,
+            )
+        if failed:
+            self.message_user(
+                request,
+                f"❌ Odeslání selhalo: {failed}. Podrobnosti viz server log.",
+                level=messages.ERROR,
+            )
+        if skipped:
+            self.message_user(
+                request,
+                f"⏭ Přeskočeno (objednávka není Zásilkovna): {skipped}",
+                level=messages.WARNING,
+            )
+
     # ── Akce – stáhnout štítek ────────────────────────────
 
     @admin.action(description="🏷 Stáhnout/obnovit štítek ze Zásilkovny")
@@ -548,10 +619,10 @@ class CourseAccessAdmin(ExportMixin, admin.ModelAdmin):
     @admin.display(description="Přístup")
     def access_badge(self, obj):
         if obj.has_access():
-            return _badge("Aktivní", "#2e7d32")
+            return _badge("Aktivní", "success")
         if not obj.is_active:
-            return _badge("Neaktivní", "#9e9e9e")
-        return _badge("Vypršel", "#c62828")
+            return _badge("Neaktivní", "muted")
+        return _badge("Vypršel", "danger")
 
     @admin.action(description="✅ Aktivovat přístup")
     def activate_access(self, request, queryset):
@@ -632,8 +703,8 @@ class CouponAdmin(admin.ModelAdmin):
     @admin.display(description="Stav")
     def active_badge(self, obj):
         if obj.is_active:
-            return _badge("Aktivní", "#2e7d32")
-        return _badge("Neaktivní", "#9e9e9e")
+            return _badge("Aktivní", "success")
+        return _badge("Neaktivní", "muted")
 
     @admin.display(description="Platnost")
     def validity_display(self, obj):

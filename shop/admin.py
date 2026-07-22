@@ -14,7 +14,7 @@ from .models import Product, ProductVariant, Color
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
-    fields = ("length", "type", "color", "price", "stock", "is_active")
+    fields = ("code", "length", "type", "color", "price", "stock", "is_active")
     autocomplete_fields = ("color",)
 
 
@@ -72,10 +72,10 @@ class ColorAdmin(admin.ModelAdmin):
 
 @admin.register(ProductVariant)
 class ProductVariantAdmin(ImportExportModelAdmin):
-    list_display = ("product", "length", "type", "color", "price", "stock", "stock_badge", "is_active")
-    list_editable = ("price", "stock", "is_active")
+    list_display = ("product", "code", "length", "type", "color", "price", "stock", "stock_badge", "is_active")
+    list_editable = ("code", "price", "stock", "is_active")
     list_filter = ("is_active", "length", "type", "product", ("price", NumericRangeFilter))
-    search_fields = ("product__name", "color__name")
+    search_fields = ("product__name", "color__name", "code")
     ordering = ("product", "length", "type")
     autocomplete_fields = ("product", "color")
     actions = ["activate_variants", "deactivate_variants"]
@@ -83,10 +83,10 @@ class ProductVariantAdmin(ImportExportModelAdmin):
     @admin.display(description="Skladem")
     def stock_badge(self, obj):
         if obj.stock <= 0:
-            return format_html('<span style="color:#c62828;font-weight:600;">Vyprodáno</span>')
+            return format_html('<span class="cd-badge cd-badge--danger">Vyprodáno</span>')
         if obj.stock <= 3:
-            return format_html('<span style="color:#e0a800;font-weight:600;">Málo ({})</span>', obj.stock)
-        return format_html('<span style="color:#2e7d32;">Skladem ({})</span>', obj.stock)
+            return format_html('<span class="cd-badge cd-badge--warning">Málo ({})</span>', obj.stock)
+        return format_html('<span class="cd-badge cd-badge--success">Skladem ({})</span>', obj.stock)
 
     @admin.action(description="✅ Aktivovat varianty")
     def activate_variants(self, request, queryset):

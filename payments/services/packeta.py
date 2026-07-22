@@ -54,23 +54,22 @@ def _escape(value: str) -> str:
 
 def _soap_call(method: str, inner_xml: str) -> ET.Element:
     """
-    Odešle SOAP požadavek na Packeta API a vrátí kořenový element odpovědi.
-    Vyhodí PacketaError pokud API vrátí chybu, nebo requests výjimku při síťové chybě.
+    Odešle XML požadavek na Packeta API a vrátí kořenový element odpovědi.
+
+    Přes název je to legacy "REST" XML API (endpoint /api/rest), NE SOAP –
+    kořenový element požadavku je přímo název metody, žádná soap:Envelope
+    obálka. Vyhodí PacketaError pokud API vrátí chybu, nebo requests
+    výjimku při síťové chybě.
     """
     envelope = (
         '<?xml version="1.0" encoding="utf-8"?>'
-        '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
-        "<soap:Body>"
         f"<{method}>"
         f"{inner_xml}"
         f"</{method}>"
-        "</soap:Body>"
-        "</soap:Envelope>"
     )
 
     headers = {
         "Content-Type": "text/xml; charset=utf-8",
-        "SOAPAction": method,
     }
 
     response = requests.post(
@@ -82,25 +81,22 @@ def _soap_call(method: str, inner_xml: str) -> ET.Element:
     response.raise_for_status()
 
     root = ET.fromstring(response.content)
-    ns = {"soap": "http://schemas.xmlsoap.org/soap/envelope/"}
 
-    # Hledáme chybový element (fault nebo status=error)
-    fault = root.find(".//soap:Fault", ns)
-    if fault is not None:
-        code = fault.findtext("faultcode") or "FAULT"
-        msg = fault.findtext("faultstring") or "Unknown SOAP fault"
-        raise PacketaError(code, msg)
-
-    # Packeta vrací <status>ok</status> nebo <status>error</status>
+    # Packeta vrací <status>ok</status>, jinak <status>fault</status>/<status>error</status>
+    # s chybovým kódem v <fault> a lidsky čitelnou zprávou v <string>.
+    # <detail> (pokud není prázdný) obsahuje konkrétní důvod, např. které pole selhalo.
     status_el = root.find(".//status")
-    if status_el is not None and status_el.text == "error":
-        fault_el = root.find(".//fault")
-        if fault_el is not None:
-            code = fault_el.findtext("code") or "ERROR"
-            msg = fault_el.findtext("message") or "Unknown Packeta error"
-        else:
-            code = "ERROR"
-            msg = "Packeta vrátila chybu bez detailů."
+    if status_el is not None and status_el.text != "ok":
+        code = root.findtext(".//fault") or "ERROR"
+        msg = (
+            root.findtext(".//string")
+            or root.findtext(".//message")
+            or "Packeta vrátila chybu bez detailů."
+        )
+        detail_el = root.find(".//detail")
+        if detail_el is not None and len(detail_el) > 0:
+            detail_xml = ET.tostring(detail_el, encoding="unicode")
+            msg = f"{msg} Detail: {detail_xml[:800]}"
         raise PacketaError(code, msg)
 
     return root
@@ -175,9 +171,17 @@ def create_packet(order) -> dict:
 
     root = _soap_call("createPacket", inner_xml)
 
+    # Packeta zabaluje výsledek do <result>/<r> (dle verze API) s <id> zásilky uvnitř;
+    # zkusíme i starší tvar <packetId> pro jistotu.
     packet_id_el = root.find(".//packetId")
+    if packet_id_el is None:
+        packet_id_el = root.find(".//result/id")
+    if packet_id_el is None:
+        packet_id_el = root.find(".//id")
     if packet_id_el is None or not packet_id_el.text:
-        raise PacketaError("NO_ID", "Packeta nevrátila packetId.")
+        raw = ET.tostring(root, encoding="unicode")
+        logger.error(f"[Packeta] Odpověď bez packetId (objednávka #{order.id}): {raw[:2000]}")
+        raise PacketaError("NO_ID", f"Packeta nevrátila packetId. Odpověď: {raw[:500]}")
 
     packet_id = packet_id_el.text.strip()
     barcode_el = root.find(".//barcode")
@@ -222,9 +226,21 @@ def get_packet_label_pdf(packet_id: str, format: str = "A6 on A4", offset: int =
 
     root = _soap_call("packetLabelPdf", inner_xml)
 
-    # Odpověď obsahuje base64 encoded PDF
+    # Odpověď obsahuje base64 encoded PDF – element se jmenuje <labelContents>,
+    # ale (podobně jako u createPacket, viz komentář výše) se v části verzí API
+    # vrací obsah přímo v <result> bez dalšího zanoření. Zkusíme obě varianty.
     label_el = root.find(".//labelContents")
     if label_el is None or not label_el.text:
+        result_el = root.find(".//result")
+        if result_el is not None and len(result_el) == 0 and result_el.text:
+            label_el = result_el
+
+    if label_el is None or not label_el.text:
+        raw = ET.tostring(root, encoding="unicode")
+        logger.error(
+            f"[Packeta] Odpověď packetLabelPdf bez obsahu štítku "
+            f"(zásilka {packet_id}): {raw[:2000]}"
+        )
         raise PacketaError("NO_LABEL", "Packeta nevrátila obsah štítku.")
 
     pdf_bytes = base64.b64decode(label_el.text.strip())

@@ -71,10 +71,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # ======================================================
 
 INSTALLED_APPS = [
-    # Vzhled adminu – MUSÍ být před django.contrib.admin
-    "admin_interface",
-    "colorfield",
-
+    # Vzhled administrace CalmDog je řešený vlastním design-systémem
+    # (šablony templates/admin/ + courses/static/admin/css/calmdog_admin.css),
+    # verzovaným v gitu – proto konzistentní ve všech prostředích.
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -403,6 +402,10 @@ GOOGLE_CALENDAR_ENABLED = bool(GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SE
 # Scope pro čtení/zápis událostí v kalendáři trenéra.
 GOOGLE_CALENDAR_SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
+# Jak daleko dopředu importovat volné termíny z Google kalendářů dostupnosti
+# (management command import_availability_from_google).
+TRAININGS_IMPORT_HORIZON_DAYS = int(os.environ.get("TRAININGS_IMPORT_HORIZON_DAYS", "60"))
+
 # ======================================================
 # RECAPTCHA v3 – ochrana veřejných formulářů proti spamu
 # ======================================================
@@ -413,6 +416,15 @@ RECAPTCHA_SCORE_THRESHOLD = float(os.environ.get("RECAPTCHA_SCORE_THRESHOLD", "0
 # Bez vyplněných klíčů (lokální vývoj) se ověření elegantně přeskočí –
 # formuláře fungují dál, jen bez CAPTCHA ochrany.
 RECAPTCHA_ENABLED = bool(RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY)
+
+# ======================================================
+# HEUREKA – OVĚŘENO ZÁKAZNÍKY
+# ======================================================
+# Účet zatím není aktivní – dokud není HEUREKA_API_KEY nastaven, integrace
+# se elegantně přeskočí (jen loguje, nic neodesílá). Endpoint/payload v
+# payments/services/heureka.py zatím není ověřený proti reálnému účtu.
+HEUREKA_API_KEY = os.environ.get("HEUREKA_API_KEY", "")
+HEUREKA_ENABLED = bool(HEUREKA_API_KEY)
 
 # Uzamčení prodeje (bez deploye – stačí nastavit SHOP_LOCKED=1 v Render env)
 SHOP_LOCKED = os.environ.get("SHOP_LOCKED", "0") == "1"

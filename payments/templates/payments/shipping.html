@@ -16,6 +16,15 @@
                     Dokončete objednávku způsobem, který vám bude nejvíc vyhovovat.
                     V dalším kroku pak doplníte kontaktní a adresní údaje.
                 </p>
+                {% if free_shipping %}
+                    <p class="shipping-note mt-3 mb-0">
+                        Vaše objednávka přesáhla 1 500 Kč – doprava je zdarma.
+                    </p>
+                {% else %}
+                    <p class="shipping-note mt-3 mb-0">
+                        Při objednávce nad 1 500 Kč je doprava zdarma.
+                    </p>
+                {% endif %}
             </div>
 
             <form method="post" class="shipping-grid reveal">
@@ -44,7 +53,7 @@
                                                 Výdejní místo nebo Z-BOX po celé ČR
                                             </span>
                                         </span>
-                                        <strong class="shipping-price">79 Kč</strong>
+                                        <strong class="shipping-price">{% if free_shipping %}Zdarma{% else %}99 Kč{% endif %}</strong>
                                     </span>
                                     <span class="shipping-option-meta">
                                         Rychlé vyzvednutí, ideální pokud nechcete čekat doma na kurýra.

@@ -1,0 +1,75 @@
+{% extends "admin/base_site.html" %}
+{% load i18n calmdog_admin %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content_title %}{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% dashboard_metrics as m %}
+<div class="cd-dash" id="content-start">
+
+  <div class="cd-dash__head">
+    <h1 class="cd-dash__title">Přehled</h1>
+    <p class="cd-dash__subtitle">Vítej zpět{% if user.first_name %}, {{ user.first_name }}{% endif %} · dnes je {% now "l j. F Y" %}.</p>
+  </div>
+
+  {% if m.cards %}
+  <div class="cd-stats">
+    {% for c in m.cards %}
+      <{% if c.url %}a href="{{ c.url }}"{% else %}div{% endif %} class="cd-stat">
+        <div class="cd-stat__top">
+          <span class="cd-stat__icon{% if c.tone %} cd-stat__icon--{{ c.tone }}{% endif %}">{% cd_icon c.icon %}</span>
+          {% if c.pill %}<span class="cd-stat__pill">{{ c.pill }}</span>{% endif %}
+        </div>
+        <div class="cd-stat__value">{{ c.value }}</div>
+        <div class="cd-stat__label">{{ c.label }}</div>
+      </{% if c.url %}a{% else %}div{% endif %}>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if m.chart %}
+  <div class="cd-panel">
+    <p class="cd-panel__title">Zaplacené objednávky · posledních 14 dní ({{ m.chart_total }} celkem)</p>
+    <div class="cd-chart" role="img" aria-label="Sloupcový graf zaplacených objednávek za posledních 14 dní">
+      {% for d in m.chart %}
+        <div class="cd-chart__col" title="{{ d.label }} – {{ d.count }} objedn.">
+          <div class="cd-chart__bar" style="height: {% widthratio d.count m.chart_max 100 %}%;">
+            {% if d.count %}<span>{{ d.count }}</span>{% endif %}
+          </div>
+          <div class="cd-chart__label">{{ d.label }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% calmdog_nav as cd_groups %}
+  <div class="cd-groups">
+    {% for group in cd_groups %}
+      <section class="cd-group-card">
+        <div class="cd-group-card__head">{% cd_icon group.icon %}{{ group.label }}</div>
+        <ul class="cd-nav-list">
+          {% for model in group.models %}
+            <li>
+              {% if model.admin_url %}
+                <a class="cd-nav-link" href="{{ model.admin_url }}">{{ model.name }}</a>
+              {% else %}
+                <span class="cd-nav-link">{{ model.name }}</span>
+              {% endif %}
+              {% if model.add_url %}
+                <a class="cd-nav-add" href="{{ model.add_url }}" aria-label="Přidat: {{ model.name }}">＋</a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
