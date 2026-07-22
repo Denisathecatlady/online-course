@@ -1,8 +1,11 @@
+import io
+
 from django.contrib import admin, messages
 from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils import timezone
 from django.http import FileResponse, Http404
+from django.shortcuts import redirect
 
 from django.core.files.base import ContentFile
 
@@ -171,6 +174,7 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         "retry_packeta_shipment",
         "retry_packeta_label",
         "resend_confirmation_email",
+        "resend_order_notification_email",
     ]
 
     readonly_fields = (
@@ -284,9 +288,9 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
 
     @admin.display(description="Štítek")
     def packeta_label_link(self, obj):
-        if not obj.packeta_label_pdf:
-            if obj.packeta_packet_id:
-                return format_html('<em style="color:#aaa">Bez štítku</em>')
+        # Odkaz nabídneme kdykoli existuje zásilka – download si štítek dotáhne
+        # z Packety na vyžádání, i když soubor zrovna není uložený.
+        if not obj.pk or not obj.packeta_packet_id:
             return "—"
         url = reverse("admin:order-packeta-label-download", args=[obj.pk])
         return format_html('<a href="{}">🏷 Štítek PDF</a>', url)
@@ -334,13 +338,41 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
         )
 
     def download_packeta_label(self, request, pk):
+        from .views import _ensure_packeta_label_bytes
+
         order = self.get_object(request, pk)
-        if not order or not order.packeta_label_pdf:
+        if not order:
+            raise Http404("Objednávka nenalezena")
+        if not order.packeta_packet_id:
+            raise Http404("Zásilka na Zásilkovně ještě nebyla vytvořena.")
+
+        # Soubor mohl být smazán (ephemeral filesystem na Renderu) nebo se hned
+        # při objednávce nestáhl → dotáhni ho z Packety na vyžádání.
+        try:
+            pdf_bytes = _ensure_packeta_label_bytes(order)
+        except PacketaError as e:
+            self.message_user(
+                request,
+                f"Štítek se nepodařilo stáhnout z Packety: [{e.code}] {e.message}",
+                level=messages.ERROR,
+            )
+            return redirect(reverse("admin:payments_order_change", args=[order.pk]))
+        except Exception as e:
+            self.message_user(
+                request,
+                f"Štítek se nepodařilo stáhnout: {e}",
+                level=messages.ERROR,
+            )
+            return redirect(reverse("admin:payments_order_change", args=[order.pk]))
+
+        if not pdf_bytes:
             raise Http404("Štítek nenalezen")
+
         return FileResponse(
-            order.packeta_label_pdf.open("rb"),
+            io.BytesIO(pdf_bytes),
             as_attachment=True,
             filename=f"label_packeta_{order.id}.pdf",
+            content_type="application/pdf",
         )
 
     # ── Akce – stav objednávky ────────────────────────────
@@ -462,6 +494,47 @@ class OrderAdmin(ExportMixin, admin.ModelAdmin):
             self.message_user(
                 request,
                 f"⏭ Přeskočeno (objednávka není zaplacená): {skipped}",
+                level=messages.WARNING,
+            )
+
+    # ── Akce – přeposlat interní e-mail se štítkem ────────
+
+    @admin.action(description="🏷 Přeposlat interní e-mail se štítkem")
+    def resend_order_notification_email(self, request, queryset):
+        from .views import _send_order_notification_email
+
+        sent = 0
+        skipped = 0
+        failed = 0
+
+        for order in queryset:
+            if order.shipping_method != Order.ShippingMethod.ZASILKOVNA:
+                skipped += 1
+                continue
+            # _send_order_notification_email si štítek dotáhne z Packety samo
+            # a přiloží ho; chyby si loguje a vrací False.
+            ok = _send_order_notification_email(order)
+            if ok:
+                sent += 1
+            else:
+                failed += 1
+
+        if sent:
+            self.message_user(
+                request,
+                f"✅ Interní e-mail se štítkem odeslán na info@calmdog.cz: {sent}",
+                level=messages.SUCCESS,
+            )
+        if failed:
+            self.message_user(
+                request,
+                f"❌ Odeslání selhalo: {failed}. Podrobnosti viz server log.",
+                level=messages.ERROR,
+            )
+        if skipped:
+            self.message_user(
+                request,
+                f"⏭ Přeskočeno (objednávka není Zásilkovna): {skipped}",
                 level=messages.WARNING,
             )
 

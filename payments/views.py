@@ -1154,6 +1154,41 @@ info@calmdog.cz
         return False
 
 
+def _ensure_packeta_label_bytes(order):
+    """
+    Vrátí PDF štítku Zásilkovny jako bytes – dotáhne ho na vyžádání.
+
+    - Když je štítek už uložený ve storage → přečte a vrátí ho (`.open("rb")`,
+      ne `.path`, kvůli R2).
+    - Jinak když objednávka má `packeta_packet_id` → stáhne štítek z Packety,
+      uloží ho do `order.packeta_label_pdf` a vrátí bytes.
+    - Když zásilka ještě neexistuje → vrátí None.
+
+    Výjimky (PacketaError apod.) nechává probublat, ať volající zná důvod.
+    Řeší efemérní disk na Renderu (USE_S3_STORAGE=0) – soubor se po redeployi
+    ztratí, ale dokud existuje packet_id, štítek jde vždy dotáhnout znovu.
+    """
+    if order.packeta_label_pdf and order.packeta_label_pdf.storage.exists(order.packeta_label_pdf.name):
+        order.packeta_label_pdf.open("rb")
+        try:
+            return order.packeta_label_pdf.read()
+        finally:
+            order.packeta_label_pdf.close()
+
+    if not order.packeta_packet_id:
+        return None
+
+    from django.core.files.base import ContentFile
+
+    pdf_bytes = get_packet_label_pdf(order.packeta_packet_id)
+    order.packeta_label_pdf.save(
+        f"label_packeta_{order.id}.pdf",
+        ContentFile(pdf_bytes),
+        save=True,
+    )
+    return pdf_bytes
+
+
 def _send_order_notification_email(order, packeta_error=None):
     """
     Pošle interní upozornění na info@calmdog.cz o nové objednávce s fyzickým
@@ -1185,14 +1220,23 @@ Sledovací číslo Packeta: {tracking_line}
             to=["info@calmdog.cz"],
         )
 
-        if order.packeta_label_pdf and order.packeta_label_pdf.storage.exists(order.packeta_label_pdf.name):
-            order.packeta_label_pdf.open("rb")
-            email.attach(
-                f"stitek_packeta_{order.id}.pdf",
-                order.packeta_label_pdf.read(),
-                "application/pdf",
+        # Štítek dotáhneme na vyžádání – i když se hned při objednávce nestáhl
+        # (nebo ho smazal redeploy), dokud existuje packet_id, jde ho znovu získat.
+        try:
+            label_bytes = _ensure_packeta_label_bytes(order)
+            if label_bytes:
+                email.attach(
+                    f"stitek_packeta_{order.id}.pdf",
+                    label_bytes,
+                    "application/pdf",
+                )
+        except Exception as label_err:
+            # Štítek se nepodařilo získat – e-mail přesto pošleme (bez přílohy),
+            # ať upozornění na objednávku nezapadne.
+            logger.error(
+                f"[Email] Nepodařilo se přiložit štítek k upozornění na objednávku "
+                f"#{order.id}: {label_err}"
             )
-            order.packeta_label_pdf.close()
 
         email.send()
         return True
