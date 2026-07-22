@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SHOP>
+{% for item in items %}  <SHOPITEM>
+    <ITEM_ID>{{ item.item_id }}</ITEM_ID>
+    <ITEMGROUP_ID>{{ item.itemgroup_id }}</ITEMGROUP_ID>
+    <PRODUCTNAME>{{ item.productname }}</PRODUCTNAME>
+    <PRODUCT>{{ item.productname }}</PRODUCT>
+    <DESCRIPTION>{{ item.description }}</DESCRIPTION>
+    <URL>{{ item.url }}</URL>
+    {% if item.imgurl %}<IMGURL>{{ item.imgurl }}</IMGURL>
+    {% endif %}<PRICE_VAT>{{ item.price_vat }}</PRICE_VAT>
+    <MANUFACTURER>{{ item.manufacturer }}</MANUFACTURER>
+    <CATEGORYTEXT>{{ item.categorytext }}</CATEGORYTEXT>
+    <DELIVERY_DATE>{{ item.delivery_date }}</DELIVERY_DATE>
+    {% for p in item.params %}<PARAM><PARAM_NAME>{{ p.name }}</PARAM_NAME><VAL>{{ p.value }}</VAL></PARAM>
+    {% endfor %}</SHOPITEM>
+{% endfor %}</SHOP>

@@ -1,5 +1,6 @@
 from decimal import Decimal, ROUND_HALF_UP
 
+from django.conf import settings
 from django.db.models import Min
 from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
@@ -8,6 +9,12 @@ from django.utils.text import slugify
 
 from .models import Product, ProductVariant
 import json
+
+
+# Kategorie pro Heureka XML feed. Heureka si položky do svého stromu páruje sama,
+# hodnotu lze doladit dle oficiálního číselníku kategorií Heureky.
+HEUREKA_CATEGORYTEXT = "Chovatelské potřeby | Pro psy | Obojky, vodítka a postroje | Vodítka"
+HEUREKA_MANUFACTURER = "CalmDog"
 
 
 PRODUCT_COLOR_IMAGE_PATHS = {
@@ -246,6 +253,16 @@ def build_static_image_url(relative_path):
     return static(relative_path)
 
 
+def _absolute_url(path):
+    """Doplní relativní cestu o doménu ze settings.SITE_URL.
+    Když je cesta už absolutní (CDN/S3), vrátí ji beze změny."""
+    if not path:
+        return ""
+    if path.startswith(("http://", "https://")):
+        return path
+    return f"{settings.SITE_URL.rstrip('/')}{path}"
+
+
 def get_default_product_image_url(product):
     image_path = PRODUCT_CARD_CONTENT.get(product.slug, {}).get("image")
     if image_path:
@@ -420,6 +437,86 @@ def product_list(request):
 
 def postroj_na_miru(request):
     return render(request, "shop/postroj_na_miru.html")
+
+
+def heureka_feed(request):
+    """Veřejný XML feed produktů pro Heureka.cz (formát Heureka Feed).
+
+    Jedna varianta = jedna <SHOPITEM>. Do feedu jdou jen aktivní a skladem
+    dostupné varianty; varianty stejného produktu se svážou přes <ITEMGROUP_ID>.
+    """
+    length_labels = dict(ProductVariant.LENGTH_CHOICES)
+    type_labels = dict(ProductVariant.TYPE_CHOICES)
+
+    variants = (
+        ProductVariant.objects
+        .filter(
+            is_active=True,
+            product__is_active=True,
+            product__is_sale_locked=False,
+            stock__gt=0,
+        )
+        .select_related("product", "color")
+        .order_by("product_id", "id")
+    )
+
+    items = []
+    for variant in variants:
+        product = variant.product
+
+        length_label = (
+            length_labels.get(variant.length, f"{variant.length} m")
+            if variant.length else ""
+        )
+        type_label = (
+            type_labels.get(variant.type, variant.type)
+            if variant.type else ""
+        )
+
+        name_parts = [product.name]
+        if length_label:
+            name_parts.append(length_label)
+        if type_label:
+            name_parts.append(type_label)
+        if variant.color and variant.color.name:
+            name_parts.append(variant.color.name)
+        productname = " – ".join(name_parts)
+
+        description = (
+            product.description
+            or PRODUCT_CARD_CONTENT.get(product.slug, {}).get("description", "")
+        )
+
+        params = []
+        if variant.color and variant.color.name:
+            params.append({"name": "Barva", "value": variant.color.name})
+        if length_label:
+            params.append({"name": "Délka", "value": length_label})
+        if type_label:
+            params.append({"name": "Zakončení", "value": type_label})
+
+        items.append({
+            "item_id": variant.id,
+            "itemgroup_id": product.id,
+            "productname": productname,
+            "description": description,
+            "url": _absolute_url(reverse("shop:product_detail", args=[product.slug])),
+            "imgurl": _absolute_url(get_variant_image_url(product, variant.color)),
+            # Heureka vyžaduje tečku jako desetinný oddělovač – naformátujeme ručně,
+            # ať do XML neprosákne česká lokalizace (čárka) z šablony.
+            "price_vat": f"{variant.price:.2f}",
+            "manufacturer": HEUREKA_MANUFACTURER,
+            "categorytext": HEUREKA_CATEGORYTEXT,
+            "delivery_date": 0,
+            "params": params,
+        })
+
+    return render(
+        request,
+        "shop/heureka_feed.xml",
+        {"items": items},
+        content_type="application/xml; charset=utf-8",
+    )
 
 
 def product_detail(request, slug):
