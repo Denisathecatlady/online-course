@@ -226,9 +226,21 @@ def get_packet_label_pdf(packet_id: str, format: str = "A6 on A4", offset: int =
 
     root = _soap_call("packetLabelPdf", inner_xml)
 
-    # Odpověď obsahuje base64 encoded PDF
+    # Odpověď obsahuje base64 encoded PDF – element se jmenuje <labelContents>,
+    # ale (podobně jako u createPacket, viz komentář výše) se v části verzí API
+    # vrací obsah přímo v <result> bez dalšího zanoření. Zkusíme obě varianty.
     label_el = root.find(".//labelContents")
     if label_el is None or not label_el.text:
+        result_el = root.find(".//result")
+        if result_el is not None and len(result_el) == 0 and result_el.text:
+            label_el = result_el
+
+    if label_el is None or not label_el.text:
+        raw = ET.tostring(root, encoding="unicode")
+        logger.error(
+            f"[Packeta] Odpověď packetLabelPdf bez obsahu štítku "
+            f"(zásilka {packet_id}): {raw[:2000]}"
+        )
         raise PacketaError("NO_LABEL", "Packeta nevrátila obsah štítku.")
 
     pdf_bytes = base64.b64decode(label_el.text.strip())
