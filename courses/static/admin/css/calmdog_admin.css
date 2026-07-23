@@ -238,6 +238,10 @@ div.breadcrumbs a:hover { color: var(--cd-teal-600); }
    s pravým sloupcem „poslední akce", který zde nepoužíváme). */
 .dashboard #content { width: auto; }
 
+/* Seznamy (changelist) taky roztáhnout na plnou šířku, aby se vešly všechny
+   sloupce tabulky (jinak je Django drží zúžené kvůli filtrovacímu sloupci). */
+.change-list #content { width: auto; }
+
 .colMS, .colM { max-width: 100%; }
 
 /* --------------------------------------------------------------------------
@@ -446,6 +450,33 @@ fieldset.module > h2 {
     color: #fff;
     font-weight: 600;
 }
+
+/* Zarolovaný filtr – když je aktivní přepínač, panel se schová a tabulka
+   získá celou šířku. Přepínač „Filtry" vkládá JS (calmdog_admin.js). */
+#changelist.cd-filters-collapsed #changelist-filter { display: none; }
+
+.cd-filters-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    border: 1px solid var(--cd-line);
+    border-radius: var(--cd-radius-sm);
+    box-shadow: var(--cd-shadow-sm);
+    color: var(--cd-navy);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: background .12s ease, border-color .12s ease;
+}
+.cd-filters-toggle:hover { background: var(--cd-teal-050); border-color: var(--cd-teal); }
+.cd-filters-toggle svg { width: 15px; height: 15px; flex: 0 0 auto; }
+/* Šipka: rozbaleno = otočená dolů, zabaleno = doprava */
+.cd-filters-toggle .cd-filters-toggle__caret { transition: transform .15s ease; }
+#changelist.cd-filters-collapsed .cd-filters-toggle .cd-filters-toggle__caret { transform: rotate(-90deg); }
 
 /* --------------------------------------------------------------------------
    10. STRÁNKOVÁNÍ
