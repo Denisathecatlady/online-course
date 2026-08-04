@@ -495,12 +495,18 @@ def heureka_feed(request):
         if type_label:
             params.append({"name": "Zakončení", "value": type_label})
 
+        # Heureka vyžaduje unikátní <URL> u každé <SHOPITEM>. Varianty nemají
+        # vlastní stránku (žijí na jedné stránce produktu), proto adresu
+        # zjednoznačníme query parametrem s ID varianty – stránka se stále
+        # korektně načte (200), jen se odliší jednotlivé varianty.
+        product_url = _absolute_url(reverse("shop:product_detail", args=[product.slug]))
+
         items.append({
             "item_id": variant.id,
             "itemgroup_id": product.id,
             "productname": productname,
             "description": description,
-            "url": _absolute_url(reverse("shop:product_detail", args=[product.slug])),
+            "url": f"{product_url}?varianta={variant.id}",
             "imgurl": _absolute_url(get_variant_image_url(product, variant.color)),
             # Heureka vyžaduje tečku jako desetinný oddělovač – naformátujeme ručně,
             # ať do XML neprosákne česká lokalizace (čárka) z šablony.
