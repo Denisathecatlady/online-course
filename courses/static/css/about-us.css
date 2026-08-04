@@ -393,7 +393,6 @@ MOJE VZDELANI - REDESIGN
 .education-r-cert-group {
     display: grid;
     gap: 1.25rem;
-    justify-items: center;
 }
 
 .education-r-cert-group-head {
@@ -445,6 +444,7 @@ MOJE VZDELANI - REDESIGN
 
 .education-r-certificate-card {
     margin: 0;
+    width: 100%;
 }
 
 .education-r-certificate-card .education-flip-inner {
@@ -2250,21 +2250,32 @@ a.contact-info-value:hover {
 }
 
 .education-flip-card {
+    -webkit-perspective: 1800px;
     perspective: 1800px;
     outline: none;
+    touch-action: manipulation;
 }
 
 .education-flip-inner {
     position: relative;
     aspect-ratio: 1 / 1.414;
+    -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
+    -webkit-transition: -webkit-transform 0.8s ease;
     transition: transform 0.8s ease;
 }
 
-.education-flip-card:hover .education-flip-inner,
-.education-flip-card:focus .education-flip-inner,
-.education-flip-card:focus-within .education-flip-inner {
+.education-flip-card:focus-visible .education-flip-inner,
+.education-flip-card.is-flipped .education-flip-inner {
+    -webkit-transform: rotateY(180deg);
     transform: rotateY(180deg);
+}
+
+@media (hover: hover) {
+    .education-flip-card:hover .education-flip-inner {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
 }
 
 .education-flip-face {
@@ -2275,6 +2286,7 @@ a.contact-info-value:hover {
     justify-content: center;
     border-radius: 24px;
     overflow: hidden;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,246,241,0.96));
     border: 1px solid rgba(95, 118, 107, 0.1);
@@ -2283,6 +2295,7 @@ a.contact-info-value:hover {
 }
 
 .education-flip-back {
+    -webkit-transform: rotateY(180deg);
     transform: rotateY(180deg);
 }
 

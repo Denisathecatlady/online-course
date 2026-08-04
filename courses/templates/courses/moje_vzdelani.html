@@ -124,7 +124,7 @@
       </div>
 
       <div class="education-r-cert-note">
-        <p>Kliknutím na certifikát jej otočíte. Níže najdete i další navazující certifikace.</p>
+        <p>Kliknutím na certifikát jej otočíte (na mobilu dvojím poklepáním). Níže najdete i další navazující certifikace.</p>
       </div>
     </div>
 
@@ -232,4 +232,25 @@
     </div>
   </section>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".education-flip-card").forEach((card) => {
+    let lastTap = 0;
+    card.addEventListener("touchend", (e) => {
+      const now = Date.now();
+      if (now - lastTap < 350) {
+        e.preventDefault();
+        const flipped = card.classList.toggle("is-flipped");
+        if (!flipped) {
+          card.blur();
+        }
+      }
+      lastTap = now;
+    });
+  });
+});
+</script>
 {% endblock %}
