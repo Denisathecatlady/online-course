@@ -262,6 +262,15 @@
 </nav>
 {% endif %}
 
+{% if not hide_site_navbar %}
+<!-- HLÁŠKA – DOČASNÉ POZASTAVENÍ TRÉNINKŮ (nemoc) -->
+<div class="illness-banner">
+    Z důvodu nemoci jsou dočasně pozastaveny všechny tréninky a konzultace.<br>
+    Online kurzy a vodítka jsou nadále dostupné k zakoupení.<br>
+    Děkujeme za pochopení 🤍
+</div>
+{% endif %}
+
 {% if show_preview_banner %}
 <!-- HLÁŠKA – DOČASNÉ UZAMČENÍ NÁKUPŮ (jen na stagingu) -->
 <div class="migration-banner">

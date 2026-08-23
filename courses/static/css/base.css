@@ -869,6 +869,21 @@ h1, h2, h3, h4, h5 {
 }
 
 
+/* ── Hláška – dočasné pozastavení tréninků (nemoc) ──── */
+
+.illness-banner {
+    background: #f0f5f1;
+    border-bottom: 1px solid #d9e5db;
+    color: #3d5a45;
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.5;
+    padding: 0.7rem 1rem;
+    letter-spacing: 0.01em;
+}
+
+
 /* =====================================================
    MOBILNÍ RESPONZIVITA — GLOBÁLNÍ ZÁKLAD
    Přidáno kvůli telefonům. Desktop se NEMĚNÍ – vše je
